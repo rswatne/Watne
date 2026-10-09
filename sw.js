@@ -1,4 +1,4 @@
-// FORCE UNREGISTER AND KILL ALL CACHES
+// UNREGISTER SERVICE WORKER TO PREVENT ANY PWA CACHING
 self.addEventListener('install', (event) => {
   self.skipWaiting();
 });
@@ -7,15 +7,8 @@ self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
-        cacheNames.map((cache) => {
-          console.log('[PWA] Sletter alt fra cachen:', cache);
-          return caches.delete(cache);
-        })
+        cacheNames.map((cache) => caches.delete(cache))
       );
-    }).then(() => self.clients.claim())
+    }).then(() => self.registration.unregister())
   );
-});
-
-self.addEventListener('fetch', (event) => {
-  event.respondWith(fetch(event.request));
 });
