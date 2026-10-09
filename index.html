@@ -9,14 +9,14 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
 
-    <!-- PREFETCHING FOR INSTANT 0 MS PAGE TRANSITIONS -->
+    <!-- PREFETCHING FOR 0 MS PAGE TRANSITIONS -->
     <link rel="prefetch" href="lonn.html">
     <link rel="prefetch" href="maskinering.html">
     <link rel="prefetch" href="verksted.html">
     <link rel="prefetch" href="chat.html">
 
     <script>
-        const APP_BUILD_VER = "v5.0";
+        const APP_BUILD_VER = "v5.2-Titanium";
         if (localStorage.getItem('app_build_v') !== APP_BUILD_VER) {
             localStorage.setItem('app_build_v', APP_BUILD_VER);
             if ('serviceWorker' in navigator) {
@@ -35,50 +35,40 @@
 
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0284c7">
-    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Verksteds-App">
     <link rel="apple-touch-icon" href="https://sigurd-seland.no/uploads/lge5O4Vz/354x0_458x0/35f30681-5749-426a-bc82-3ec4dc053599.png">
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
     <style>
+        /* TITANIUM & STEEL INDUSTRIAL DESIGN SYSTEM */
         :root {
             --primary: #0284c7;
             --primary-deep: #0369a1;
-            --primary-soft: #e0f2fe;
-            --brass: #d97706;
-            --brass-soft: #fef3c7;
-            --emerald: #059669;
-            --emerald-soft: #d1fae5;
-            --purple: #7c3aed;
-            --purple-soft: #f3e8ff;
+            --primary-glow: rgba(2, 132, 199, 0.15);
             --card: #ffffff;
-            --bg: #f8fafc;
+            --bg: #f1f5f9;
             --ink: #0f172a;
             --muted: #64748b;
-            --line: #e2e8f0;
-            --shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.05);
-            --shadow-hover: 0 20px 35px -5px rgba(2, 132, 199, 0.15);
+            --line: #cbd5e1;
+            --accent-steel: #334155;
+            --shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.08);
+            --shadow-hover: 0 20px 35px -5px rgba(2, 132, 199, 0.2);
         }
 
         body.dark-mode {
             --primary: #38bdf8;
             --primary-deep: #0284c7;
-            --primary-soft: rgba(56, 189, 248, 0.12);
-            --brass: #f59e0b;
-            --brass-soft: rgba(245, 158, 11, 0.12);
-            --emerald: #10b981;
-            --emerald-soft: rgba(16, 185, 129, 0.12);
-            --purple: #a78bfa;
-            --purple-soft: rgba(167, 139, 250, 0.12);
-            --card: #1e293b;
-            --bg: #0f172a;
+            --primary-glow: rgba(56, 189, 248, 0.18);
+            --card: #0f172a;
+            --bg: #070a11;
             --ink: #f8fafc;
             --muted: #94a3b8;
-            --line: #334155;
-            --shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.35);
-            --shadow-hover: 0 20px 40px -5px rgba(56, 189, 248, 0.25);
+            --line: #1e293b;
+            --accent-steel: #94a3b8;
+            --shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.6);
+            --shadow-hover: 0 20px 45px -5px rgba(56, 189, 248, 0.3);
         }
 
         * { box-sizing: border-box; }
@@ -96,7 +86,7 @@
         #splash-screen {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            background: #070a11;
             display: flex; flex-direction: column;
             justify-content: center; align-items: center;
             z-index: 9999;
@@ -105,7 +95,7 @@
         }
         .splash-logo-box {
             background: white; padding: 20px 28px; border-radius: 20px;
-            box-shadow: 0 20px 45px rgba(0,0,0,0.5); margin-bottom: 24px;
+            box-shadow: 0 20px 45px rgba(0,0,0,0.6); margin-bottom: 24px;
             max-width: 320px; display: flex; justify-content: center; align-items: center;
         }
         .splash-logo-box img { max-width: 100%; max-height: 85px; object-fit: contain; }
@@ -117,7 +107,7 @@
         @keyframes spin { to { transform: rotate(360deg); } }
 
         .main-layout {
-            max-width: 52rem;
+            max-width: 54rem;
             margin: 0 auto;
             padding: 2rem 1.25rem 4rem 1.25rem;
         }
@@ -128,26 +118,32 @@
             align-items: center;
             justify-content: space-between;
             gap: 1rem;
-            border-bottom: 1px solid var(--line);
+            border-bottom: 2px solid var(--line);
             padding-bottom: 1.5rem;
         }
 
+        /* STILREN KONTROLLPANEL / HERO BANNER UTEN REGNBUE */
         .hero-banner {
-            background: linear-gradient(135deg, var(--card) 0%, var(--bg) 100%);
+            background: var(--card);
             border: 1px solid var(--line);
             border-radius: 1.25rem;
             padding: 1.75rem 1.5rem;
             margin-bottom: 2rem;
-            text-align: center;
             box-shadow: var(--shadow);
             position: relative;
-            overflow: hidden;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1.25rem;
         }
         .hero-banner::before {
             content: '';
             position: absolute;
-            top: 0; left: 0; right: 0; height: 4px;
-            background: linear-gradient(90deg, var(--primary) 0%, var(--brass) 33%, var(--emerald) 66%, var(--purple) 100%);
+            top: 0; left: 0; bottom: 0; width: 5px;
+            background: var(--primary);
+            border-top-left-radius: 1.25rem;
+            border-bottom-left-radius: 1.25rem;
         }
 
         .portal-grid {
@@ -160,6 +156,7 @@
             }
         }
 
+        /* TITANIUM HIGH-TECH KORT */
         .portal-card {
             background: var(--card);
             border-radius: 1.25rem;
@@ -174,12 +171,25 @@
             text-decoration: none;
             color: inherit;
             position: relative;
-            overflow: hidden;
         }
         .portal-card:hover {
             border-color: var(--primary);
             transform: translateY(-4px);
             box-shadow: var(--shadow-hover);
+        }
+
+        .card-badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            font-weight: 800;
+            letter-spacing: 0.1em;
+            color: var(--primary);
+            text-transform: uppercase;
+            background: var(--primary-glow);
+            padding: 0.25rem 0.6rem;
+            border-radius: 0.375rem;
+            margin-bottom: 0.75rem;
+            display: inline-block;
         }
 
         .portal-header {
@@ -191,14 +201,15 @@
 
         .portal-icon {
             font-size: 2.25rem;
-            width: 4.25rem;
-            height: 4.25rem;
+            width: 4rem;
+            height: 4rem;
             border-radius: 1rem;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
-            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.2);
+            background: var(--primary-glow);
+            border: 1px solid var(--line);
         }
 
         .btn {
@@ -208,7 +219,7 @@
             gap: 0.5rem;
             border-radius: 0.625rem;
             font-size: 0.875rem;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
             border: none;
             text-decoration: none;
@@ -216,8 +227,9 @@
             padding: 0 1.25rem;
             transition: all 0.2s ease;
         }
-        .btn-soft { background: var(--primary-soft); color: var(--primary-deep); }
+        .btn-primary { background: var(--primary); color: white; }
         .btn-outline { border: 1px solid var(--line); background: var(--card); color: var(--ink); }
+        .btn-outline:hover { border-color: var(--primary); color: var(--primary); }
 
         .status-badge {
             display: inline-flex;
@@ -225,10 +237,11 @@
             gap: 0.375rem;
             font-size: 0.75rem;
             font-weight: 700;
-            padding: 0.2rem 0.6rem;
+            padding: 0.25rem 0.65rem;
             border-radius: 9999px;
-            background: var(--primary-soft);
-            color: var(--primary-deep);
+            background: var(--primary-glow);
+            color: var(--primary);
+            border: 1px solid var(--line);
         }
 
         .app-footer {
@@ -241,12 +254,13 @@
         }
         .version-badge {
             display: inline-block;
-            background: var(--primary-soft);
-            color: var(--primary-deep);
+            background: var(--primary-glow);
+            color: var(--primary);
             padding: 0.25rem 0.65rem;
             border-radius: 9999px;
             font-weight: 700;
             font-size: 0.75rem;
+            font-family: 'JetBrains Mono', monospace;
             margin-left: 0.375rem;
         }
     </style>
@@ -267,7 +281,7 @@
     <header>
         <div>
             <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 4px;">
-                <p style="font-size: 0.75rem; letter-spacing: 0.2em; color: var(--primary); text-transform: uppercase; margin: 0; font-weight: 800;">Sigurd Seland AS · Etablert 1902</p>
+                <p style="font-size: 0.75rem; letter-spacing: 0.2em; color: var(--primary); text-transform: uppercase; margin: 0; font-weight: 800; font-family: 'JetBrains Mono', monospace;">SIGURD SELAND AS · ETABLERT 1902</p>
                 <span class="status-badge" id="net-status">🟢 Online</span>
             </div>
             <h1 style="font-size: 1.875rem; font-weight: 800; margin: 0; letter-spacing: -0.02em;" id="txt-title">Verkstedsportal</h1>
@@ -275,7 +289,7 @@
         </div>
 
         <div style="display: flex; align-items: center; gap: 0.625rem;">
-            <button type="button" class="btn btn-outline" style="height: 2.75rem; padding: 0 0.875rem; font-size: 0.875rem;" onclick="toggleLanguage()" id="lang-toggle-btn">🇳🇴 NO</button>
+            <button type="button" class="btn btn-outline" style="height: 2.75rem; padding: 0 0.75rem; font-size: 0.875rem;" onclick="toggleLanguage()" id="lang-toggle-btn">🇳🇴 NO</button>
             <button type="button" class="btn btn-outline" style="height: 2.75rem; width: 2.75rem; padding: 0; border-radius: 50%; font-size: 1.15rem;" onclick="toggleTheme()" id="theme-toggle-btn">🌙</button>
 
             <div style="min-width: 10.5rem; max-width: 13.5rem; height: 4.5rem; display: flex; align-items: center; justify-content: center; overflow: hidden; border-radius: 0.75rem; border: 1px dashed var(--line); background: white; padding: 0.5rem;">
@@ -285,33 +299,37 @@
     </header>
 
     <div class="hero-banner">
-        <h2 style="font-size: 1.5rem; font-weight: 800; margin: 0 0 0.5rem 0; color: var(--ink);" id="txt-welcome">Velkommen til Verkstedsportalen</h2>
-        <p style="font-size: 0.9375rem; color: var(--muted); margin: 0; max-width: 32rem; margin: 0 auto; line-height: 1.5;" id="txt-choose">Digitalt verktøysett for produksjon, beregninger, vakter og lønn for ansatte ved Sigurd Seland AS.</p>
+        <div style="padding-left: 0.5rem;">
+            <h2 style="font-size: 1.375rem; font-weight: 800; margin: 0 0 0.375rem 0; color: var(--ink);" id="txt-welcome">Velkommen til Verkstedsportalen</h2>
+            <p style="font-size: 0.875rem; color: var(--muted); margin: 0; line-height: 1.5;" id="txt-choose">Digitalt verktøysett for produksjon, beregninger, vakter og lønn for ansatte ved Sigurd Seland AS.</p>
+        </div>
     </div>
 
     <div class="portal-grid">
         <!-- KORT 1: LØNNSKALKULATOR -->
-        <a href="lonn.html" class="portal-card" style="border-top: 4px solid var(--primary);">
+        <a href="lonn.html" class="portal-card">
             <div>
+                <span class="card-badge">[ MODUL 01 ]</span>
                 <div class="portal-header">
-                    <div class="portal-icon" style="background: var(--primary-soft);">💰</div>
+                    <div class="portal-icon">💰</div>
                     <div>
-                        <h3 style="margin: 0; font-size: 1.25rem; font-weight: 700; color: var(--primary-deep);" id="txt-c1-title">Lønnskalkulator & Vakter</h3>
+                        <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800;" id="txt-c1-title">Lønnskalkulator & Vakter</h3>
                         <span style="font-size: 0.75rem; color: var(--muted); font-weight: 600;">Lønn • Vakter • Timebank</span>
                     </div>
                 </div>
                 <p style="margin: 0 0 1.5rem 0; font-size: 0.875rem; color: var(--muted); line-height: 1.5;" id="txt-c1-desc">Beregning av fastlønn, tilleggsvakter, timebank (avspasering), skatteetaten tabelltrekk og lønnsslipp.</p>
             </div>
-            <button type="button" class="btn" style="background: var(--primary-soft); color: var(--primary-deep); font-weight: 700; width: 100%;" id="txt-c1-btn">Åpne Lønnskalkulator ➔</button>
+            <button type="button" class="btn btn-primary" style="width: 100%;" id="txt-c1-btn">Åpne Lønnskalkulator ➔</button>
         </a>
 
         <!-- KORT 2: MASKINERINSKALKURATOR -->
-        <a href="maskinering.html" class="portal-card" style="border-top: 4px solid var(--brass);">
+        <a href="maskinering.html" class="portal-card">
             <div>
+                <span class="card-badge" style="color: var(--brass); background: var(--brass-soft);">[ MODUL 02 ]</span>
                 <div class="portal-header">
                     <div class="portal-icon" style="background: var(--brass-soft);">⚙️</div>
                     <div>
-                        <h3 style="margin: 0; font-size: 1.25rem; font-weight: 700; color: var(--brass);" id="txt-c2-title">Maskineringskalkulator</h3>
+                        <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800;" id="txt-c2-title">Maskineringskalkulator</h3>
                         <span style="font-size: 0.75rem; color: var(--muted); font-weight: 600;">CAM • Skjæredata • Gibbs</span>
                     </div>
                 </div>
@@ -321,39 +339,41 @@
         </a>
 
         <!-- KORT 3: VERKSTEDTABELLER & BOR/TOLERANSER -->
-        <a href="verksted.html" class="portal-card" style="border-top: 4px solid var(--emerald);">
+        <a href="verksted.html" class="portal-card">
             <div>
+                <span class="card-badge" style="color: #059669; background: rgba(16, 185, 129, 0.12);">[ MODUL 03 ]</span>
                 <div class="portal-header">
-                    <div class="portal-icon" style="background: var(--emerald-soft);">🛠️</div>
+                    <div class="portal-icon" style="background: rgba(16, 185, 129, 0.12);">🛠️</div>
                     <div>
-                        <h3 style="margin: 0; font-size: 1.25rem; font-weight: 700; color: var(--emerald);" id="txt-c3-title">Verkstedtabeller & Bor</h3>
+                        <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800;" id="txt-c3-title">Verkstedtabeller & Bor</h3>
                         <p style="margin: 0; font-size: 0.75rem; color: var(--muted); font-weight: 600;">Materialer • Bor • Toleranser</p>
                     </div>
                 </div>
                 <p style="margin: 0 0 1.5rem 0; font-size: 0.875rem; color: var(--muted); line-height: 1.5;" id="txt-c3-desc">Materialvelger med anbefalt Vc/fz, kjernebor for M/BSP-gjenger, ISO gjengetoleranser (6H/6g) og bor-spisstillegg.</p>
             </div>
-            <button type="button" class="btn" style="background: var(--emerald-soft); color: var(--emerald); font-weight: 700; width: 100%;" id="txt-c3-btn">Åpne Verkstedtabeller ➔</button>
+            <button type="button" class="btn" style="background: rgba(16, 185, 129, 0.12); color: #059669; font-weight: 700; width: 100%;" id="txt-c3-btn">Åpne Verkstedtabeller ➔</button>
         </a>
 
         <!-- KORT 4: SIGRID AI VERKSTEDSASSISTENT -->
-        <a href="chat.html" class="portal-card" style="border-top: 4px solid var(--purple);">
+        <a href="chat.html" class="portal-card">
             <div>
+                <span class="card-badge" style="color: #7c3aed; background: rgba(124, 58, 237, 0.12);">[ MODUL 04 ]</span>
                 <div class="portal-header">
-                    <div class="portal-icon" style="background: var(--purple-soft);">🤖</div>
+                    <div class="portal-icon" style="background: rgba(124, 58, 237, 0.12);">🤖</div>
                     <div>
-                        <h3 style="margin: 0; font-size: 1.25rem; font-weight: 700; color: var(--purple);" id="txt-c4-title">Sigrid — AI Assistent</h3>
+                        <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800;" id="txt-c4-title">Sigrid — AI Assistent</h3>
                         <span style="font-size: 0.75rem; color: var(--muted); font-weight: 600;">AI Bot • Kunnskapsbase • Svar</span>
                     </div>
                 </div>
                 <p style="margin: 0 0 1.5rem 0; font-size: 0.875rem; color: var(--muted); line-height: 1.5;" id="txt-c4-desc">Spør Sigrid om skjæredata, M/BSP-gjenger, ISO-toleranser, Gibbs-mating, G-koder eller overtid og lønn.</p>
             </div>
-            <button type="button" class="btn" style="background: var(--purple-soft); color: var(--purple); font-weight: 700; width: 100%;" id="txt-c4-btn">Spør Sigrid ➔</button>
+            <button type="button" class="btn" style="background: rgba(124, 58, 237, 0.12); color: #7c3aed; font-weight: 700; width: 100%;" id="txt-c4-btn">Spør Sigrid ➔</button>
         </a>
     </div>
 
     <footer class="app-footer">
         <p style="margin: 0; font-weight: 500;">
-            Sigurd Seland AS • Smie & Mekanisk Verksted • <span class="version-badge">Versjon 5.0 Ultra</span>
+            Sigurd Seland AS • Smie & Mekanisk Verksted • <span class="version-badge">TITANIUM v5.2</span>
         </p>
     </footer>
 </div>
@@ -427,13 +447,12 @@
         updateLanguageUI(newLang);
     }
 
-    // OFFLINE STATUS INDIKATOR
     function updateOnlineStatus() {
         const badge = document.getElementById('net-status');
         if (navigator.onLine) {
             badge.innerText = "🟢 Online";
-            badge.style.background = "var(--primary-soft)";
-            badge.style.color = "var(--primary-deep)";
+            badge.style.background = "var(--primary-glow)";
+            badge.style.color = "var(--primary)";
         } else {
             badge.innerText = "⚪ Offline";
             badge.style.background = "rgba(100, 116, 139, 0.15)";
