@@ -10,7 +10,7 @@
     <meta http-equiv="Expires" content="0">
 
     <script>
-        const APP_BUILD_VER = "v5.0";
+        const APP_BUILD_VER = "v5.4";
         if (localStorage.getItem('app_build_v') !== APP_BUILD_VER) {
             localStorage.setItem('app_build_v', APP_BUILD_VER);
             if ('serviceWorker' in navigator) {
@@ -34,7 +34,7 @@
     <meta name="apple-mobile-web-app-title" content="Sigrid AI">
     <link rel="apple-touch-icon" href="https://sigurd-seland.no/uploads/lge5O4Vz/354x0_458x0/35f30681-5749-426a-bc82-3ec4dc053599.png">
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #0284c7;
@@ -228,11 +228,10 @@
     <header>
         <div>
             <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 4px;">
-                <p style="font-size: 0.75rem; letter-spacing: 0.18em; color: var(--purple); text-transform: uppercase; margin: 0; font-weight: 800;">Sigurd Seland AS · Etablert 1902</p>
                 <span class="status-badge" id="net-status">🟢 Online</span>
             </div>
             <h1 style="font-size: 1.75rem; font-weight: 800; margin: 0;" id="txt-title">🤖 Sigrid — AI Verkstedsassistent</h1>
-            <p style="font-size: 0.8125rem; color: var(--muted); margin: 0.125rem 0 0 0;" id="txt-sub">Full tilgang til alt på nettstedet: Maskinering, Gibbs, G-koder, M/BSP-gjenger, ISO-toleranser og lønn</p>
+            <p style="font-size: 0.8125rem; color: var(--muted); margin: 0.125rem 0 0 0;" id="txt-sub">Spør AI om maskinering, G-koder, gjenger, skjæredata og lønn</p>
         </div>
         <div style="display: flex; align-items: center; gap: 0.5rem;">
             <button type="button" class="btn btn-outline" style="height: 2.875rem; padding: 0 0.75rem; font-size: 0.875rem;" onclick="toggleLanguage()" id="lang-toggle-btn">🇳🇴 NO</button>
@@ -271,7 +270,7 @@
     const i18n = {
         no: {
             title: "🤖 Sigrid — AI Verkstedsassistent",
-            sub: "Full tilgang til alt på nettstedet: Maskinering, Gibbs, G-koder, M/BSP-gjenger, ISO-toleranser og lønn",
+            sub: "Spør AI om maskinering, G-koder, gjenger, skjæredata og lønn",
             btnHome: "🏠 Hovedmeny",
             welcomeMsg: "👋 <strong>Hei! Jeg er Sigrid, din AI Verkstedsassistent for Sigurd Seland AS.</strong><br>Jeg har full kunnskap om alt på nettstedet vårt! Spør meg om sirkulær mating i Gibbs, M- og BSP-rørgjenger, ISO-toleranser (6H/6g), skjæredata (Vc/fz), CNC G-koder, eller hvordan lønn, vakter og timebanken regnes ut. Hva vil du vite?",
             chip1: "🔩 BSP 1/2\" Kjernebor",
@@ -283,7 +282,7 @@
         },
         en: {
             title: "🤖 Sigrid — AI Workshop Assistant",
-            sub: "Full access to the entire portal: Machining, Gibbs, G-codes, M/BSP threads, ISO tolerances, and salary",
+            sub: "Ask AI about machining, G-codes, tapping drills, cutting speeds, and salary",
             btnHome: "🏠 Main Menu",
             welcomeMsg: "👋 <strong>Hi! I am Sigrid, your AI Workshop Assistant for Sigurd Seland AS.</strong><br>I have full knowledge of everything on our website! Ask me about circular feed in Gibbs, M and BSP pipe threads, ISO tolerances (6H/6g), cutting data (Vc/fz), CNC G-codes, or how payroll, shifts, and the time bank are calculated. What would you like to know?",
             chip1: "🔩 BSP 1/2\" Tap Drill",

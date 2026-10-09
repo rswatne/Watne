@@ -10,7 +10,7 @@
     <meta http-equiv="Expires" content="0">
 
     <script>
-        const APP_BUILD_VER = "v5.0";
+        const APP_BUILD_VER = "v5.4";
         if (localStorage.getItem('app_build_v') !== APP_BUILD_VER) {
             localStorage.setItem('app_build_v', APP_BUILD_VER);
             if ('serviceWorker' in navigator) {
@@ -272,7 +272,7 @@
             <p style="margin: 0;" id="txt-modal-body2"><strong>Algoritme:</strong> Appen benytter Skatteetatens standard tabellformel for månedslønn (f.eks. Tabell 7101), der fribeløp trekkes fra og skattesatsen skalerer progressivt basert på den samlede månedsinntekten.</p>
             <div style="background: var(--primary-soft); padding: 0.875rem; border-radius: 0.625rem; border-left: 4px solid var(--primary); font-size: 0.8125rem; color: var(--primary-deep); margin-top: 0.25rem;" id="txt-modal-disclaimer">
                 <strong>⚠️ Ansvarsfraskrivelse (Disclaimer):</strong><br>
-                Beregningen i appen er kun et veiledending estimat. Det nøyaktige skattetrekket på din offisielle lønnsslipp fastsettes av din arbeidsgivers lønnssystem og ditt gjeldende skattekort hos Skatteetaten.
+                Beregningen i appen er kun et veiledende estimat. Det nøyaktige skattetrekket på din offisielle lønnsslipp fastsettes av din arbeidsgivers lønnssystem og ditt gjeldende skattekort hos Skatteetaten.
             </div>
         </div>
 
@@ -284,7 +284,6 @@
     <header>
         <div>
             <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 4px;">
-                <p style="font-size: 0.75rem; letter-spacing: 0.18em; color: var(--primary); text-transform: uppercase; margin: 0; font-weight: 800;">Sigurd Seland AS · Etablert 1902</p>
                 <span class="status-badge" id="net-status">🟢 Online</span>
             </div>
             <h1 style="font-size: 1.875rem; font-weight: 800; margin: 0; letter-spacing: -0.02em;" id="txt-title">Lønnskalkulator</h1>
@@ -559,7 +558,7 @@
     <!-- FREMHEVET SYNLIG BUNNTEKST MED VERSJON -->
     <footer class="app-footer">
         <p style="margin: 0; font-weight: 500;">
-            Sigurd Seland AS • Smie & Mekanisk Verksted • <span class="version-badge">Versjon 5.0 Ultra</span>
+            Smie & Mekanisk Verksted • <span class="version-badge">Versjon 5.4</span>
         </p>
     </footer>
 </div>

@@ -9,14 +9,13 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
 
-    <!-- PREFETCHING FOR 0 MS PAGE TRANSITIONS -->
     <link rel="prefetch" href="lonn.html">
     <link rel="prefetch" href="maskinering.html">
     <link rel="prefetch" href="verksted.html">
     <link rel="prefetch" href="chat.html">
 
     <script>
-        const APP_BUILD_VER = "v5.2-Titanium";
+        const APP_BUILD_VER = "v5.4";
         if (localStorage.getItem('app_build_v') !== APP_BUILD_VER) {
             localStorage.setItem('app_build_v', APP_BUILD_VER);
             if ('serviceWorker' in navigator) {
@@ -42,17 +41,15 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
     <style>
-        /* TITANIUM & STEEL INDUSTRIAL DESIGN SYSTEM */
         :root {
             --primary: #0284c7;
             --primary-deep: #0369a1;
-            --primary-glow: rgba(2, 132, 199, 0.15);
+            --primary-glow: rgba(2, 132, 199, 0.12);
             --card: #ffffff;
             --bg: #f1f5f9;
             --ink: #0f172a;
             --muted: #64748b;
             --line: #cbd5e1;
-            --accent-steel: #334155;
             --shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.08);
             --shadow-hover: 0 20px 35px -5px rgba(2, 132, 199, 0.2);
         }
@@ -60,13 +57,12 @@
         body.dark-mode {
             --primary: #38bdf8;
             --primary-deep: #0284c7;
-            --primary-glow: rgba(56, 189, 248, 0.18);
+            --primary-glow: rgba(56, 189, 248, 0.15);
             --card: #0f172a;
             --bg: #070a11;
             --ink: #f8fafc;
             --muted: #94a3b8;
             --line: #1e293b;
-            --accent-steel: #94a3b8;
             --shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.6);
             --shadow-hover: 0 20px 45px -5px rgba(56, 189, 248, 0.3);
         }
@@ -122,7 +118,6 @@
             padding-bottom: 1.5rem;
         }
 
-        /* STILREN KONTROLLPANEL / HERO BANNER UTEN REGNBUE */
         .hero-banner {
             background: var(--card);
             border: 1px solid var(--line);
@@ -156,7 +151,6 @@
             }
         }
 
-        /* TITANIUM HIGH-TECH KORT */
         .portal-card {
             background: var(--card);
             border-radius: 1.25rem;
@@ -178,20 +172,6 @@
             box-shadow: var(--shadow-hover);
         }
 
-        .card-badge {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.7rem;
-            font-weight: 800;
-            letter-spacing: 0.1em;
-            color: var(--primary);
-            text-transform: uppercase;
-            background: var(--primary-glow);
-            padding: 0.25rem 0.6rem;
-            border-radius: 0.375rem;
-            margin-bottom: 0.75rem;
-            display: inline-block;
-        }
-
         .portal-header {
             display: flex;
             align-items: center;
@@ -201,8 +181,8 @@
 
         .portal-icon {
             font-size: 2.25rem;
-            width: 4rem;
-            height: 4rem;
+            width: 4.25rem;
+            height: 4.25rem;
             border-radius: 1rem;
             display: flex;
             align-items: center;
@@ -270,10 +250,10 @@
 <!-- SPLASH SCREEN -->
 <div id="splash-screen">
     <div class="splash-logo-box">
-        <img src="https://sigurd-seland.no/uploads/lge5O4Vz/354x0_458x0/35f30681-5749-426a-bc82-3ec4dc053599.png" alt="Sigurd Seland AS">
+        <img src="https://sigurd-seland.no/uploads/lge5O4Vz/354x0_458x0/35f30681-5749-426a-bc82-3ec4dc053599.png" alt="Verkstedsportal">
     </div>
     <h1 style="font-size: 24px; font-weight: 800; margin: 0 0 6px 0; color: #f8fafc;" id="splash-title">Verkstedsportal</h1>
-    <p style="font-size: 13px; color: #94a3b8; margin: 0 0 20px 0; font-weight: 500;">Sigurd Seland AS • Smie & Mekanisk Verksted • Etablert 1902</p>
+    <p style="font-size: 13px; color: #94a3b8; margin: 0 0 20px 0; font-weight: 500;">Smie & Mekanisk Verksted • Lyngdal</p>
     <div class="spinner"></div>
 </div>
 
@@ -281,7 +261,6 @@
     <header>
         <div>
             <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 4px;">
-                <p style="font-size: 0.75rem; letter-spacing: 0.2em; color: var(--primary); text-transform: uppercase; margin: 0; font-weight: 800; font-family: 'JetBrains Mono', monospace;">SIGURD SELAND AS · ETABLERT 1902</p>
                 <span class="status-badge" id="net-status">🟢 Online</span>
             </div>
             <h1 style="font-size: 1.875rem; font-weight: 800; margin: 0; letter-spacing: -0.02em;" id="txt-title">Verkstedsportal</h1>
@@ -293,7 +272,7 @@
             <button type="button" class="btn btn-outline" style="height: 2.75rem; width: 2.75rem; padding: 0; border-radius: 50%; font-size: 1.15rem;" onclick="toggleTheme()" id="theme-toggle-btn">🌙</button>
 
             <div style="min-width: 10.5rem; max-width: 13.5rem; height: 4.5rem; display: flex; align-items: center; justify-content: center; overflow: hidden; border-radius: 0.75rem; border: 1px dashed var(--line); background: white; padding: 0.5rem;">
-                <img src="https://sigurd-seland.no/uploads/lge5O4Vz/354x0_458x0/35f30681-5749-426a-bc82-3ec4dc053599.png" alt="Sigurd Seland AS" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                <img src="https://sigurd-seland.no/uploads/lge5O4Vz/354x0_458x0/35f30681-5749-426a-bc82-3ec4dc053599.png" alt="Verksted" style="max-width: 100%; max-height: 100%; object-fit: contain;">
             </div>
         </div>
     </header>
@@ -301,7 +280,7 @@
     <div class="hero-banner">
         <div style="padding-left: 0.5rem;">
             <h2 style="font-size: 1.375rem; font-weight: 800; margin: 0 0 0.375rem 0; color: var(--ink);" id="txt-welcome">Velkommen til Verkstedsportalen</h2>
-            <p style="font-size: 0.875rem; color: var(--muted); margin: 0; line-height: 1.5;" id="txt-choose">Digitalt verktøysett for produksjon, beregninger, vakter og lønn for ansatte ved Sigurd Seland AS.</p>
+            <p style="font-size: 0.875rem; color: var(--muted); margin: 0; line-height: 1.5;" id="txt-choose">Digitalt verktøysett for produksjon, beregninger, vakter og lønn.</p>
         </div>
     </div>
 
@@ -309,11 +288,10 @@
         <!-- KORT 1: LØNNSKALKULATOR -->
         <a href="lonn.html" class="portal-card">
             <div>
-                <span class="card-badge">[ MODUL 01 ]</span>
                 <div class="portal-header">
                     <div class="portal-icon">💰</div>
                     <div>
-                        <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800;" id="txt-c1-title">Lønnskalkulator & Vakter</h3>
+                        <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800; color: var(--primary-deep);" id="txt-c1-title">Lønnskalkulator & Vakter</h3>
                         <span style="font-size: 0.75rem; color: var(--muted); font-weight: 600;">Lønn • Vakter • Timebank</span>
                     </div>
                 </div>
@@ -325,27 +303,25 @@
         <!-- KORT 2: MASKINERINSKALKURATOR -->
         <a href="maskinering.html" class="portal-card">
             <div>
-                <span class="card-badge" style="color: var(--brass); background: var(--brass-soft);">[ MODUL 02 ]</span>
                 <div class="portal-header">
-                    <div class="portal-icon" style="background: var(--brass-soft);">⚙️</div>
+                    <div class="portal-icon" style="background: rgba(217, 119, 6, 0.12);">⚙️</div>
                     <div>
-                        <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800;" id="txt-c2-title">Maskineringskalkulator</h3>
+                        <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800; color: #d97706;" id="txt-c2-title">Maskineringskalkulator</h3>
                         <span style="font-size: 0.75rem; color: var(--muted); font-weight: 600;">CAM • Skjæredata • Gibbs</span>
                     </div>
                 </div>
                 <p style="margin: 0 0 1.5rem 0; font-size: 0.875rem; color: var(--muted); line-height: 1.5;" id="txt-c2-desc">Beregning av sirkulær mating (aksling), Gibbs mating, skjæredata (Vc/RPM/fz), gjengediametere og C-akse grader/min.</p>
             </div>
-            <button type="button" class="btn" style="background: var(--brass-soft); color: var(--brass); font-weight: 700; width: 100%;" id="txt-c2-btn">Åpne Maskineringskalkulator ➔</button>
+            <button type="button" class="btn" style="background: rgba(217, 119, 6, 0.12); color: #d97706; font-weight: 700; width: 100%;" id="txt-c2-btn">Åpne Maskineringskalkulator ➔</button>
         </a>
 
         <!-- KORT 3: VERKSTEDTABELLER & BOR/TOLERANSER -->
         <a href="verksted.html" class="portal-card">
             <div>
-                <span class="card-badge" style="color: #059669; background: rgba(16, 185, 129, 0.12);">[ MODUL 03 ]</span>
                 <div class="portal-header">
                     <div class="portal-icon" style="background: rgba(16, 185, 129, 0.12);">🛠️</div>
                     <div>
-                        <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800;" id="txt-c3-title">Verkstedtabeller & Bor</h3>
+                        <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800; color: #059669;" id="txt-c3-title">Verkstedtabeller & Bor</h3>
                         <p style="margin: 0; font-size: 0.75rem; color: var(--muted); font-weight: 600;">Materialer • Bor • Toleranser</p>
                     </div>
                 </div>
@@ -357,11 +333,10 @@
         <!-- KORT 4: SIGRID AI VERKSTEDSASSISTENT -->
         <a href="chat.html" class="portal-card">
             <div>
-                <span class="card-badge" style="color: #7c3aed; background: rgba(124, 58, 237, 0.12);">[ MODUL 04 ]</span>
                 <div class="portal-header">
                     <div class="portal-icon" style="background: rgba(124, 58, 237, 0.12);">🤖</div>
                     <div>
-                        <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800;" id="txt-c4-title">Sigrid — AI Assistent</h3>
+                        <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800; color: #7c3aed;" id="txt-c4-title">Sigrid — AI Assistent</h3>
                         <span style="font-size: 0.75rem; color: var(--muted); font-weight: 600;">AI Bot • Kunnskapsbase • Svar</span>
                     </div>
                 </div>
@@ -373,7 +348,7 @@
 
     <footer class="app-footer">
         <p style="margin: 0; font-weight: 500;">
-            Sigurd Seland AS • Smie & Mekanisk Verksted • <span class="version-badge">TITANIUM v5.2</span>
+            Smie & Mekanisk Verksted • <span class="version-badge">Versjon 5.4</span>
         </p>
     </footer>
 </div>
@@ -384,7 +359,7 @@
             title: "Verkstedsportal",
             sub: "Smie & Mekanisk Verksted • Lyngdal",
             welcome: "Velkommen til Verkstedsportalen",
-            choose: "Digitalt verktøysett for produksjon, beregninger, vakter og lønn for ansatte ved Sigurd Seland AS.",
+            choose: "Digitalt verktøysett for produksjon, beregninger, vakter og lønn.",
             c1_title: "Lønnskalkulator & Vakter",
             c1_desc: "Beregning av fastlønn, tilleggsvakter, timebank (avspasering), skatteetaten tabelltrekk og lønnsslipp.",
             c1_btn: "Åpne Lønnskalkulator ➔",
@@ -402,7 +377,7 @@
             title: "Workshop Portal",
             sub: "Forge & Machine Shop • Lyngdal",
             welcome: "Welcome to the Workshop Portal",
-            choose: "Digital toolkit for machining, calculations, shifts, and salary for Sigurd Seland AS.",
+            choose: "Digital toolkit for machining, calculations, shifts, and salary.",
             c1_title: "Paycheck Calculator & Shifts",
             c1_desc: "Calculate base salary, extra shifts, time bank (time off), tax table deductions, and payslips.",
             c1_btn: "Open Paycheck Calculator ➔",
