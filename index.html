@@ -12,7 +12,7 @@
 
     <!-- AUTOMATISK TVUNGET CACHE-CLEARING KODE -->
     <script>
-        const APP_BUILD_VERSION = "v2.5";
+        const APP_BUILD_VERSION = "v2.6";
         if (localStorage.getItem('app_build_ver') !== APP_BUILD_VERSION) {
             localStorage.setItem('app_build_ver', APP_BUILD_VERSION);
             if ('serviceWorker' in navigator) {
@@ -222,6 +222,10 @@
             <span class="btn btn-soft" style="height: 2.25rem; font-size: 0.8125rem; background: var(--brass-soft); color: var(--brass);">Åpne Maskineringskalkulator ➔</span>
         </div>
     </a>
+
+    <footer style="margin-top: 3rem; border-top: 1px solid var(--line); padding-top: 1.25rem; text-align: center; font-size: 0.75rem; color: var(--muted);">
+        <p style="margin: 0;">Sigurd Seland AS • Smie & Mekanisk Verksted • <strong style="color: var(--primary);">Versjon 2.6</strong></p>
+    </footer>
 </div>
 
 <script>

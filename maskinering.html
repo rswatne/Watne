@@ -9,6 +9,25 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
 
+    <!-- AUTOMATISK TVUNGET CACHE-CLEARING KODE -->
+    <script>
+        const APP_BUILD_VERSION = "v2.6";
+        if (localStorage.getItem('app_build_ver') !== APP_BUILD_VERSION) {
+            localStorage.setItem('app_build_ver', APP_BUILD_VERSION);
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.getRegistrations().then(regs => {
+                    for (let reg of regs) reg.unregister();
+                });
+            }
+            if ('caches' in window) {
+                caches.keys().then(names => {
+                    for (let name of names) caches.delete(name);
+                });
+            }
+            window.location.reload(true);
+        }
+    </script>
+
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0284c7">
     <meta name="mobile-web-app-capable" content="yes">
@@ -167,11 +186,11 @@
         </div>
     </header>
 
-    <!-- VERKSTEDSKALKURATOR 1: REGNE OM TIL SIRKULÆR MATING (AKSLING) -->
+    <!-- VERKSTEDSKALKURATOR 1: REGNE OM TIL SIRKULÆR MATING (AKSLING / GJENGEFRESING) -->
     <div class="calc-card">
         <header style="margin-bottom: 1rem; border-bottom: 1px solid var(--line); padding-bottom: 0.5rem;">
-            <h2 style="font-size: 1.125rem; font-weight: 700; margin: 0; color: var(--primary-deep);">🌀 Regne om til sirkulær mating (aksling)</h2>
-            <p style="font-size: 0.8125rem; color: var(--muted); margin: 0.25rem 0 0 0;">Regn om bordmating til effektiv sirkulær mating for aksling/fresing i Gibbs.</p>
+            <h2 style="font-size: 1.125rem; font-weight: 700; margin: 0; color: var(--primary-deep);">🌀 Regne om til Sirkulær Mating (Aksling / Gjengefresing)</h2>
+            <p style="font-size: 0.8125rem; color: var(--muted); margin: 0.25rem 0 0 0;">Regn om bordmating til effektiv sirkulær mating for aksling/fresing og gjengefresing i Gibbs.</p>
         </header>
 
         <div class="grid-2">
@@ -332,6 +351,10 @@
             <div class="line-row strong" style="margin-top: 0.375rem;"><span style="color: var(--brass); font-size: 1.05rem;">Mating i Grader/MIN (C-akse):</span><span id="deg-res-gradmin" class="font-mono" style="font-size: 1.25rem; color: var(--brass);">0 °/min</span></div>
         </div>
     </div>
+
+    <footer style="margin-top: 3rem; border-top: 1px solid var(--line); padding-top: 1.25rem; text-align: center; font-size: 0.75rem; color: var(--muted);">
+        <p style="margin: 0;">Sigurd Seland AS • Smie & Mekanisk Verksted • <strong style="color: var(--primary);">Versjon 2.6</strong></p>
+    </footer>
 </div>
 
 <script>

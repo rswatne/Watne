@@ -11,7 +11,7 @@
 
     <!-- AUTOMATISK TVUNGET CACHE-CLEARING KODE -->
     <script>
-        const APP_BUILD_VERSION = "v2.5";
+        const APP_BUILD_VERSION = "v2.6";
         if (localStorage.getItem('app_build_ver') !== APP_BUILD_VERSION) {
             localStorage.setItem('app_build_ver', APP_BUILD_VERSION);
             if ('serviceWorker' in navigator) {
@@ -514,9 +514,13 @@
                 <span class="font-mono" style="font-size: 0.75rem; color: var(--primary);">05</span>
                 <h2 style="font-size: 1.125rem; font-weight: 600; margin: 0;">Nullstill appen</h2>
             </header>
-            <button type="button" class="btn btn-loss" onclick="nullstillAlt()" style="font-size: 1rem;">🔄 Nullstill alle data og innstillinger</button>
+            <button type="button" class="btn btn-loss" onclick="nullstillAlt()" style="font-size: 1rem;">🔄 Nullstill alle data og vakter</button>
         </section>
     </div>
+
+    <footer style="margin-top: 3rem; border-top: 1px solid var(--line); padding-top: 1.25rem; text-align: center; font-size: 0.75rem; color: var(--muted);">
+        <p style="margin: 0;">Sigurd Seland AS • Smie & Mekanisk Verksted • <strong style="color: var(--primary);">Versjon 2.6</strong></p>
+    </footer>
 </div>
 
 <div class="mobile-bar" id="mobile-bar-lonn">
