@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AI Verkstedsassistent - Sigurd Seland AS</title>
+    <title>Sigrid AI Assistent - Sigurd Seland AS</title>
 
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
 
     <script>
-        const APP_BUILD_VER = "v3.2";
+        const APP_BUILD_VER = "v4.1";
         if (localStorage.getItem('app_build_v') !== APP_BUILD_VER) {
             localStorage.setItem('app_build_v', APP_BUILD_VER);
             if ('serviceWorker' in navigator) {
@@ -31,37 +31,39 @@
     <meta name="theme-color" content="#0284c7">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="AI Assistent">
+    <meta name="apple-mobile-web-app-title" content="Sigrid AI">
     <link rel="apple-touch-icon" href="https://sigurd-seland.no/uploads/lge5O4Vz/354x0_458x0/35f30681-5749-426a-bc82-3ec4dc053599.png">
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #0284c7;
             --primary-deep: #0369a1;
             --primary-soft: #e0f2fe;
-            --brass: #b45309;
-            --brass-soft: #fef3c7;
+            --purple: #7c3aed;
+            --purple-deep: #6d28d9;
+            --purple-soft: #f3e8ff;
             --card: #ffffff;
             --bg: #f8fafc;
-            --ink: #1e293b;
+            --ink: #0f172a;
             --muted: #64748b;
             --line: #e2e8f0;
-            --shadow: 0 4px 15px -3px rgba(0, 0, 0, 0.05);
+            --shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.05);
         }
 
         body.dark-mode {
             --primary: #38bdf8;
             --primary-deep: #0284c7;
-            --primary-soft: rgba(56, 189, 248, 0.15);
-            --brass: #d97706;
-            --brass-soft: rgba(217, 119, 6, 0.15);
+            --primary-soft: rgba(56, 189, 248, 0.12);
+            --purple: #a78bfa;
+            --purple-deep: #8b5cf6;
+            --purple-soft: rgba(167, 139, 250, 0.12);
             --card: #1e293b;
             --bg: #0f172a;
             --ink: #f8fafc;
             --muted: #94a3b8;
             --line: #334155;
-            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+            --shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.35);
         }
 
         * { box-sizing: border-box; }
@@ -101,7 +103,7 @@
 
         .chat-container {
             background: var(--card);
-            border-radius: 1rem;
+            border-radius: 1.25rem;
             border: 1px solid var(--line);
             box-shadow: var(--shadow);
             flex: 1;
@@ -122,16 +124,16 @@
         }
 
         .msg-bubble {
-            max-width: 85%;
-            padding: 0.875rem 1.125rem;
-            border-radius: 1rem;
+            max-width: 88%;
+            padding: 0.875rem 1.25rem;
+            border-radius: 1.125rem;
             font-size: 0.9375rem;
-            line-height: 1.5;
+            line-height: 1.55;
             word-wrap: break-word;
         }
 
         .msg-ai {
-            background: var(--primary-soft);
+            background: var(--purple-soft);
             color: var(--ink);
             border-bottom-left-radius: 0.25rem;
             align-self: flex-start;
@@ -139,10 +141,11 @@
         }
 
         .msg-user {
-            background: var(--primary);
+            background: var(--purple-deep);
             color: white;
             border-bottom-right-radius: 0.25rem;
             align-self: flex-end;
+            font-weight: 500;
         }
 
         .quick-prompts {
@@ -160,15 +163,15 @@
             border-radius: 9999px;
             padding: 0.375rem 0.875rem;
             font-size: 0.8125rem;
-            font-weight: 500;
+            font-weight: 600;
             cursor: pointer;
             white-space: nowrap;
             color: var(--muted);
             transition: all 0.2s ease;
         }
         .prompt-chip:hover {
-            border-color: var(--primary);
-            color: var(--primary);
+            border-color: var(--purple);
+            color: var(--purple);
         }
 
         .chat-input-bar {
@@ -180,9 +183,9 @@
         }
 
         .field-class {
-            height: 2.75rem;
+            height: 2.875rem;
             flex: 1;
-            border-radius: 0.5rem;
+            border-radius: 0.625rem;
             border: 1px solid var(--line);
             background-color: var(--bg);
             padding: 0 0.875rem;
@@ -196,15 +199,15 @@
             align-items: center;
             justify-content: center;
             gap: 0.5rem;
-            border-radius: 0.5rem;
+            border-radius: 0.625rem;
             font-size: 0.875rem;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
             border: none;
             text-decoration: none;
         }
-        .btn-primary { background: var(--primary); color: white; height: 2.75rem; padding: 0 1.25rem; }
-        .btn-outline { border: 1px solid var(--line); background: var(--card); color: var(--ink); height: 2.75rem; padding: 0 1rem; }
+        .btn-purple { background: var(--purple-deep); color: white; height: 2.875rem; padding: 0 1.25rem; }
+        .btn-outline { border: 1px solid var(--line); background: var(--card); color: var(--ink); height: 2.875rem; padding: 0 1rem; }
     </style>
 </head>
 <body>
@@ -212,14 +215,14 @@
 <div class="main-layout">
     <header>
         <div>
-            <p style="font-size: 0.75rem; letter-spacing: 0.18em; color: var(--primary); text-transform: uppercase; margin: 0 0 4px 0; font-weight: 700;">Sigurd Seland AS · Etablert 1902</p>
-            <h1 style="font-size: 1.75rem; font-weight: 700; margin: 0;" id="txt-title">🤖 AI Verkstedsassistent</h1>
-            <p style="font-size: 0.8125rem; color: var(--muted); margin: 0.125rem 0 0 0;" id="txt-sub">Spør AI om maskinering, G-koder, gjenger, skjæredata og lønn</p>
+            <p style="font-size: 0.75rem; letter-spacing: 0.18em; color: var(--purple); text-transform: uppercase; margin: 0 0 4px 0; font-weight: 800;">Sigurd Seland AS · Etablert 1902</p>
+            <h1 style="font-size: 1.75rem; font-weight: 800; margin: 0;" id="txt-title">🤖 Sigrid — AI Verkstedsassistent</h1>
+            <p style="font-size: 0.8125rem; color: var(--muted); margin: 0.125rem 0 0 0;" id="txt-sub">Full tilgang til alt på nettstedet: Maskinering, Gibbs, G-kder, M/BSP-gjenger, ISO-toleranser og lønn</p>
         </div>
         <div style="display: flex; align-items: center; gap: 0.5rem;">
-            <button type="button" class="btn btn-outline" style="height: 2.75rem; padding: 0 0.75rem; font-size: 0.875rem;" onclick="toggleLanguage()" id="lang-toggle-btn">🇳🇴 NO</button>
-            <a href="index.html" class="btn btn-outline" style="height: 2.75rem; padding: 0 0.875rem; font-size: 0.875rem;" id="txt-btn-home">🏠 Hovedmeny</a>
-            <button type="button" class="btn btn-outline" style="height: 2.75rem; width: 2.75rem; padding: 0; border-radius: 50%; font-size: 1.1rem;" onclick="toggleTheme()" id="theme-toggle-btn">🌙</button>
+            <button type="button" class="btn btn-outline" style="height: 2.875rem; padding: 0 0.75rem; font-size: 0.875rem;" onclick="toggleLanguage()" id="lang-toggle-btn">🇳🇴 NO</button>
+            <a href="index.html" class="btn btn-outline" style="height: 2.875rem; padding: 0 0.875rem; font-size: 0.875rem;" id="txt-btn-home">🏠 Hovedmeny</a>
+            <button type="button" class="btn btn-outline" style="height: 2.875rem; width: 2.875rem; padding: 0; border-radius: 50%; font-size: 1.15rem;" onclick="toggleTheme()" id="theme-toggle-btn">🌙</button>
         </div>
     </header>
 
@@ -227,24 +230,24 @@
         <!-- CHAT MELDINGER -->
         <div class="chat-messages" id="chat-box">
             <div class="msg-bubble msg-ai" id="txt-welcome-msg">
-                👋 <strong>Hei! Jeg er AI Verkstedsassistenten for Sigurd Seland AS.</strong><br>
-                Jeg kan hjelpe deg med skjæredata ($V_c$, $f_z$, RPM), gjengeboringer, G-koder, verktøyvalg, feilsøking ved dreiing/fresing, eller spørsmål om vakter og timebank! Hva lurer du på i dag?
+                👋 <strong>Hei! Jeg er Sigrid, din AI Verkstedsassistent for Sigurd Seland AS.</strong><br>
+                Jeg har full kunnskap om alt på nettstedet vårt! Spør meg om gjengefresing/sirkulær mating i Gibbs, M- og BSP-rørgjenger, ISO-toleranser (6H/6g), skjæredata (Vc/fz), CNC G-kder, eller hvordan lønn, vakter og timebanken regnes ut. Hva vil du vite?
             </div>
         </div>
 
         <!-- HURTIGMELDINGER -->
         <div class="quick-prompts">
-            <span class="prompt-chip" onclick="sendQuickPrompt('Hva er anbefalt Vc for syrefast stål 316L?')" id="chip1">💡 Skjæredata Syrefast</span>
-            <span class="prompt-chip" onclick="sendQuickPrompt('Hvilket bor skal jeg bruke til M12 og M16 gjenger?')" id="chip2">🔩 Bor til M12/M16</span>
-            <span class="prompt-chip" onclick="sendQuickPrompt('Hva er de viktigste CNC G-kodene for fresing?')" id="chip3">⚙️ CNC G-koder</span>
-            <span class="prompt-chip" onclick="sendQuickPrompt('Hvordan regnes 50% og 100% overtid i timebanken?')" id="chip4">💰 Timebank & Overtid</span>
+            <span class="prompt-chip" onclick="sendQuickPrompt('Hvilken kjernebor-størrelse skal brukes til BSP 1/2 tomme rørgjenge?')" id="chip1">🔩 BSP 1/2" Kjernebor</span>
+            <span class="prompt-chip" onclick="sendQuickPrompt('Hva er toleransegrensene for M10 6H og 6g gjenger?')" id="chip2">📐 M10 6H/6g Toleranser</span>
+            <span class="prompt-chip" onclick="sendQuickPrompt('Hvordan regnes sirkulær mating ut for Gibbs?')" id="chip3">🌀 Gibbs Sirkulær Mating</span>
+            <span class="prompt-chip" onclick="sendQuickPrompt('Hvordan fungerer avspasering og timebank på lønnsslippen?')" id="chip4">💰 Timebank & Lønn</span>
         </div>
 
         <!-- CHAT INPUT -->
         <form class="chat-input-bar" onsubmit="handleChatSubmit(event)">
-            <label for="user-input" class="sr-only" style="display:none;">Meldingsfelt</label>
-            <input type="text" id="user-input" class="field-class" placeholder="Skriv spørsmål om maskinering, gjenger, G-koder eller lønn..." autocomplete="off">
-            <button type="submit" class="btn btn-primary" id="btn-send">Send 🚀</button>
+            <label for="user-input" style="display:none;">Spørsmål</label>
+            <input type="text" id="user-input" class="field-class" placeholder="Spør Sigrid om maskinering, gjenger, Gibbs, G-koder eller lønn..." autocomplete="off">
+            <button type="submit" class="btn btn-purple" id="btn-send">Spør Sigrid 🚀</button>
         </form>
     </div>
 </div>
@@ -252,28 +255,28 @@
 <script>
     const i18n = {
         no: {
-            title: "🤖 AI Verkstedsassistent",
-            sub: "Spør AI om maskinering, G-koder, gjenger, skjæredata og lønn",
+            title: "🤖 Sigrid — AI Verkstedsassistent",
+            sub: "Full tilgang til alt på nettstedet: Maskinering, Gibbs, G-koder, M/BSP-gjenger, ISO-toleranser og lønn",
             btnHome: "🏠 Hovedmeny",
-            welcomeMsg: "👋 <strong>Hei! Jeg er AI Verkstedsassistenten for Sigurd Seland AS.</strong><br>Jeg kan hjelpe deg med skjæredata ($V_c$, $f_z$, RPM), gjengeboringer, G-koder, verktøyvalg, feilsøking ved dreiing/fresing, eller spørsmål om vakter og timebank! Hva lurer du på i dag?",
-            chip1: "💡 Skjæredata Syrefast",
-            chip2: "🔩 Bor til M12/M16",
-            chip3: "⚙️ CNC G-koder",
-            chip4: "💰 Timebank & Overtid",
-            placeholder: "Skriv spørsmål om maskinering, gjenger, G-koder eller lønn...",
-            sendBtn: "Send 🚀"
+            welcomeMsg: "👋 <strong>Hei! Jeg er Sigrid, din AI Verkstedsassistent for Sigurd Seland AS.</strong><br>Jeg har full kunnskap om alt på nettstedet vårt! Spør meg om sirkulær mating i Gibbs, M- og BSP-rørgjenger, ISO-toleranser (6H/6g), skjæredata (Vc/fz), CNC G-koder, eller hvordan lønn, vakter og timebanken regnes ut. Hva vil du vite?",
+            chip1: "🔩 BSP 1/2\" Kjernebor",
+            chip2: "📐 M10 6H/6g Toleranser",
+            chip3: "🌀 Gibbs Sirkulær Mating",
+            chip4: "💰 Timebank & Lønn",
+            placeholder: "Spør Sigrid om maskinering, gjenger, Gibbs, G-koder eller lønn...",
+            sendBtn: "Spør Sigrid 🚀"
         },
         en: {
-            title: "🤖 AI Workshop Assistant",
-            sub: "Ask AI about machining, G-codes, tapping drills, cutting speeds, and salary",
+            title: "🤖 Sigrid — AI Workshop Assistant",
+            sub: "Full access to the entire portal: Machining, Gibbs, G-codes, M/BSP threads, ISO tolerances, and salary",
             btnHome: "🏠 Main Menu",
-            welcomeMsg: "👋 <strong>Hi! I am the AI Workshop Assistant for Sigurd Seland AS.</strong><br>I can help with cutting data ($V_c$, $f_z$, RPM), tap drills, G-codes, tool selection, machining troubleshooting, or questions about shifts and time bank! What can I help you with today?",
-            chip1: "💡 Cutting Speeds Stainless",
-            chip2: "🔩 Tap Drills M12/M16",
-            chip3: "⚙️ CNC G-codes",
-            chip4: "💰 Time Bank & Overtime",
-            placeholder: "Ask a question about machining, threads, G-codes, or salary...",
-            sendBtn: "Send 🚀"
+            welcomeMsg: "👋 <strong>Hi! I am Sigrid, your AI Workshop Assistant for Sigurd Seland AS.</strong><br>I have full knowledge of everything on our website! Ask me about circular feed in Gibbs, M and BSP pipe threads, ISO tolerances (6H/6g), cutting data (Vc/fz), CNC G-codes, or how payroll, shifts, and the time bank are calculated. What would you like to know?",
+            chip1: "🔩 BSP 1/2\" Tap Drill",
+            chip2: "📐 M10 6H/6g Tolerances",
+            chip3: "🌀 Gibbs Circular Feed",
+            chip4: "💰 Time Bank & Salary",
+            placeholder: "Ask Sigrid about machining, threads, Gibbs, G-codes, or salary...",
+            sendBtn: "Ask Sigrid 🚀"
         }
     };
 
@@ -322,44 +325,70 @@
         document.getElementById('theme-toggle-btn').innerText = '🌙';
     }
 
-    function generateAiResponse(input) {
+    // SIGRID INTELLIGENT KUNNSKAPSBASIS (FULL KUNNSKAP OM HELE NETTSTEDET)
+    function generateSigridResponse(input) {
         const q = input.toLowerCase();
         const isEn = (localStorage.getItem('seland_lang') === 'en');
 
-        if (q.includes('vc') || q.includes('skjærehastighet') || q.includes('syrefast') || q.includes('316') || q.includes('duplex') || q.includes('s355') || q.includes('cutting speed') || q.includes('stainless')) {
+        // 1. BSP / RØRGJENGER & KJERNEBOR
+        if (q.includes('bsp') || q.includes('rørgjeng') || q.includes('1/2') || q.includes('1/4') || q.includes('3/8') || q.includes('3/4') || q.includes('r-gjeng') || q.includes('pipe thread')) {
             if (isEn) {
-                return `🛠️ <strong>Recommended Cutting Speeds (Vc):</strong><br>
-                • <strong>Structural Steel (S355/St52):</strong> Vc = 180–240 m/min (Roughing) / 220–280 m/min (Finishing)<br>
-                • <strong>Alloy Steel (C45/42CrMo4):</strong> Vc = 140–180 m/min<br>
-                • <strong>Stainless Steel (316L/A4):</strong> Vc = 90–120 m/min (Use flood coolant & steady feed!)<br>
-                • <strong>Duplex (2205):</strong> Vc = 70–95 m/min<br>
-                • <strong>Aluminum (6082-T6):</strong> Vc = 450–700 m/min<br><br>
-                💡 <em>Spindle Speed Formula:</em> <code>RPM = (Vc × 1000) / (π × Diameter)</code>`;
+                return `🔩 <strong>Sigrid's BSP & Pipe Thread Table:</strong><br>
+                • <strong>BSP / G 1/8" (28 tpi):</strong> Tap drill <strong>8.8 mm</strong> (Pitch 0.91 mm)<br>
+                • <strong>BSP / G 1/4" (19 tpi):</strong> Tap drill <strong>11.8 mm</strong> (Pitch 1.34 mm)<br>
+                • <strong>BSP / G 3/8" (19 tpi):</strong> Tap drill <strong>15.25 mm</strong> (Pitch 1.34 mm)<br>
+                • <strong>BSP / G 1/2" (14 tpi):</strong> Tap drill <strong>19.0 mm</strong> (Pitch 1.81 mm)<br>
+                • <strong>BSP / G 3/4" (14 tpi):</strong> Tap drill <strong>24.5 mm</strong> (Pitch 1.81 mm)<br>
+                • <strong>BSP / G 1" (11 tpi):</strong> Tap drill <strong>30.75 mm</strong> (Pitch 2.31 mm)<br><br>
+                • <strong>Tapered BSPT (R 1/2"):</strong> Tap drill <strong>18.3 mm</strong>.`;
             }
-            return `🛠️ <strong>Anbefalte skjærehastigheter (Vc):</strong><br>
-            • <strong>Konstruksjonsstål (S355/St52):</strong> Vc = 180–240 m/min (Skrubb) / 220–280 m/min (Slett)<br>
-            • <strong>Seigherdingsstål (C45/42CrMo4):</strong> Vc = 140–180 m/min<br>
-            • <strong>Syrefast (316L/A4):</strong> Vc = 90–120 m/min (Bruk rikelig med kjølevæske og jevn mating!)<br>
-            • <strong>Duplex (2205):</strong> Vc = 70–95 m/min<br>
-            • <strong>Aluminium (6082-T6):</strong> Vc = 450–700 m/min<br><br>
-            💡 <em>Formel for Spindelhastighet:</em> <code>RPM = (Vc × 1000) / (π × Diameter)</code>`;
+            return `🔩 <strong>Sigrids BSP Rørgjenge-tabell:</strong><br>
+            • <strong>BSP / G 1/8" (28 tpi):</strong> Kjernebor <strong>8.8 mm</strong> (Stigning 0.91 mm)<br>
+            • <strong>BSP / G 1/4" (19 tpi):</strong> Kjernebor <strong>11.8 mm</strong> (Stigning 1.34 mm)<br>
+            • <strong>BSP / G 3/8" (19 tpi):</strong> Kjernebor <strong>15.25 mm</strong> (Stigning 1.34 mm)<br>
+            • <strong>BSP / G 1/2" (14 tpi):</strong> Kjernebor <strong>19.0 mm</strong> (Stigning 1.81 mm)<br>
+            • <strong>BSP / G 3/4" (14 tpi):</strong> Kjernebor <strong>24.5 mm</strong> (Stigning 1.81 mm)<br>
+            • <strong>BSP / G 1" (11 tpi):</strong> Kjernebor <strong>30.75 mm</strong> (Stigning 2.31 mm)<br><br>
+            • <strong>Konisk BSPT (R 1/2"):</strong> Kjernebor <strong>18.3 mm</strong>.`;
         }
 
-        if (q.includes('bor') || q.includes('gjeng') || q.includes('kjernebor') || q.includes('m12') || q.includes('m16') || q.includes('m10') || q.includes('m8') || q.includes('tap') || q.includes('drill')) {
+        // 2. GJENGE-TOLERANSER (6H / 6g)
+        if (q.includes('toleranse') || q.includes('6h') || q.includes('6g') || q.includes('flange') || q.includes('delings') || q.includes('pitch dia')) {
             if (isEn) {
-                return `🔩 <strong>Standard Tap Drill Sizes for M-Threads:</strong><br>
-                • <strong>M3:</strong> 2.5 mm drill (pitch 0.5 mm)<br>
-                • <strong>M4:</strong> 3.3 mm drill (pitch 0.7 mm)<br>
-                • <strong>M5:</strong> 4.2 mm drill (pitch 0.8 mm)<br>
-                • <strong>M6:</strong> 5.0 mm drill (pitch 1.0 mm)<br>
-                • <strong>M8:</strong> 6.8 mm drill (pitch 1.25 mm)<br>
-                • <strong>M10:</strong> 8.5 mm drill (pitch 1.5 mm)<br>
-                • <strong>M12:</strong> 10.2 mm drill (pitch 1.75 mm)<br>
-                • <strong>M16:</strong> 14.0 mm drill (pitch 2.0 mm)<br>
-                • <strong>M20:</strong> 17.5 mm drill (pitch 2.5 mm)<br><br>
-                💡 <em>Rule of thumb:</em> <code>Tap Drill = Nominal Diameter − Pitch</code> (e.g., M10 − 1.5 = 8.5 mm).`;
+                return `📐 <strong>Sigrid's Thread Tolerance Limits (ISO 6H / 6g):</strong><br>
+                • <strong>M10 6H (Nut / Internal):</strong> Major 10.000–10.420 mm | Pitch 9.026–9.206 mm | Minor 8.376–8.676 mm<br>
+                • <strong>M10 6g (Screw / External):</strong> Major 9.732–9.968 mm | Pitch 8.862–8.994 mm | Minor 8.001–8.203 mm<br>
+                • <strong>M12 6H (Nut / Internal):</strong> Major 12.000–12.450 mm | Pitch 10.863–11.063 mm | Minor 10.106–10.441 mm<br>
+                • <strong>M16 6H (Nut / Internal):</strong> Major 16.000–16.500 mm | Pitch 14.701–14.913 mm | Minor 13.835–14.210 mm<br><br>
+                💡 <em>Note:</em> You can check exact tolerances for M3–M24 in our <strong>Workshop Tables (verksted.html)</strong>!`;
             }
-            return `🔩 <strong>Standard Kjernebor-størrelser for M-Gjenger:</strong><br>
+            return `📐 <strong>Sigrids Gjenge-Toleransegrenser (ISO 6H / 6g):</strong><br>
+            • <strong>M10 6H (Mutter / Innvendig):</strong> Store 10.000–10.420 mm | Flangedia 9.026–9.206 mm | Lille 8.376–8.676 mm<br>
+            • <strong>M10 6g (Skrue / Utvendig):</strong> Store 9.732–9.968 mm | Flangedia 8.862–8.994 mm | Lille 8.001–8.203 mm<br>
+            • <strong>M12 6H (Mutter / Innvendig):</strong> Store 12.000–12.450 mm | Flangedia 10.863–11.063 mm | Lille 10.106–10.441 mm<br>
+            • <strong>M16 6H (Mutter / Innvendig):</strong> Store 16.000–16.500 mm | Flangedia 14.701–14.913 mm | Lille 13.835–14.210 mm<br><br>
+            💡 <em>Tips:</em> Slå opp alle mål for M3–M24 under <strong>Verkstedtabeller (verksted.html)</strong>!`;
+        }
+
+        // 3. GIBBS / SIRKULÆR MATING
+        if (q.includes('gibbs') || q.includes('sirkulær') || q.includes('cirkulær') || q.includes('aksling') || q.includes('mating')) {
+            if (isEn) {
+                return `🌀 <strong>Sigrid's Circular Feed Calculation for Gibbs CAM:</strong><br>
+                When milling around a cylinder/shaft or inside a hole, line feed must be adjusted to center-line feed for Gibbs:<br><br>
+                • <strong>Spindle RPM ($n$):</strong> <code>(Vc × 1000) / (π × D_fres)</code><br>
+                • <strong>Gibbs Circular Feed ($V_f$):</strong> <code>((D_hull - D_fres) / D_hull) × (RPM × z × f_z)</code><br><br>
+                💡 <em>Example:</em> Vc = 350, Cutter Ø84, Hole Ø410, 6 teeth, fz 0.18 ➔ <strong>1327 RPM & 1140 mm/min</strong> in Gibbs!`;
+            }
+            return `🌀 <strong>Sigrids Sirkulær Mating-beregning for Gibbs CAM:</strong><br>
+            Når du freser rundt en aksling eller innvendig i et hull, må lineær bordmating regnes om til senterlinje-mating i Gibbs:<br><br>
+            • <strong>Spindelhastighet ($n$):</strong> <code>(Vc × 1000) / (π × D_fres)</code><br>
+            • <strong>Mating i Gibbs ($V_f$):</strong> <code>((D_hull - D_fres) / D_hull) × (RPM × z × f_z)</code><br><br>
+            💡 <em>Eksempel:</em> Vc = 350, Fres Ø84, Hull Ø410, 6 tenner, fz 0.18 ➔ <strong>1327 RPM og 1140 mm/min</strong> i Gibbs!`;
+        }
+
+        // 4. METRISK KJERNEBOR
+        if (q.includes('bor') || q.includes('kjernebor') || q.includes('m12') || q.includes('m16') || q.includes('m10') || q.includes('m8') || q.includes('drill')) {
+            return `🔩 <strong>Sigrids Metriske Kjernebor-tabell:</strong><br>
             • <strong>M3:</strong> 2.5 mm bor (stigning 0.5 mm)<br>
             • <strong>M4:</strong> 3.3 mm bor (stigning 0.7 mm)<br>
             • <strong>M5:</strong> 4.2 mm bor (stigning 0.8 mm)<br>
@@ -368,27 +397,38 @@
             • <strong>M10:</strong> 8.5 mm bor (stigning 1.5 mm)<br>
             • <strong>M12:</strong> 10.2 mm bor (stigning 1.75 mm)<br>
             • <strong>M16:</strong> 14.0 mm bor (stigning 2.0 mm)<br>
-            • <strong>M20:</strong> 17.5 mm bor (stigning 2.5 mm)<br><br>
-            💡 <em>Huskeregel:</em> <code>Kjernebor = Nominell diameter − Stigning</code> (f.eks. M10 − 1.5 = 8.5 mm).`;
+            • <strong>M20:</strong> 17.5 mm bor (stigning 2.5 mm)<br>
+            • <strong>M24:</strong> 21.0 mm bor (stigning 3.0 mm)`;
         }
 
-        if (q.includes('g-kode') || q.includes('g-koder') || q.includes('cnc') || q.includes('m-kode') || q.includes('g81') || q.includes('g83') || q.includes('g-code')) {
-            return `⚙️ <strong>Essential CNC G-codes & M-codes:</strong><br>
-            • <strong>G00:</strong> Rapid positioning<br>
-            • <strong>G01:</strong> Linear feed motion<br>
-            • <strong>G02 / G03:</strong> Circular interpolation CW / CCW<br>
-            • <strong>G81:</strong> Standard drilling cycle<br>
-            • <strong>G83:</strong> Peck drilling cycle<br>
-            • <strong>G84:</strong> Tapping cycle<br>
-            • <strong>M03 / M04:</strong> Spindle ON CW / CCW<br>
-            • <strong>M08 / M09:</strong> Coolant ON / OFF<br>
-            • <strong>M30:</strong> Program end and reset`;
+        // 5. G-KODER
+        if (q.includes('g-kode') || q.includes('g-koder') || q.includes('cnc') || q.includes('g81') || q.includes('g83') || q.includes('g84') || q.includes('g-code')) {
+            return `⚙️ <strong>Sigrids Oversikt over CNC G-koder:</strong><br>
+            • <strong>G00:</strong> Ilgang (Ilgangsbevegelse)<br>
+            • <strong>G01:</strong> Lineær arbeidsmating<br>
+            • <strong>G02 / G03:</strong> Sirkulær interpolasjon med/mot klokken<br>
+            • <strong>G81:</strong> Standard boresyklus uten sponbryting<br>
+            • <strong>G83:</strong> Sponbrytende boredybdesyklus (Peck drilling)<br>
+            • <strong>G84:</strong> Gjengeskjæringssyklus (Tapping)<br>
+            • <strong>M03 / M04:</strong> Spindel PÅ med/mot klokken<br>
+            • <strong>M08 / M09:</strong> Kjølevæske PÅ / AV<br>
+            • <strong>M30:</strong> Programslutt`;
+        }
+
+        // 6. LØNN & TIMEBANK
+        if (q.includes('timebank') || q.includes('overtid') || q.includes('50') || q.includes('100') || q.includes('skatt') || q.includes('lønn') || q.includes('fastlønn') || q.includes('salary')) {
+            return `💰 <strong>Sigrids Lønns- & Timebank-guide for Sigurd Seland AS:</strong><br>
+            • <strong>Fastlønn:</strong> Arbeidsdager i måneden (man–fre) × 7.5t × timelønn.<br>
+            • <strong>50 % overtid:</strong> Timelønn × 1.5 utbetales.<br>
+            • <strong>100 % overtid:</strong> Timelønn × 2.0 utbetales (f.eks. helg).<br>
+            • <strong>Timebank (avspasering):</strong> Når du velger timebank på en overtidstime, blir den 1 ordinære timen satt inn i timebanken til avspasering, mens 50% eller 100% tillegget utbetales direkte på lønnsslippen!<br>
+            • <strong>Fagforening & Skatt:</strong> Skatteetatens tabelltrekk (Tabell 7101) beregnes av bruttoinntekt minus fradragsberettiget fagforeningskontingent (f.eks. 1.5%).`;
         }
 
         if (isEn) {
-            return `🤖 <strong>Thank you for your question!</strong><br>I am trained on machining, workshop data, and salary rules for Sigurd Seland AS.<br><br>Try asking me about:<br>• <em>"Cutting speed for stainless steel"</em><br>• <em>"Drill size for M12 thread"</em><br>• <em>"Essential CNC G-codes"</em><br>• <em>"How does overtime pay work?"</em>`;
+            return `🤖 <strong>Hi! I am Sigrid.</strong><br>I have full access to all calculators and tables on the Sigurd Seland AS portal!<br><br>Try asking me about:<br>• <em>"BSP 1/2 tap drill size"</em><br>• <em>"M10 6H and 6g thread tolerances"</em><br>• <em>"Gibbs circular feed formula"</em><br>• <em>"Cutting speed Vc for Stainless Steel 316L"</em><br>• <em>"How overtime and time bank work"</em>`;
         }
-        return `🤖 <strong>Takk for spørsmålet!</strong><br>Jeg er programmert for maskinering, verkstedtabeller og lønn for Sigurd Seland AS.<br><br>Prøv å spørre meg om:<br>• <em>"Skjærehastighet for syrefast"</em><br>• <em>"Bor til M12 gjenge"</em><br>• <em>"Viktige G-koder for CNC"</em><br>• <em>"Hvordan fungerer timebanken?"</em>`;
+        return `🤖 <strong>Hei! Jeg er Sigrid.</strong><br>Jeg har full tilgang til alle kalkulatorer og tabeller på Sigurd Seland AS-portalen!<br><br>Spør meg gjerne om:<br>• <em>"Kjernebor for BSP 1/2 tomme"</em><br>• <em>"Toleranser for M10 6H og 6g"</em><br>• <em>"Formel for sirkulær mating i Gibbs"</em><br>• <em>"Skjærehastighet Vc for Syrefast 316L"</em><br>• <em>"Hvordan overtid og timebank fungerer"</em>`;
     }
 
     function appendMessage(text, isUser) {
@@ -410,9 +450,9 @@
         input.value = '';
 
         setTimeout(() => {
-            const reply = generateAiResponse(text);
+            const reply = generateSigridResponse(text);
             appendMessage(reply, false);
-        }, 400);
+        }, 350);
     }
 
     function sendQuickPrompt(promptText) {

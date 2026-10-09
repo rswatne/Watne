@@ -10,7 +10,7 @@
     <meta http-equiv="Expires" content="0">
 
     <script>
-        const APP_BUILD_VER = "v4.0";
+        const APP_BUILD_VER = "v4.1";
         if (localStorage.getItem('app_build_v') !== APP_BUILD_VER) {
             localStorage.setItem('app_build_v', APP_BUILD_VER);
             if ('serviceWorker' in navigator) {
@@ -29,12 +29,13 @@
 
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0284c7">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Verkstedsportal">
+    <meta name="apple-mobile-web-app-title" content="Verksteds-App">
     <link rel="apple-touch-icon" href="https://sigurd-seland.no/uploads/lge5O4Vz/354x0_458x0/35f30681-5749-426a-bc82-3ec4dc053599.png">
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #0284c7;
@@ -141,7 +142,7 @@
             content: '';
             position: absolute;
             top: 0; left: 0; right: 0; height: 4px;
-            background: linear-gradient(90deg, var(--primary) 0%, var(--brass) 50%, var(--emerald) 100%);
+            background: linear-gradient(90deg, var(--primary) 0%, var(--brass) 33%, var(--emerald) 66%, var(--purple) 100%);
         }
 
         .portal-grid {
@@ -210,15 +211,8 @@
             padding: 0 1.25rem;
             transition: all 0.2s ease;
         }
-        .btn-outline {
-            border: 1px solid var(--line);
-            background: var(--card);
-            color: var(--ink);
-        }
-        .btn-outline:hover {
-            border-color: var(--primary);
-            color: var(--primary);
-        }
+        .btn-soft { background: var(--primary-soft); color: var(--primary-deep); }
+        .btn-outline { border: 1px solid var(--line); background: var(--card); color: var(--ink); }
 
         .app-footer {
             margin-top: 3.5rem;
@@ -321,25 +315,25 @@
             <button type="button" class="btn" style="background: var(--emerald-soft); color: var(--emerald); font-weight: 700; width: 100%;" id="txt-c3-btn">Åpne Verkstedtabeller ➔</button>
         </a>
 
-        <!-- KORT 4: AI VERKSTEDSASSISTENT -->
+        <!-- KORT 4: SIGRID AI VERKSTEDSASSISTENT -->
         <a href="chat.html" class="portal-card" style="border-top: 4px solid var(--purple);">
             <div>
                 <div class="portal-header">
                     <div class="portal-icon" style="background: var(--purple-soft);">🤖</div>
                     <div>
-                        <h3 style="margin: 0; font-size: 1.25rem; font-weight: 700; color: var(--purple);" id="txt-c4-title">AI Verkstedsassistent</h3>
-                        <span style="font-size: 0.75rem; color: var(--muted); font-weight: 600;">AI Chatbot • CNC • Spørsmål</span>
+                        <h3 style="margin: 0; font-size: 1.25rem; font-weight: 700; color: var(--purple);" id="txt-c4-title">Sigrid — AI Assistent</h3>
+                        <span style="font-size: 0.75rem; color: var(--muted); font-weight: 600;">AI Bot • Kunnskapsbase • Svar</span>
                     </div>
                 </div>
-                <p style="margin: 0 0 1.5rem 0; font-size: 0.875rem; color: var(--muted); line-height: 1.5;" id="txt-c4-desc">Spør AI om skjæredata, G-koder, gjengeboring, feilsøking ved fresing eller spørsmål om overtid og lønn.</p>
+                <p style="margin: 0 0 1.5rem 0; font-size: 0.875rem; color: var(--muted); line-height: 1.5;" id="txt-c4-desc">Spør Sigrid om skjæredata, M/BSP-gjenger, ISO-toleranser, Gibbs-mating, G-koder eller overtid og lønn.</p>
             </div>
-            <button type="button" class="btn" style="background: var(--purple-soft); color: var(--purple); font-weight: 700; width: 100%;" id="txt-c4-btn">Åpne AI Assistent ➔</button>
+            <button type="button" class="btn" style="background: var(--purple-soft); color: var(--purple); font-weight: 700; width: 100%;" id="txt-c4-btn">Spør Sigrid ➔</button>
         </a>
     </div>
 
     <footer class="app-footer">
         <p style="margin: 0; font-weight: 500;">
-            Sigurd Seland AS • Smie & Mekanisk Verksted • <span class="version-badge">Versjon 4.0 Pro</span>
+            Sigurd Seland AS • Smie & Mekanisk Verksted • <span class="version-badge">Versjon 4.1 Pro</span>
         </p>
     </footer>
 </div>
@@ -360,9 +354,9 @@
             c3_title: "Verkstedtabeller & Bor",
             c3_desc: "Materialvelger med anbefalt Vc/fz, kjernebor for M/BSP-gjenger, ISO gjengetoleranser (6H/6g) og bor-spisstillegg.",
             c3_btn: "Åpne Verkstedtabeller ➔",
-            c4_title: "AI Verkstedsassistent",
-            c4_desc: "Spør AI om skjæredata, G-koder, gjengeboring, feilsøking ved fresing eller spørsmål om overtid og lønn.",
-            c4_btn: "Åpne AI Assistent ➔"
+            c4_title: "Sigrid — AI Assistent",
+            c4_desc: "Spør Sigrid om skjæredata, M/BSP-gjenger, ISO-toleranser, Gibbs-mating, G-koder eller overtid og lønn.",
+            c4_btn: "Spør Sigrid ➔"
         },
         en: {
             title: "Workshop Portal",
@@ -378,9 +372,9 @@
             c3_title: "Workshop Tables & Drills",
             c3_desc: "Material selector with Vc/fz recommendations, tap drills for M/BSP, ISO thread tolerances, and drill offsets.",
             c3_btn: "Open Workshop Tables ➔",
-            c4_title: "AI Workshop Assistant",
-            c4_desc: "Ask AI about cutting speeds, G-codes, tapping drills, milling troubleshooting, or overtime and salary questions.",
-            c4_btn: "Open AI Assistant ➔"
+            c4_title: "Sigrid — AI Assistant",
+            c4_desc: "Ask Sigrid about cutting speeds, M/BSP threads, ISO tolerances, Gibbs feed, G-codes, or salary.",
+            c4_btn: "Ask Sigrid ➔"
         }
     };
 
