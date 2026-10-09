@@ -10,6 +10,25 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
 
+    <!-- AUTOMATISK TVUNGET CACHE-CLEARING KODE -->
+    <script>
+        const APP_BUILD_VERSION = "v2.5";
+        if (localStorage.getItem('app_build_ver') !== APP_BUILD_VERSION) {
+            localStorage.setItem('app_build_ver', APP_BUILD_VERSION);
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.getRegistrations().then(regs => {
+                    for (let reg of regs) reg.unregister();
+                });
+            }
+            if ('caches' in window) {
+                caches.keys().then(names => {
+                    for (let name of names) caches.delete(name);
+                });
+            }
+            window.location.reload(true);
+        }
+    </script>
+
     <!-- PWA MANIFEST OG METADATA -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0284c7">
@@ -21,7 +40,6 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* LYS MODUS (Sigurd Seland AS Brand Palette) */
         :root {
             --primary: #0284c7;
             --primary-deep: #0369a1;
@@ -200,17 +218,16 @@
         <div class="portal-icon" style="background: var(--brass-soft);">⚙️</div>
         <div style="flex: 1;">
             <h3 style="margin: 0 0 0.25rem 0; font-size: 1.25rem; font-weight: 700; color: var(--brass);">Maskineringskalkulator</h3>
-            <p style="margin: 0 0 0.75rem 0; font-size: 0.875rem; color: var(--muted);">Beregning av gjengefresing, Gibbs cirkulær mating, skjæredata (Vc/RPM/fz), gjengediametere og C-akse grader/min.</p>
+            <p style="margin: 0 0 0.75rem 0; font-size: 0.875rem; color: var(--muted);">Beregning av sirkulær mating (aksling), Gibbs mating, skjæredata (Vc/RPM/fz), gjengediametere og C-akse grader/min.</p>
             <span class="btn btn-soft" style="height: 2.25rem; font-size: 0.8125rem; background: var(--brass-soft); color: var(--brass);">Åpne Maskineringskalkulator ➔</span>
         </div>
     </a>
 </div>
 
 <script>
-    // Registrer Service Worker
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', function() {
-            navigator.serviceWorker.register('sw.js').then(function(reg) {
+            navigator.serviceWorker.register('sw.js?ver=' + APP_BUILD_VERSION).then(function(reg) {
                 reg.update();
             });
         });
@@ -225,7 +242,7 @@
                 splash.style.visibility = 'hidden';
                 setTimeout(function() { splash.style.display = 'none'; }, 500);
             }
-        }, 1500);
+        }, 1200);
     });
 
     function toggleTheme() {
