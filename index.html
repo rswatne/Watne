@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Verksted & Lønnskalkulator - Sigurd Seland AS</title>
+    <title>Verkstedsportal - Sigurd Seland AS</title>
 
     <!-- UNNGÅ CACHE PÅ GITHUB PAGES -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
@@ -288,35 +288,38 @@
             font-weight: 600;
         }
 
-        /* VANG- OG FANESYSTEM */
-        .module-switcher {
-            display: flex;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
+        /* HOVEDMENY KORT (PORTAL) */
+        .portal-card {
             background: var(--card);
-            padding: 0.5rem;
-            border-radius: 0.875rem;
-            border: 2px solid var(--primary);
-            box-shadow: var(--shadow);
-        }
-        .module-btn {
-            flex: 1;
-            padding: 0.75rem;
-            border: none;
-            border-radius: 0.5rem;
-            font-weight: 700;
-            font-size: 0.9375rem;
+            border-radius: 1rem;
+            border: 2px solid var(--line);
+            padding: 1.5rem;
+            margin-bottom: 1.25rem;
             cursor: pointer;
-            background: transparent;
-            color: var(--muted);
-            transition: all 0.2s ease;
+            box-shadow: var(--shadow);
+            transition: all 0.25s ease;
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
         }
-        .module-btn.active {
-            background: var(--primary);
-            color: var(--on-primary);
-            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+        .portal-card:hover, .portal-card:active {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 25px rgba(2, 132, 199, 0.15);
+        }
+        .portal-icon {
+            font-size: 2.5rem;
+            background: var(--primary-soft);
+            width: 4.5rem;
+            height: 4.5rem;
+            border-radius: 0.875rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
         }
 
+        /* FANENAVIGASJON */
         .tab-btn {
             background: transparent;
             color: var(--muted);
@@ -395,7 +398,7 @@
                 background: #ffffff !important;
                 color: #000000 !important;
             }
-            #splash-screen, .mobile-bar, .no-print, form, .btn, .field-class, select, input, .module-switcher, #tabellskatt-modal {
+            #splash-screen, .mobile-bar, .no-print, form, .btn, .field-class, select, input, #tabellskatt-modal {
                 display: none !important;
             }
             .tab-content, .module-view {
@@ -414,7 +417,7 @@
 </head>
 <body>
 
-<!-- INLINE BASE64 LOGO DEDIKERT FOR EMBEDDING -->
+<!-- OFFISIELL SELAND LOGO URL -->
 <script>
 const OFFICIAL_SELAND_LOGO = "https://sigurd-seland.no/uploads/lge5O4Vz/354x0_458x0/35f30681-5749-426a-bc82-3ec4dc053599.png";
 const DEFAULT_LOGO_BASE64 = "data:image/png;base64,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";
@@ -425,7 +428,7 @@ const DEFAULT_LOGO_BASE64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAw8AA
     <div class="splash-logo-box">
         <img id="splash-logo-img" src="https://sigurd-seland.no/uploads/lge5O4Vz/354x0_458x0/35f30681-5749-426a-bc82-3ec4dc053599.png" alt="Sigurd Seland AS">
     </div>
-    <h1 style="font-size: 22px; font-weight: 700; margin: 0 0 6px 0; color: #f8fafc; letter-spacing: -0.02em;">Verksteds-App</h1>
+    <h1 style="font-size: 22px; font-weight: 700; margin: 0 0 6px 0; color: #f8fafc; letter-spacing: -0.02em;">Verkstedsportal</h1>
     <p style="font-size: 13px; color: #94a3b8; margin: 0 0 20px 0; font-weight: 500;">Sigurd Seland AS • Smie & Mekanisk Verksted • Etablert 1902</p>
     <div class="spinner"></div>
 </div>
@@ -458,10 +461,13 @@ const DEFAULT_LOGO_BASE64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAw8AA
     <header>
         <div>
             <p class="font-mono" style="font-size: 0.75rem; letter-spacing: 0.18em; color: var(--primary); text-transform: uppercase; margin: 0 0 4px 0;">Sigurd Seland AS · Etablert 1902</p>
-            <h1 style="font-size: 1.75rem; font-weight: 600; margin: 0; letter-spacing: -0.02em;">Verksteds-App</h1>
+            <h1 style="font-size: 1.75rem; font-weight: 600; margin: 0; letter-spacing: -0.02em;" id="main-title">Verkstedsportal</h1>
             <p style="font-size: 0.8125rem; color: var(--muted); margin: 0.125rem 0 0 0;">Smie & Mekanisk Verksted • Lyngdal</p>
         </div>
         <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <!-- HOVEDMENY KNAPP DERSOM MAN ER INNE I EN MODUL -->
+            <button type="button" class="btn btn-outline no-print" id="btn-home-nav" style="display: none; height: 2.75rem; padding: 0 0.875rem; font-size: 0.875rem;" onclick="visHovedmeny()">🏠 Hovedmeny</button>
+
             <!-- TEMA TOGGLE -->
             <button type="button" class="btn btn-outline no-print" style="height: 2.75rem; width: 2.75rem; padding: 0; border-radius: 50%; font-size: 1.1rem;" onclick="toggleTheme()" id="theme-toggle-btn" title="Bytt tema">🌙</button>
 
@@ -480,14 +486,36 @@ const DEFAULT_LOGO_BASE64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAw8AA
         </div>
     </header>
 
-    <!-- VERKSTED / HOVEDMODUL-VELGER -->
-    <div class="module-switcher no-print">
-        <button type="button" class="module-btn active" onclick="switchModule('lonn')" id="btn-mod-lonn">💰 Lønn & Vakter</button>
-        <button type="button" class="module-btn" onclick="switchModule('maskinering')" id="btn-mod-maskinering">⚙️ Maskineringskalkulator</button>
+    <!-- ==================== HOVEDMENY / LANDINGS-SKJERM ==================== -->
+    <div id="modul-portal" class="module-view active">
+        <div style="margin-bottom: 1.5rem; text-align: center;">
+            <h2 style="font-size: 1.375rem; font-weight: 700; margin: 0 0 0.375rem 0; color: var(--ink);">Velkommen til Verkstedsportalen</h2>
+            <p style="font-size: 0.875rem; color: var(--muted); margin: 0;">Velg verktøyet du ønsker å åpne:</p>
+        </div>
+
+        <!-- KORT 1: LØNNSKALKULATOR -->
+        <div class="portal-card" onclick="velgModul('lonn')">
+            <div class="portal-icon">💰</div>
+            <div style="flex: 1;">
+                <h3 style="margin: 0 0 0.25rem 0; font-size: 1.25rem; font-weight: 700; color: var(--primary-deep);">Lønnskalkulator & Vakter</h3>
+                <p style="margin: 0 0 0.5rem 0; font-size: 0.875rem; color: var(--muted);">Beregning av fastlønn, tilleggsvakter, timebank (avspasering), skatteetaten tabelltrekk og lønnsslipp.</p>
+                <span class="btn btn-soft" style="height: 2.25rem; font-size: 0.8125rem; pointer-events: none;">Åpne Lønnskalkulator ➔</span>
+            </div>
+        </div>
+
+        <!-- KORT 2: MASKINERINSKALKURATOR -->
+        <div class="portal-card" onclick="velgModul('maskinering')">
+            <div class="portal-icon">⚙️</div>
+            <div style="flex: 1;">
+                <h3 style="margin: 0 0 0.25rem 0; font-size: 1.25rem; font-weight: 700; color: var(--brass);">Maskineringskalkulator</h3>
+                <p style="margin: 0 0 0.5rem 0; font-size: 0.875rem; color: var(--muted);">Beregning av gjengefresing, Gibbs cirkulær mating, skjæredata (Vc/RPM/fz), gjengediametere og C-akse grader/min.</p>
+                <span class="btn btn-soft" style="height: 2.25rem; font-size: 0.8125rem; background: var(--brass-soft); color: var(--brass); pointer-events: none;">Åpne Maskineringskalkulator ➔</span>
+            </div>
+        </div>
     </div>
 
     <!-- ==================== MODUL 1: LØNNSKALKULATOR ==================== -->
-    <div id="modul-lonn" class="module-view active">
+    <div id="modul-lonn" class="module-view">
         <!-- FANE-MENY FOR LØNN -->
         <div class="no-print" style="display: flex; gap: 0.375rem; margin-bottom: 1.25rem; background: var(--card); padding: 0.375rem; border-radius: 0.75rem; border: 1px solid var(--line); box-shadow: var(--shadow);">
             <button type="button" class="tab-btn active" onclick="switchTab('oversikt')" id="btn-tab-oversikt">📊 Oversikt</button>
@@ -918,7 +946,7 @@ const DEFAULT_LOGO_BASE64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAw8AA
 </div>
 
 <!-- STICKY MOBILE BOTTOM BAR FOR LØNN -->
-<div class="mobile-bar" id="mobile-bar-lonn">
+<div class="mobile-bar" id="mobile-bar-lonn" style="display: none;">
     <div style="display: flex; flex-direction: column;">
         <span style="font-size: 0.75rem; color: var(--muted);">Netto måned</span>
         <span id="vis-netto-mobil" class="font-mono" style="font-size: 1.125rem; font-weight: 600; color: var(--primary-deep);">0,00 kr</span>
@@ -927,11 +955,11 @@ const DEFAULT_LOGO_BASE64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAw8AA
 </div>
 
 <script>
-    // Registrer Service Worker for PWA (Multi-plattform support)
+    // Registrer Service Worker for PWA
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', function() {
             navigator.serviceWorker.register('sw.js').then(function(reg) {
-                console.log('[PWA] ServiceWorker registrert for multi-plattform:', reg.scope);
+                console.log('[PWA] ServiceWorker registrert:', reg.scope);
             }).catch(function(err) {
                 console.log('[PWA] ServiceWorker feilet:', err);
             });
@@ -954,17 +982,32 @@ const DEFAULT_LOGO_BASE64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAw8AA
     const maanedsNavn = ["Januar", "Februar", "Mars", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Desember"];
     const ukedager = ["Søn", "Man", "Tir", "Ons", "Tor", "Fre", "Lør"];
 
-    // HOVEDMODUL-BYTTE (Lønn vs Maskinering)
-    function switchModule(modName) {
+    function visHovedmeny() {
         document.querySelectorAll('.module-view').forEach(el => el.classList.remove('active'));
-        document.querySelectorAll('.module-btn').forEach(el => el.classList.remove('active'));
-
-        document.getElementById(`modul-${modName}`).classList.add('active');
-        document.getElementById(`btn-mod-${modName}`).classList.add('active');
+        document.getElementById('modul-portal').classList.add('active');
+        document.getElementById('btn-home-nav').style.display = 'none';
+        document.getElementById('main-title').innerText = "Verkstedsportal";
 
         const mobileBar = document.getElementById('mobile-bar-lonn');
-        if (mobileBar) {
-            mobileBar.style.display = (modName === 'lonn') ? 'flex' : 'none';
+        if (mobileBar) mobileBar.style.display = 'none';
+
+        localStorage.setItem('lonn_active_module', 'portal');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function velgModul(modName) {
+        document.querySelectorAll('.module-view').forEach(el => el.classList.remove('active'));
+        document.getElementById(`modul-${modName}`).classList.add('active');
+        document.getElementById('btn-home-nav').style.display = 'inline-flex';
+
+        if (modName === 'lonn') {
+            document.getElementById('main-title').innerText = "Lønnskalkulator";
+            const mobileBar = document.getElementById('mobile-bar-lonn');
+            if (mobileBar) mobileBar.style.display = 'flex';
+        } else if (modName === 'maskinering') {
+            document.getElementById('main-title').innerText = "Maskineringskalkulator";
+            const mobileBar = document.getElementById('mobile-bar-lonn');
+            if (mobileBar) mobileBar.style.display = 'none';
         }
 
         localStorage.setItem('lonn_active_module', modName);
@@ -979,10 +1022,7 @@ const DEFAULT_LOGO_BASE64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAw8AA
         const dFres = parseFloat(document.getElementById('gf-dfres').value) || 1;
         const dHull = parseFloat(document.getElementById('gf-dhull').value) || 1;
 
-        // RPM = Vc / 3.14159 / dFres * 1000
         const rpm = (vc * 1000) / (Math.PI * dFres);
-
-        // Gibbs Cirkulær mating = (dHull - dFres) / dHull * (rpm * z * fz)
         const mating = ((dHull - dFres) / dHull) * (rpm * z * fz);
 
         document.getElementById('gf-res-rpm').innerText = Math.round(rpm) + " RPM";
@@ -994,7 +1034,6 @@ const DEFAULT_LOGO_BASE64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAw8AA
         const stigning = parseFloat(document.getElementById('gjin-stigning').value) || 0;
         const justering = parseFloat(document.getElementById('gjin-justering').value) || 0;
 
-        // lille dia = (stigning * justering) + store dia
         const lilleDia = (stigning * justering) + storeDia;
         document.getElementById('gjin-res-lilledia').innerText = lilleDia.toFixed(3).replace('.', ',') + " mm";
     }
@@ -1004,7 +1043,6 @@ const DEFAULT_LOGO_BASE64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAw8AA
         const stigning = parseFloat(document.getElementById('gjut-stigning').value) || 0;
         const justering = parseFloat(document.getElementById('gjut-justering').value) || 0;
 
-        // lille dia = store dia - (stigning * justering)
         const lilleDia = storeDia - (stigning * justering);
         document.getElementById('gjut-res-lilledia').innerText = lilleDia.toFixed(3).replace('.', ',') + " mm";
     }
@@ -1013,7 +1051,6 @@ const DEFAULT_LOGO_BASE64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAw8AA
         const d = parseFloat(document.getElementById('fvc-d').value) || 0;
         const rpm = parseFloat(document.getElementById('fvc-rpm').value) || 0;
 
-        // Vc = (PI * D * n) / 1000
         const vc = (Math.PI * d * rpm) / 1000;
         document.getElementById('res-fvc').innerText = Math.round(vc) + " m/min";
     }
@@ -1022,7 +1059,6 @@ const DEFAULT_LOGO_BASE64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAw8AA
         const d = parseFloat(document.getElementById('frpm-d').value) || 0;
         const vc = parseFloat(document.getElementById('frpm-vc').value) || 0;
 
-        // RPM = (Vc * 1000) / (PI * D)
         const rpm = (vc * 1000) / (Math.PI * d);
         document.getElementById('res-frpm').innerText = Math.round(rpm) + " RPM";
     }
@@ -1032,7 +1068,6 @@ const DEFAULT_LOGO_BASE64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAw8AA
         const rpm = parseFloat(document.getElementById('fmm-rpm').value) || 0;
         const fz = parseFloat(document.getElementById('fmm-fz').value) || 0;
 
-        // Vf = RPM * fz * z
         const vf = rpm * fz * z;
         document.getElementById('res-fmm').innerText = Math.round(vf) + " mm/min";
     }
@@ -1041,10 +1076,7 @@ const DEFAULT_LOGO_BASE64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAw8AA
         const mmmin = parseFloat(document.getElementById('deg-mmmin').value) || 0;
         const dia = parseFloat(document.getElementById('deg-dia').value) || 0;
 
-        // 1 Grad = (dia * PI) / 360
         const oneGrad = (dia * Math.PI) / 360;
-
-        // Grader/min = mmmin / oneGrad
         const gradMin = oneGrad > 0 ? (mmmin / oneGrad) : 0;
 
         document.getElementById('deg-res-onegrad').innerText = oneGrad.toFixed(4).replace('.', ',') + " mm/°";
@@ -1066,9 +1098,9 @@ const DEFAULT_LOGO_BASE64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAw8AA
             lukkTabellskattModal();
             return true;
         }
-        const activeMod = localStorage.getItem('lonn_active_module') || 'lonn';
-        if (activeMod !== 'lonn') {
-            switchModule('lonn');
+        const activeMod = localStorage.getItem('lonn_active_module') || 'portal';
+        if (activeMod !== 'portal') {
+            visHovedmeny();
             return true;
         }
         const activeTab = localStorage.getItem('lonn_active_tab') || 'oversikt';
@@ -1547,15 +1579,19 @@ const DEFAULT_LOGO_BASE64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAw8AA
         localStorage.setItem('lonn_tabell', document.getElementById('skatte-tabellnummer').value);
         localStorage.setItem('lonn_skatt_pct', document.getElementById('skatt').value);
         localStorage.setItem('lonn_union_pct', document.getElementById('fagforening-prosent').value);
-        localStorage.setItem('lonn_vakter_tabs_v23', JSON.stringify(registrerteVakter));
+        localStorage.setItem('lonn_vakter_tabs_v24', JSON.stringify(registrerteVakter));
     }
 
     function lastInnstillinger() {
         initTheme();
         byggAarsOgMaanedsLister();
 
-        const savedModule = localStorage.getItem('lonn_active_module') || 'lonn';
-        switchModule(savedModule);
+        const savedModule = localStorage.getItem('lonn_active_module');
+        if (savedModule && savedModule !== 'portal') {
+            velgModul(savedModule);
+        } else {
+            visHovedmeny();
+        }
 
         const savedTab = localStorage.getItem('lonn_active_tab') || 'oversikt';
         switchTab(savedTab);
@@ -1579,8 +1615,8 @@ const DEFAULT_LOGO_BASE64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAw8AA
         if (localStorage.getItem('lonn_skatt_pct')) document.getElementById('skatt').value = localStorage.getItem('lonn_skatt_pct');
         if (localStorage.getItem('lonn_union_pct')) document.getElementById('fagforening-prosent').value = localStorage.getItem('lonn_union_pct');
 
-        if (localStorage.getItem('lonn_vakter_tabs_v23')) {
-            try { registrerteVakter = JSON.parse(localStorage.getItem('lonn_vakter_tabs_v23')); } catch(e){}
+        if (localStorage.getItem('lonn_vakter_tabs_v24')) {
+            try { registrerteVakter = JSON.parse(localStorage.getItem('lonn_vakter_tabs_v24')); } catch(e){}
         }
 
         let savedLogo = localStorage.getItem('lonn_logo');
@@ -1606,7 +1642,7 @@ const DEFAULT_LOGO_BASE64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAw8AA
             localStorage.clear();
             registrerteVakter = [];
             byggAarsOgMaanedsLister();
-            switchModule('lonn');
+            visHovedmeny();
             switchTab('oversikt');
             document.getElementById('inkluder-fastlonn').checked = true;
             document.getElementById('timelonn').value = "316.5";
