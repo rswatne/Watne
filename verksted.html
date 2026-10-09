@@ -10,7 +10,7 @@
     <meta http-equiv="Expires" content="0">
 
     <script>
-        const APP_BUILD_VER = "v3.2";
+        const APP_BUILD_VER = "v3.4";
         if (localStorage.getItem('app_build_v') !== APP_BUILD_VER) {
             localStorage.setItem('app_build_v', APP_BUILD_VER);
             if ('serviceWorker' in navigator) {
@@ -245,32 +245,52 @@
         </div>
     </div>
 
-    <!-- VERKSTEDVERKTØY 2: GJENGETABELL & KJERNEBOR -->
+    <!-- VERKSTEDVERKTØY 2: GJENGETABELL (METRISK & BSP / G) -->
     <div class="calc-card">
         <header style="margin-bottom: 1rem; border-bottom: 1px solid var(--line); padding-bottom: 0.5rem;">
-            <h2 style="font-size: 1.125rem; font-weight: 700; margin: 0; color: var(--brass);" id="txt-sec2-title">🔩 Gjengetabell & Kjernebor-oppslag</h2>
-            <p style="font-size: 0.8125rem; color: var(--muted); margin: 0.25rem 0 0 0;" id="txt-sec2-sub">Oppslag for kjernebor, stigning og frigi-boring for M-gjenger og BSP-gjenger.</p>
+            <h2 style="font-size: 1.125rem; font-weight: 700; margin: 0; color: var(--brass);" id="txt-sec2-title">🔩 Gjengetabell & Kjernebor (M & BSP / Rørgjenger)</h2>
+            <p style="font-size: 0.8125rem; color: var(--muted); margin: 0.25rem 0 0 0;" id="txt-sec2-sub">Oppslag for kjernebor, stigning og frigi-boring for M-gjenger og BSP / G / R-rørgjenger.</p>
         </header>
 
         <div class="grid-2">
             <label style="display: flex; flex-direction: column; gap: 0.25rem; grid-column: span 2;">
                 <span style="font-size: 0.8125rem; font-weight: 600;" id="lbl-select-thread">Velg gjengetype / størrelse</span>
                 <select id="tap-select" class="field-class" onchange="oppdaterGjengeTabell()">
-                    <option value="M3">M3 × 0.5 mm</option>
-                    <option value="M4">M4 × 0.7 mm</option>
-                    <option value="M5">M5 × 0.8 mm</option>
-                    <option value="M6">M6 × 1.0 mm</option>
-                    <option value="M8">M8 × 1.25 mm</option>
-                    <option value="M10" selected>M10 × 1.5 mm</option>
-                    <option value="M12">M12 × 1.75 mm</option>
-                    <option value="M16">M16 × 2.0 mm</option>
-                    <option value="M20">M20 × 2.5 mm</option>
-                    <option value="M24">M24 × 3.0 mm</option>
+                    <optgroup label="Metriske Gjenger (ISO Metric)">
+                        <option value="M3">M3 × 0.5 mm</option>
+                        <option value="M4">M4 × 0.7 mm</option>
+                        <option value="M5">M5 × 0.8 mm</option>
+                        <option value="M6">M6 × 1.0 mm</option>
+                        <option value="M8">M8 × 1.25 mm</option>
+                        <option value="M10" selected>M10 × 1.5 mm</option>
+                        <option value="M12">M12 × 1.75 mm</option>
+                        <option value="M14">M14 × 2.0 mm</option>
+                        <option value="M16">M16 × 2.0 mm</option>
+                        <option value="M20">M20 × 2.5 mm</option>
+                        <option value="M24">M24 × 3.0 mm</option>
+                        <option value="M30">M30 × 3.5 mm</option>
+                    </optgroup>
 
-                    <option value="G1/8">G 1/8" Rørgjenge (28 tpi)</option>
-                    <option value="G1/4">G 1/4" Rørgjenge (19 tpi)</option>
-                    <option value="G3/8">G 3/8" Rørgjenge (19 tpi)</option>
-                    <option value="G1/2">G 1/2" Rørgjenge (14 tpi)</option>
+                    <optgroup label="BSP / G Rørgjenger (Sylinderformet BSPP)">
+                        <option value="G1/8">BSP / G 1/8" (28 tpi - Kjernebor 8.8 mm)</option>
+                        <option value="G1/4">BSP / G 1/4" (19 tpi - Kjernebor 11.8 mm)</option>
+                        <option value="G3/8">BSP / G 3/8" (19 tpi - Kjernebor 15.25 mm)</option>
+                        <option value="G1/2">BSP / G 1/2" (14 tpi - Kjernebor 19.0 mm)</option>
+                        <option value="G3/4">BSP / G 3/4" (14 tpi - Kjernebor 24.5 mm)</option>
+                        <option value="G1">BSP / G 1" (11 tpi - Kjernebor 30.75 mm)</option>
+                        <option value="G1-1/4">BSP / G 1 1/4" (11 tpi - Kjernebor 39.5 mm)</option>
+                        <option value="G1-1/2">BSP / G 1 1/2" (11 tpi - Kjernebor 45.3 mm)</option>
+                        <option value="G2">BSP / G 2" (11 tpi - Kjernebor 57.0 mm)</option>
+                    </optgroup>
+
+                    <optgroup label="BSPT / R Rørgjenger (Konisk BSPT)">
+                        <option value="R1/8">BSPT / R 1/8" Konisk (Kjernebor 8.4 mm)</option>
+                        <option value="R1/4">BSPT / R 1/4" Konisk (Kjernebor 11.2 mm)</option>
+                        <option value="R3/8">BSPT / R 3/8" Konisk (Kjernebor 14.7 mm)</option>
+                        <option value="R1/2">BSPT / R 1/2" Konisk (Kjernebor 18.3 mm)</option>
+                        <option value="R3/4">BSPT / R 3/4" Konisk (Kjernebor 23.7 mm)</option>
+                        <option value="R1">BSPT / R 1" Konisk (Kjernebor 29.9 mm)</option>
+                    </optgroup>
                 </select>
             </label>
         </div>
@@ -282,7 +302,47 @@
         </div>
     </div>
 
-    <!-- VERKSTEDVERKTØY 3: BOREDYBDE & SPISSTILLEGG -->
+    <!-- VERKSTEDVERKTØY 3: GJENGE-TOLERANSER (6H MUTTER & 6g SKRUE) -->
+    <div class="calc-card">
+        <header style="margin-bottom: 1rem; border-bottom: 1px solid var(--line); padding-bottom: 0.5rem;">
+            <h2 style="font-size: 1.125rem; font-weight: 700; margin: 0; color: #7c3aed;" id="txt-sec-ttol-title">📐 Gjenge-Toleranser & Målegrenser (6H / 6g ISO)</h2>
+            <p style="font-size: 0.8125rem; color: var(--muted); margin: 0.25rem 0 0 0;" id="txt-sec-ttol-sub">Oppslag for min og maks tillatt store diameter, flangediameter (delingsdiameter) og kjernediameter.</p>
+        </header>
+
+        <div class="grid-2">
+            <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                <span style="font-size: 0.8125rem; font-weight: 600;" id="lbl-ttol-size">Gjengestørrelse</span>
+                <select id="ttol-select" class="field-class" onchange="beregnGjengeToleranse()">
+                    <option value="M3">M3 × 0.5</option>
+                    <option value="M4">M4 × 0.7</option>
+                    <option value="M5">M5 × 0.8</option>
+                    <option value="M6">M6 × 1.0</option>
+                    <option value="M8">M8 × 1.25</option>
+                    <option value="M10" selected>M10 × 1.5</option>
+                    <option value="M12">M12 × 1.75</option>
+                    <option value="M16">M16 × 2.0</option>
+                    <option value="M20">M20 × 2.5</option>
+                    <option value="M24">M24 × 3.0</option>
+                </select>
+            </label>
+
+            <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                <span style="font-size: 0.8125rem; font-weight: 600;" id="lbl-ttol-fit">Gjengepassning / Klasse</span>
+                <select id="ttol-fit" class="field-class" onchange="beregnGjengeToleranse()">
+                    <option value="6H">Mutter 6H (Innvendig gjenge - Standard)</option>
+                    <option value="6g">Skrue / Bolt 6g (Utvendig gjenge - Standard)</option>
+                </select>
+            </label>
+        </div>
+
+        <div class="result-box" style="background: rgba(139, 92, 246, 0.12); border-left-color: #8b5cf6;">
+            <div class="line-row strong"><span style="color: #6d28d9;" id="lbl-ttol-major">Store diameter (Major Dia):</span><span id="ttol-res-major" class="font-mono" style="font-size: 1.125rem; color: #6d28d9;">10.000 mm – 10.250 mm</span></div>
+            <div class="line-row strong" style="margin-top: 0.25rem;"><span style="color: #6d28d9;" id="lbl-ttol-pitch">Flangedia / Delingsdia (Pitch Dia):</span><span id="ttol-res-pitch" class="font-mono" style="font-size: 1.125rem; color: #6d28d9;">9.026 mm – 9.206 mm</span></div>
+            <div class="line-row strong" style="margin-top: 0.25rem;"><span style="color: #6d28d9;" id="lbl-ttol-minor">Lille dia / Kjernedia (Minor Dia):</span><span id="ttol-res-minor" class="font-mono" style="font-size: 1.125rem; color: #6d28d9;">8.376 mm – 8.676 mm</span></div>
+        </div>
+    </div>
+
+    <!-- VERKSTEDVERKTØY 4: BOREDYBDE & SPISSTILLEGG -->
     <div class="calc-card">
         <header style="margin-bottom: 1rem; border-bottom: 1px solid var(--line); padding-bottom: 0.5rem;">
             <h2 style="font-size: 1.125rem; font-weight: 700; margin: 0; color: var(--primary-deep);" id="txt-sec3-title">📐 Boredybde & Bor-spisstillegg</h2>
@@ -316,7 +376,7 @@
         </div>
     </div>
 
-    <!-- VERKSTEDVERKTØY 4: ISO PASSNINGER & TOLERANSER -->
+    <!-- VERKSTEDVERKTØY 5: ISO PASSNINGER & TOLERANSER -->
     <div class="calc-card">
         <header style="margin-bottom: 1rem; border-bottom: 1px solid var(--line); padding-bottom: 0.5rem;">
             <h2 style="font-size: 1.125rem; font-weight: 700; margin: 0; color: var(--brass);" id="txt-sec4-title">📏 ISO Passninger & Toleranser (H7 / g6)</h2>
@@ -351,7 +411,7 @@
     <!-- FREMHEVET SYNLIG BUNNTEKST MED VERSJON -->
     <footer class="app-footer">
         <p style="margin: 0; font-weight: 500;">
-            Sigurd Seland AS • Smie & Mekanisk Verksted • <span class="version-badge">Versjon 3.2</span>
+            Sigurd Seland AS • Smie & Mekanisk Verksted • <span class="version-badge">Versjon 3.4</span>
         </p>
     </footer>
 </div>
@@ -370,12 +430,19 @@
             recVc: "Anbefalt Vc (Skrubb / Slett):",
             calcRpm: "Beregnet RPM (Spindel):",
             calcVf: "Beregnet Mating (Vf):",
-            sec2Title: "🔩 Gjengetabell & Kjernebor-oppslag",
-            sec2Sub: "Oppslag for kjernebor, stigning og frigi-boring for M-gjenger og BSP-gjenger.",
+            sec2Title: "🔩 Gjengetabell & Kjernebor (M & BSP / Rørgjenger)",
+            sec2Sub: "Oppslag for kjernebor, stigning og frigi-boring for M-gjenger og BSP / G / R-rørgjenger.",
             selectThread: "Velg gjengetype / størrelse",
             recDrill: "Anbefalt Kjernebor:",
             pitch: "Gjengestigning (Pitch):",
             clearance: "Frigangshull (Passbor):",
+            secTtolTitle: "📐 Gjenge-Toleranser & Målegrenser (6H / 6g ISO)",
+            secTtolSub: "Oppslag for min og maks tillatt store diameter, flangediameter (delingsdiameter) og kjernediameter.",
+            lblTtolSize: "Gjengestørrelse",
+            lblTtolFit: "Gjengepassning / Klasse",
+            lblTtolMajor: "Store diameter (Major Dia):",
+            lblTtolPitch: "Flangedia / Delingsdia (Pitch Dia):",
+            lblTtolMinor: "Lille dia / Kjernedia (Minor Dia):",
             sec3Title: "📐 Boredybde & Bor-spisstillegg",
             sec3Sub: "Beregning av bor-spissens ekstra dybde for gjennomboring av plater.",
             drillDia: "Bordiameter (mm)",
@@ -402,12 +469,19 @@
             recVc: "Recommended Vc (Rough / Finish):",
             calcRpm: "Calculated RPM (Spindle):",
             calcVf: "Calculated Feed (Vf):",
-            sec2Title: "🔩 Tap Drill & Thread Tables",
-            sec2Sub: "Lookup tap drill sizes, pitch, and clearance holes for M and BSP threads.",
+            sec2Title: "🔩 Tap Drill & Thread Tables (M & BSP Pipe Threads)",
+            sec2Sub: "Lookup tap drill sizes, pitch, and clearance holes for M and BSP pipe threads.",
             selectThread: "Select thread type / size",
             recDrill: "Recommended Tap Drill:",
             pitch: "Thread Pitch:",
             clearance: "Clearance Hole:",
+            secTtolTitle: "📐 Thread Tolerances & Limits (6H / 6g ISO)",
+            secTtolSub: "Lookup min and max allowed major diameter, pitch diameter, and minor diameter.",
+            lblTtolSize: "Thread size",
+            lblTtolFit: "Thread fit / class",
+            lblTtolMajor: "Major Diameter:",
+            lblTtolPitch: "Pitch Diameter:",
+            lblTtolMinor: "Minor Diameter:",
             sec3Title: "📐 Drilling Depth & Point Offset",
             sec3Sub: "Calculate drill point extra depth for piercing through plates.",
             drillDia: "Drill diameter (mm)",
@@ -443,6 +517,13 @@
         document.getElementById('lbl-rec-drill').innerText = t.recDrill;
         document.getElementById('lbl-pitch').innerText = t.pitch;
         document.getElementById('lbl-clearance').innerText = t.clearance;
+        document.getElementById('txt-sec-ttol-title').innerText = t.secTtolTitle;
+        document.getElementById('txt-sec-ttol-sub').innerText = t.secTtolSub;
+        document.getElementById('lbl-ttol-size').innerText = t.lblTtolSize;
+        document.getElementById('lbl-ttol-fit').innerText = t.lblTtolFit;
+        document.getElementById('lbl-ttol-major').innerText = t.lblTtolMajor;
+        document.getElementById('lbl-ttol-pitch').innerText = t.lblTtolPitch;
+        document.getElementById('lbl-ttol-minor').innerText = t.lblTtolMinor;
         document.getElementById('txt-sec3-title').innerText = t.sec3Title;
         document.getElementById('txt-sec3-sub').innerText = t.sec3Sub;
         document.getElementById('lbl-drill-dia').innerText = t.drillDia;
@@ -515,7 +596,7 @@
         document.getElementById('mat-res-mating').innerText = `${Math.round(vf)} mm/min`;
     }
 
-    // DATA FOR GJENGER
+    // DATA FOR METRISKE OG BSP / G / R GJENGER
     const threadData = {
         M3: { drill: 2.5, pitch: 0.5, clear: 3.4 },
         M4: { drill: 3.3, pitch: 0.7, clear: 4.5 },
@@ -524,13 +605,28 @@
         M8: { drill: 6.8, pitch: 1.25, clear: 9.0 },
         M10: { drill: 8.5, pitch: 1.5, clear: 11.0 },
         M12: { drill: 10.2, pitch: 1.75, clear: 13.5 },
+        M14: { drill: 12.0, pitch: 2.0, clear: 15.5 },
         M16: { drill: 14.0, pitch: 2.0, clear: 17.5 },
         M20: { drill: 17.5, pitch: 2.5, clear: 22.0 },
         M24: { drill: 21.0, pitch: 3.0, clear: 26.0 },
+        M30: { drill: 26.5, pitch: 3.5, clear: 33.0 },
+
         "G1/8": { drill: 8.8, pitch: 0.907, clear: 10.0 },
         "G1/4": { drill: 11.8, pitch: 1.337, clear: 13.5 },
-        "G3/8": { drill: 15.2, pitch: 1.337, clear: 17.0 },
-        "G1/2": { drill: 19.0, pitch: 1.814, clear: 21.5 }
+        "G3/8": { drill: 15.25, pitch: 1.337, clear: 17.0 },
+        "G1/2": { drill: 19.0, pitch: 1.814, clear: 21.5 },
+        "G3/4": { drill: 24.5, pitch: 1.814, clear: 27.0 },
+        "G1": { drill: 30.75, pitch: 2.309, clear: 33.5 },
+        "G1-1/4": { drill: 39.5, pitch: 2.309, clear: 42.5 },
+        "G1-1/2": { drill: 45.3, pitch: 2.309, clear: 48.5 },
+        "G2": { drill: 57.0, pitch: 2.309, clear: 60.0 },
+
+        "R1/8": { drill: 8.4, pitch: 0.907, clear: 10.0 },
+        "R1/4": { drill: 11.2, pitch: 1.337, clear: 13.5 },
+        "R3/8": { drill: 14.7, pitch: 1.337, clear: 17.0 },
+        "R1/2": { drill: 18.3, pitch: 1.814, clear: 21.5 },
+        "R3/4": { drill: 23.7, pitch: 1.814, clear: 27.0 },
+        "R1": { drill: 29.9, pitch: 2.309, clear: 33.5 }
     };
 
     function oppdaterGjengeTabell() {
@@ -540,6 +636,62 @@
         document.getElementById('tap-res-drill').innerText = `${info.drill.toFixed(1)} mm`;
         document.getElementById('tap-res-pitch').innerText = `${info.pitch.toFixed(2)} mm`;
         document.getElementById('tap-res-clearance').innerText = `${info.clear.toFixed(1)} mm`;
+    }
+
+    // DATA FOR ISO GJENGE-TOLERANSER (6H & 6g)
+    const threadTolData = {
+        M3: {
+            "6H": { maj: "3.000 – 3.200", pitch: "2.675 – 2.775", min: "2.459 – 2.599" },
+            "6g": { maj: "2.874 – 2.980", pitch: "2.580 – 2.655", min: "2.273 – 2.387" }
+        },
+        M4: {
+            "6H": { maj: "4.000 – 4.250", pitch: "3.545 – 3.663", min: "3.242 – 3.422" },
+            "6g": { maj: "3.858 – 3.976", pitch: "3.433 – 3.523", min: "3.018 – 3.141" }
+        },
+        M5: {
+            "6H": { maj: "5.000 – 5.280", pitch: "4.480 – 4.605", min: "4.134 – 4.334" },
+            "6g": { maj: "4.826 – 4.976", pitch: "4.361 – 4.456", min: "3.889 – 4.019" }
+        },
+        M6: {
+            "6H": { maj: "6.000 – 6.330", pitch: "5.350 – 5.500", min: "4.917 – 5.153" },
+            "6g": { maj: "5.794 – 5.974", pitch: "5.212 – 5.324", min: "4.619 – 4.773" }
+        },
+        M8: {
+            "6H": { maj: "8.000 – 8.380", pitch: "7.188 – 7.348", min: "6.647 – 6.912" },
+            "6g": { maj: "7.760 – 7.972", pitch: "7.042 – 7.160", min: "6.326 – 6.503" }
+        },
+        M10: {
+            "6H": { maj: "10.000 – 10.420", pitch: "9.026 – 9.206", min: "8.376 – 8.676" },
+            "6g": { maj: "9.732 – 9.968", pitch: "8.862 – 8.994", min: "8.001 – 8.203" }
+        },
+        M12: {
+            "6H": { maj: "12.000 – 12.450", pitch: "10.863 – 11.063", min: "10.106 – 10.441" },
+            "6g": { maj: "11.701 – 11.966", pitch: "10.686 – 10.829", min: "9.680 – 9.893" }
+        },
+        M16: {
+            "6H": { maj: "16.000 – 16.500", pitch: "14.701 – 14.913", min: "13.835 – 14.210" },
+            "6g": { maj: "15.682 – 15.962", pitch: "14.503 – 14.663", min: "13.354 – 13.596" }
+        },
+        M20: {
+            "6H": { maj: "20.000 – 20.600", pitch: "18.376 – 18.600", min: "17.294 – 17.744" },
+            "6g": { maj: "19.623 – 19.958", pitch: "18.164 – 18.334", min: "16.738 – 17.013" }
+        },
+        M24: {
+            "6H": { maj: "24.000 – 24.700", pitch: "22.051 – 22.316", min: "20.752 – 21.252" },
+            "6g": { maj: "23.577 – 23.952", pitch: "21.803 – 21.983", min: "20.093 – 20.403" }
+        }
+    };
+
+    function beregnGjengeToleranse() {
+        const size = document.getElementById('ttol-select').value;
+        const fit = document.getElementById('ttol-fit').value;
+
+        const sizeObj = threadTolData[size] || threadTolData.M10;
+        const info = sizeObj[fit] || sizeObj["6H"];
+
+        document.getElementById('ttol-res-major').innerText = `${info.maj} mm`;
+        document.getElementById('ttol-res-pitch').innerText = `${info.pitch} mm`;
+        document.getElementById('ttol-res-minor').innerText = `${info.min} mm`;
     }
 
     function beregnBoredybde() {
@@ -580,6 +732,7 @@
     // Initialiser
     oppdaterMaterialeData();
     oppdaterGjengeTabell();
+    beregnGjengeToleranse();
     beregnBoredybde();
     beregnIsoToleranse();
 </script>
