@@ -369,7 +369,7 @@
 <!-- SPLASH SCREEN -->
 <div id="splash-screen">
     <div class="splash-logo-box">
-        <img src="logo.png" alt="Sigurd Seland AS">
+        <img src="logo.png" alt="Sigurd Seland AS" onerror="this.src='https://sigurd-seland.no/wp-content/uploads/2021/04/Sigurd-Seland-logo-300x122.png';">
     </div>
     <h1 style="font-size: 22px; font-weight: 700; margin: 0 0 6px 0; color: #f8fafc; letter-spacing: -0.02em;">Lønnskalkulator</h1>
     <p style="font-size: 13px; color: #94a3b8; margin: 0 0 20px 0; font-weight: 500;">Sigurd Seland AS • Smie & Mekanisk Verksted • Etablert 1902</p>
@@ -913,11 +913,16 @@
 
     function visLogo(data) {
         const wrapper = document.getElementById('logo-wrapper');
-        if (data && !data.startsWith("file://") && !data.includes("android_asset") && data !== "logo.png") {
-            wrapper.innerHTML = `<img src="${data}" alt="Firmalogo" style="max-height: 3rem; max-width: 100%; object-fit: contain;">`;
-        } else {
-            wrapper.innerHTML = `<img src="logo.png" alt="Firmalogo" style="max-height: 3rem; max-width: 100%; object-fit: contain;">`;
+        const fallbackUrl = "logo.png";
+
+        let targetSrc = fallbackUrl;
+        if (data && typeof data === 'string' && data.length > 5) {
+            if (!data.startsWith("file://") && !data.includes("android_asset")) {
+                targetSrc = data;
+            }
         }
+
+        wrapper.innerHTML = `<img src="${targetSrc}" alt="Firmalogo" style="max-height: 3rem; max-width: 100%; object-fit: contain;" onerror="if(this.src!=='${fallbackUrl}') { this.src='${fallbackUrl}'; } else { this.onerror=null; this.parentElement.innerHTML='<span style=\\'text-align: center; font-size: 0.70rem; color: var(--muted); font-style: italic;\\'>Sigurd Seland AS</span>'; }">`;
     }
 
     function lastOppLogo(input) {
@@ -1215,7 +1220,7 @@
         localStorage.setItem('lonn_tabell', document.getElementById('skatte-tabellnummer').value);
         localStorage.setItem('lonn_skatt_pct', document.getElementById('skatt').value);
         localStorage.setItem('lonn_union_pct', document.getElementById('fagforening-prosent').value);
-        localStorage.setItem('lonn_vakter_tabs_v15', JSON.stringify(registrerteVakter));
+        localStorage.setItem('lonn_vakter_tabs_v16', JSON.stringify(registrerteVakter));
     }
 
     function lastInnstillinger() {
@@ -1244,8 +1249,8 @@
         if (localStorage.getItem('lonn_skatt_pct')) document.getElementById('skatt').value = localStorage.getItem('lonn_skatt_pct');
         if (localStorage.getItem('lonn_union_pct')) document.getElementById('fagforening-prosent').value = localStorage.getItem('lonn_union_pct');
 
-        if (localStorage.getItem('lonn_vakter_tabs_v15')) {
-            try { registrerteVakter = JSON.parse(localStorage.getItem('lonn_vakter_tabs_v15')); } catch(e){}
+        if (localStorage.getItem('lonn_vakter_tabs_v16')) {
+            try { registrerteVakter = JSON.parse(localStorage.getItem('lonn_vakter_tabs_v16')); } catch(e){}
         }
 
         let savedLogo = localStorage.getItem('lonn_logo');
