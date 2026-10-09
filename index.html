@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Verkstedsportal - Sigurd Seland AS</title>
+    <title>Verkstedsportal</title>
 
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
@@ -15,7 +15,7 @@
     <link rel="prefetch" href="chat.html">
 
     <script>
-        const APP_BUILD_VER = "v5.4";
+        const APP_BUILD_VER = "v8.1-CleanText";
         if (localStorage.getItem('app_build_v') !== APP_BUILD_VER) {
             localStorage.setItem('app_build_v', APP_BUILD_VER);
             if ('serviceWorker' in navigator) {
@@ -37,7 +37,6 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Verksteds-App">
-    <link rel="apple-touch-icon" href="https://sigurd-seland.no/uploads/lge5O4Vz/354x0_458x0/35f30681-5749-426a-bc82-3ec4dc053599.png">
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
     <style>
@@ -78,29 +77,6 @@
             -webkit-font-smoothing: antialiased;
             min-height: 100vh;
         }
-
-        #splash-screen {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: #070a11;
-            display: flex; flex-direction: column;
-            justify-content: center; align-items: center;
-            z-index: 9999;
-            transition: opacity 0.5s ease, visibility 0.5s ease;
-            color: white; text-align: center; padding: 24px;
-        }
-        .splash-logo-box {
-            background: white; padding: 20px 28px; border-radius: 20px;
-            box-shadow: 0 20px 45px rgba(0,0,0,0.6); margin-bottom: 24px;
-            max-width: 320px; display: flex; justify-content: center; align-items: center;
-        }
-        .splash-logo-box img { max-width: 100%; max-height: 85px; object-fit: contain; }
-        .spinner {
-            width: 38px; height: 38px; border: 3px solid rgba(255,255,255,0.15);
-            border-top-color: var(--primary); border-radius: 50%;
-            animation: spin 0.8s linear infinite; margin-top: 18px;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
 
         .main-layout {
             max-width: 54rem;
@@ -247,16 +223,6 @@
 </head>
 <body>
 
-<!-- SPLASH SCREEN -->
-<div id="splash-screen">
-    <div class="splash-logo-box">
-        <img src="https://sigurd-seland.no/uploads/lge5O4Vz/354x0_458x0/35f30681-5749-426a-bc82-3ec4dc053599.png" alt="Verkstedsportal">
-    </div>
-    <h1 style="font-size: 24px; font-weight: 800; margin: 0 0 6px 0; color: #f8fafc;" id="splash-title">Verkstedsportal</h1>
-    <p style="font-size: 13px; color: #94a3b8; margin: 0 0 20px 0; font-weight: 500;">Smie & Mekanisk Verksted • Lyngdal</p>
-    <div class="spinner"></div>
-</div>
-
 <div class="main-layout">
     <header>
         <div>
@@ -264,16 +230,11 @@
                 <span class="status-badge" id="net-status">🟢 Online</span>
             </div>
             <h1 style="font-size: 1.875rem; font-weight: 800; margin: 0; letter-spacing: -0.02em;" id="txt-title">Verkstedsportal</h1>
-            <p style="font-size: 0.8125rem; color: var(--muted); margin: 0.25rem 0 0 0;" id="txt-sub">Smie & Mekanisk Verksted • Lyngdal</p>
         </div>
 
         <div style="display: flex; align-items: center; gap: 0.625rem;">
             <button type="button" class="btn btn-outline" style="height: 2.75rem; padding: 0 0.75rem; font-size: 0.875rem;" onclick="toggleLanguage()" id="lang-toggle-btn">🇳🇴 NO</button>
             <button type="button" class="btn btn-outline" style="height: 2.75rem; width: 2.75rem; padding: 0; border-radius: 50%; font-size: 1.15rem;" onclick="toggleTheme()" id="theme-toggle-btn">🌙</button>
-
-            <div style="min-width: 10.5rem; max-width: 13.5rem; height: 4.5rem; display: flex; align-items: center; justify-content: center; overflow: hidden; border-radius: 0.75rem; border: 1px dashed var(--line); background: white; padding: 0.5rem;">
-                <img src="https://sigurd-seland.no/uploads/lge5O4Vz/354x0_458x0/35f30681-5749-426a-bc82-3ec4dc053599.png" alt="Verksted" style="max-width: 100%; max-height: 100%; object-fit: contain;">
-            </div>
         </div>
     </header>
 
@@ -348,7 +309,7 @@
 
     <footer class="app-footer">
         <p style="margin: 0; font-weight: 500;">
-            Smie & Mekanisk Verksted • <span class="version-badge">Versjon 5.4</span>
+            <span class="version-badge">Versjon 8.1</span>
         </p>
     </footer>
 </div>
@@ -357,7 +318,6 @@
     const i18n = {
         no: {
             title: "Verkstedsportal",
-            sub: "Smie & Mekanisk Verksted • Lyngdal",
             welcome: "Velkommen til Verkstedsportalen",
             choose: "Digitalt verktøysett for produksjon, beregninger, vakter og lønn.",
             c1_title: "Lønnskalkulator & Vakter",
@@ -375,7 +335,6 @@
         },
         en: {
             title: "Workshop Portal",
-            sub: "Forge & Machine Shop • Lyngdal",
             welcome: "Welcome to the Workshop Portal",
             choose: "Digital toolkit for machining, calculations, shifts, and salary.",
             c1_title: "Paycheck Calculator & Shifts",
@@ -395,9 +354,7 @@
 
     function updateLanguageUI(lang) {
         const t = i18n[lang] || i18n.no;
-        document.getElementById('splash-title').innerText = t.title;
         document.getElementById('txt-title').innerText = t.title;
-        document.getElementById('txt-sub').innerText = t.sub;
         document.getElementById('txt-welcome').innerText = t.welcome;
         document.getElementById('txt-choose').innerText = t.choose;
         document.getElementById('txt-c1-title').innerText = t.c1_title;
@@ -442,15 +399,6 @@
         updateOnlineStatus();
         const curLang = localStorage.getItem('seland_lang') || 'no';
         updateLanguageUI(curLang);
-
-        setTimeout(function() {
-            const splash = document.getElementById('splash-screen');
-            if (splash) {
-                splash.style.opacity = '0';
-                splash.style.visibility = 'hidden';
-                setTimeout(function() { splash.style.display = 'none'; }, 500);
-            }
-        }, 1000);
     });
 
     function toggleTheme() {

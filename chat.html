@@ -10,7 +10,7 @@
     <meta http-equiv="Expires" content="0">
 
     <script>
-        const APP_BUILD_VER = "v5.4";
+        const APP_BUILD_VER = "v9.0-SigridMasterMath";
         if (localStorage.getItem('app_build_v') !== APP_BUILD_VER) {
             localStorage.setItem('app_build_v', APP_BUILD_VER);
             if ('serviceWorker' in navigator) {
@@ -32,7 +32,6 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Sigrid AI">
-    <link rel="apple-touch-icon" href="https://sigurd-seland.no/uploads/lge5O4Vz/354x0_458x0/35f30681-5749-426a-bc82-3ec4dc053599.png">
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
     <style>
@@ -231,7 +230,6 @@
                 <span class="status-badge" id="net-status">🟢 Online</span>
             </div>
             <h1 style="font-size: 1.75rem; font-weight: 800; margin: 0;" id="txt-title">🤖 Sigrid — AI Verkstedsassistent</h1>
-            <p style="font-size: 0.8125rem; color: var(--muted); margin: 0.125rem 0 0 0;" id="txt-sub">Spør AI om maskinering, G-koder, gjenger, skjæredata og lønn</p>
         </div>
         <div style="display: flex; align-items: center; gap: 0.5rem;">
             <button type="button" class="btn btn-outline" style="height: 2.875rem; padding: 0 0.75rem; font-size: 0.875rem;" onclick="toggleLanguage()" id="lang-toggle-btn">🇳🇴 NO</button>
@@ -244,23 +242,23 @@
         <!-- CHAT MELDINGER -->
         <div class="chat-messages" id="chat-box">
             <div class="msg-bubble msg-ai" id="txt-welcome-msg">
-                👋 <strong>Hei! Jeg er Sigrid, din AI Verkstedsassistent for Sigurd Seland AS.</strong><br>
-                Jeg har full kunnskap om alt på nettstedet vårt! Spør meg om sirkulær mating i Gibbs, M- og BSP-rørgjenger, ISO-toleranser (6H/6g), skjæredata (Vc/fz), CNC G-koder, eller hvordan lønn, vakter og timebanken regnes ut. Hva vil du vite?
+                👋 <strong>Hei! Jeg er Sigrid, din AI Verkstedsassistent.</strong><br>
+                Jeg kan forklare deg <strong>absolutt alle formler og utregninger</strong> på dette nettstedet i detalj! Spør meg om hvordan lønn, feriepenger, tabellskatt og timebank beregnes, eller hvordan Gibbs sirkulær mating, skjæredata, bøyefradrag og trekant-trigonometri regnes ut. Hva ønsker du at jeg skal forklare?
             </div>
         </div>
 
-        <!-- HURTIGMELDINGER -->
+        <!-- HURTIGMELDINGER FOR UTREGNINGER -->
         <div class="quick-prompts">
-            <span class="prompt-chip" onclick="sendQuickPrompt('Hvilken kjernebor-størrelse skal brukes til BSP 1/2 tomme rørgjenge?')" id="chip1">🔩 BSP 1/2" Kjernebor</span>
-            <span class="prompt-chip" onclick="sendQuickPrompt('Hva er toleransegrensene for M10 6H og 6g gjenger?')" id="chip2">📐 M10 6H/6g Toleranser</span>
-            <span class="prompt-chip" onclick="sendQuickPrompt('Hvordan regnes sirkulær mating ut for Gibbs?')" id="chip3">🌀 Gibbs Sirkulær Mating</span>
-            <span class="prompt-chip" onclick="sendQuickPrompt('Hvordan fungerer avspasering og timebank på lønnsslippen?')" id="chip4">💰 Timebank & Lønn</span>
+            <span class="prompt-chip" onclick="sendQuickPrompt('Forklar hvordan feriepenger og lønn regnes ut!')" id="chip1">💰 Forklar Lønn & Feriepenger</span>
+            <span class="prompt-chip" onclick="sendQuickPrompt('Forklar formelen for Gibbs sirkulær mating!')" id="chip2">🌀 Forklar Gibbs-mating</span>
+            <span class="prompt-chip" onclick="sendQuickPrompt('Forklar hvordan bøyefradrag regnes ut for kantpresse!')" id="chip3">🎯 Forklar Bøyefradrag</span>
+            <span class="prompt-chip" onclick="sendQuickPrompt('Forklar hvordan tabellskatt og timebank fungerer!')" id="chip4">📊 Forklar Skatt & Timebank</span>
         </div>
 
         <!-- CHAT INPUT -->
         <form class="chat-input-bar" onsubmit="handleChatSubmit(event)">
             <label for="user-input" style="display:none;">Spørsmål</label>
-            <input type="text" id="user-input" class="field-class" placeholder="Spør Sigrid om maskinering, gjenger, Gibbs, G-koder eller lønn..." autocomplete="off">
+            <input type="text" id="user-input" class="field-class" placeholder="Spør Sigrid om å forklare en utregning eller formel..." autocomplete="off">
             <button type="submit" class="btn btn-purple" id="btn-send">Spør Sigrid 🚀</button>
         </form>
     </div>
@@ -270,26 +268,24 @@
     const i18n = {
         no: {
             title: "🤖 Sigrid — AI Verkstedsassistent",
-            sub: "Spør AI om maskinering, G-koder, gjenger, skjæredata og lønn",
             btnHome: "🏠 Hovedmeny",
-            welcomeMsg: "👋 <strong>Hei! Jeg er Sigrid, din AI Verkstedsassistent for Sigurd Seland AS.</strong><br>Jeg har full kunnskap om alt på nettstedet vårt! Spør meg om sirkulær mating i Gibbs, M- og BSP-rørgjenger, ISO-toleranser (6H/6g), skjæredata (Vc/fz), CNC G-koder, eller hvordan lønn, vakter og timebanken regnes ut. Hva vil du vite?",
-            chip1: "🔩 BSP 1/2\" Kjernebor",
-            chip2: "📐 M10 6H/6g Toleranser",
-            chip3: "🌀 Gibbs Sirkulær Mating",
-            chip4: "💰 Timebank & Lønn",
-            placeholder: "Spør Sigrid om maskinering, gjenger, Gibbs, G-koder eller lønn...",
+            welcomeMsg: "👋 <strong>Hei! Jeg er Sigrid, din AI Verkstedsassistent.</strong><br>Jeg kan forklare deg <strong>absolutt alle formler og utregninger</strong> på dette nettstedet i detalj! Spør meg om hvordan lønn, feriepenger, tabellskatt og timebank beregnes, eller hvordan Gibbs sirkulær mating, skjæredata, bøyefradrag og trekant-trigonometri regnes ut. Hva ønsker du at jeg skal forklare?",
+            chip1: "💰 Forklar Lønn & Feriepenger",
+            chip2: "🌀 Forklar Gibbs-mating",
+            chip3: "🎯 Forklar Bøyefradrag",
+            chip4: "📊 Forklar Skatt & Timebank",
+            placeholder: "Spør Sigrid om å forklare en utregning eller formel...",
             sendBtn: "Spør Sigrid 🚀"
         },
         en: {
             title: "🤖 Sigrid — AI Workshop Assistant",
-            sub: "Ask AI about machining, G-codes, tapping drills, cutting speeds, and salary",
             btnHome: "🏠 Main Menu",
-            welcomeMsg: "👋 <strong>Hi! I am Sigrid, your AI Workshop Assistant for Sigurd Seland AS.</strong><br>I have full knowledge of everything on our website! Ask me about circular feed in Gibbs, M and BSP pipe threads, ISO tolerances (6H/6g), cutting data (Vc/fz), CNC G-codes, or how payroll, shifts, and the time bank are calculated. What would you like to know?",
-            chip1: "🔩 BSP 1/2\" Tap Drill",
-            chip2: "📐 M10 6H/6g Tolerances",
-            chip3: "🌀 Gibbs Circular Feed",
-            chip4: "💰 Time Bank & Salary",
-            placeholder: "Ask Sigrid about machining, threads, Gibbs, G-codes, or salary...",
+            welcomeMsg: "👋 <strong>Hi! I am Sigrid, your AI Workshop Assistant.</strong><br>I can explain <strong>every single formula and calculation</strong> on this website in detail! Ask me how salary, holiday pay, tax tables, and time bank are calculated, or how Gibbs circular feed, cutting speeds, bend deduction, and trigonometry work. What would you like me to explain?",
+            chip1: "💰 Explain Salary & Holiday Pay",
+            chip2: "🌀 Explain Gibbs Feed",
+            chip3: "🎯 Explain Bend Deduction",
+            chip4: "📊 Explain Tax & Time Bank",
+            placeholder: "Ask Sigrid to explain any calculation or formula...",
             sendBtn: "Ask Sigrid 🚀"
         }
     };
@@ -297,7 +293,6 @@
     function updateLanguageUI(lang) {
         const t = i18n[lang] || i18n.no;
         document.getElementById('txt-title').innerText = t.title;
-        document.getElementById('txt-sub').innerText = t.sub;
         document.getElementById('txt-btn-home').innerText = t.btnHome;
         document.getElementById('txt-welcome-msg').innerHTML = t.welcomeMsg;
         document.getElementById('chip1').innerText = t.chip1;
@@ -356,103 +351,108 @@
         document.getElementById('theme-toggle-btn').innerText = '🌙';
     }
 
+    // SIGRID FULL EKSPLISITT UTREGNINGSMOTOR (FORKLARER ALLE FORMLER PÅ SIDEN)
     function generateSigridResponse(input) {
         const q = input.toLowerCase();
         const isEn = (localStorage.getItem('seland_lang') === 'en');
 
-        if (q.includes('bsp') || q.includes('rørgjeng') || q.includes('1/2') || q.includes('1/4') || q.includes('3/8') || q.includes('3/4') || q.includes('r-gjeng') || q.includes('pipe thread')) {
+        // 1. FERIEPENGER & LØNN EKSPLISITT FORKLARING
+        if (q.includes('feriepenger') || q.includes('ferie') || q.includes('12%') || q.includes('12 %') || q.includes('holiday pay')) {
             if (isEn) {
-                return `🔩 <strong>Sigrid's BSP & Pipe Thread Table:</strong><br>
-                • <strong>BSP / G 1/8" (28 tpi):</strong> Tap drill <strong>8.8 mm</strong> (Pitch 0.91 mm)<br>
-                • <strong>BSP / G 1/4" (19 tpi):</strong> Tap drill <strong>11.8 mm</strong> (Pitch 1.34 mm)<br>
-                • <strong>BSP / G 3/8" (19 tpi):</strong> Tap drill <strong>15.25 mm</strong> (Pitch 1.34 mm)<br>
-                • <strong>BSP / G 1/2" (14 tpi):</strong> Tap drill <strong>19.0 mm</strong> (Pitch 1.81 mm)<br>
-                • <strong>BSP / G 3/4" (14 tpi):</strong> Tap drill <strong>24.5 mm</strong> (Pitch 1.81 mm)<br>
-                • <strong>BSP / G 1" (11 tpi):</strong> Tap drill <strong>30.75 mm</strong> (Pitch 2.31 mm)<br><br>
-                • <strong>Tapered BSPT (R 1/2"):</strong> Tap drill <strong>18.3 mm</strong>.`;
+                return `💰 <strong>Sigrid's Explanation of Holiday Pay Calculation:</strong><br><br>
+                1. <strong>Earning Rate:</strong> Standard Norwegian holiday pay is <strong>12%</strong> of your total gross salary earned during the accrual year.<br>
+                2. <strong>Formula:</strong> <code>Holiday Pay = Gross Income × 0.12</code><br>
+                3. <strong>Monthly Estimate in App:</strong> Every month, the app calculates your earned holiday pay for that specific month's total gross salary.<br>
+                4. <strong>Payout:</strong> Holiday pay is saved up and usually paid out in June of the following year tax-free at payout time (since higher tax is withheld in November/December to compensate).`;
             }
-            return `🔩 <strong>Sigrids BSP Rørgjenge-tabell:</strong><br>
-            • <strong>BSP / G 1/8" (28 tpi):</strong> Kjernebor <strong>8.8 mm</strong> (Stigning 0.91 mm)<br>
-            • <strong>BSP / G 1/4" (19 tpi):</strong> Kjernebor <strong>11.8 mm</strong> (Stigning 1.34 mm)<br>
-            • <strong>BSP / G 3/8" (19 tpi):</strong> Kjernebor <strong>15.25 mm</strong> (Stigning 1.34 mm)<br>
-            • <strong>BSP / G 1/2" (14 tpi):</strong> Kjernebor <strong>19.0 mm</strong> (Stigning 1.81 mm)<br>
-            • <strong>BSP / G 3/4" (14 tpi):</strong> Kjernebor <strong>24.5 mm</strong> (Stigning 1.81 mm)<br>
-            • <strong>BSP / G 1" (11 tpi):</strong> Kjernebor <strong>30.75 mm</strong> (Stigning 2.31 mm)<br><br>
-            • <strong>Konisk BSPT (R 1/2"):</strong> Kjernebor <strong>18.3 mm</strong>.`;
+            return `💰 <strong>Sigrids forklaring av Feriepenger:</strong><br><br>
+            1. <strong>Opptjeningssats:</strong> Standard feriepenger utgjør <strong>12 %</strong> av din samlede brutto årsinntekt i opptjeningsåret.<br>
+            2. <strong>Formel:</strong> <code>Feriepenger = Bruttoinntekt × 0,12</code><br>
+            3. <strong>Månedlig estimat i appen:</strong> Hver måned regner appen ut hvor mye feriepenger du har opptjent basert på den månedens total brutto.<br>
+            4. <strong>Utbetaling:</strong> Feriepengene opptjenes i år 1 og utbetales ordinært i juni i år 2 i stedet for vanlig månedslønn (trekkfritt ved utbetaling da skatten spres over de andre månedene).`;
         }
 
-        if (q.includes('toleranse') || q.includes('6h') || q.includes('6g') || q.includes('flange') || q.includes('delings') || q.includes('pitch dia')) {
+        // 2. TOTAL LØNN, BRUTTO, NETTO, TIMEBANK OG FAGFORENING
+        if (q.includes('lønn') || q.includes('fastlønn') || q.includes('brutto') || q.includes('netto') || q.includes('timebank') || q.includes('overtid') || q.includes('fagforening') || q.includes('salary') || q.includes('paycheck')) {
             if (isEn) {
-                return `📐 <strong>Sigrid's Thread Tolerance Limits (ISO 6H / 6g):</strong><br>
-                • <strong>M10 6H (Nut / Internal):</strong> Major 10.000–10.420 mm | Pitch 9.026–9.206 mm | Minor 8.376–8.676 mm<br>
-                • <strong>M10 6g (Screw / External):</strong> Major 9.732–9.968 mm | Pitch 8.862–8.994 mm | Minor 8.001–8.203 mm<br>
-                • <strong>M12 6H (Nut / Internal):</strong> Major 12.000–12.450 mm | Pitch 10.863–11.063 mm | Minor 10.106–10.441 mm<br>
-                • <strong>M16 6H (Nut / Internal):</strong> Major 16.000–16.500 mm | Pitch 14.701–14.913 mm | Minor 13.835–14.210 mm<br><br>
-                💡 <em>Note:</em> You can check exact tolerances for M3–M24 in our <strong>Workshop Tables (verksted.html)</strong>!`;
+                return `💰 <strong>Sigrid's Full Step-by-Step Salary Calculation Guide:</strong><br><br>
+                1. <strong>Base Monthly Salary:</strong><br>
+                <code>Base Salary = Weekdays in Month (Mon–Fri) × 7.5 hrs × Hourly Rate</code><br><br>
+                2. <strong>Overtime Shifts:</strong><br>
+                • 50% Shift: <code>Hours × (Hourly Rate × 1.5)</code><br>
+                • 100% Shift: <code>Hours × (Hourly Rate × 2.0)</code><br><br>
+                3. <strong>Time Bank (Time Off Accrual):</strong><br>
+                When a shift is assigned to the Time Bank, 1 standard hour goes to your time bank balance (+1.0 hr), while <strong>ONLY the 50% or 100% supplement</strong> is paid out on your paycheck.<br><br>
+                4. <strong>Gross Total:</strong> <code>Gross = Base Salary − Unpaid Vac. Days + Extra Shifts</code><br>
+                5. <strong>Union Dues:</strong> <code>Union Dues = Gross × (Union Rate % / 100)</code><br>
+                6. <strong>Tax Basis:</strong> <code>Taxable Basis = Gross − Union Dues</code><br>
+                7. <strong>Net Salary:</strong> <code>Net Salary = Gross − Union Dues − Tax Withheld</code>`;
             }
-            return `📐 <strong>Sigrids Gjenge-Toleransegrenser (ISO 6H / 6g):</strong><br>
-            • <strong>M10 6H (Mutter / Innvendig):</strong> Store 10.000–10.420 mm | Flangedia 9.026–9.206 mm | Lille 8.376–8.676 mm<br>
-            • <strong>M10 6g (Skrue / Utvendig):</strong> Store 9.732–9.968 mm | Flangedia 8.862–8.994 mm | Lille 8.001–8.203 mm<br>
-            • <strong>M12 6H (Mutter / Innvendig):</strong> Store 12.000–12.450 mm | Flangedia 10.863–11.063 mm | Lille 10.106–10.441 mm<br>
-            • <strong>M16 6H (Mutter / Innvendig):</strong> Store 16.000–16.500 mm | Flangedia 14.701–14.913 mm | Lille 13.835–14.210 mm<br><br>
-            💡 <em>Tips:</em> Slå opp alle mål for M3–M24 under <strong>Verkstedtabeller (verksted.html)</strong>!`;
+            return `💰 <strong>Sigrids komplette steg-for-steg forklaring på Lønnsberegningen:</strong><br><br>
+            1. <strong>Fast Månedslønn:</strong><br>
+            <code>Fastlønn = Arbeidsdager i mnd (Man–Fre) × 7,5 t × Timelønn</code><br><br>
+            2. <strong>Tilleggsvakter (Overtid):</strong><br>
+            • 50% Vakt: <code>Timer × (Timelønn × 1,5)</code><br>
+            • 100% Vakt: <code>Timer × (Timelønn × 2,0)</code><br><br>
+            3. <strong>Timebank (Avspasering):</strong><br>
+            Når du velger timebank på en vakt, settes 1 ordinær time inn i timebanken din til avspasering (+1,0t), mens <strong>KUN 50% eller 100% tillegget</strong> utbetales i kroner på lønnsslippen!<br><br>
+            4. <strong>Total Brutto:</strong> <code>Brutto = Fastlønn − Ferietrekk + Tilleggsvakter</code><br>
+            5. <strong>Fagforeningstrekk:</strong> <code>Fagforening = Brutto × (Kontingent % / 100)</code><br>
+            6. <strong>Skattegrunnlag:</strong> <code>Skattegrunnlag = Brutto − Fagforeningstrekk</code><br>
+            7. <strong>Netto Utbetalt:</strong> <code>Netto = Brutto − Fagforeningstrekk − Skattetrekk</code>`;
         }
 
-        if (q.includes('gibbs') || q.includes('sirkulær') || q.includes('cirkulær') || q.includes('aksling') || q.includes('mating')) {
-            if (isEn) {
-                return `🌀 <strong>Sigrid's Circular Feed Calculation for Gibbs CAM:</strong><br>
-                When milling around a cylinder/shaft or inside a hole, line feed must be adjusted to center-line feed for Gibbs:<br><br>
-                • <strong>Spindle RPM ($n$):</strong> <code>(Vc × 1000) / (π × D_fres)</code><br>
-                • <strong>Gibbs Circular Feed ($V_f$):</strong> <code>((D_hull - D_fres) / D_hull) × (RPM × z × f_z)</code><br><br>
-                💡 <em>Example:</em> Vc = 350, Cutter Ø84, Hole Ø410, 6 teeth, fz 0.18 ➔ <strong>1327 RPM & 1140 mm/min</strong> in Gibbs!`;
-            }
-            return `🌀 <strong>Sigrids Sirkulær Mating-beregning for Gibbs CAM:</strong><br>
-            Når du freser rundt en aksling eller innvendig i et hull, må lineær bordmating regnes om til senterlinje-mating i Gibbs:<br><br>
-            • <strong>Spindelhastighet ($n$):</strong> <code>(Vc × 1000) / (π × D_fres)</code><br>
-            • <strong>Mating i Gibbs ($V_f$):</strong> <code>((D_hull - D_fres) / D_hull) × (RPM × z × f_z)</code><br><br>
-            💡 <em>Eksempel:</em> Vc = 350, Fres Ø84, Hull Ø410, 6 tenner, fz 0.18 ➔ <strong>1327 RPM og 1140 mm/min</strong> i Gibbs!`;
+        // 3. SKATT & TABELLTREKK
+        if (q.includes('skatt') || q.includes('tabell') || q.includes('tabellskatt') || q.includes('7101') || q.includes('tax')) {
+            return `📊 <strong>Sigrids Forklaring av Skattetrekk & Tabell 7101:</strong><br><br>
+            1. <strong>Fradrag før skatt:</strong> Fagforeningskontingent trekkes fra før skatten beregnes.<br>
+            2. <strong>Skatteetatens Tabellformel:</strong> Tabellskatt (f.eks. Tabell 7101) er progressiv. Appen bruker Skatteetatens eksakte matematiske intervallformel for månedslønn der fribeløp trekkes fra og skattesatsen skalerer trinnvis (0%, 28%, 34%, 44%, 49%).<br>
+            3. <strong>Prosenttrekk:</strong> <code>Skatt = Skattegrunnlag × (Skatteprosent / 100)</code>.`;
         }
 
-        if (q.includes('bor') || q.includes('kjernebor') || q.includes('m12') || q.includes('m16') || q.includes('m10') || q.includes('m8') || q.includes('drill')) {
-            return `🔩 <strong>Sigrids Metriske Kjernebor-tabell:</strong><br>
-            • <strong>M3:</strong> 2.5 mm bor (stigning 0.5 mm)<br>
-            • <strong>M4:</strong> 3.3 mm bor (stigning 0.7 mm)<br>
-            • <strong>M5:</strong> 4.2 mm bor (stigning 0.8 mm)<br>
-            • <strong>M6:</strong> 5.0 mm bor (stigning 1.0 mm)<br>
-            • <strong>M8:</strong> 6.8 mm bor (stigning 1.25 mm)<br>
-            • <strong>M10:</strong> 8.5 mm bor (stigning 1.5 mm)<br>
-            • <strong>M12:</strong> 10.2 mm bor (stigning 1.75 mm)<br>
-            • <strong>M16:</strong> 14.0 mm bor (stigning 2.0 mm)<br>
-            • <strong>M20:</strong> 17.5 mm bor (stigning 2.5 mm)<br>
-            • <strong>M24:</strong> 21.0 mm bor (stigning 3.0 mm)`;
+        // 4. GIBBS SIRKULÆR MATING
+        if (q.includes('gibbs') || q.includes('sirkulær') || q.includes('cirkulær') || q.includes('aksling') || q.includes('circular')) {
+            return `🌀 <strong>Sigrids Forklaring av Sirkulær Mating for Gibbs CAM:</strong><br><br>
+            Når verktøyet beveger seg sirkulært rundt en aksling eller innvendig i et hull, er periferihastigheten på skjæret annerledes enn verktøysenterets hastighet.<br><br>
+            • <strong>Spindelhastighet ($n$):</strong> <code>n = (Vc × 1000) / (π × D_fres)</code><br>
+            • <strong>Bordmating ($V_f$):</strong> <code>Vf_lineær = n × z × f_z</code><br>
+            • <strong>Gibbs Sirkulær Mating ($V_{f\_sirk}$):</strong><br>
+            <code>Vf_gibbs = ((D_hull - D_fres) / D_hull) × Vf_lineær</code><br><br>
+            Dette forhindrer at du overbelaster fresen eller brekker tennene ved sirkulær fresing!`;
         }
 
-        if (q.includes('g-kode') || q.includes('g-koder') || q.includes('cnc') || q.includes('g81') || q.includes('g83') || q.includes('g84') || q.includes('g-code')) {
-            return `⚙️ <strong>Sigrids Oversikt over CNC G-koder:</strong><br>
-            • <strong>G00:</strong> Ilgang (Ilgangsbevegelse)<br>
-            • <strong>G01:</strong> Lineær arbeidsmating<br>
-            • <strong>G02 / G03:</strong> Sirkulær interpolasjon med/mot klokken<br>
-            • <strong>G81:</strong> Standard boresyklus uten sponbryting<br>
-            • <strong>G83:</strong> Sponbrytende boredybdesyklus (Peck drilling)<br>
-            • <strong>G84:</strong> Gjengeskjæringssyklus (Tapping)<br>
-            • <strong>M03 / M04:</strong> Spindel PÅ med/mot klokken<br>
-            • <strong>M08 / M09:</strong> Kjølevæske PÅ / AV<br>
-            • <strong>M30:</strong> Programslutt`;
+        // 5. BØYEFRADRAG OG KANTPRESSE
+        if (q.includes('bøy') || q.includes('bøyefradrag') || q.includes('kantpresse') || q.includes('plateutbretting') || q.includes('bend')) {
+            return `🎯 <strong>Sigrids Forklaring av Bøyefradrag (Bend Deduction):</strong><br><br>
+            Når en plate bøyes i $90^\circ$ i kantpressa, strekkes det ytre sjiktet og komprimeres det indre sjiktet.<br><br>
+            • <strong>Bøyetillegg (Bend Allowance $BA$):</strong> <code>BA = (π / 2) × (R + K × t)</code> (der $K = 0,33$ for stål).<br>
+            • <strong>Bøyefradrag ($BD$):</strong> <code>BD = 2 × (R + t) − BA</code>.<br>
+            • <strong>Utbrettet Kappelengde:</strong> <code>L = Flens A + Flens B − BD</code>.<br><br>
+            Dette gir deg den eksakte platelengden du må kappe før du bøyer!`;
         }
 
-        if (q.includes('timebank') || q.includes('overtid') || q.includes('50') || q.includes('100') || q.includes('skatt') || q.includes('lønn') || q.includes('fastlønn') || q.includes('salary')) {
-            return `💰 <strong>Sigrids Lønns- & Timebank-guide for Sigurd Seland AS:</strong><br>
-            • <strong>Fastlønn:</strong> Arbeidsdager i måneden (man–fre) × 7.5t × timelønn.<br>
-            • <strong>50 % overtid:</strong> Timelønn × 1.5 utbetales.<br>
-            • <strong>100 % overtid:</strong> Timelønn × 2.0 utbetales (f.eks. helg).<br>
-            • <strong>Timebank (avspasering):</strong> Når du velger timebank på en overtidstime, blir den 1 ordinære timen satt inn i timebanken til avspasering, mens 50% eller 100% tillegget utbetales direkte på lønnsslippen!<br>
-            • <strong>Fagforening & Skatt:</strong> Skatteetatens tabelltrekk (Tabell 7101) beregnes av bruttoinntekt minus fradragsberettiget fagforeningskontingent (f.eks. 1.5%).`;
+        // 6. TRIGONOMETRI OG TREKANT
+        if (q.includes('trekant') || q.includes('trigonometri') || q.includes('pythagoras') || q.includes('vinkel') || q.includes('skrå') || q.includes('angle')) {
+            return `📐 <strong>Sigrids Trigonometri & Trekant-formler:</strong><br><br>
+            For en rettvinklet trekant med kateter $a, b$ og hypotenus $c$:<br>
+            • <strong>Pythagoras setning:</strong> <code>c = √(a² + b²)</code><br>
+            • <strong>Vinkel A (°):</strong> <code>A = arctan(a / b) × (180 / π)</code><br>
+            • <strong>Vinkel B (°):</strong> <code>B = 90° − A</code><br><br>
+            Bruk dette for å finne nøyaktige skråfaser og toppsleidevinkler på dreiebenken!`;
         }
 
+        // 7. DELEPRIS OG KALKYLE
+        if (q.includes('kalkyle') || q.includes('delepris') || q.includes('tilbud') || q.includes('selvkost') || q.includes('cost')) {
+            return `⏱️ <strong>Sigrids Tilbuds- & Kalkyleformel:</strong><br><br>
+            • <strong>Selvkost:</strong> <code>Selvkost = (Maskintimer × Timepris) + Materialkostnad</code><br>
+            • <strong>Tilbudspris (eks mva):</strong> <code>Tilbudspris = Selvkost × (1 + Fortjeneste % / 100)</code>`;
+        }
+
+        // STANDARD SVAR
         if (isEn) {
-            return `🤖 <strong>Hi! I am Sigrid.</strong><br>I have full access to all calculators and tables on the Sigurd Seland AS portal!<br><br>Try asking me about:<br>• <em>"BSP 1/2 tap drill size"</em><br>• <em>"M10 6H and 6g thread tolerances"</em><br>• <em>"Gibbs circular feed formula"</em><br>• <em>"Cutting speed Vc for Stainless Steel 316L"</em><br>• <em>"How overtime and time bank work"</em>`;
+            return `🤖 <strong>Hi! I am Sigrid, your calculation expert.</strong><br>Ask me to explain any calculation on the site! For example:<br>• <em>"Explain how holiday pay and salary are calculated"</em><br>• <em>"Explain Gibbs circular feed formula"</em><br>• <em>"Explain bend deduction for sheet metal"</em><br>• <em>"Explain tax table 7101 and time bank"</em>`;
         }
-        return `🤖 <strong>Hei! Jeg er Sigrid.</strong><br>Jeg har full tilgang til alle kalkulatorer og tabeller på Sigurd Seland AS-portalen!<br><br>Spør meg gjerne om:<br>• <em>"Kjernebor for BSP 1/2 tomme"</em><br>• <em>"Toleranser for M10 6H og 6g"</em><br>• <em>"Formel for sirkulær mating i Gibbs"</em><br>• <em>"Skjærehastighet Vc for Syrefast 316L"</em><br>• <em>"Hvordan overtid og timebank fungerer"</em>`;
+        return `🤖 <strong>Hei! Jeg er Sigrid, din utregningsekspert.</strong><br>Spør meg om å forklare hvilken som helst utregning på siden! For eksempel:<br>• <em>"Forklar hvordan feriepenger og lønn regnes ut"</em><br>• <em>"Forklar formelen for Gibbs sirkulær mating"</em><br>• <em>"Forklar bøyefradrag for kantpresse"</em><br>• <em>"Forklar tabellskatt 7101 og timebanken"</em>`;
     }
 
     function appendMessage(text, isUser) {

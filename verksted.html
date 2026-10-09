@@ -10,7 +10,7 @@
     <meta http-equiv="Expires" content="0">
 
     <script>
-        const APP_BUILD_VER = "v6.0-Ultimate";
+        const APP_BUILD_VER = "v8.1-CleanText";
         if (localStorage.getItem('app_build_v') !== APP_BUILD_VER) {
             localStorage.setItem('app_build_v', APP_BUILD_VER);
             if ('serviceWorker' in navigator) {
@@ -32,7 +32,6 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Verkstedtabeller">
-    <link rel="apple-touch-icon" href="https://sigurd-seland.no/uploads/lge5O4Vz/354x0_458x0/35f30681-5749-426a-bc82-3ec4dc053599.png">
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
     <style>
@@ -121,17 +120,43 @@
         }
         .field-class:focus { border-color: var(--primary); }
 
+        .swipe-hint {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 0.25rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.375rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        @media (min-width: 768px) {
+            .swipe-hint { display: none; }
+        }
+
+        .tab-bar-container {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
         .tab-bar {
             display: flex;
             gap: 0.375rem;
-            margin-bottom: 1.5rem;
             background: var(--card);
             padding: 0.375rem;
             border-radius: 0.875rem;
             border: 1px solid var(--line);
             box-shadow: var(--shadow);
             overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary) transparent;
         }
+
+        .tab-bar::-webkit-scrollbar { height: 5px; }
+        .tab-bar::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 9999px; }
 
         .tab-btn {
             background: transparent;
@@ -139,11 +164,12 @@
             border: none;
             border-radius: 0.625rem;
             font-weight: 700;
-            font-size: 0.875rem;
-            padding: 0.75rem 1rem;
+            font-size: 0.8125rem;
+            padding: 0.75rem 0.875rem;
             flex: 1;
             white-space: nowrap;
             cursor: pointer;
+            scroll-snap-align: start;
             transition: all 0.2s ease;
         }
         .tab-btn.active {
@@ -205,8 +231,8 @@
             background: var(--primary-soft);
             border-radius: 0.75rem;
             border-left: 4px solid var(--primary);
-            padding: 1rem 1.25rem;
-            margin-top: 1rem;
+            padding: 0.875rem 1rem;
+            margin-top: 0.875rem;
         }
 
         .status-badge {
@@ -243,7 +269,7 @@
         }
 
         @media print {
-            .no-print, form, .btn, .field-class, select, input, .app-footer, .tab-bar { display: none !important; }
+            .no-print, form, .btn, .field-class, select, input, .app-footer, .tab-bar-container { display: none !important; }
             .tab-content { display: block !important; }
             .main-layout { padding: 0 !important; max-width: 100% !important; }
             .calc-card { border: none !important; box-shadow: none !important; }
@@ -259,23 +285,23 @@
                 <span class="status-badge" id="net-status">🟢 Online</span>
             </div>
             <h1 style="font-size: 1.875rem; font-weight: 800; margin: 0; letter-spacing: -0.02em;" id="txt-title">Verkstedtabeller & Bor</h1>
-            <p style="font-size: 0.8125rem; color: var(--muted); margin: 0.25rem 0 0 0;" id="txt-sub">Smie & Mekanisk Verksted • Lyngdal</p>
         </div>
         <div style="display: flex; align-items: center; gap: 0.5rem;">
             <button type="button" class="btn btn-outline no-print" style="height: 2.75rem; padding: 0 0.75rem; font-size: 0.875rem;" onclick="toggleLanguage()" id="lang-toggle-btn">🇳🇴 NO</button>
             <a href="index.html" class="btn btn-outline no-print" style="height: 2.75rem; padding: 0 0.875rem; font-size: 0.875rem;" id="txt-btn-home">🏠 Hovedmeny</a>
             <button type="button" class="btn btn-outline no-print" style="height: 2.75rem; width: 2.75rem; padding: 0; border-radius: 50%; font-size: 1.15rem;" onclick="toggleTheme()" id="theme-toggle-btn">🌙</button>
-            <div style="min-width: 10.5rem; max-width: 13.5rem; height: 4.5rem; display: flex; align-items: center; justify-content: center; overflow: hidden; border-radius: 0.75rem; border: 1px dashed var(--line); background: white; padding: 0.5rem;" id="logo-wrapper">
-                <img src="https://sigurd-seland.no/uploads/lge5O4Vz/354x0_458x0/35f30681-5749-426a-bc82-3ec4dc053599.png" alt="Sigurd Seland AS" style="max-width: 100%; max-height: 100%; object-fit: contain;">
-            </div>
         </div>
     </header>
 
-    <!-- FANE-MENY FOR VERKSTEDTABELLER -->
-    <div class="tab-bar no-print">
-        <button type="button" class="tab-btn active" onclick="switchVerkstedTab('skjaeredata')" id="btn-tab-skjaeredata">🧪 Skjæredata & Bor</button>
-        <button type="button" class="tab-btn" onclick="switchVerkstedTab('gjenger')" id="btn-tab-gjenger">🔩 Gjenger & Toleranser</button>
-        <button type="button" class="tab-btn" onclick="switchVerkstedTab('vekt')" id="btn-tab-vekt">⚖️ Vekt, Skruer & PCD</button>
+    <!-- FANE-MENY MED TYDELIG SVEIP-INDIKATOR FOR MOBIL -->
+    <div class="tab-bar-container no-print">
+        <div class="swipe-hint" id="txt-swipe-hint">👈 SVEIP FANER 👉</div>
+        <div class="tab-bar">
+            <button type="button" class="tab-btn active" onclick="switchVerkstedTab('skjaeredata')" id="btn-tab-skjaeredata">🧪 Skjæredata & Bor</button>
+            <button type="button" class="tab-btn" onclick="switchVerkstedTab('gjenger')" id="btn-tab-gjenger">🔩 Gjenger & Toleranser</button>
+            <button type="button" class="tab-btn" onclick="switchVerkstedTab('vekt')" id="btn-tab-vekt">⚖️ Vekt, Skruer & PCD</button>
+            <button type="button" class="tab-btn" onclick="switchVerkstedTab('matte')" id="btn-tab-matte">📐 Matte & Konverterer</button>
+        </div>
     </div>
 
     <!-- ==================== FANE 1: SKJÆREDATA & BOR ==================== -->
@@ -485,7 +511,7 @@
             </div>
         </div>
 
-        <!-- FORSLAG 4: KONUS & VINKELKALKULATOR -->
+        <!-- KONUS & VINKELKALKULATOR -->
         <div class="calc-card" style="border-left: 5px solid var(--brass);">
             <header style="margin-bottom: 1rem; border-bottom: 1px solid var(--line); padding-bottom: 0.5rem;">
                 <h2 style="font-size: 1.125rem; font-weight: 800; margin: 0; color: var(--brass);">📐 Konus- & Vinkelkalkulator (Dreiing)</h2>
@@ -519,7 +545,7 @@
 
     <!-- ==================== FANE 3: VEKT, SKRUER & PCD ==================== -->
     <div id="vtab-vekt" class="tab-content">
-        <!-- FORSLAG 1: VEKT- OG MATERIALKALKULATOR -->
+        <!-- VEKT- OG MATERIALKALKULATOR -->
         <div class="calc-card" style="border-left: 5px solid #059669;">
             <header style="margin-bottom: 1rem; border-bottom: 1px solid var(--line); padding-bottom: 0.5rem;">
                 <h2 style="font-size: 1.125rem; font-weight: 800; margin: 0; color: #059669;">⚖️ Vekt- & Materialkalkulator (Plate, Aksling, Rør)</h2>
@@ -597,7 +623,7 @@
             </div>
         </div>
 
-        <!-- FORSLAG 2: TILTREKKINGSMOMENT FOR SKRUER -->
+        <!-- TILTREKKINGSMOMENT FOR SKRUER -->
         <div class="calc-card" style="border-left: 5px solid #059669;">
             <header style="margin-bottom: 1rem; border-bottom: 1px solid var(--line); padding-bottom: 0.5rem;">
                 <h2 style="font-size: 1.125rem; font-weight: 800; margin: 0; color: #059669;">🔧 Tiltrekkingsmoment for Skruer (Nm & Force)</h2>
@@ -638,7 +664,7 @@
             </div>
         </div>
 
-        <!-- FORSLAG 3: DELINGSSIRKEL OG FLENSE-KOORDINATER (PCD) -->
+        <!-- DELINGSSIRKEL OG FLENSE-KOORDINATER (PCD) -->
         <div class="calc-card" style="border-left: 5px solid #059669;">
             <header style="margin-bottom: 1rem; border-bottom: 1px solid var(--line); padding-bottom: 0.5rem;">
                 <h2 style="font-size: 1.125rem; font-weight: 800; margin: 0; color: #059669;">⭕ Delingssirkel & Flense-koordinater (PCD)</h2>
@@ -664,10 +690,168 @@
         </div>
     </div>
 
+    <!-- ==================== FANE 4: MATTE & KONVERTERER ==================== -->
+    <div id="vtab-matte" class="tab-content">
+        <!-- 1. TRIGONOMETRI & TREKANTKALKULATOR -->
+        <div class="calc-card" style="border-left: 5px solid #7c3aed;">
+            <header style="margin-bottom: 1rem; border-bottom: 1px solid var(--line); padding-bottom: 0.5rem;">
+                <h2 style="font-size: 1.125rem; font-weight: 800; margin: 0; color: #7c3aed;">📐 Trigonometri & Trekantkalkulator (Pythagoras)</h2>
+                <p style="font-size: 0.8125rem; color: var(--muted); margin: 0.25rem 0 0 0;">Regn ut ukjente sider, vinkler og skråfaser for rettvinklede trekanter.</p>
+            </header>
+
+            <div class="grid-2">
+                <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                    <span style="font-size: 0.8125rem; font-weight: 600;">Katet a (mm)</span>
+                    <input type="number" id="tri-a" class="field-class" inputmode="decimal" placeholder="f.eks. 30" oninput="beregnTrekant()">
+                </label>
+
+                <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                    <span style="font-size: 0.8125rem; font-weight: 600;">Katet b (mm)</span>
+                    <input type="number" id="tri-b" class="field-class" inputmode="decimal" placeholder="f.eks. 40" oninput="beregnTrekant()">
+                </label>
+
+                <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                    <span style="font-size: 0.8125rem; font-weight: 600;">Hypotenus c (mm)</span>
+                    <input type="number" id="tri-c" class="field-class" inputmode="decimal" placeholder="Valgfritt (c)" oninput="beregnTrekant()">
+                </label>
+
+                <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                    <span style="font-size: 0.8125rem; font-weight: 600;">Vinkel A (grader °)</span>
+                    <input type="number" id="tri-deg" class="field-class" inputmode="decimal" placeholder="Valgfritt (A°)" oninput="beregnTrekant()">
+                </label>
+            </div>
+
+            <div class="result-box" style="background: rgba(124, 58, 237, 0.12); border-left-color: #7c3aed;">
+                <div class="line-row strong"><span style="color: #6d28d9;">Hypotenus c (Skrålengde):</span><span id="tri-res-c" class="font-mono" style="font-size: 1.25rem; color: #6d28d9;">50.00 mm</span></div>
+                <div class="line-row strong" style="margin-top: 0.25rem;"><span style="color: #6d28d9;">Vinkler (A° og B°):</span><span id="tri-res-angles" class="font-mono" style="font-size: 1rem; color: #6d28d9;">A = 36.87° | B = 53.13°</span></div>
+            </div>
+        </div>
+
+        <!-- 2. VERKSTEDETS ENHETSKONVERTERER -->
+        <div class="calc-card" style="border-left: 5px solid #7c3aed;">
+            <header style="margin-bottom: 1rem; border-bottom: 1px solid var(--line); padding-bottom: 0.5rem;">
+                <h2 style="font-size: 1.125rem; font-weight: 800; margin: 0; color: #7c3aed;">🧮 Enhetskonverterer (Tommer ➔ MM, PSI ➔ Bar)</h2>
+                <p style="font-size: 0.8125rem; color: var(--muted); margin: 0.25rem 0 0 0;">Omregning av tomme-fraksjoner, PSI trykk, lbs vekt og Fahrenheit temperatur.</p>
+            </header>
+
+            <div class="grid-2">
+                <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                    <span style="font-size: 0.8125rem; font-weight: 600;">Velg Tomme-fraksjon</span>
+                    <select id="conv-frac" class="field-class" onchange="byttTommeFraksjon()">
+                        <option value="0.0625">1/16" (1.588 mm)</option>
+                        <option value="0.125">1/8" (3.175 mm)</option>
+                        <option value="0.1875">3/16" (4.763 mm)</option>
+                        <option value="0.25">1/4" (6.350 mm)</option>
+                        <option value="0.375" selected>3/8" (9.525 mm)</option>
+                        <option value="0.5">1/2" (12.700 mm)</option>
+                        <option value="0.625">5/8" (15.875 mm)</option>
+                        <option value="0.75">3/4" (19.050 mm)</option>
+                        <option value="0.875">7/8" (22.225 mm)</option>
+                        <option value="1.0">1" (25.400 mm)</option>
+                        <option value="1.25">1 1/4" (31.750 mm)</option>
+                        <option value="1.5">1 1/2" (38.100 mm)</option>
+                        <option value="2.0">2" (50.800 mm)</option>
+                    </select>
+                </label>
+
+                <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                    <span style="font-size: 0.8125rem; font-weight: 600;">Egendefinert Tommer (Inches)</span>
+                    <input type="number" id="conv-inch" class="field-class" inputmode="decimal" value="0.375" oninput="beregnEnheter()">
+                </label>
+
+                <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                    <span style="font-size: 0.8125rem; font-weight: 600;">Trykk i PSI</span>
+                    <input type="number" id="conv-psi" class="field-class" inputmode="decimal" value="3000" oninput="beregnEnheter()">
+                </label>
+
+                <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                    <span style="font-size: 0.8125rem; font-weight: 600;">Vekt i Lbs (Pund)</span>
+                    <input type="number" id="conv-lbs" class="field-class" inputmode="decimal" value="220" oninput="beregnEnheter()">
+                </label>
+            </div>
+
+            <div class="result-box" style="background: rgba(124, 58, 237, 0.12); border-left-color: #7c3aed;">
+                <div class="line-row strong"><span style="color: #6d28d9;">Tommer til MM:</span><span id="conv-res-mm" class="font-mono" style="font-size: 1.25rem; color: #6d28d9;">9.525 mm</span></div>
+                <div class="line-row strong" style="margin-top: 0.25rem;"><span style="color: #6d28d9;">PSI til Bar / MPa:</span><span id="conv-res-bar" class="font-mono" style="font-size: 1rem; color: #6d28d9;">206.8 Bar (20.68 MPa)</span></div>
+                <div class="line-row strong" style="margin-top: 0.25rem;"><span style="color: #6d28d9;">Lbs til Kilo (kg):</span><span id="conv-res-kg" class="font-mono" style="font-size: 1rem; color: #6d28d9;">99.79 kg</span></div>
+            </div>
+        </div>
+
+        <!-- 3. PLATEUTBRETTING OG BØYEFRADRAG (KANTPRESSE) -->
+        <div class="calc-card" style="border-left: 5px solid #7c3aed;">
+            <header style="margin-bottom: 1rem; border-bottom: 1px solid var(--line); padding-bottom: 0.5rem;">
+                <h2 style="font-size: 1.125rem; font-weight: 800; margin: 0; color: #7c3aed;">🎯 Plateutbretting & Bøyefradrag (Kantpresse)</h2>
+                <p style="font-size: 0.8125rem; color: var(--muted); margin: 0.25rem 0 0 0;">Regn ut nøyaktig utbrettet platelengde før bøy for $90^\circ$ vinkler.</p>
+            </header>
+
+            <div class="grid-2">
+                <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                    <span style="font-size: 0.8125rem; font-weight: 600;">Utvendig Flens A (mm)</span>
+                    <input type="number" id="bend-a" class="field-class" inputmode="decimal" value="100" oninput="beregnBøy()">
+                </label>
+
+                <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                    <span style="font-size: 0.8125rem; font-weight: 600;">Utvendig Flens B (mm)</span>
+                    <input type="number" id="bend-b" class="field-class" inputmode="decimal" value="150" oninput="beregnBøy()">
+                </label>
+
+                <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                    <span style="font-size: 0.8125rem; font-weight: 600;">Platetykkelse t (mm)</span>
+                    <input type="number" id="bend-t" class="field-class" inputmode="decimal" value="3" oninput="beregnBøy()">
+                </label>
+
+                <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                    <span style="font-size: 0.8125rem; font-weight: 600;">Innvendig Bøyeradius R (mm)</span>
+                    <input type="number" id="bend-r" class="field-class" inputmode="decimal" value="3" oninput="beregnBøy()">
+                </label>
+            </div>
+
+            <div class="result-box" style="background: rgba(124, 58, 237, 0.12); border-left-color: #7c3aed;">
+                <div class="line-row strong"><span style="color: #6d28d9;">Bøyefradrag (BD - Bend Deduction):</span><span id="bend-res-bd" class="font-mono" style="font-size: 1.125rem; color: #6d28d9;">5.43 mm</span></div>
+                <div class="line-row strong" style="margin-top: 0.375rem;"><span style="color: #6d28d9; font-size: 1.125rem;">Utbrettet Kappe-lengde før bøy:</span><span id="bend-res-len" class="font-mono" style="font-size: 1.35rem; color: #6d28d9;">244.57 mm</span></div>
+            </div>
+        </div>
+
+        <!-- 4. DELEPRIS & KALKYLE -->
+        <div class="calc-card" style="border-left: 5px solid #7c3aed;">
+            <header style="margin-bottom: 1rem; border-bottom: 1px solid var(--line); padding-bottom: 0.5rem;">
+                <h2 style="font-size: 1.125rem; font-weight: 800; margin: 0; color: #7c3aed;">⏱️ Delepris & Tilbudskalkulator (Kalkyle)</h2>
+                <p style="font-size: 0.8125rem; color: var(--muted); margin: 0.25rem 0 0 0;">Regn ut selvkost og tilbudspris for en jobb ut fra maskintid, arbeidstimer og materialer.</p>
+            </header>
+
+            <div class="grid-2">
+                <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                    <span style="font-size: 0.8125rem; font-weight: 600;">Maskintid (Timer)</span>
+                    <input type="number" id="cost-mhours" class="field-class" inputmode="decimal" value="2.5" oninput="beregnPris()">
+                </label>
+
+                <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                    <span style="font-size: 0.8125rem; font-weight: 600;">Verkstedets Timepris (kr/t)</span>
+                    <input type="number" id="cost-rate" class="field-class" inputmode="decimal" value="850" oninput="beregnPris()">
+                </label>
+
+                <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                    <span style="font-size: 0.8125rem; font-weight: 600;">Materialkostnad (kr)</span>
+                    <input type="number" id="cost-mat" class="field-class" inputmode="decimal" value="1200" oninput="beregnPris()">
+                </label>
+
+                <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                    <span style="font-size: 0.8125rem; font-weight: 600;">Fortjeneste / Påslag (%)</span>
+                    <input type="number" id="cost-margin" class="field-class" inputmode="decimal" value="20" oninput="beregnPris()">
+                </label>
+            </div>
+
+            <div class="result-box" style="background: rgba(124, 58, 237, 0.12); border-left-color: #7c3aed;">
+                <div class="line-row strong"><span style="color: #6d28d9;">Ren Selvkost:</span><span id="cost-res-base" class="font-mono" style="font-size: 1.125rem; color: #6d28d9;">3 325,00 kr</span></div>
+                <div class="line-row strong" style="margin-top: 0.375rem;"><span style="color: #6d28d9; font-size: 1.125rem;">Anbefalt Tilbudspris (eks mva):</span><span id="cost-res-offer" class="font-mono" style="font-size: 1.35rem; color: #6d28d9;">3 990,00 kr</span></div>
+            </div>
+        </div>
+    </div>
+
     <!-- FREMHEVET SYNLIG BUNNTEKST MED VERSJON -->
     <footer class="app-footer">
         <p style="margin: 0; font-weight: 500;">
-            Sigurd Seland AS • Smie & Mekanisk Verksted • <span class="version-badge">Versjon 6.0 Ultimate</span>
+            <span class="version-badge">Versjon 8.1</span>
         </p>
     </footer>
 </div>
@@ -686,11 +870,12 @@
     const i18n = {
         no: {
             title: "Verkstedtabeller & Bor",
-            sub: "Smie & Mekanisk Verksted • Lyngdal",
             btnHome: "🏠 Hovedmeny",
+            swipeHint: "👈 SVEIP FANER 👉",
             tabData: "🧪 Skjæredata & Bor",
             tabThreads: "🔩 Gjenger & Toleranser",
             tabWeight: "⚖️ Vekt, Skruer & PCD",
+            tabMath: "📐 Matte & Konverterer",
             sec1Title: "🧪 Materialvelger & Anbefalte Skjæredata (Vc & fz)",
             sec1Sub: "Velg verkstedmateriale for å få opp anbefalte skjærehastigheter for skrubb og slett.",
             selectMat: "Velg materiale",
@@ -720,19 +905,16 @@
             tipExtra: "Ekstra spisstillegg (h):",
             totZdepth: "Total Z-boredybde i CNC:",
             sec4Title: "📏 ISO Passninger & Toleranser (H7 / g6)",
-            sec4Sub: "Oppslag for min/maks toleranseforskjeller for aksling og hull.",
-            nomDia: "Nominelt mål (mm)",
-            tolClass: "Toleranseklasse",
-            tolUm: "Toleranseavvik (µm):",
-            tolRange: "Tillatt målområde:"
+            sec4Sub: "Oppslag for min/maks toleranseforskjeller for aksling og hull."
         },
         en: {
             title: "Workshop Tables & Drills",
-            sub: "Forge & Machine Shop • Lyngdal",
             btnHome: "🏠 Main Menu",
+            swipeHint: "👈 SWIPE TABS 👉",
             tabData: "🧪 Cutting Data & Drills",
             tabThreads: "🔩 Threads & Tolerances",
             tabWeight: "⚖️ Weight, Screws & PCD",
+            tabMath: "📐 Math & Converters",
             sec1Title: "🧪 Material Selector & Recommended Speeds (Vc & fz)",
             sec1Sub: "Select workshop material to view recommended roughing and finishing speeds.",
             selectMat: "Select material",
@@ -762,22 +944,19 @@
             tipExtra: "Extra point offset (h):",
             totZdepth: "Total Z depth in CNC:",
             sec4Title: "📏 ISO Fits & Tolerances (H7 / g6)",
-            sec4Sub: "Lookup min/max tolerance deviations for shafts and holes.",
-            nomDia: "Nominal dimension (mm)",
-            tolClass: "Tolerance class",
-            tolUm: "Tolerance deviation (µm):",
-            tolRange: "Allowed size range:"
+            sec4Sub: "Lookup min/max tolerance deviations for shafts and holes."
         }
     };
 
     function updateLanguageUI(lang) {
         const t = i18n[lang] || i18n.no;
         document.getElementById('txt-title').innerText = t.title;
-        document.getElementById('txt-sub').innerText = t.sub;
         document.getElementById('txt-btn-home').innerText = t.btnHome;
+        document.getElementById('txt-swipe-hint').innerText = t.swipeHint;
         document.getElementById('btn-tab-skjaeredata').innerText = t.tabData;
         document.getElementById('btn-tab-gjenger').innerText = t.tabThreads;
         document.getElementById('btn-tab-vekt').innerText = t.tabWeight;
+        document.getElementById('btn-tab-matte').innerText = t.tabMath;
         document.getElementById('txt-sec1-title').innerText = t.sec1Title;
         document.getElementById('txt-sec1-sub').innerText = t.sec1Sub;
         document.getElementById('lbl-select-mat').innerText = t.selectMat;
@@ -1018,13 +1197,13 @@
         let volCm3 = 0;
 
         if (type === 'plate') {
-            const l = parseFloat(document.getElementById('wp-l').value) || 0; // mm
-            const b = parseFloat(document.getElementById('wp-b').value) || 0; // mm
-            const t = parseFloat(document.getElementById('wp-t').value) || 0; // mm
+            const l = parseFloat(document.getElementById('wp-l').value) || 0;
+            const b = parseFloat(document.getElementById('wp-b').value) || 0;
+            const t = parseFloat(document.getElementById('wp-t').value) || 0;
             volCm3 = (l / 10) * (b / 10) * (t / 10);
         } else if (type === 'shaft') {
-            const d = parseFloat(document.getElementById('ws-d').value) || 0; // mm
-            const l = parseFloat(document.getElementById('ws-l').value) || 0; // mm
+            const d = parseFloat(document.getElementById('ws-d').value) || 0;
+            const l = parseFloat(document.getElementById('ws-l').value) || 0;
             const rCm = (d / 2) / 10;
             const lCm = l / 10;
             volCm3 = Math.PI * Math.pow(rCm, 2) * lCm;
@@ -1078,7 +1257,6 @@
         const pcd = parseFloat(document.getElementById('pcd-dia').value) || 100;
         const num = parseInt(document.getElementById('pcd-num').value) || 4;
 
-        // Chord distance = PCD * sin(180 / N in rad)
         const rad = (180 / Math.max(1, num)) * (Math.PI / 180);
         const chord = pcd * Math.sin(rad);
         const angle = 360 / Math.max(1, num);
@@ -1087,39 +1265,86 @@
         document.getElementById('pcd-res-angle').innerText = `${angle.toFixed(1).replace('.', ',')}°`;
     }
 
-    function beregnBoredybde() {
-        const dia = parseFloat(document.getElementById('drill-dia').value) || 10;
-        const angle = parseFloat(document.getElementById('drill-angle').value) || 118;
-        const depth = parseFloat(document.getElementById('drill-depth').value) || 20;
+    function beregnTrekant() {
+        let a = parseFloat(document.getElementById('tri-a').value);
+        let b = parseFloat(document.getElementById('tri-b').value);
+        let c = parseFloat(document.getElementById('tri-c').value);
+        let degA = parseFloat(document.getElementById('tri-deg').value);
 
-        const rad = (angle / 2) * (Math.PI / 180);
-        const tip = (dia / 2) / Math.tan(rad);
-        const total = depth + tip;
+        let resC = 0, degResA = 0, degResB = 0;
 
-        document.getElementById('drill-res-tip').innerText = `${tip.toFixed(2).replace('.', ',')} mm`;
-        document.getElementById('drill-res-total').innerText = `${total.toFixed(2).replace('.', ',')} mm`;
+        if (!isNaN(a) && !isNaN(b)) {
+            resC = Math.sqrt(a * a + b * b);
+            degResA = Math.atan(a / b) * (180 / Math.PI);
+            degResB = 90 - degResA;
+        } else if (!isNaN(a) && !isNaN(c) && c > a) {
+            b = Math.sqrt(c * c - a * a);
+            resC = c;
+            degResA = Math.asin(a / c) * (180 / Math.PI);
+            degResB = 90 - degResA;
+        } else if (!isNaN(a) && !isNaN(degA) && degA > 0 && degA < 90) {
+            let radA = degA * (Math.PI / 180);
+            resC = a / Math.sin(radA);
+            b = a / Math.tan(radA);
+            degResA = degA;
+            degResB = 90 - degA;
+        } else {
+            document.getElementById('tri-res-c').innerText = "Venter på 2 verdier...";
+            document.getElementById('tri-res-angles').innerText = "Fyll inn enten a+b, a+c eller a+vinkel";
+            return;
+        }
+
+        document.getElementById('tri-res-c').innerText = `${resC.toFixed(2).replace('.', ',')} mm`;
+        document.getElementById('tri-res-angles').innerText = `A = ${degResA.toFixed(2)}° | B = ${degResB.toFixed(2)}°`;
     }
 
-    function beregnIsoToleranse() {
-        const dia = parseFloat(document.getElementById('iso-dia').value) || 30;
-        const cls = document.getElementById('iso-class').value;
+    function byttTommeFraksjon() {
+        const val = document.getElementById('conv-frac').value;
+        document.getElementById('conv-inch').value = val;
+        beregnEnheter();
+    }
 
-        let upperUm = 0, lowerUm = 0;
-        if (cls === 'H7') { upperUm = Math.round(10 + dia * 0.35); lowerUm = 0; }
-        else if (cls === 'H8') { upperUm = Math.round(14 + dia * 0.5); lowerUm = 0; }
-        else if (cls === 'h6') { upperUm = 0; lowerUm = -Math.round(6 + dia * 0.25); }
-        else if (cls === 'g6') { upperUm = -Math.round(4 + dia * 0.15); lowerUm = upperUm - Math.round(6 + dia * 0.25); }
-        else if (cls === 'f7') { upperUm = -Math.round(10 + dia * 0.3); lowerUm = upperUm - Math.round(10 + dia * 0.35); }
-        else if (cls === 'k6') { upperUm = Math.round(8 + dia * 0.2); lowerUm = 2; }
+    function beregnEnheter() {
+        const inch = parseFloat(document.getElementById('conv-inch').value) || 0;
+        const psi = parseFloat(document.getElementById('conv-psi').value) || 0;
+        const lbs = parseFloat(document.getElementById('conv-lbs').value) || 0;
 
-        const minMm = dia + (lowerUm / 1000);
-        const maxMm = dia + (upperUm / 1000);
+        const mm = inch * 25.4;
+        const bar = psi * 0.0689476;
+        const mpa = bar / 10;
+        const kg = lbs * 0.453592;
 
-        const upSign = upperUm >= 0 ? `+${upperUm}` : `${upperUm}`;
-        const lowSign = lowerUm >= 0 ? `+${lowerUm}` : `${lowerUm}`;
+        document.getElementById('conv-res-mm').innerText = `${mm.toFixed(3).replace('.', ',')} mm`;
+        document.getElementById('conv-res-bar').innerText = `${bar.toFixed(1).replace('.', ',')} Bar (${mpa.toFixed(2).replace('.', ',')} MPa)`;
+        document.getElementById('conv-res-kg').innerText = `${kg.toFixed(2).replace('.', ',')} kg`;
+    }
 
-        document.getElementById('iso-res-um').innerText = `${upSign} µm / ${lowSign} µm`;
-        document.getElementById('iso-res-range').innerText = `${minMm.toFixed(3).replace('.', ',')} mm – ${maxMm.toFixed(3).replace('.', ',')} mm`;
+    function beregnBøy() {
+        const a = parseFloat(document.getElementById('bend-a').value) || 0;
+        const b = parseFloat(document.getElementById('bend-b').value) || 0;
+        const t = parseFloat(document.getElementById('bend-t').value) || 0;
+        const r = parseFloat(document.getElementById('bend-r').value) || 0;
+
+        const k = 0.33;
+        const bendAllowance = (Math.PI / 2) * (r + k * t);
+        const bendDeduction = 2 * (r + t) - bendAllowance;
+        const totalLen = Math.max(0, a + b - bendDeduction);
+
+        document.getElementById('bend-res-bd').innerText = `${bendDeduction.toFixed(2).replace('.', ',')} mm`;
+        document.getElementById('bend-res-len').innerText = `${totalLen.toFixed(2).replace('.', ',')} mm`;
+    }
+
+    function beregnPris() {
+        const mHours = parseFloat(document.getElementById('cost-mhours').value) || 0;
+        const rate = parseFloat(document.getElementById('cost-rate').value) || 0;
+        const mat = parseFloat(document.getElementById('cost-mat').value) || 0;
+        const margin = parseFloat(document.getElementById('cost-margin').value) || 0;
+
+        const baseCost = (mHours * rate) + mat;
+        const totalOffer = baseCost * (1 + (margin / 100));
+
+        document.getElementById('cost-res-base').innerText = `${baseCost.toFixed(2).replace('.', ',')} kr`;
+        document.getElementById('cost-res-offer').innerText = `${totalOffer.toFixed(2).replace('.', ',')} kr`;
     }
 
     // Initialiser
@@ -1132,6 +1357,10 @@
     beregnPcd();
     beregnBoredybde();
     beregnIsoToleranse();
+    beregnTrekant();
+    beregnEnheter();
+    beregnBøy();
+    beregnPris();
 </script>
 
 </body>

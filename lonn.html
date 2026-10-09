@@ -10,7 +10,7 @@
     <meta http-equiv="Expires" content="0">
 
     <script>
-        const APP_BUILD_VER = "v5.4";
+        const APP_BUILD_VER = "v8.1-CleanText";
         if (localStorage.getItem('app_build_v') !== APP_BUILD_VER) {
             localStorage.setItem('app_build_v', APP_BUILD_VER);
             if ('serviceWorker' in navigator) {
@@ -32,7 +32,6 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Lønnskalkulator">
-    <link rel="apple-touch-icon" href="https://sigurd-seland.no/uploads/lge5O4Vz/354x0_458x0/35f30681-5749-426a-bc82-3ec4dc053599.png">
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
     <style>
@@ -190,11 +189,46 @@
         }
         .line-row.strong { font-weight: 700; }
 
+        .swipe-hint {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 0.25rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.375rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        @media (min-width: 768px) {
+            .swipe-hint { display: none; }
+        }
+
+        .tab-bar {
+            display: flex;
+            gap: 0.375rem;
+            margin-bottom: 1.25rem;
+            background: var(--card);
+            padding: 0.375rem;
+            border-radius: 0.875rem;
+            border: 1px solid var(--line);
+            box-shadow: var(--shadow);
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary) transparent;
+        }
+
+        .tab-bar::-webkit-scrollbar { height: 5px; }
+        .tab-bar::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 9999px; }
+
         .tab-btn {
             background: transparent; color: var(--muted);
             border: none; border-radius: 0.625rem;
             font-weight: 700; font-size: 0.875rem;
             padding: 0.75rem; flex: 1; cursor: pointer;
+            scroll-snap-align: start;
             transition: all 0.2s ease;
         }
         .tab-btn.active {
@@ -287,23 +321,22 @@
                 <span class="status-badge" id="net-status">🟢 Online</span>
             </div>
             <h1 style="font-size: 1.875rem; font-weight: 800; margin: 0; letter-spacing: -0.02em;" id="txt-title">Lønnskalkulator</h1>
-            <p style="font-size: 0.8125rem; color: var(--muted); margin: 0.25rem 0 0 0;" id="txt-sub">Smie & Mekanisk Verksted • Lyngdal</p>
         </div>
         <div style="display: flex; align-items: center; gap: 0.5rem;">
             <button type="button" class="btn btn-outline no-print" style="height: 2.75rem; padding: 0 0.75rem; font-size: 0.875rem;" onclick="toggleLanguage()" id="lang-toggle-btn">🇳🇴 NO</button>
             <a href="index.html" class="btn btn-outline no-print" style="height: 2.75rem; padding: 0 0.875rem; font-size: 0.875rem;" id="txt-btn-home">🏠 Hovedmeny</a>
             <button type="button" class="btn btn-outline no-print" style="height: 2.75rem; width: 2.75rem; padding: 0; border-radius: 50%; font-size: 1.15rem;" onclick="toggleTheme()" id="theme-toggle-btn">🌙</button>
-            <div style="min-width: 10.5rem; max-width: 13.5rem; height: 4.5rem; display: flex; align-items: center; justify-content: center; overflow: hidden; border-radius: 0.75rem; border: 1px dashed var(--line); background: white; padding: 0.5rem;" id="logo-wrapper">
-                <img src="https://sigurd-seland.no/uploads/lge5O4Vz/354x0_458x0/35f30681-5749-426a-bc82-3ec4dc053599.png" alt="Sigurd Seland AS" style="max-width: 100%; max-height: 100%; object-fit: contain;">
-            </div>
         </div>
     </header>
 
     <!-- FANE-MENY FOR LØNN -->
-    <div class="no-print" style="display: flex; gap: 0.375rem; margin-bottom: 1.25rem; background: var(--card); padding: 0.375rem; border-radius: 0.875rem; border: 1px solid var(--line); box-shadow: var(--shadow);">
-        <button type="button" class="tab-btn active" onclick="switchTab('oversikt')" id="btn-tab-oversikt">📊 Oversikt</button>
-        <button type="button" class="tab-btn" onclick="switchTab('vakter')" id="btn-tab-vakter">⏱️ Vakter</button>
-        <button type="button" class="tab-btn" onclick="switchTab('innstillinger')" id="btn-tab-innstillinger">⚙️ Innstillinger</button>
+    <div class="no-print">
+        <div class="swipe-hint" id="txt-swipe-hint">👈 SVEIP FANER 👉</div>
+        <div class="tab-bar">
+            <button type="button" class="tab-btn active" onclick="switchTab('oversikt')" id="btn-tab-oversikt">📊 Oversikt</button>
+            <button type="button" class="tab-btn" onclick="switchTab('vakter')" id="btn-tab-vakter">⏱️ Vakter</button>
+            <button type="button" class="tab-btn" onclick="switchTab('innstillinger')" id="btn-tab-innstillinger">⚙️ Innstillinger</button>
+        </div>
     </div>
 
     <!-- TAB 1: OVERSIKT -->
@@ -558,7 +591,7 @@
     <!-- FREMHEVET SYNLIG BUNNTEKST MED VERSJON -->
     <footer class="app-footer">
         <p style="margin: 0; font-weight: 500;">
-            Smie & Mekanisk Verksted • <span class="version-badge">Versjon 5.4</span>
+            <span class="version-badge">Versjon 8.1</span>
         </p>
     </footer>
 </div>
@@ -575,8 +608,8 @@
     const i18n = {
         no: {
             title: "Lønnskalkulator",
-            sub: "Smie & Mekanisk Verksted • Lyngdal",
             btnHome: "🏠 Hovedmeny",
+            swipeHint: "👈 SVEIP FANER 👉",
             tabOverview: "📊 Oversikt",
             tabShifts: "⏱️ Vakter",
             tabSettings: "⚙️ Innstillinger",
@@ -630,8 +663,8 @@
         },
         en: {
             title: "Paycheck Calculator",
-            sub: "Forge & Machine Shop • Lyngdal",
             btnHome: "🏠 Main Menu",
+            swipeHint: "👈 SWIPE TABS 👉",
             tabOverview: "📊 Overview",
             tabShifts: "⏱️ Shifts",
             tabSettings: "⚙️ Settings",
@@ -688,8 +721,8 @@
     function updateLanguageUI(lang) {
         const t = i18n[lang] || i18n.no;
         document.getElementById('txt-title').innerText = t.title;
-        document.getElementById('txt-sub').innerText = t.sub;
         document.getElementById('txt-btn-home').innerText = t.btnHome;
+        document.getElementById('txt-swipe-hint').innerText = t.swipeHint;
         document.getElementById('btn-tab-oversikt').innerText = t.tabOverview;
         document.getElementById('btn-tab-vakter').innerText = t.tabShifts;
         document.getElementById('btn-tab-innstillinger').innerText = t.tabSettings;
