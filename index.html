@@ -5,16 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Verkstedsportal - Sigurd Seland AS</title>
 
-    <!-- UNNGÅ NETTLESERSUPPER / CACHE PÅ GITHUB PAGES -->
+    <!-- TVUNGET DIREKTE HENTING UTEN CACHE -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
 
-    <!-- AUTOMATISK TVUNGET CACHE-CLEARING KODE -->
+    <!-- AUTOMATISK CACHE-KILLER OG UNREGISTER SERVICE WORKER -->
     <script>
-        const APP_BUILD_VERSION = "v2.8";
-        if (localStorage.getItem('app_build_ver') !== APP_BUILD_VERSION) {
-            localStorage.setItem('app_build_ver', APP_BUILD_VERSION);
+        const APP_BUILD_VER = "v2.8";
+        if (localStorage.getItem('app_build_v') !== APP_BUILD_VER) {
+            localStorage.setItem('app_build_v', APP_BUILD_VER);
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.getRegistrations().then(regs => {
                     for (let reg of regs) reg.unregister();
@@ -29,7 +29,6 @@
         }
     </script>
 
-    <!-- PWA MANIFEST OG METADATA -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0284c7">
     <meta name="mobile-web-app-capable" content="yes">
@@ -80,7 +79,6 @@
             min-height: 100vh;
         }
 
-        /* SPLASH SCREEN */
         #splash-screen {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -224,7 +222,7 @@
     </div>
 
     <!-- KORT 1: LØNNSKALKULATOR -->
-    <a href="lonn.html" class="portal-card">
+    <a href="lonn.html?v=2.8" class="portal-card">
         <div class="portal-icon">💰</div>
         <div style="flex: 1;">
             <h3 style="margin: 0 0 0.25rem 0; font-size: 1.25rem; font-weight: 700; color: var(--primary-deep);">Lønnskalkulator & Vakter</h3>
@@ -234,7 +232,7 @@
     </a>
 
     <!-- KORT 2: MASKINERINSKALKURATOR -->
-    <a href="maskinering.html" class="portal-card">
+    <a href="maskinering.html?v=2.8" class="portal-card">
         <div class="portal-icon" style="background: var(--brass-soft);">⚙️</div>
         <div style="flex: 1;">
             <h3 style="margin: 0 0 0.25rem 0; font-size: 1.25rem; font-weight: 700; color: var(--brass);">Maskineringskalkulator</h3>
@@ -244,7 +242,7 @@
     </a>
 
     <!-- KORT 3: VERKSTEDTABELLER & BOR/TOLERANSER -->
-    <a href="verksted.html" class="portal-card">
+    <a href="verksted.html?v=2.8" class="portal-card">
         <div class="portal-icon" style="background: rgba(16, 185, 129, 0.15);">🛠️</div>
         <div style="flex: 1;">
             <h3 style="margin: 0 0 0.25rem 0; font-size: 1.25rem; font-weight: 700; color: #059669;">Verkstedtabeller & Bor</h3>
@@ -263,9 +261,7 @@
 <script>
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', function() {
-            navigator.serviceWorker.register('sw.js?ver=' + APP_BUILD_VERSION).then(function(reg) {
-                reg.update();
-            });
+            navigator.serviceWorker.register('sw.js?ver=' + APP_BUILD_VER);
         });
     }
 

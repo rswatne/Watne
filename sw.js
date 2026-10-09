@@ -1,6 +1,4 @@
-// AUTO-CLEAR CACHE SERVICE WORKER
-const CACHE_VERSION = 'v-force-reload-2.5';
-
+// FORCE UNREGISTER AND KILL ALL CACHES
 self.addEventListener('install', (event) => {
   self.skipWaiting();
 });
@@ -10,7 +8,7 @@ self.addEventListener('activate', (event) => {
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames.map((cache) => {
-          console.log('[PWA] Tvinger sletting av gammel cache:', cache);
+          console.log('[PWA] Sletter alt fra cachen:', cache);
           return caches.delete(cache);
         })
       );
@@ -18,11 +16,6 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Sørg for at alle nettverkskall hentes direkte fra server uten caching
 self.addEventListener('fetch', (event) => {
-  event.respondWith(
-    fetch(event.request).catch(() => {
-      return caches.match(event.request);
-    })
-  );
+  event.respondWith(fetch(event.request));
 });
