@@ -366,10 +366,15 @@
 </head>
 <body>
 
+<!-- INLINE BASE64 LOGO DEDIKERT FOR EMBEDDING -->
+<script>
+const DEFAULT_LOGO_BASE64 = "data:image/png;base64,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";
+</script>
+
 <!-- SPLASH SCREEN -->
 <div id="splash-screen">
     <div class="splash-logo-box">
-        <img src="logo.png" alt="Sigurd Seland AS">
+        <img id="splash-logo-img" src="logo.png" alt="Sigurd Seland AS">
     </div>
     <h1 style="font-size: 22px; font-weight: 700; margin: 0 0 6px 0; color: #f8fafc; letter-spacing: -0.02em;">Lønnskalkulator</h1>
     <p style="font-size: 13px; color: #94a3b8; margin: 0 0 20px 0; font-weight: 500;">Sigurd Seland AS • Smie & Mekanisk Verksted • Etablert 1902</p>
@@ -413,7 +418,7 @@
 
             <div class="no-print" style="display: flex; align-items: center; gap: 0.75rem;">
                 <div style="width: 6.5rem; height: 3.5rem; display: flex; align-items: center; justify-content: center; overflow: hidden; border-radius: 0.5rem; border: 1px dashed var(--line); background: white; padding: 0.25rem;" id="logo-wrapper">
-                    <img src="logo.png" alt="Sigurd Seland AS" style="max-height: 3rem; max-width: 100%; object-fit: contain;">
+                    <!-- LOGO LASTES INN AV visLogo() -->
                 </div>
                 <div style="display: flex; flex-direction: column; gap: 0.2rem;">
                     <label class="btn btn-outline" style="height: 2.5rem; padding: 0 0.5rem; font-size: 0.8125rem; cursor: pointer;">
@@ -915,7 +920,7 @@
         const wrapper = document.getElementById('logo-wrapper');
         if (!wrapper) return;
 
-        let src = "logo.png";
+        let src = DEFAULT_LOGO_BASE64;
         if (data && typeof data === 'string' && data.startsWith("data:image")) {
             src = data;
         }
@@ -937,7 +942,7 @@
 
     function fjernLogo() {
         localStorage.removeItem('lonn_logo');
-        visLogo("logo.png");
+        visLogo(DEFAULT_LOGO_BASE64);
     }
 
     function leggTilVakt(event) {
@@ -1218,7 +1223,7 @@
         localStorage.setItem('lonn_tabell', document.getElementById('skatte-tabellnummer').value);
         localStorage.setItem('lonn_skatt_pct', document.getElementById('skatt').value);
         localStorage.setItem('lonn_union_pct', document.getElementById('fagforening-prosent').value);
-        localStorage.setItem('lonn_vakter_tabs_v17', JSON.stringify(registrerteVakter));
+        localStorage.setItem('lonn_vakter_tabs_v18', JSON.stringify(registrerteVakter));
     }
 
     function lastInnstillinger() {
@@ -1247,8 +1252,8 @@
         if (localStorage.getItem('lonn_skatt_pct')) document.getElementById('skatt').value = localStorage.getItem('lonn_skatt_pct');
         if (localStorage.getItem('lonn_union_pct')) document.getElementById('fagforening-prosent').value = localStorage.getItem('lonn_union_pct');
 
-        if (localStorage.getItem('lonn_vakter_tabs_v17')) {
-            try { registrerteVakter = JSON.parse(localStorage.getItem('lonn_vakter_tabs_v17')); } catch(e){}
+        if (localStorage.getItem('lonn_vakter_tabs_v18')) {
+            try { registrerteVakter = JSON.parse(localStorage.getItem('lonn_vakter_tabs_v18')); } catch(e){}
         }
 
         let savedLogo = localStorage.getItem('lonn_logo');
