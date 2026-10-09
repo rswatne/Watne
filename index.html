@@ -369,7 +369,7 @@
 <!-- SPLASH SCREEN -->
 <div id="splash-screen">
     <div class="splash-logo-box">
-        <img src="logo.png" alt="Sigurd Seland AS" onerror="this.src='https://sigurd-seland.no/wp-content/uploads/2021/04/Sigurd-Seland-logo-300x122.png';">
+        <img src="logo.png" alt="Sigurd Seland AS">
     </div>
     <h1 style="font-size: 22px; font-weight: 700; margin: 0 0 6px 0; color: #f8fafc; letter-spacing: -0.02em;">Lønnskalkulator</h1>
     <p style="font-size: 13px; color: #94a3b8; margin: 0 0 20px 0; font-weight: 500;">Sigurd Seland AS • Smie & Mekanisk Verksted • Etablert 1902</p>
@@ -412,8 +412,8 @@
             <button type="button" class="btn btn-outline no-print" style="height: 2.75rem; width: 2.75rem; padding: 0; border-radius: 50%; font-size: 1.1rem;" onclick="toggleTheme()" id="theme-toggle-btn" title="Bytt tema">🌙</button>
 
             <div class="no-print" style="display: flex; align-items: center; gap: 0.75rem;">
-                <div style="width: 6rem; height: 3.5rem; display: flex; align-items: center; justify-content: center; overflow: hidden; border-radius: 0.5rem; border: 1px dashed var(--line); background: var(--card); padding: 0.25rem;" id="logo-wrapper">
-                    <span id="logo-display" style="text-align: center; font-size: 0.70rem; color: var(--muted); font-style: italic;">Ingen logo</span>
+                <div style="width: 6.5rem; height: 3.5rem; display: flex; align-items: center; justify-content: center; overflow: hidden; border-radius: 0.5rem; border: 1px dashed var(--line); background: white; padding: 0.25rem;" id="logo-wrapper">
+                    <img src="logo.png" alt="Sigurd Seland AS" style="max-height: 3rem; max-width: 100%; object-fit: contain;">
                 </div>
                 <div style="display: flex; flex-direction: column; gap: 0.2rem;">
                     <label class="btn btn-outline" style="height: 2.5rem; padding: 0 0.5rem; font-size: 0.8125rem; cursor: pointer;">
@@ -913,16 +913,14 @@
 
     function visLogo(data) {
         const wrapper = document.getElementById('logo-wrapper');
-        const fallbackUrl = "logo.png";
+        if (!wrapper) return;
 
-        let targetSrc = fallbackUrl;
-        if (data && typeof data === 'string' && data.length > 5) {
-            if (!data.startsWith("file://") && !data.includes("android_asset")) {
-                targetSrc = data;
-            }
+        let src = "logo.png";
+        if (data && typeof data === 'string' && data.startsWith("data:image")) {
+            src = data;
         }
 
-        wrapper.innerHTML = `<img src="${targetSrc}" alt="Firmalogo" style="max-height: 3rem; max-width: 100%; object-fit: contain;" onerror="if(this.src!=='${fallbackUrl}') { this.src='${fallbackUrl}'; } else { this.onerror=null; this.parentElement.innerHTML='<span style=\\'text-align: center; font-size: 0.70rem; color: var(--muted); font-style: italic;\\'>Sigurd Seland AS</span>'; }">`;
+        wrapper.innerHTML = `<img src="${src}" alt="Sigurd Seland AS" style="max-height: 3rem; max-width: 100%; object-fit: contain; display: block; margin: 0 auto;">`;
     }
 
     function lastOppLogo(input) {
@@ -1220,7 +1218,7 @@
         localStorage.setItem('lonn_tabell', document.getElementById('skatte-tabellnummer').value);
         localStorage.setItem('lonn_skatt_pct', document.getElementById('skatt').value);
         localStorage.setItem('lonn_union_pct', document.getElementById('fagforening-prosent').value);
-        localStorage.setItem('lonn_vakter_tabs_v16', JSON.stringify(registrerteVakter));
+        localStorage.setItem('lonn_vakter_tabs_v17', JSON.stringify(registrerteVakter));
     }
 
     function lastInnstillinger() {
@@ -1249,16 +1247,12 @@
         if (localStorage.getItem('lonn_skatt_pct')) document.getElementById('skatt').value = localStorage.getItem('lonn_skatt_pct');
         if (localStorage.getItem('lonn_union_pct')) document.getElementById('fagforening-prosent').value = localStorage.getItem('lonn_union_pct');
 
-        if (localStorage.getItem('lonn_vakter_tabs_v16')) {
-            try { registrerteVakter = JSON.parse(localStorage.getItem('lonn_vakter_tabs_v16')); } catch(e){}
+        if (localStorage.getItem('lonn_vakter_tabs_v17')) {
+            try { registrerteVakter = JSON.parse(localStorage.getItem('lonn_vakter_tabs_v17')); } catch(e){}
         }
 
         let savedLogo = localStorage.getItem('lonn_logo');
-        if (savedLogo && !savedLogo.startsWith("file://") && !savedLogo.includes("android_asset")) {
-            visLogo(savedLogo);
-        } else {
-            visLogo("logo.png");
-        }
+        visLogo(savedLogo);
 
         byttSkattType();
         oppdaterAarOgMaaned();
