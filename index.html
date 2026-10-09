@@ -914,7 +914,10 @@
     function visLogo(data) {
         const wrapper = document.getElementById('logo-wrapper');
         if (data) {
-            let src = data === "logo.png" ? "file:///android_asset/logo.png" : data;
+            let src = data;
+            if (data === "logo.png" || data === "file:///android_asset/logo.png") {
+                src = "logo.png";
+            }
             wrapper.innerHTML = `<img src="${src}" alt="Firmalogo" style="max-height: 3rem; max-width: 100%; object-fit: contain;">`;
         } else {
             wrapper.innerHTML = `<span style="text-align: center; font-size: 0.70rem; color: var(--muted); font-style: italic;">Ingen logo</span>`;
@@ -935,7 +938,7 @@
 
     function fjernLogo() {
         localStorage.removeItem('lonn_logo');
-        visLogo("file:///android_asset/logo.png");
+        visLogo("logo.png");
     }
 
     function leggTilVakt(event) {
@@ -1216,7 +1219,7 @@
         localStorage.setItem('lonn_tabell', document.getElementById('skatte-tabellnummer').value);
         localStorage.setItem('lonn_skatt_pct', document.getElementById('skatt').value);
         localStorage.setItem('lonn_union_pct', document.getElementById('fagforening-prosent').value);
-        localStorage.setItem('lonn_vakter_tabs_v13', JSON.stringify(registrerteVakter));
+        localStorage.setItem('lonn_vakter_tabs_v14', JSON.stringify(registrerteVakter));
     }
 
     function lastInnstillinger() {
@@ -1245,13 +1248,13 @@
         if (localStorage.getItem('lonn_skatt_pct')) document.getElementById('skatt').value = localStorage.getItem('lonn_skatt_pct');
         if (localStorage.getItem('lonn_union_pct')) document.getElementById('fagforening-prosent').value = localStorage.getItem('lonn_union_pct');
 
-        if (localStorage.getItem('lonn_vakter_tabs_v13')) {
-            try { registrerteVakter = JSON.parse(localStorage.getItem('lonn_vakter_tabs_v13')); } catch(e){}
+        if (localStorage.getItem('lonn_vakter_tabs_v14')) {
+            try { registrerteVakter = JSON.parse(localStorage.getItem('lonn_vakter_tabs_v14')); } catch(e){}
         }
         if (localStorage.getItem('lonn_logo')) {
             visLogo(localStorage.getItem('lonn_logo'));
         } else {
-            visLogo("file:///android_asset/logo.png");
+            visLogo("logo.png");
         }
 
         byttSkattType();
