@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AI Verkstedsassistent - Sigurd Seland AS</title>
+
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0284c7">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="AI Assistent">
+    <link rel="apple-touch-icon" href="https://sigurd-seland.no/uploads/lge5O4Vz/354x0_458x0/35f30681-5749-426a-bc82-3ec4dc053599.png">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0284c7;
+            --primary-deep: #0369a1;
+            --primary-soft: #e0f2fe;
+            --brass: #b45309;
+            --brass-soft: #fef3c7;
+            --card: #ffffff;
+            --bg: #f8fafc;
+            --ink: #1e293b;
+            --muted: #64748b;
+            --line: #e2e8f0;
+            --shadow: 0 4px 15px -3px rgba(0, 0, 0, 0.05);
+        }
+
+        body.dark-mode {
+            --primary: #38bdf8;
+            --primary-deep: #0284c7;
+            --primary-soft: rgba(56, 189, 248, 0.15);
+            --brass: #d97706;
+            --brass-soft: rgba(217, 119, 6, 0.15);
+            --card: #1e293b;
+            --bg: #0f172a;
+            --ink: #f8fafc;
+            --muted: #94a3b8;
+            --line: #334155;
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--ink);
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .main-layout {
+            max-width: 50rem;
+            margin: 0 auto;
+            padding: 1.5rem 1rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+
+        header {
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            border-bottom: 1px solid var(--line);
+            padding-bottom: 1rem;
+        }
+
+        .chat-container {
+            background: var(--card);
+            border-radius: 1rem;
+            border: 1px solid var(--line);
+            box-shadow: var(--shadow);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            min-height: 28rem;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 1.25rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            max-height: 32rem;
+        }
+
+        .msg-bubble {
+            max-width: 85%;
+            padding: 0.875rem 1.125rem;
+            border-radius: 1rem;
+            font-size: 0.9375rem;
+            line-height: 1.5;
+            word-wrap: break-word;
+        }
+
+        .msg-ai {
+            background: var(--primary-soft);
+            color: var(--ink);
+            border-bottom-left-radius: 0.25rem;
+            align-self: flex-start;
+            border: 1px solid var(--line);
+        }
+
+        .msg-user {
+            background: var(--primary);
+            color: white;
+            border-bottom-right-radius: 0.25rem;
+            align-self: flex-end;
+        }
+
+        .quick-prompts {
+            display: flex;
+            gap: 0.5rem;
+            padding: 0.75rem 1.25rem;
+            overflow-x: auto;
+            border-top: 1px solid var(--line);
+            background: var(--bg);
+        }
+
+        .prompt-chip {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 9999px;
+            padding: 0.375rem 0.875rem;
+            font-size: 0.8125rem;
+            font-weight: 500;
+            cursor: pointer;
+            white-space: nowrap;
+            color: var(--muted);
+            transition: all 0.2s ease;
+        }
+        .prompt-chip:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .chat-input-bar {
+            display: flex;
+            gap: 0.5rem;
+            padding: 1rem;
+            border-top: 1px solid var(--line);
+            background: var(--card);
+        }
+
+        .field-class {
+            height: 2.75rem;
+            flex: 1;
+            border-radius: 0.5rem;
+            border: 1px solid var(--line);
+            background-color: var(--bg);
+            padding: 0 0.875rem;
+            font-size: 0.9375rem;
+            color: var(--ink);
+            outline: none;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            text-decoration: none;
+        }
+        .btn-primary { background: var(--primary); color: white; height: 2.75rem; padding: 0 1.25rem; }
+        .btn-outline { border: 1px solid var(--line); background: var(--card); color: var(--ink); height: 2.75rem; padding: 0 1rem; }
+    </style>
+</head>
+<body>
+
+<div class="main-layout">
+    <header>
+        <div>
+            <p style="font-size: 0.75rem; letter-spacing: 0.18em; color: var(--primary); text-transform: uppercase; margin: 0 0 4px 0; font-weight: 700;">Sigurd Seland AS · Etablert 1902</p>
+            <h1 style="font-size: 1.75rem; font-weight: 700; margin: 0;">🤖 AI Verkstedsassistent</h1>
+            <p style="font-size: 0.8125rem; color: var(--muted); margin: 0.125rem 0 0 0;">Spør AI om maskinering, G-koder, gjenger, skjæredata og lønn</p>
+        </div>
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <a href="index.html" class="btn btn-outline" style="height: 2.75rem; padding: 0 0.875rem; font-size: 0.875rem;">🏠 Hovedmeny</a>
+            <button type="button" class="btn btn-outline" style="height: 2.75rem; width: 2.75rem; padding: 0; border-radius: 50%; font-size: 1.1rem;" onclick="toggleTheme()" id="theme-toggle-btn">🌙</button>
+        </div>
+    </header>
+
+    <div class="chat-container">
+        <!-- CHAT MELDINGER -->
+        <div class="chat-messages" id="chat-box">
+            <div class="msg-bubble msg-ai">
+                👋 <strong>Hei! Jeg er AI Verkstedsassistenten for Sigurd Seland AS.</strong><br>
+                Jeg kan hjelpe deg med skjæredata ($V_c$, $f_z$, RPM), gjengeboringer, G-koder, verktøyvalg, feilsøking ved dreiing/fresing, eller spørsmål om vakter og timebank! Hva lurer du på i dag?
+            </div>
+        </div>
+
+        <!-- HURTIGMELDINGER -->
+        <div class="quick-prompts">
+            <span class="prompt-chip" onclick="sendQuickPrompt('Hva er anbefalt Vc for syrefast stål 316L?')">💡 Skjæredata Syrefast</span>
+            <span class="prompt-chip" onclick="sendQuickPrompt('Hvilket bor skal jeg bruke til M12 og M16 gjenger?')">🔩 Bor til M12/M16</span>
+            <span class="prompt-chip" onclick="sendQuickPrompt('Hva er de viktigste CNC G-kodene for fresing?')">⚙️ CNC G-koder</span>
+            <span class="prompt-chip" onclick="sendQuickPrompt('Hvordan regnes 50% og 100% overtid i timebanken?')">💰 Timebank & Overtid</span>
+        </div>
+
+        <!-- CHAT INPUT -->
+        <form class="chat-input-bar" onsubmit="handleChatSubmit(event)">
+            <input type="text" id="user-input" class="field-class" placeholder="Skriv spørsmål om maskinering, gjenger, G-koder eller lønn..." autocomplete="off">
+            <button type="submit" class="btn btn-primary">Send 🚀</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    function toggleTheme() {
+        const isDark = document.body.classList.contains('dark-mode');
+        if (isDark) {
+            document.body.classList.remove('dark-mode');
+            localStorage.setItem('lonn_theme', 'light');
+            document.getElementById('theme-toggle-btn').innerText = '☀️';
+        } else {
+            document.body.classList.add('dark-mode');
+            localStorage.setItem('lonn_theme', 'dark');
+            document.getElementById('theme-toggle-btn').innerText = '🌙';
+        }
+    }
+
+    if (localStorage.getItem('lonn_theme') === 'dark') {
+        document.body.classList.add('dark-mode');
+        document.getElementById('theme-toggle-btn').innerText = '🌙';
+    }
+
+    // AI KUNNSKAPSBABASE OG RESPONSER FOR VERKSTED & LØNN
+    function generateAiResponse(input) {
+        const q = input.toLowerCase();
+
+        if (q.includes('vc') || q.includes('skjærehastighet') || q.includes('syrefast') || q.includes('316') || q.includes('duplex') || q.includes('s355')) {
+            return `🛠️ <strong>Anbefalte skjærehastigheter (Vc):</strong><br>
+            • <strong>Konstruksjonsstål (S355/St52):</strong> Vc = 180–240 m/min (Skrubb) / 220–280 m/min (Slett)<br>
+            • <strong>Seigherdingsstål (C45/42CrMo4):</strong> Vc = 140–180 m/min<br>
+            • <strong>Syrefast (316L/A4):</strong> Vc = 90–120 m/min (Bruk rikelig med kjølevæske og jevn mating!)<br>
+            • <strong>Duplex (2205):</strong> Vc = 70–95 m/min<br>
+            • <strong>Aluminium (6082-T6):</strong> Vc = 450–700 m/min<br><br>
+            💡 <em>Formel for Spindelhastighet:</em> <code>RPM = (Vc × 1000) / (π × Diameter)</code>`;
+        }
+
+        if (q.includes('bor') || q.includes('gjeng') || q.includes('kjernebor') || q.includes('m12') || q.includes('m16') || q.includes('m10') || q.includes('m8')) {
+            return `🔩 <strong>Standard Kjernebor-størrelser for M-Gjenger:</strong><br>
+            • <strong>M3:</strong> 2.5 mm bor (stigning 0.5 mm)<br>
+            • <strong>M4:</strong> 3.3 mm bor (stigning 0.7 mm)<br>
+            • <strong>M5:</strong> 4.2 mm bor (stigning 0.8 mm)<br>
+            • <strong>M6:</strong> 5.0 mm bor (stigning 1.0 mm)<br>
+            • <strong>M8:</strong> 6.8 mm bor (stigning 1.25 mm)<br>
+            • <strong>M10:</strong> 8.5 mm bor (stigning 1.5 mm)<br>
+            • <strong>M12:</strong> 10.2 mm bor (stigning 1.75 mm)<br>
+            • <strong>M16:</strong> 14.0 mm bor (stigning 2.0 mm)<br>
+            • <strong>M20:</strong> 17.5 mm bor (stigning 2.5 mm)<br><br>
+            💡 <em>Huskeregel:</em> <code>Kjernebor = Nominell diameter − Stigning</code> (f.eks. M10 − 1.5 = 8.5 mm).`;
+        }
+
+        if (q.includes('g-kode') || q.includes('g-koder') || q.includes('cnc') || q.includes('m-kode') || q.includes('g81') || q.includes('g83')) {
+            return `⚙️ <strong>Viktige CNC G-koder & M-koder:</strong><br>
+            • <strong>G00:</strong> Ilgang (Ilgangsbevegelse)<br>
+            • <strong>G01:</strong> Lineær arbeidsmating<br>
+            • <strong>G02 / G03:</strong> Sirkulær interpolasjon med klokken / mot klokken<br>
+            • <strong>G81:</strong> Standard boresyklus<br>
+            • <strong>G83:</strong> Sponbrytende boredybdesyklus (Peck drilling)<br>
+            • <strong>G84:</strong> Gjengeskjæringssyklus (Tapping)<br>
+            • <strong>M03 / M04:</strong> Spindel på med klokken / mot klokken<br>
+            • <strong>M08 / M09:</strong> Kjølevæske PÅ / AV<br>
+            • <strong>M30:</strong> Programslutt og tilbakestilling`;
+        }
+
+        if (q.includes('timebank') || q.includes('overtid') || q.includes('50') || q.includes('100') || q.includes('skatt') || q.includes('lønn')) {
+            return `💰 <strong>Lønn & Timebank i Verkstedsportalen:</strong><br>
+            • <strong>50 % overtid:</strong> Timelønn × 1.5 utbetales.<br>
+            • <strong>100 % overtid:</strong> Timelønn × 2.0 utbetales (f.eks. helg/natt).<br>
+            • <strong>Timebank (avspasering):</strong> Når du huker av for timebank på en overtidstime, blir den 1 ordinære timen satt inn i timebanken til avspasering, mens 50 % eller 100 % tillegget utbetales direkte på lønnsslippen!<br>
+            • <strong>Tabellskatt:</strong> Tabellskatten (f.eks. Tabell 7101) beregnes av bruttoinntekt etter fratrekk av fagforeningskontingent.`;
+        }
+
+        if (q.includes('vibrasjon') || q.includes('overflate') || q.includes('spon') || q.includes('uromoment') || q.includes('kamm')) {
+            return `💡 <strong>Tips for å fjerne vibrasjon / kast i maskinering:</strong><br>
+            1. **Reduser utheng:** Gjør verktøysuthenget fra holderen så kort som overhodet mulig.<br>
+            2. **Øk matingen pr. tann ($f_z$):** For lav mating skaper gnissing og vibrasjon.<br>
+            3. **Endre RPM ($n$):** Reduser eller øk spindelhastigheten med 10–15 % for å gå ut av ressonansfrekvensen.<br>
+            4. **Hardmetallfreser med variabel stigning:** Bruk ulik tannavstand for å bryte harmoniske svingninger.`;
+        }
+
+        return `🤖 <strong>Takk for spørsmålet!</strong><br>
+        Jeg er programmert for maskinering, verkstedtabeller og lønn for Sigurd Seland AS.<br><br>
+        Prøv å spørre meg om:<br>
+        • <em>"Skjærehastighet for syrefast"</em><br>
+        • <em>"Bor til M12 gjenge"</em><br>
+        • <em>"Viktige G-koder for CNC"</em><br>
+        • <em>"Hvordan fungerer timebanken?"</em>`;
+    }
+
+    function appendMessage(text, isUser) {
+        const box = document.getElementById('chat-box');
+        const div = document.createElement('div');
+        div.className = `msg-bubble ${isUser ? 'msg-user' : 'msg-ai'}`;
+        div.innerHTML = text;
+        box.appendChild(div);
+        box.scrollTop = box.scrollHeight;
+    }
+
+    function handleChatSubmit(e) {
+        e.preventDefault();
+        const input = document.getElementById('user-input');
+        const text = input.value.trim();
+        if (!text) return;
+
+        appendMessage(text, true);
+        input.value = '';
+
+        setTimeout(() => {
+            const reply = generateAiResponse(text);
+            appendMessage(reply, false);
+        }, 400);
+    }
+
+    function sendQuickPrompt(promptText) {
+        document.getElementById('user-input').value = promptText;
+        handleChatSubmit(new Event('submit'));
+    }
+</script>
+
+</body>
+</html>

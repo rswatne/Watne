@@ -5,26 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Verkstedsportal - Sigurd Seland AS</title>
 
-    <!-- INGEN CACHE - TVING DIREKTE HENTING FRA GITHUB -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
 
-    <!-- SLETT ALLE SERVICE WORKERE OG CACHE I NETTLESEN -->
     <script>
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.getRegistrations().then(regs => {
-                for (let reg of regs) reg.unregister();
-            });
-        }
-        if ('caches' in window) {
-            caches.keys().then(names => {
-                for (let name of names) caches.delete(name);
-            });
+        const APP_BUILD_VER = "v3.1";
+        if (localStorage.getItem('app_build_v') !== APP_BUILD_VER) {
+            localStorage.setItem('app_build_v', APP_BUILD_VER);
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.getRegistrations().then(regs => {
+                    for (let reg of regs) reg.unregister();
+                });
+            }
+            if ('caches' in window) {
+                caches.keys().then(names => {
+                    for (let name of names) caches.delete(name);
+                });
+            }
+            window.location.reload(true);
         }
     </script>
 
+    <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0284c7">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Verksteds-App">
     <link rel="apple-touch-icon" href="https://sigurd-seland.no/uploads/lge5O4Vz/354x0_458x0/35f30681-5749-426a-bc82-3ec4dc053599.png">
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -69,7 +77,6 @@
             min-height: 100vh;
         }
 
-        /* SPLASH SCREEN */
         #splash-screen {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -242,9 +249,19 @@
         </div>
     </a>
 
+    <!-- KORT 4: AI VERKSTEDSASSISTENT -->
+    <a href="chat.html" class="portal-card" style="border-color: #8b5cf6;">
+        <div class="portal-icon" style="background: rgba(139, 92, 246, 0.15);">🤖</div>
+        <div style="flex: 1;">
+            <h3 style="margin: 0 0 0.25rem 0; font-size: 1.25rem; font-weight: 700; color: #7c3aed;">AI Verkstedsassistent</h3>
+            <p style="margin: 0 0 0.75rem 0; font-size: 0.875rem; color: var(--muted);">Spør AI om skjæredata, G-koder, gjengeboring, feilsøking ved fresing eller spørsmål om overtid og lønn.</p>
+            <span class="btn btn-soft" style="height: 2.25rem; font-size: 0.8125rem; background: rgba(139, 92, 246, 0.15); color: #7c3aed;">Åpne AI Assistent ➔</span>
+        </div>
+    </a>
+
     <footer class="app-footer">
         <p style="margin: 0; font-weight: 500;">
-            Sigurd Seland AS • Smie & Mekanisk Verksted • <span class="version-badge">Versjon 2.9 (Direkte)</span>
+            Sigurd Seland AS • Smie & Mekanisk Verksted • <span class="version-badge">Versjon 3.1</span>
         </p>
     </footer>
 </div>
