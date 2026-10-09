@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Verkstedsportal - Sigurd Seland AS</title>
 
-    <!-- UNNGÅ CACHE PÅ GITHUB PAGES -->
+    <!-- UNNGÅ NETTLESERSUPPER / CACHE PÅ GITHUB PAGES -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
@@ -19,37 +19,29 @@
     <meta name="apple-mobile-web-app-title" content="Verksteds-App">
     <link rel="apple-touch-icon" href="https://sigurd-seland.no/uploads/lge5O4Vz/354x0_458x0/35f30681-5749-426a-bc82-3ec4dc053599.png">
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         /* LYS MODUS (Sigurd Seland AS Brand Palette) */
         :root {
             --primary: #0284c7;
             --primary-deep: #0369a1;
             --primary-soft: #e0f2fe;
-            --on-primary: #ffffff;
             --brass: #b45309;
             --brass-soft: #fef3c7;
-            --loss: #b91c1c;
-            --loss-soft: #fee2e2;
             --card: #ffffff;
             --bg: #f8fafc;
             --ink: #1e293b;
             --muted: #64748b;
             --line: #e2e8f0;
-            --radius: 12px;
             --shadow: 0 4px 15px -3px rgba(0, 0, 0, 0.05);
         }
 
-        /* MØRK MODUS */
         body.dark-mode {
             --primary: #38bdf8;
             --primary-deep: #0284c7;
             --primary-soft: rgba(56, 189, 248, 0.15);
-            --on-primary: #ffffff;
             --brass: #d97706;
             --brass-soft: rgba(217, 119, 6, 0.15);
-            --loss: #ef4444;
-            --loss-soft: rgba(239, 68, 68, 0.15);
             --card: #1e293b;
             --bg: #0f172a;
             --ink: #f8fafc;
@@ -58,27 +50,7 @@
             --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
         }
 
-        body.light-mode {
-            --primary: #0284c7;
-            --primary-deep: #0369a1;
-            --primary-soft: #e0f2fe;
-            --on-primary: #ffffff;
-            --brass: #b45309;
-            --brass-soft: #fef3c7;
-            --loss: #b91c1c;
-            --loss-soft: #fee2e2;
-            --card: #ffffff;
-            --bg: #f8fafc;
-            --ink: #1e293b;
-            --muted: #64748b;
-            --line: #e2e8f0;
-            --radius: 12px;
-            --shadow: 0 4px 15px -3px rgba(0, 0, 0, 0.05);
-        }
-
-        * {
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; }
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -87,208 +59,49 @@
             margin: 0;
             padding: 0;
             -webkit-font-smoothing: antialiased;
-            overflow-x: hidden;
             min-height: 100vh;
-            transition: background 0.3s ease, color 0.3s ease;
         }
 
         /* SPLASH SCREEN */
         #splash-screen {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
             z-index: 9999;
             transition: opacity 0.5s ease, visibility 0.5s ease;
-            color: white;
-            text-align: center;
-            padding: 24px;
+            color: white; text-align: center; padding: 24px;
         }
         .splash-logo-box {
-            background: white;
-            padding: 18px 24px;
-            border-radius: 16px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
-            margin-bottom: 24px;
-            max-width: 320px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            animation: pulseLogo 1.5s ease-in-out infinite alternate;
+            background: white; padding: 18px 24px; border-radius: 16px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4); margin-bottom: 24px;
+            max-width: 320px; display: flex; justify-content: center; align-items: center;
         }
-        .splash-logo-box img {
-            max-width: 100%;
-            max-height: 85px;
-            object-fit: contain;
-        }
-        @keyframes pulseLogo {
-            0% { transform: scale(1); box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
-            100% { transform: scale(1.03); box-shadow: 0 20px 40px rgba(2, 132, 199, 0.3); }
-        }
+        .splash-logo-box img { max-width: 100%; max-height: 85px; object-fit: contain; }
         .spinner {
-            width: 36px;
-            height: 36px;
-            border: 3px solid rgba(255,255,255,0.15);
-            border-top-color: var(--primary);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            margin-top: 16px;
+            width: 36px; height: 36px; border: 3px solid rgba(255,255,255,0.15);
+            border-top-color: var(--primary); border-radius: 50%;
+            animation: spin 0.8s linear infinite; margin-top: 16px;
         }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
         .main-layout {
-            max-width: 54rem;
+            max-width: 50rem;
             margin: 0 auto;
-            padding: 1.5rem 1rem 5rem 1rem;
-        }
-        @media (min-width: 640px) {
-            .main-layout {
-                padding: 2rem 1.5rem 4rem 1.5rem;
-            }
+            padding: 2rem 1rem;
         }
 
         header {
-            margin-bottom: 1.25rem;
+            margin-bottom: 2rem;
             display: flex;
-            flex-wrap: wrap;
-            align-items: flex-end;
+            align-items: center;
             justify-content: space-between;
             gap: 1rem;
-        }
-
-        .font-mono {
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        .field-class {
-            height: 2.75rem;
-            width: 100%;
-            border-radius: 0.5rem;
-            border: 1px solid var(--line);
-            background-color: var(--card);
-            padding: 0 0.75rem;
-            font-size: 1rem;
-            color: var(--ink);
-            outline: none;
-            transition: border-color 150ms;
-        }
-        .field-class:focus {
-            border-color: var(--primary);
-        }
-
-        section {
-            border-radius: 0.75rem;
-            border: 1px solid var(--line);
-            background-color: var(--card);
-            padding: 1rem;
-            box-shadow: var(--shadow);
-            margin-bottom: 1.25rem;
-        }
-        @media (min-width: 640px) {
-            section {
-                padding: 1.25rem;
-            }
-        }
-
-        section header {
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: baseline;
-            gap: 0.75rem;
             border-bottom: 1px solid var(--line);
-            padding-bottom: 0.75rem;
+            padding-bottom: 1.25rem;
         }
 
-        .grid-2 {
-            display: grid;
-            gap: 0.75rem;
-        }
-        @media (min-width: 640px) {
-            .grid-2 {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-            }
-        }
-
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            border-radius: 0.5rem;
-            font-size: 0.875rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 150ms, transform 0.1s ease;
-            border: none;
-            text-decoration: none;
-        }
-        .btn:active {
-            transform: scale(0.98);
-        }
-
-        .btn-primary {
-            height: 3rem;
-            width: 100%;
-            background-color: var(--primary);
-            color: var(--on-primary);
-            font-size: 1rem;
-        }
-        .btn-primary:hover {
-            background-color: var(--primary-deep);
-        }
-
-        .btn-soft {
-            height: 2.75rem;
-            background-color: var(--primary-soft);
-            color: var(--primary-deep);
-            padding: 0 1rem;
-        }
-
-        .btn-outline {
-            height: 2.75rem;
-            border: 1px solid var(--line);
-            background: var(--card);
-            color: var(--ink);
-            padding: 0 1rem;
-        }
-
-        .btn-loss {
-            color: var(--loss);
-            background: transparent;
-            padding: 0;
-            justify-content: flex-start;
-            font-size: 0.875rem;
-            font-weight: 500;
-        }
-
-        .payslip {
-            overflow: hidden;
-            border-radius: 0.75rem;
-            border: 1px solid var(--line);
-            background: var(--card);
-            box-shadow: var(--shadow);
-        }
-
-        .line-row {
-            display: flex;
-            align-items: baseline;
-            justify-content: space-between;
-            gap: 0.75rem;
-            padding: 0.375rem 0;
-        }
-        .line-row.strong {
-            font-weight: 600;
-        }
-
-        /* HOVEDMENY KORT (PORTAL) */
         .portal-card {
             background: var(--card);
             border-radius: 1rem;
@@ -301,6 +114,8 @@
             display: flex;
             align-items: center;
             gap: 1.25rem;
+            text-decoration: none;
+            color: inherit;
         }
         .portal-card:hover, .portal-card:active {
             border-color: var(--primary);
@@ -319,655 +134,89 @@
             flex-shrink: 0;
         }
 
-        /* FANENAVIGASJON */
-        .tab-btn {
-            background: transparent;
-            color: var(--muted);
-            border: none;
-            border-radius: 0.5rem;
-            font-weight: 600;
-            font-size: 0.875rem;
-            padding: 0.625rem;
-            flex: 1;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        .tab-btn.active {
-            background: var(--primary);
-            color: var(--on-primary);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-
-        .module-view {
-            display: none;
-        }
-        .module-view.active {
-            display: block;
-            animation: fadeIn 0.25s ease;
-        }
-
-        .tab-content {
-            display: none;
-            animation: fadeIn 0.25s ease;
-        }
-        .tab-content.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(4px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .mobile-bar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            z-index: 50;
-            border-top: 1px solid var(--line);
-            background: var(--card);
-            padding: 0.75rem 1rem;
-            backdrop-filter: blur(12px);
-            box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
-            display: flex;
-            justify-content: space-between;
+        .btn {
+            display: inline-flex;
             align-items: center;
-        }
-
-        /* MASKINERINGSBOKSER */
-        .calc-card {
-            background: var(--card);
-            border-radius: 0.75rem;
-            border: 1px solid var(--line);
-            padding: 1.25rem;
-            margin-bottom: 1.25rem;
-            box-shadow: var(--shadow);
-        }
-        .result-box {
-            background: var(--primary-soft);
+            justify-content: center;
+            gap: 0.5rem;
             border-radius: 0.5rem;
-            border-left: 4px solid var(--primary);
-            padding: 0.875rem 1rem;
-            margin-top: 0.875rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            text-decoration: none;
+            height: 2.5rem;
+            padding: 0 1rem;
         }
-
-        /* PROFESSIONELL UTSKRIFT / PDF */
-        @media print {
-            body {
-                background: #ffffff !important;
-                color: #000000 !important;
-            }
-            #splash-screen, .mobile-bar, .no-print, form, .btn, .field-class, select, input, .module-switcher, #tabellskatt-modal {
-                display: none !important;
-            }
-            .tab-content, .module-view {
-                display: block !important;
-            }
-            .main-layout {
-                padding: 0 !important;
-                max-width: 100% !important;
-            }
-            .payslip, .calc-card {
-                border: none !important;
-                box-shadow: none !important;
-            }
-        }
+        .btn-soft { background: var(--primary-soft); color: var(--primary-deep); }
+        .btn-outline { border: 1px solid var(--line); background: var(--card); color: var(--ink); }
     </style>
 </head>
 <body>
 
-<!-- OFFISIELL SELAND LOGO URL -->
-<script>
-const OFFICIAL_SELAND_LOGO = "https://sigurd-seland.no/uploads/lge5O4Vz/354x0_458x0/35f30681-5749-426a-bc82-3ec4dc053599.png";
-const DEFAULT_LOGO_BASE64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAw8AAAGHCAMAAADBfp54AAAAyVBMVEX///8jHyBPtOEAAAD09PQeGhve3t5QuOZ9e3sWERJ7eHk+fZsmIiNKosoxU2UbJCtkYWJoZmfW1dXv7u9CP0BEkbQiGxosQU4iGBYbFhdIRkbx8fGura0dGBrl5eUVDxGEg4OVlJXNzMw3NDWvrq66ubkvKyyJiIg0MDHEw8OenZ5QTU5cWlpwbm/R0NBGQ0QMAAVMqtQlJyo7cowgDQBFlLgnLzUqO0VBiKkuSVczWm4rPEYhEw2ZmZkfAAA8dpE2ZXwTFhwXCQJSsHl/AAAgAElEQVR4nO2diXabyLaGRRgsFJKrgbiNhAAJgcQk4QzO0FF3bt7/oW4VUEUxyENkd5R1/2+d1Se2GQqov/beNewaDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/kCUF+J3PxcAT0aZ7Vejl2B4jGaL3/10ADwJxzbl/Of//s8L8L+yO9JgJMCfg7Key+rnr29//fv6+fnw9bMbbiAI8KcwW8n6529fXl29EO/eWob9ux8SgMcxy+Trr1+url69FFe336zE+d2PCcBjWGSy9O3Ny6mBcvtXePzdzwnAY/Dkm2+3LyuHV6++/Jz87ucE4BFE8s3XF5fDq1srmf7uJwXgQRR/abyws1To4c6MfvejAvAgtn7z9uXlQPQwX//uRwXgQRL147v/QA9vvpvxGl1M4MJZGOp1q+qeP97Qo4cvH1Xd9AIoAlw0ttR2l968+9Ll3X18anPbkcPttxtJUl3D0373AwNwD2P14xdRD7evv/1918vnBn9X/EX+1+Ar4U1XD3cSRZUyCAJcLspOvWnU2x/vv1t96ITiPw9xc/29Rw+fPkqlIIzV735kAE4SGDdfr0Q5XLtGOj4HU/r4uhs+fPhe6kHSJzAQ4GLJSO2t9XD74UZNN/vpGewn1vsed+nv60oP6iH43c8MwClM9bsQ/H56b4zObL619Oe3bjj9hpkHSfUx0RVcKlF485dgHr59n5zbIWr737903aXXtR5M2AdwqXjGd8HZf3N9fuPtWZ/fdIchvt4wPVhjTGMCl0qifhScmy//nL1IYZrqn398qKgND4seSDztPUe5AXgB9v7N30LQ+/YmO/eKtq++rzC+8iu/+8jdpTB+joID8AJsje8fBD28351dWbcWtwQf/+VX/sHdpWWCWa7gUknVj0Lf6Luf83N9++m41sP3+tJ33F/SR8grAC6UqWl9FszDj5/jc69I3CVW86//quN07i5JGJ4GF8sx/P5D0MPd+ZVVcJeEjqsPdW8rRuPAxTJW/xHcpTcfzXNX7Jxwl/6q3aWe8Q1nHdg2c9S0J3RwTdfRxrbtaMZ+oUwvri9XI0Xkk9zXL+srOr91Jsx0du+f6YvYsAI+5Sv/dzgH607obf3wMz33ihvBXfrKL33LzYO09NplOI4TcxfuDumqeJ/DQpKLbDQa1oxG2WjfOnG9Teem6ZNTzSSLSx1oaTF84sRZ6+ysDOKP7Pej0WgzWDdvUuCt7Kipqdmke9gqeFzN23vp3A9Df54V2diUrEjbGWRZ5768rNviysqq9QKyrP3ievB6egc1r77QKBD0uB/VLyMgZeo85DaOnpJlVNnGp9XukI9FPpU/n8T0Ky/ii1wqae8a7tLfhnfuFVd6n7v0pe5tbY/3bZIwd9NRluSycfDIu3KLmrvIMl+WjArLz+LWQiI7NQ3LlXM/HaW+LIfmxJ4NZqOw0sNoHKrsbNVYbaqGKdqOc/p7NRwRg7QeZeaS3UR18zx3LSPc+WbiCZ9L2cTZzuIXsyxVMkL/kGT2Q7VltjINOZyMJmae7xJSss28kLy2OU5ydkFpWU4frgoiVSY6sj1TZWWTrMkqeNjPXJhyt9nVMjNkpZd8oW/PCY6+Wzx4FmsDzV6lVn0/UhzJ2Jnz1Ht0xY2S+clGIj4YuToeZXNXDpPjbBCNL1IPmfTPJ0EPH/1zffvppNddelsPTqeNxnex2qlyphU5wINUNsz53C3LoCiLNbM1Vhq1UoQH6U5VVTlZLxbkzMVsk8rWbj5OjJ1dna1ESVUUdSekjlUUh/xeTZ3iguRU2yhvYk3sIAjsbJmTCy8NfyLcUFGmqVUNnoyHWSLJubVcSrvD6l73R5sYlnqc0WdzYj/fzZOdv2BX3MusdFnZGk9CWVfpbBZWUxRlZFRvTd4/KkX60XC97m9J6Se5e/2J1vhL7JIblu+C/BSxN2Zmw4npyq66VA0/fWT/+GqZn6g+SkZeROYUL2KTkLYr8c92zF+CWWK9F9yl1z/n57q3/e7SKy4HSR+Jhysr0jqNeJsWuKSa6fylKpvqM7rtRGYeUQOpJbZQz/cHmVRkdVebn61bnd2qtVN5KfQqa1lp0dxtUQxSRYwlrRKq2fCGA7mqKcGgrN4uPcY43FNXtDEpJHchFkOVPNyuNimj8r5qsme7DOwnpFVWhZoyNdXqmNN3EZmrktv7BfcpM9tW1rQgh6VbV+JZZlUfSaNlmo6kJX3KMLs/MGD3sKxxb1SgZEtV4r3si1jVl5Z/iXrY+N+/1XJ49fX6nsFp51FzvYe97tKnure1maPPDkm9EwzG1FUlfVP/WLWhrcyvs4lE64ncrIszT6atbX3okTWurVZLmetCr/Ksko27ZR+dFKqoOTuxFkxrPRRok+JJVelkzkF64fqiBKJ9Nax/jkuxL8WkVIGpi3qYHZZl/RyeukkDWvC8fzw1Mlk7pa8aXt7KlZtFLvXgsPJYZdvQjt16iMmReW/zcHSJhRdeREBas90l6mFofHwn6OFjeHIun5MZj4NXfKke57uqB6fVxuA09a5cT6x2a1my6kJolR7CjXDIwCl9l3Y1HyyOckMPcVjpofXqlcwSjJSyauthULkpltgqt/UwcCbFeap+qod6TcRiNArukUjmfj0QH1wX9KDM1apsJ+7RJKXultH7J8GP1RvvLcjD+ofFqqUHIohCkarxYLddYWfrEwVmxA1sBqbERw0vcJKCQipWYy6fedIujnSVO0KP46Z2l66EwelMtOe0QXOPjfbKc0U9uD16INa3uFI3+eVsKz9KD57lCT8d87YeWNziNixXSw+DfRWfnGiRZ6RuqbtG3VNSXa3fsN2nh4Et2ofBk/QQFcXuNBNl8Sc6+36qITb2a9msf+jqgRi1spTLh/HS6tq9UTUVPhho9VQtvIl6iEwb94Kenh7c3JwemM+UQ0Nd+n2H/5bo/Fl6evXh8037ep1/eJ6EO2WVxalA6XFI6lJ2Vs126oIe7N2j9BB39DCunlE2I1w9vD5fNf110VipmS2dJ6G29l8mreXoIe3q4yLVSzS/33948u3Afl3s4m2GqKqD8v4R/pJs/lK868/j8v1NfT3TbdX/8/L4jD4p3pWfxT3x9e9//5m3f/x8/N362G3i948v3SbcX18/f3014f3p8P5x0v3X+/328dO39y/xUvdv335eAHA5/B9306hAOHL64wAAAABJRU5ErkJggg==";
-</script>
-
 <!-- SPLASH SCREEN -->
 <div id="splash-screen">
     <div class="splash-logo-box">
-        <img id="splash-logo-img" src="https://sigurd-seland.no/uploads/lge5O4Vz/354x0_458x0/35f30681-5749-426a-bc82-3ec4dc053599.png" alt="Sigurd Seland AS">
+        <img src="https://sigurd-seland.no/uploads/lge5O4Vz/354x0_458x0/35f30681-5749-426a-bc82-3ec4dc053599.png" alt="Sigurd Seland AS">
     </div>
-    <h1 style="font-size: 22px; font-weight: 700; margin: 0 0 6px 0; color: #f8fafc; letter-spacing: -0.02em;">Verkstedsportal</h1>
-    <p style="font-size: 13px; color: #94a3b8; margin: 0 0 20px 0; font-weight: 500;">Sigurd Seland AS • Smie & Mekanisk Verksted • Etablert 1902</p>
+    <h1 style="font-size: 22px; font-weight: 700; margin: 0 0 6px 0; color: #f8fafc;">Verkstedsportal</h1>
+    <p style="font-size: 13px; color: #94a3b8; margin: 0 0 20px 0;">Sigurd Seland AS • Smie & Mekanisk Verksted • Etablert 1902</p>
     <div class="spinner"></div>
-</div>
-
-<!-- MODAL FOR TABELLSKATT FAKTA / DISCLAIMER -->
-<div id="tabellskatt-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); z-index: 99999; justify-content: center; align-items: center; padding: 1.25rem;">
-    <div style="background: var(--card); border-radius: 1rem; border: 1px solid var(--line); max-width: 28rem; width: 100%; padding: 1.5rem; box-shadow: 0 20px 40px rgba(0,0,0,0.3); animation: modalIn 0.2s ease;">
-        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; border-bottom: 1px solid var(--line); padding-bottom: 0.75rem;">
-            <div style="display: flex; align-items: center; gap: 0.5rem;">
-                <span style="font-size: 1.25rem;">ℹ️</span>
-                <h3 style="margin: 0; font-size: 1.125rem; font-weight: 600; color: var(--ink);">Fakta om tabelltrekk</h3>
-            </div>
-            <button type="button" style="background: none; border: none; font-size: 1.25rem; cursor: pointer; color: var(--muted); padding: 0;" onclick="lukkTabellskattModal()">✕</button>
-        </div>
-
-        <div style="display: flex; flex-direction: column; gap: 0.75rem; font-size: 0.875rem; color: var(--ink); line-height: 1.5;">
-            <p style="margin: 0;"><strong>Beregningsgrunnlag:</strong> Tabellskatt beregnes av brutto inntekt <em>etter</em> at fradragsberettiget fagforeningskontingent er trukket fra.</p>
-            <p style="margin: 0;"><strong>Algoritme:</strong> Appen benytter Skatteetatens standard tabellformel for månedslønn (f.eks. Tabell 7101), der fribeløp trekkes fra og skattesatsen skalerer progressivt basert på den samlede månedsinntekten.</p>
-            <div style="background: var(--primary-soft); padding: 0.75rem; border-radius: 0.5rem; border-left: 3px solid var(--primary); font-size: 0.8125rem; color: var(--primary-deep); margin-top: 0.25rem;">
-                <strong>⚠️ Ansvarsfraskrivelse (Disclaimer):</strong><br>
-                Beregningen i appen er kun et veiledende estimat. Det nøyaktige skattetrekket på din offisielle lønnsslipp fastsettes av din arbeidsgivers lønnssystem og ditt gjeldende skattekort hos Skatteetaten.
-            </div>
-        </div>
-
-        <button type="button" class="btn btn-primary" style="margin-top: 1.25rem; height: 2.5rem; width: 100%;" onclick="lukkTabellskattModal()">Forstått</button>
-    </div>
 </div>
 
 <div class="main-layout">
     <header>
         <div>
-            <p class="font-mono" style="font-size: 0.75rem; letter-spacing: 0.18em; color: var(--primary); text-transform: uppercase; margin: 0 0 4px 0;">Sigurd Seland AS · Etablert 1902</p>
-            <h1 style="font-size: 1.75rem; font-weight: 600; margin: 0; letter-spacing: -0.02em;" id="main-title">Verkstedsportal</h1>
+            <p style="font-size: 0.75rem; letter-spacing: 0.18em; color: var(--primary); text-transform: uppercase; margin: 0 0 4px 0; font-weight: 700;">Sigurd Seland AS · Etablert 1902</p>
+            <h1 style="font-size: 1.75rem; font-weight: 700; margin: 0;">Verkstedsportal</h1>
             <p style="font-size: 0.8125rem; color: var(--muted); margin: 0.125rem 0 0 0;">Smie & Mekanisk Verksted • Lyngdal</p>
         </div>
+
         <div style="display: flex; align-items: center; gap: 0.75rem;">
-            <!-- HOVEDMENY KNAPP DERSOM MAN ER INNE I EN MODUL -->
-            <button type="button" class="btn btn-outline no-print" id="btn-home-nav" style="display: none; height: 2.75rem; padding: 0 0.875rem; font-size: 0.875rem;" onclick="visHovedmeny()">🏠 Hovedmeny</button>
-
-            <!-- TEMA TOGGLE -->
-            <button type="button" class="btn btn-outline no-print" style="height: 2.75rem; width: 2.75rem; padding: 0; border-radius: 50%; font-size: 1.1rem;" onclick="toggleTheme()" id="theme-toggle-btn" title="Bytt tema">🌙</button>
-
-            <div class="no-print" style="display: flex; align-items: center; gap: 0.75rem;">
-                <div style="min-width: 11rem; max-width: 14rem; height: 4.5rem; display: flex; align-items: center; justify-content: center; overflow: hidden; border-radius: 0.5rem; border: 1px dashed var(--line); background: white; padding: 0.5rem; box-sizing: border-box;" id="logo-wrapper">
-                    <!-- LOGO LASTES INN DIREKTE -->
-                </div>
-                <div style="display: flex; flex-direction: column; gap: 0.2rem;">
-                    <label class="btn btn-outline" style="height: 2.5rem; padding: 0 0.5rem; font-size: 0.8125rem; cursor: pointer;">
-                        📁 Bytt logo
-                        <input type="file" accept="image/*" style="display:none;" onchange="lastOppLogo(this)">
-                    </label>
-                    <button type="button" style="background: none; border: none; text-align: left; font-size: 0.7rem; color: var(--muted); text-decoration: underline; cursor: pointer;" onclick="fjernLogo()">Fjern logo</button>
-                </div>
+            <button type="button" class="btn btn-outline" style="height: 2.75rem; width: 2.75rem; padding: 0; border-radius: 50%; font-size: 1.1rem;" onclick="toggleTheme()" id="theme-toggle-btn">🌙</button>
+            <div style="min-width: 10rem; max-width: 13rem; height: 4.5rem; display: flex; align-items: center; justify-content: center; overflow: hidden; border-radius: 0.5rem; border: 1px dashed var(--line); background: white; padding: 0.5rem;">
+                <img src="https://sigurd-seland.no/uploads/lge5O4Vz/354x0_458x0/35f30681-5749-426a-bc82-3ec4dc053599.png" alt="Sigurd Seland AS" style="max-width: 100%; max-height: 100%; object-fit: contain;">
             </div>
         </div>
     </header>
 
-    <!-- ==================== HOVEDMENY / LANDINGS-SKJERM ==================== -->
-    <div id="modul-portal" class="module-view active">
-        <div style="margin-bottom: 1.5rem; text-align: center;">
-            <h2 style="font-size: 1.375rem; font-weight: 700; margin: 0 0 0.375rem 0; color: var(--ink);">Velkommen til Verkstedsportalen</h2>
-            <p style="font-size: 0.875rem; color: var(--muted); margin: 0;">Velg verktøyet du ønsker å åpne:</p>
-        </div>
-
-        <!-- KORT 1: LØNNSKALKULATOR -->
-        <div class="portal-card" onclick="velgModul('lonn')">
-            <div class="portal-icon">💰</div>
-            <div style="flex: 1;">
-                <h3 style="margin: 0 0 0.25rem 0; font-size: 1.25rem; font-weight: 700; color: var(--primary-deep);">Lønnskalkulator & Vakter</h3>
-                <p style="margin: 0 0 0.5rem 0; font-size: 0.875rem; color: var(--muted);">Beregning av fastlønn, tilleggsvakter, timebank (avspasering), skatteetaten tabelltrekk og lønnsslipp.</p>
-                <span class="btn btn-soft" style="height: 2.25rem; font-size: 0.8125rem; pointer-events: none;">Åpne Lønnskalkulator ➔</span>
-            </div>
-        </div>
-
-        <!-- KORT 2: MASKINERINSKALKURATOR -->
-        <div class="portal-card" onclick="velgModul('maskinering')">
-            <div class="portal-icon">⚙️</div>
-            <div style="flex: 1;">
-                <h3 style="margin: 0 0 0.25rem 0; font-size: 1.25rem; font-weight: 700; color: var(--brass);">Maskineringskalkulator</h3>
-                <p style="margin: 0 0 0.5rem 0; font-size: 0.875rem; color: var(--muted);">Beregning av gjengefresing, Gibbs cirkulær mating, skjæredata (Vc/RPM/fz), gjengediametere og C-akse grader/min.</p>
-                <span class="btn btn-soft" style="height: 2.25rem; font-size: 0.8125rem; background: var(--brass-soft); color: var(--brass); pointer-events: none;">Åpne Maskineringskalkulator ➔</span>
-            </div>
-        </div>
+    <div style="margin-bottom: 2rem; text-align: center;">
+        <h2 style="font-size: 1.375rem; font-weight: 700; margin: 0 0 0.375rem 0; color: var(--ink);">Velkommen til Verkstedsportalen</h2>
+        <p style="font-size: 0.875rem; color: var(--muted); margin: 0;">Velg verktøyet du ønsker å åpne:</p>
     </div>
 
-    <!-- ==================== MODUL 1: LØNNSKALKULATOR ==================== -->
-    <div id="modul-lonn" class="module-view">
-        <!-- FANE-MENY FOR LØNN -->
-        <div class="no-print" style="display: flex; gap: 0.375rem; margin-bottom: 1.25rem; background: var(--card); padding: 0.375rem; border-radius: 0.75rem; border: 1px solid var(--line); box-shadow: var(--shadow);">
-            <button type="button" class="tab-btn active" onclick="switchTab('oversikt')" id="btn-tab-oversikt">📊 Oversikt</button>
-            <button type="button" class="tab-btn" onclick="switchTab('vakter')" id="btn-tab-vakter">⏱️ Vakter</button>
-            <button type="button" class="tab-btn" onclick="switchTab('innstillinger')" id="btn-tab-innstillinger">⚙️ Innstillinger</button>
+    <!-- KORT 1: LØNNSKALKULATOR -->
+    <a href="lonn.html" class="portal-card">
+        <div class="portal-icon">💰</div>
+        <div style="flex: 1;">
+            <h3 style="margin: 0 0 0.25rem 0; font-size: 1.25rem; font-weight: 700; color: var(--primary-deep);">Lønnskalkulator & Vakter</h3>
+            <p style="margin: 0 0 0.75rem 0; font-size: 0.875rem; color: var(--muted);">Beregning av fastlønn, tilleggsvakter, timebank (avspasering), skatteetaten tabelltrekk og lønnsslipp.</p>
+            <span class="btn btn-soft" style="height: 2.25rem; font-size: 0.8125rem;">Åpne Lønnskalkulator ➔</span>
         </div>
+    </a>
 
-        <!-- TAB 1: OVERSIKT -->
-        <div id="tab-oversikt" class="tab-content active">
-            <div style="display: flex; flex-direction: column; gap: 1.25rem;">
-                <section>
-                    <header>
-                        <span class="font-mono" style="font-size: 0.75rem; color: var(--primary);">01</span>
-                        <h2 style="font-size: 1.125rem; font-weight: 600; margin: 0;">Periode</h2>
-                    </header>
-                    <div class="grid-2">
-                        <label style="display: flex; flex-direction: column; gap: 0.375rem;">
-                            <span style="font-size: 0.875rem; font-weight: 500;">Velg år</span>
-                            <select id="year" class="field-class" onchange="oppdaterAarOgMaaned()"></select>
-                        </label>
-                        <label style="display: flex; flex-direction: column; gap: 0.375rem;">
-                            <span style="font-size: 0.875rem; font-weight: 500;">Velg måned</span>
-                            <select id="month" class="field-class" onchange="oppdaterAarOgMaaned()"></select>
-                        </label>
-                    </div>
-                    <div style="margin-top: 0.75rem; display: flex; align-items: flex-start; gap: 0.5rem; font-size: 0.875rem;">
-                        <span style="color: var(--primary);">&#128197;</span>
-                        <div>
-                            <p id="tekst-arbeidsdager" style="font-weight: 500; color: var(--primary-deep); margin: 0;">Antall arbeidsdager i måneden: Beregner...</p>
-                            <p id="tekst-gjeldende-dager" style="color: var(--muted); margin: 0.125rem 0 0 0;">Gjeldende dager brukt i beregningen...</p>
-                        </div>
-                    </div>
-                </section>
-
-                <div class="payslip">
-                    <div style="background-color: var(--primary); color: var(--on-primary); padding: 1.25rem;">
-                        <p class="font-mono" style="font-size: 0.75rem; letter-spacing: 0.16em; text-transform: uppercase; margin: 0 0 0.25rem 0;">Netto utbetalt</p>
-                        <p id="vis-netto-hoved" class="font-mono" style="font-size: 2.25rem; font-weight: 600; margin: 0; font-variant-numeric: tabular-nums;">0,00 kr</p>
-                        <p id="vis-periode-tittel" style="font-size: 0.9375rem; opacity: 0.9; margin: 0.25rem 0 0 0;">Måned År</p>
-                    </div>
-                    <div style="padding: 1.25rem;">
-                        <div style="margin-bottom: 1rem; padding: 0.75rem 1rem; background: var(--primary-soft); border-radius: 0.5rem; border: 1.5px solid var(--primary);">
-                            <div class="line-row strong"><span style="color: var(--primary-deep);">✨ Sum tilleggsvakter (brutto)</span><span id="vis-sumvakt-brutto" class="font-mono" style="color: var(--primary-deep);">0,00 kr</span></div>
-                            <div class="line-row strong" style="margin-top: 0.25rem;"><span style="color: var(--primary-deep); font-size: 1rem;">💰 Netto utbetalt fra vakter</span><span id="vis-sumvakt-netto" class="font-mono" style="font-size: 1.125rem; color: var(--primary-deep);">0,00 kr</span></div>
-                        </div>
-
-                        <div style="margin-bottom: 0.875rem; padding: 0.75rem 1rem; background: var(--brass-soft); border-radius: 0.5rem; border: 1px solid var(--brass);">
-                            <div class="line-row strong"><span style="color: var(--brass);">🏦 Timebank (timer til gode)</span><span id="vis-timebank-saldo" class="font-mono" style="font-size: 1rem; color: var(--brass);">+ 0,0 t</span></div>
-                            <p style="font-size: 0.75rem; color: var(--brass); margin: 0.25rem 0 0 0; opacity: 0.9;">Ordinære timer avsatt til timebanken denne måneden (kun 50%/100% tillegg utbetales).</p>
-                        </div>
-
-                        <div style="margin-bottom: 0.75rem; border-radius: 9999px; background-color: var(--bg); padding: 0.375rem 0.75rem; text-align: center; font-size: 0.8125rem; font-weight: 500; color: var(--muted);" id="vis-tillegg-prosent">
-                            Tillegg utgjør 0% av brutto
-                        </div>
-
-                        <div id="rad-fastlonn" style="display: none;">
-                            <div class="line-row"><span style="color: var(--muted); font-size: 0.875rem;">Fastlønn (brutto full måned)</span><span id="vis-fastlonn" class="font-mono" style="font-size: 0.875rem;">0,00 kr</span></div>
-                            <p id="vis-fastlonn-sub" style="font-size: 0.75rem; color: var(--muted); margin: -0.25rem 0 0.5rem 0;"></p>
-                        </div>
-
-                        <div style="margin: 0.5rem 0; padding: 0.625rem 0.875rem; background: var(--bg); border-radius: 0.5rem; border: 1px solid var(--line);">
-                            <div class="line-row"><span style="font-size: 0.8125rem; font-weight: 500;">⏱️ Totalt arbeidstimer</span><span id="vis-totaltimer" class="font-mono" style="font-size: 0.8125rem; font-weight: 600;">0 t</span></div>
-                            <div class="line-row" style="font-size: 0.75rem; color: var(--muted);"><span>Ordinære timer (fastlønn)</span><span id="vis-ordinartimer" class="font-mono">0 t</span></div>
-                            <div class="line-row" style="font-size: 0.75rem; color: var(--muted);"><span>Vaktimer (utbetales)</span><span id="vis-vakttimer" class="font-mono">0 t</span></div>
-                            <div class="line-row" style="font-size: 0.75rem; color: var(--brass);"><span>Vaktimer (til timebank)</span><span id="vis-timebank-vakttimer" class="font-mono">0 t</span></div>
-                        </div>
-
-                        <div id="rad-ferietrekk" style="display: none;">
-                            <div class="line-row"><span style="color: var(--loss); font-size: 0.875rem;">Lønnstrekk ferie (brutto)</span><span id="vis-ferietrekk" class="font-mono" style="font-size: 0.875rem; color: var(--loss);">− 0,00 kr</span></div>
-                        </div>
-
-                        <div class="line-row"><span style="color: var(--muted); font-size: 0.875rem;">Hverdag 50%</span><span id="vis-hverdag50" class="font-mono" style="font-size: 0.875rem; color: var(--muted);">0,00 kr</span></div>
-                        <div class="line-row"><span style="color: var(--muted); font-size: 0.875rem;">Hverdag 100%</span><span id="vis-hverdag100" class="font-mono" style="font-size: 0.875rem; color: var(--muted);">0,00 kr</span></div>
-                        <div class="line-row"><span style="color: var(--muted); font-size: 0.875rem;">Helg 50%</span><span id="vis-helg50" class="font-mono" style="font-size: 0.875rem; color: var(--muted);">0,00 kr</span></div>
-                        <div class="line-row"><span style="color: var(--muted); font-size: 0.875rem;">Helg 100%</span><span id="vis-helg100" class="font-mono" style="font-size: 0.875rem; color: var(--muted);">0,00 kr</span></div>
-
-                        <div style="margin: 0.75rem 0; border-top: 1px solid var(--line);"></div>
-                        <div class="line-row strong"><span>Total brutto</span><span id="vis-brutto" class="font-mono">0,00 kr</span></div>
-                        <div class="line-row"><span id="fagforening-label-mnd" style="color: var(--muted); font-size: 0.875rem;">Fagforeningtrekk</span><span id="vis-fagforening-mnd" class="font-mono" style="font-size: 0.875rem; color: var(--muted);">− 0,00 kr</span></div>
-                        <div class="line-row" style="align-items: center;">
-                            <div style="display: flex; align-items: center; gap: 0.375rem;">
-                                <span id="skatt-tittel" style="color: var(--muted); font-size: 0.875rem;">Skattetrekk</span>
-                                <button type="button" class="btn no-print" style="padding: 0; width: 1.25rem; height: 1.25rem; font-size: 0.75rem; background: none; color: var(--primary);" onclick="visTabellskattModal()" title="Fakta om utregningsmetoden">ℹ️</button>
-                            </div>
-                            <span id="vis-skattetrekk" class="font-mono" style="font-size: 0.875rem; color: var(--muted);">− 0,00 kr</span>
-                        </div>
-                        <div style="margin: 0.75rem 0; border-top: 1px solid var(--line);"></div>
-                        <div class="line-row strong" style="color: var(--primary-deep); font-size: 1.05rem;"><span>Netto utbetalt (estimat)</span><span id="vis-netto" class="font-mono" style="color: var(--primary-deep);">0,00 kr</span></div>
-                    </div>
-
-                    <div style="border-top: 1px solid var(--line); padding: 1.25rem;">
-                        <div class="line-row"><span style="color: var(--muted); font-size: 0.875rem;">Estimerte feriepenger (12 % av brutto)</span><span id="vis-feriepenger" class="font-mono" style="font-size: 0.875rem;">0,00 kr</span></div>
-                        <p style="font-size: 0.75rem; font-weight: 600; letter-spacing: 0.05em; color: var(--muted); text-transform: uppercase; margin: 1rem 0 0.375rem 0;">Årsprognose</p>
-                        <div class="line-row"><span style="color: var(--muted); font-size: 0.875rem;">Fast årslønn (47 uker + 12 %)</span><span id="vis-aarslonn-fast" class="font-mono" style="font-size: 0.875rem;">0,00 kr</span></div>
-                        <div class="line-row"><span style="color: var(--muted); font-size: 0.875rem;">Med denne månedens tillegg, årsbasis</span><span id="vis-aarslonn-total" class="font-mono" style="font-size: 0.875rem;">0,00 kr</span></div>
-                        <div class="line-row"><span style="color: var(--muted); font-size: 0.875rem;">Kontingent pr. år</span><span id="vis-aarslonn-aar" class="font-mono" style="font-size: 0.875rem;">0,00 kr</span></div>
-                    </div>
-                </div>
-            </div>
+    <!-- KORT 2: MASKINERINSKALKURATOR -->
+    <a href="maskinering.html" class="portal-card">
+        <div class="portal-icon" style="background: var(--brass-soft);">⚙️</div>
+        <div style="flex: 1;">
+            <h3 style="margin: 0 0 0.25rem 0; font-size: 1.25rem; font-weight: 700; color: var(--brass);">Maskineringskalkulator</h3>
+            <p style="margin: 0 0 0.75rem 0; font-size: 0.875rem; color: var(--muted);">Beregning av gjengefresing, Gibbs cirkulær mating, skjæredata (Vc/RPM/fz), gjengediametere og C-akse grader/min.</p>
+            <span class="btn btn-soft" style="height: 2.25rem; font-size: 0.8125rem; background: var(--brass-soft); color: var(--brass);">Åpne Maskineringskalkulator ➔</span>
         </div>
-
-        <!-- TAB 2: VAKTER -->
-        <div id="tab-vakter" class="tab-content">
-            <section>
-                <header>
-                    <span class="font-mono" style="font-size: 0.75rem; color: var(--primary);">02</span>
-                    <h2 style="font-size: 1.125rem; font-weight: 600; margin: 0;">Tilleggsvakter & Timebank</h2>
-                </header>
-
-                <div style="margin-bottom: 1rem;">
-                    <p style="font-size: 0.75rem; font-weight: 600; color: var(--muted); margin: 0 0 0.375rem 0;">Hurtigvalg for vakt:</p>
-                    <div style="display: flex; gap: 0.375rem; flex-wrap: wrap;">
-                        <button type="button" class="btn btn-outline" style="height: 2.25rem; font-size: 0.75rem; padding: 0 0.625rem;" onclick="settHurtigVakt(7, 30, 'hverdag50', false)">⚡ 7.5t Hverdag 50%</button>
-                        <button type="button" class="btn btn-outline" style="height: 2.25rem; font-size: 0.75rem; padding: 0 0.625rem;" onclick="settHurtigVakt(1, 0, 'hverdag50', true)">🏦 1t til Timebank + 50% utbetalt</button>
-                        <button type="button" class="btn btn-outline" style="height: 2.25rem; font-size: 0.75rem; padding: 0 0.625rem;" onclick="settHurtigVakt(4, 0, 'helg50', false)">⚡ 4t Helg 50%</button>
-                        <button type="button" class="btn btn-outline" style="height: 2.25rem; font-size: 0.75rem; padding: 0 0.625rem;" onclick="settHurtigVakt(7, 30, 'helg100', false)">⚡ 7.5t Helg 100%</button>
-                    </div>
-                </div>
-
-                <form onsubmit="leggTilVakt(event);" style="display: flex; flex-direction: column; gap: 0.875rem;">
-                    <label style="display: flex; flex-direction: column; gap: 0.375rem;">
-                        <span style="font-size: 0.875rem; font-weight: 500;">Dato for vakt</span>
-                        <input id="vakt-dato" class="field-class" type="date" onchange="sjekkDatoUkedag()">
-                    </label>
-                    <div class="grid-2">
-                        <label style="display: flex; flex-direction: column; gap: 0.375rem;">
-                            <span style="font-size: 0.875rem; font-weight: 500;">Timer</span>
-                            <input id="vakt-timer" class="field-class" type="number" min="0" value="0">
-                        </label>
-                        <label style="display: flex; flex-direction: column; gap: 0.375rem;">
-                            <span style="font-size: 0.875rem; font-weight: 500;">Minutter</span>
-                            <input id="vakt-minutter" class="field-class" type="number" min="0" max="59" value="0">
-                        </label>
-                    </div>
-                    <label style="display: flex; flex-direction: column; gap: 0.375rem;">
-                        <span style="font-size: 0.875rem; font-weight: 500;">Type tillegg</span>
-                        <select id="tillegg-type" class="field-class">
-                            <option value="hverdag50">Hverdag 50% (Timelønn x 1.5)</option>
-                            <option value="hverdag100">Hverdag 100% (Timelønn x 2.0)</option>
-                            <option value="helg50">Helg 50% (Timelønn x 1.5)</option>
-                            <option value="helg100">Helg 100% (Timelønn x 2.0)</option>
-                        </select>
-                    </label>
-
-                    <label style="display: flex; align-items: center; gap: 0.625rem; padding: 0.75rem; background: var(--brass-soft); border-radius: 0.5rem; border: 1px solid var(--brass); cursor: pointer;">
-                        <input type="checkbox" id="vakt-timebank" style="width: 1.25rem; height: 1.25rem; accent-color: var(--brass);">
-                        <span style="font-size: 0.875rem; font-weight: 600; color: var(--brass);">🏦 Sett ordinær time i timebanken (få kun utbetalt 50%/100% tillegget)</span>
-                    </label>
-
-                    <button type="submit" class="btn btn-primary btn-primary">Legg vakt til i måneden</button>
-                </form>
-
-                <div style="margin-top: 1.5rem;">
-                    <h3 id="tittel-vaktliste" style="font-size: 0.9375rem; font-weight: 600; margin: 0 0 0.75rem 0;">Registrerte vakter</h3>
-                    <div id="vakt-tabell-container">
-                        <p style="border-radius: 0.5rem; border: 1px dashed var(--line); padding: 2rem; text-align: center; font-size: 0.875rem; color: var(--muted); font-style: italic;">Ingen vakter registrert i denne måneden.</p>
-                    </div>
-                </div>
-
-                <div style="margin-top: 1.25rem; display: flex; flex-direction: column; gap: 0.5rem;">
-                    <button type="button" class="btn btn-soft" style="flex: 1; justify-content: center;" onclick="kopierVaktliste()">📋 Kopier vaktliste som tekst</button>
-                    <button type="button" class="btn btn-outline" style="flex: 1; justify-content: center;" onclick="window.print()">🖨️ Lagre PDF / skriv ut</button>
-                </div>
-            </section>
-        </div>
-
-        <!-- TAB 3: INNSTILLINGER -->
-        <div id="tab-innstillinger" class="tab-content">
-            <section>
-                <header>
-                    <span class="font-mono" style="font-size: 0.75rem; color: var(--primary);">03</span>
-                    <h2 style="font-size: 1.125rem; font-weight: 600; margin: 0;">Lønn og satser</h2>
-                </header>
-
-                <label style="display: flex; align-items: center; gap: 0.625rem; margin-bottom: 1rem; cursor: pointer;">
-                    <input id="inkluder-fastlonn" type="checkbox" checked onchange="beregnAlt(); lagreInnstillinger();" style="width: 1.25rem; height: 1.25rem; accent-color: var(--primary);">
-                    <span style="font-size: 0.875rem; font-weight: 500;">Inkluder fastlønn (ordinær månedslønn)</span>
-                </label>
-
-                <div class="grid-2">
-                    <label style="display: flex; flex-direction: column; gap: 0.375rem;">
-                        <span style="font-size: 0.875rem; font-weight: 500;">Timelønn (kr)</span>
-                        <input id="timelonn" class="field-class" type="number" step="0.1" value="316.5" oninput="beregnAlt(); lagreInnstillinger();">
-                    </label>
-                    <label style="display: flex; flex-direction: column; gap: 0.375rem;">
-                        <span style="font-size: 0.875rem; font-weight: 500;">Timer pr. dag</span>
-                        <input id="timer-dag" class="field-class" type="number" step="0.1" value="7.5" oninput="beregnAlt(); lagreInnstillinger();">
-                    </label>
-                </div>
-                <div style="margin-top: 0.875rem;">
-                    <label style="display: flex; flex-direction: column; gap: 0.375rem;">
-                        <span style="font-size: 0.875rem; font-weight: 500;">Ubetalte feriedager denne måneden</span>
-                        <select id="feriedager" class="field-class" onchange="beregnAlt(); lagreInnstillinger();">
-                            <option value="0">0 dager (Full måned)</option>
-                            <option value="1">1 dag</option>
-                            <option value="2">2 dager</option>
-                            <option value="3">3 dager</option>
-                            <option value="4">4 dager</option>
-                            <option value="5">5 dager (1 uke)</option>
-                            <option value="10">10 dager (2 uker)</option>
-                            <option value="15">15 dager (3 uker)</option>
-                            <option value="20">20 dager (4 uker)</option>
-                        </select>
-                    </label>
-                </div>
-            </section>
-
-            <section>
-                <header>
-                    <span class="font-mono" style="font-size: 0.75rem; color: var(--primary);">04</span>
-                    <h2 style="font-size: 1.125rem; font-weight: 600; margin: 0;">Skatt og fagforening</h2>
-                </header>
-                <div class="grid-2">
-                    <label style="display: flex; flex-direction: column; gap: 0.375rem;">
-                        <span style="font-size: 0.875rem; font-weight: 500;">Type skattetrekk</span>
-                        <select id="skatt-type" class="field-class" onchange="byttSkattType(); beregnAlt(); lagreInnstillinger();">
-                            <option value="tabell">Tabelltrekk (estimat)</option>
-                            <option value="prosent">Prosenttrekk</option>
-                        </select>
-                    </label>
-
-                    <div id="skattetabell-boks" style="display: flex; flex-direction: column; gap: 0.375rem;">
-                        <label for="skatte-tabellnummer" style="font-size: 0.875rem; font-weight: 500;">Tabellnummer</label>
-                        <div style="display: flex; gap: 0.5rem; align-items: center;">
-                            <input id="skatte-tabellnummer" class="field-class" value="7101" oninput="beregnAlt(); lagreInnstillinger();" style="flex: 1;">
-                            <button type="button" class="btn btn-outline" style="height: 2.75rem; padding: 0 0.75rem; font-size: 0.8125rem; white-space: nowrap; gap: 0.375rem;" onclick="visTabellskattModal()" title="Fakta om utregningsmetoden">ℹ️ Fakta</button>
-                        </div>
-                    </div>
-
-                    <label id="skatteprosent-boks" style="display: none; flex-direction: column; gap: 0.375rem;">
-                        <span style="font-size: 0.875rem; font-weight: 500;">Skatteprosent (%)</span>
-                        <input id="skatt" class="field-class" type="number" step="0.1" value="30" oninput="beregnAlt(); lagreInnstillinger();">
-                    </label>
-
-                    <label style="display: flex; flex-direction: column; gap: 0.375rem;">
-                        <span style="font-size: 0.875rem; font-weight: 500;">Kontingentsats (%)</span>
-                        <input id="fagforening-prosent" class="field-class" type="number" step="0.01" value="1.5" oninput="beregnAlt(); lagreInnstillinger();">
-                    </label>
-
-                    <label style="display: flex; flex-direction: column; gap: 0.375rem;">
-                        <span style="font-size: 0.875rem; font-weight: 500;">Betalt kontingent i kroner</span>
-                        <input id="fagforening-kroner-input" class="field-class" type="number" placeholder="f.eks. 750" oninput="regnUtProsentFraKroner()">
-                    </label>
-                </div>
-            </section>
-
-            <section>
-                <header>
-                    <span class="font-mono" style="font-size: 0.75rem; color: var(--primary);">05</span>
-                    <h2 style="font-size: 1.125rem; font-weight: 600; margin: 0;">Nullstill appen</h2>
-                </header>
-                <button type="button" class="btn btn-loss" onclick="nullstillAlt()" style="font-size: 1rem;">🔄 Nullstill alle data og innstillinger</button>
-            </section>
-        </div>
-    </div>
-
-    <!-- ==================== MODUL 2: MASKINERINSKALKURATOR ==================== -->
-    <div id="modul-maskinering" class="module-view">
-
-        <!-- VERKSTEDSKALKURATOR 1: GJENGEFRESING & CIRKULÆR MATING (GIBBS) -->
-        <div class="calc-card">
-            <header style="margin-bottom: 1rem; border-bottom: 1px solid var(--line); padding-bottom: 0.5rem;">
-                <h2 style="font-size: 1.125rem; font-weight: 700; margin: 0; color: var(--primary-deep);">🌀 Gjengefresing & Cirkulær Mating (Gibbs)</h2>
-                <p style="font-size: 0.8125rem; color: var(--muted); margin: 0.25rem 0 0 0;">Regn om bordmating til effektiv cirkulær mating for gjengefresing i CAM/Gibbs.</p>
-            </header>
-
-            <div class="grid-2">
-                <label style="display: flex; flex-direction: column; gap: 0.25rem;">
-                    <span style="font-size: 0.8125rem; font-weight: 600;">Skjærehastighet Vc (m/min)</span>
-                    <input type="number" id="gf-vc" class="field-class" value="350" oninput="beregnGjengefresing()">
-                </label>
-
-                <label style="display: flex; flex-direction: column; gap: 0.25rem;">
-                    <span style="font-size: 0.8125rem; font-weight: 600;">Mating pr. tann fz (mm)</span>
-                    <input type="number" step="0.01" id="gf-fz" class="field-class" value="0.18" oninput="beregnGjengefresing()">
-                </label>
-
-                <label style="display: flex; flex-direction: column; gap: 0.25rem;">
-                    <span style="font-size: 0.8125rem; font-weight: 600;">Antall skjær / tenner (z)</span>
-                    <input type="number" id="gf-z" class="field-class" value="6" oninput="beregnGjengefresing()">
-                </label>
-
-                <label style="display: flex; flex-direction: column; gap: 0.25rem;">
-                    <span style="font-size: 0.8125rem; font-weight: 600;">Diameter på fres (mm)</span>
-                    <input type="number" id="gf-dfres" class="field-class" value="84" oninput="beregnGjengefresing()">
-                </label>
-
-                <label style="display: flex; flex-direction: column; gap: 0.25rem; grid-column: span 2;">
-                    <span style="font-size: 0.8125rem; font-weight: 600;">Diameter på hull / gjenge (mm) (f.eks. M16=16.25)</span>
-                    <input type="number" id="gf-dhull" class="field-class" value="410" oninput="beregnGjengefresing()">
-                </label>
-            </div>
-
-            <div class="result-box">
-                <div class="line-row strong"><span style="color: var(--ink);">Spindelhastighet RPM (n):</span><span id="gf-res-rpm" class="font-mono" style="font-size: 1.125rem; color: var(--primary-deep);">0 RPM</span></div>
-                <div class="line-row strong" style="margin-top: 0.375rem;"><span style="color: var(--primary-deep); font-size: 1.05rem;">Mating i Gibbs / Cirkulær mating (Vf):</span><span id="gf-res-mating" class="font-mono" style="font-size: 1.25rem; color: var(--primary-deep);">0 mm/min</span></div>
-            </div>
-        </div>
-
-        <!-- VERKSTEDSKALKURATOR 2: INNVENDIGE & UTVENDIGE GJENGER -->
-        <div class="calc-card">
-            <header style="margin-bottom: 1rem; border-bottom: 1px solid var(--line); padding-bottom: 0.5rem;">
-                <h2 style="font-size: 1.125rem; font-weight: 700; margin: 0; color: var(--primary-deep);">🔩 Innvendige & Utvendige Gjenger</h2>
-                <p style="font-size: 0.8125rem; color: var(--muted); margin: 0.25rem 0 0 0;">Beregning av lille diameter / dia du legger inn i Gibbs eller dreiebenk.</p>
-            </header>
-
-            <div class="grid-2" style="margin-bottom: 1.25rem;">
-                <h3 style="grid-column: span 2; font-size: 0.9375rem; font-weight: 600; margin: 0; color: var(--brass);">1. Innvendige gjenger (Mutter)</h3>
-                <label style="display: flex; flex-direction: column; gap: 0.25rem;">
-                    <span style="font-size: 0.8125rem; font-weight: 600;">Store dia (mm)</span>
-                    <input type="number" id="gjin-storedia" class="field-class" value="180" oninput="beregnGjengerInnvendig()">
-                </label>
-                <label style="display: flex; flex-direction: column; gap: 0.25rem;">
-                    <span style="font-size: 0.8125rem; font-weight: 600;">Stigning (mm)</span>
-                    <input type="number" id="gjin-stigning" class="field-class" value="3" oninput="beregnGjengerInnvendig()">
-                </label>
-                <label style="display: flex; flex-direction: column; gap: 0.25rem; grid-column: span 2;">
-                    <span style="font-size: 0.8125rem; font-weight: 600;">Justeringfaktor (standard 0.125)</span>
-                    <input type="number" step="0.001" id="gjin-justering" class="field-class" value="0.125" oninput="beregnGjengerInnvendig()">
-                </label>
-                <div class="result-box" style="grid-column: span 2; margin-top: 0.25rem;">
-                    <div class="line-row strong"><span style="color: var(--brass);">Lille dia / Gibbs dia:</span><span id="gjin-res-lilledia" class="font-mono" style="font-size: 1.125rem; color: var(--brass);">0,00 mm</span></div>
-                </div>
-            </div>
-
-            <div class="grid-2" style="border-top: 1px dashed var(--line); padding-top: 1rem;">
-                <h3 style="grid-column: span 2; font-size: 0.9375rem; font-weight: 600; margin: 0; color: var(--primary-deep);">2. Utvendige gjenger (Skrue)</h3>
-                <label style="display: flex; flex-direction: column; gap: 0.25rem;">
-                    <span style="font-size: 0.8125rem; font-weight: 600;">Store dia (mm)</span>
-                    <input type="number" id="gjut-storedia" class="field-class" value="30" oninput="beregnGjengerUtvendig()">
-                </label>
-                <label style="display: flex; flex-direction: column; gap: 0.25rem;">
-                    <span style="font-size: 0.8125rem; font-weight: 600;">Stigning (mm)</span>
-                    <input type="number" id="gjut-stigning" class="field-class" value="2" oninput="beregnGjengerUtvendig()">
-                </label>
-                <label style="display: flex; flex-direction: column; gap: 0.25rem; grid-column: span 2;">
-                    <span style="font-size: 0.8125rem; font-weight: 600;">Justeringfaktor (standard 0.25)</span>
-                    <input type="number" step="0.001" id="gjut-justering" class="field-class" value="0.25" oninput="beregnGjengerUtvendig()">
-                </label>
-                <div class="result-box" style="grid-column: span 2; margin-top: 0.25rem;">
-                    <div class="line-row strong"><span style="color: var(--primary-deep);">Lille dia / Gibbs dia:</span><span id="gjut-res-lilledia" class="font-mono" style="font-size: 1.125rem; color: var(--primary-deep);">0,00 mm</span></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- VERKSTEDSKALKURATOR 3: SKJÆREDATA & FORMEL-KALKURATOR -->
-        <div class="calc-card">
-            <header style="margin-bottom: 1rem; border-bottom: 1px solid var(--line); padding-bottom: 0.5rem;">
-                <h2 style="font-size: 1.125rem; font-weight: 700; margin: 0; color: var(--primary-deep);">🏎️ Hurtigkalkulator Skjæredata (Vc / RPM / Mating)</h2>
-                <p style="font-size: 0.8125rem; color: var(--muted); margin: 0.25rem 0 0 0;">Regn ut Vc ut fra RPM, RPM ut fra Vc, eller bordmating ut fra fz.</p>
-            </header>
-
-            <div class="grid-2">
-                <div style="background: var(--bg); padding: 0.875rem; border-radius: 0.5rem; border: 1px solid var(--line);">
-                    <h4 style="margin: 0 0 0.5rem 0; font-size: 0.875rem;">1. Finne Vc ut fra RPM</h4>
-                    <label style="display: flex; flex-direction: column; gap: 0.25rem; margin-bottom: 0.375rem;">
-                        <span style="font-size: 0.75rem;">Diameter (mm)</span>
-                        <input type="number" id="fvc-d" class="field-class" style="height: 2.25rem;" value="44" oninput="beregnFinnVc()">
-                    </label>
-                    <label style="display: flex; flex-direction: column; gap: 0.25rem; margin-bottom: 0.5rem;">
-                        <span style="font-size: 0.75rem;">RPM (n)</span>
-                        <input type="number" id="fvc-rpm" class="field-class" style="height: 2.25rem;" value="2533" oninput="beregnFinnVc()">
-                    </label>
-                    <div class="line-row strong"><span style="font-size: 0.8125rem;">Vc:</span><span id="res-fvc" class="font-mono" style="font-weight: 700; color: var(--primary);">0 m/min</span></div>
-                </div>
-
-                <div style="background: var(--bg); padding: 0.875rem; border-radius: 0.5rem; border: 1px solid var(--line);">
-                    <h4 style="margin: 0 0 0.5rem 0; font-size: 0.875rem;">2. Finne RPM ut fra Vc</h4>
-                    <label style="display: flex; flex-direction: column; gap: 0.25rem; margin-bottom: 0.375rem;">
-                        <span style="font-size: 0.75rem;">Diameter (mm)</span>
-                        <input type="number" id="frpm-d" class="field-class" style="height: 2.25rem;" value="27.7" oninput="beregnFinnRpm()">
-                    </label>
-                    <label style="display: flex; flex-direction: column; gap: 0.25rem; margin-bottom: 0.5rem;">
-                        <span style="font-size: 0.75rem;">Vc (m/min)</span>
-                        <input type="number" id="frpm-vc" class="field-class" style="height: 2.25rem;" value="350" oninput="beregnFinnRpm()">
-                    </label>
-                    <div class="line-row strong"><span style="font-size: 0.8125rem;">RPM (n):</span><span id="res-frpm" class="font-mono" style="font-weight: 700; color: var(--primary);">0 RPM</span></div>
-                </div>
-
-                <div style="background: var(--bg); padding: 0.875rem; border-radius: 0.5rem; border: 1px solid var(--line); grid-column: span 2;">
-                    <h4 style="margin: 0 0 0.5rem 0; font-size: 0.875rem;">3. Finne bordmating mm/min (Vf) ut fra fz</h4>
-                    <div class="grid-2">
-                        <label style="display: flex; flex-direction: column; gap: 0.25rem;">
-                            <span style="font-size: 0.75rem;">Antall skjær (z)</span>
-                            <input type="number" id="fmm-z" class="field-class" style="height: 2.25rem;" value="6" oninput="beregnFinnMmMin()">
-                        </label>
-                        <label style="display: flex; flex-direction: column; gap: 0.25rem;">
-                            <span style="font-size: 0.75rem;">RPM (n)</span>
-                            <input type="number" id="fmm-rpm" class="field-class" style="height: 2.25rem;" value="4024" oninput="beregnFinnMmMin()">
-                        </label>
-                        <label style="display: flex; flex-direction: column; gap: 0.25rem; grid-column: span 2;">
-                            <span style="font-size: 0.75rem;">Mating pr tann fz (mm)</span>
-                            <input type="number" step="0.001" id="fmm-fz" class="field-class" style="height: 2.25rem;" value="0.05" oninput="beregnFinnMmMin()">
-                        </label>
-                    </div>
-                    <div class="line-row strong" style="margin-top: 0.5rem;"><span style="font-size: 0.875rem; color: var(--primary-deep);">Bordmating mm/min (Vf):</span><span id="res-fmm" class="font-mono" style="font-size: 1.125rem; font-weight: 700; color: var(--primary-deep);">0 mm/min</span></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- VERKSTEDSKALKURATOR 4: MM/MIN TIL GRADER/MIN (C-AKSE / 4. AKSE) -->
-        <div class="calc-card">
-            <header style="margin-bottom: 1rem; border-bottom: 1px solid var(--line); padding-bottom: 0.5rem;">
-                <h2 style="font-size: 1.125rem; font-weight: 700; margin: 0; color: var(--brass);">🔄 MM/MIN til Grader/MIN (C-Akse / 4. Akse)</h2>
-                <p style="font-size: 0.8125rem; color: var(--muted); margin: 0.25rem 0 0 0;">Omregning fra lineær mating mm/min til roterende grader/min basert på emnediameter.</p>
-            </header>
-
-            <div class="grid-2">
-                <label style="display: flex; flex-direction: column; gap: 0.25rem;">
-                    <span style="font-size: 0.8125rem; font-weight: 600;">Mating mm/min (Vf)</span>
-                    <input type="number" id="deg-mmmin" class="field-class" value="1400" oninput="beregnGraderPrMin()">
-                </label>
-
-                <label style="display: flex; flex-direction: column; gap: 0.25rem;">
-                    <span style="font-size: 0.8125rem; font-weight: 600;">Emnediameter DIA (mm)</span>
-                    <input type="number" step="0.01" id="deg-dia" class="field-class" value="3.14" oninput="beregnGraderPrMin()">
-                </label>
-            </div>
-
-            <div class="result-box" style="background: var(--brass-soft); border-left-color: var(--brass);">
-                <div class="line-row strong"><span style="color: var(--brass);">1 Grad tilsvarer:</span><span id="deg-res-onegrad" class="font-mono" style="font-size: 1rem; color: var(--brass);">0 mm</span></div>
-                <div class="line-row strong" style="margin-top: 0.375rem;"><span style="color: var(--brass); font-size: 1.05rem;">Mating i Grader/MIN (C-akse):</span><span id="deg-res-gradmin" class="font-mono" style="font-size: 1.25rem; color: var(--brass);">0 °/min</span></div>
-            </div>
-        </div>
-
-    </div>
-
-</div>
-
-<!-- STICKY MOBILE BOTTOM BAR FOR LØNN -->
-<div class="mobile-bar" id="mobile-bar-lonn" style="display: none;">
-    <div style="display: flex; flex-direction: column;">
-        <span style="font-size: 0.75rem; color: var(--muted);">Netto måned</span>
-        <span id="vis-netto-mobil" class="font-mono" style="font-size: 1.125rem; font-weight: 600; color: var(--primary-deep);">0,00 kr</span>
-    </div>
-    <button type="button" class="btn btn-primary" style="height: 2.375rem; width: auto; padding: 0 1rem; font-size: 0.8125rem;" onclick="switchTab('oversikt')">Se oppgjør 📊</button>
+    </a>
 </div>
 
 <script>
-    // Registrer Service Worker for PWA (Multi-plattform support med reg.update)
+    // Registrer Service Worker
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', function() {
             navigator.serviceWorker.register('sw.js').then(function(reg) {
-                console.log('[PWA] ServiceWorker registrert:', reg.scope);
                 reg.update();
-            }).catch(function(err) {
-                console.log('[PWA] ServiceWorker feilet:', err);
             });
         });
     }
 
-    // Fjern splash screen etter 2 sekunder
+    // Fjern splash screen
     window.addEventListener('load', function() {
         setTimeout(function() {
             const splash = document.getElementById('splash-screen');
@@ -976,688 +225,26 @@ const DEFAULT_LOGO_BASE64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAw8AA
                 splash.style.visibility = 'hidden';
                 setTimeout(function() { splash.style.display = 'none'; }, 500);
             }
-        }, 2000);
+        }, 1500);
     });
-
-    let registrerteVakter = [];
-    const maanedsNavn = ["Januar", "Februar", "Mars", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Desember"];
-    const ukedager = ["Søn", "Man", "Tir", "Ons", "Tor", "Fre", "Lør"];
-
-    function visHovedmeny() {
-        document.querySelectorAll('.module-view').forEach(el => el.classList.remove('active'));
-        document.getElementById('modul-portal').classList.add('active');
-        document.getElementById('btn-home-nav').style.display = 'none';
-        document.getElementById('main-title').innerText = "Verkstedsportal";
-
-        const mobileBar = document.getElementById('mobile-bar-lonn');
-        if (mobileBar) mobileBar.style.display = 'none';
-
-        localStorage.setItem('lonn_active_module', 'portal');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function velgModul(modName) {
-        document.querySelectorAll('.module-view').forEach(el => el.classList.remove('active'));
-        document.getElementById(`modul-${modName}`).classList.add('active');
-        document.getElementById('btn-home-nav').style.display = 'inline-flex';
-
-        if (modName === 'lonn') {
-            document.getElementById('main-title').innerText = "Lønnskalkulator";
-            const mobileBar = document.getElementById('mobile-bar-lonn');
-            if (mobileBar) mobileBar.style.display = 'flex';
-        } else if (modName === 'maskinering') {
-            document.getElementById('main-title').innerText = "Maskineringskalkulator";
-            const mobileBar = document.getElementById('mobile-bar-lonn');
-            if (mobileBar) mobileBar.style.display = 'none';
-        }
-
-        localStorage.setItem('lonn_active_module', modName);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    // MASKINERINGS-KALKULERINGER
-    function beregnGjengefresing() {
-        const vc = parseFloat(document.getElementById('gf-vc').value) || 0;
-        const fz = parseFloat(document.getElementById('gf-fz').value) || 0;
-        const z = parseFloat(document.getElementById('gf-z').value) || 0;
-        const dFres = parseFloat(document.getElementById('gf-dfres').value) || 1;
-        const dHull = parseFloat(document.getElementById('gf-dhull').value) || 1;
-
-        const rpm = (vc * 1000) / (Math.PI * dFres);
-        const mating = ((dHull - dFres) / dHull) * (rpm * z * fz);
-
-        document.getElementById('gf-res-rpm').innerText = Math.round(rpm) + " RPM";
-        document.getElementById('gf-res-mating').innerText = Math.round(mating) + " mm/min";
-    }
-
-    function beregnGjengerInnvendig() {
-        const storeDia = parseFloat(document.getElementById('gjin-storedia').value) || 0;
-        const stigning = parseFloat(document.getElementById('gjin-stigning').value) || 0;
-        const justering = parseFloat(document.getElementById('gjin-justering').value) || 0;
-
-        const lilleDia = (stigning * justering) + storeDia;
-        document.getElementById('gjin-res-lilledia').innerText = lilleDia.toFixed(3).replace('.', ',') + " mm";
-    }
-
-    function beregnGjengerUtvendig() {
-        const storeDia = parseFloat(document.getElementById('gjut-storedia').value) || 0;
-        const stigning = parseFloat(document.getElementById('gjut-stigning').value) || 0;
-        const justering = parseFloat(document.getElementById('gjut-justering').value) || 0;
-
-        const lilleDia = storeDia - (stigning * justering);
-        document.getElementById('gjut-res-lilledia').innerText = lilleDia.toFixed(3).replace('.', ',') + " mm";
-    }
-
-    function beregnFinnVc() {
-        const d = parseFloat(document.getElementById('fvc-d').value) || 0;
-        const rpm = parseFloat(document.getElementById('fvc-rpm').value) || 0;
-
-        const vc = (Math.PI * d * rpm) / 1000;
-        document.getElementById('res-fvc').innerText = Math.round(vc) + " m/min";
-    }
-
-    function beregnFinnRpm() {
-        const d = parseFloat(document.getElementById('frpm-d').value) || 0;
-        const vc = parseFloat(document.getElementById('frpm-vc').value) || 0;
-
-        const rpm = (vc * 1000) / (Math.PI * d);
-        document.getElementById('res-frpm').innerText = Math.round(rpm) + " RPM";
-    }
-
-    function beregnFinnMmMin() {
-        const z = parseFloat(document.getElementById('fmm-z').value) || 0;
-        const rpm = parseFloat(document.getElementById('fmm-rpm').value) || 0;
-        const fz = parseFloat(document.getElementById('fmm-fz').value) || 0;
-
-        const vf = rpm * fz * z;
-        document.getElementById('res-fmm').innerText = Math.round(vf) + " mm/min";
-    }
-
-    function beregnGraderPrMin() {
-        const mmmin = parseFloat(document.getElementById('deg-mmmin').value) || 0;
-        const dia = parseFloat(document.getElementById('deg-dia').value) || 0;
-
-        const oneGrad = (dia * Math.PI) / 360;
-        const gradMin = oneGrad > 0 ? (mmmin / oneGrad) : 0;
-
-        document.getElementById('deg-res-onegrad').innerText = oneGrad.toFixed(4).replace('.', ',') + " mm/°";
-        document.getElementById('deg-res-gradmin').innerText = gradMin.toFixed(1).replace('.', ',') + " °/min";
-    }
-
-    function visTabellskattModal() {
-        document.getElementById('tabellskatt-modal').style.display = 'flex';
-    }
-
-    function lukkTabellskattModal() {
-        document.getElementById('tabellskatt-modal').style.display = 'none';
-    }
-
-    // Håndtering av tilbakeknapp fra Android nativ
-    function gaaTilbakeNativ() {
-        const modal = document.getElementById('tabellskatt-modal');
-        if (modal && modal.style.display === 'flex') {
-            lukkTabellskattModal();
-            return true;
-        }
-        const activeMod = localStorage.getItem('lonn_active_module') || 'portal';
-        if (activeMod !== 'portal') {
-            visHovedmeny();
-            return true;
-        }
-        const activeTab = localStorage.getItem('lonn_active_tab') || 'oversikt';
-        if (activeTab !== 'oversikt') {
-            switchTab('oversikt');
-            return true;
-        }
-        return false;
-    }
-
-    function switchTab(tabName) {
-        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-        document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-
-        document.getElementById(`tab-${tabName}`).classList.add('active');
-        document.getElementById(`btn-tab-${tabName}`).classList.add('active');
-        localStorage.setItem('lonn_active_tab', tabName);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
 
     function toggleTheme() {
         const isDark = document.body.classList.contains('dark-mode');
         if (isDark) {
             document.body.classList.remove('dark-mode');
-            document.body.classList.add('light-mode');
             localStorage.setItem('lonn_theme', 'light');
             document.getElementById('theme-toggle-btn').innerText = '☀️';
         } else {
-            document.body.classList.remove('light-mode');
             document.body.classList.add('dark-mode');
             localStorage.setItem('lonn_theme', 'dark');
             document.getElementById('theme-toggle-btn').innerText = '🌙';
         }
     }
 
-    function initTheme() {
-        const savedTheme = localStorage.getItem('lonn_theme');
-        if (savedTheme === 'dark') {
-            document.body.classList.add('dark-mode');
-            document.getElementById('theme-toggle-btn').innerText = '🌙';
-        } else if (savedTheme === 'light') {
-            document.body.classList.add('light-mode');
-            document.getElementById('theme-toggle-btn').innerText = '☀️';
-        } else {
-            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                document.body.classList.add('dark-mode');
-                document.getElementById('theme-toggle-btn').innerText = '🌙';
-            } else {
-                document.body.classList.add('light-mode');
-                document.getElementById('theme-toggle-btn').innerText = '☀️';
-            }
-        }
+    if (localStorage.getItem('lonn_theme') === 'dark') {
+        document.body.classList.add('dark-mode');
+        document.getElementById('theme-toggle-btn').innerText = '🌙';
     }
-
-    function byggAarsOgMaanedsLister() {
-        const aarSelect = document.getElementById('year');
-        aarSelect.innerHTML = "";
-        const naaar = new Date().getFullYear();
-        for (let y = naaar - 2; y <= naaar + 5; y++) {
-            const opt = document.createElement('option');
-            opt.value = y;
-            opt.text = y;
-            if (y === naaar) opt.selected = true;
-            aarSelect.appendChild(opt);
-        }
-
-        const mndSelect = document.getElementById('month');
-        mndSelect.innerHTML = "";
-        const naamnd = new Date().getMonth();
-        maanedsNavn.forEach((navn, idx) => {
-            const opt = document.createElement('option');
-            opt.value = idx;
-            opt.text = navn;
-            if (idx === naamnd) opt.selected = true;
-            mndSelect.appendChild(opt);
-        });
-    }
-
-    function countWeekdays(year, month) {
-        let count = 0;
-        const daysInMonth = new Date(year, month + 1, 0).getDate();
-        for (let d = 1; d <= daysInMonth; d++) {
-            const dayOfWeek = new Date(year, month, d).getDay();
-            if (dayOfWeek >= 1 && dayOfWeek <= 5) count++;
-        }
-        return count;
-    }
-
-    function oppdaterAarOgMaaned() {
-        const yearSelect = document.getElementById('year');
-        const monthSelect = document.getElementById('month');
-        if (!yearSelect || !monthSelect || !yearSelect.value || monthSelect.value === "") return;
-
-        const year = parseInt(yearSelect.value);
-        const month = parseInt(monthSelect.value);
-        const realDays = countWeekdays(year, month);
-
-        document.getElementById('tekst-arbeidsdager').innerText = `Antall arbeidsdager i måneden: ${realDays} dager`;
-
-        const overstyrFelt = document.getElementById('overstyr-dager');
-        let gjeldendeDager = realDays;
-        if (overstyrFelt && overstyrFelt.value !== "") {
-            const n = parseInt(overstyrFelt.value);
-            if (!isNaN(n)) gjeldendeDager = Math.min(n, realDays);
-        }
-
-        document.getElementById('tekst-gjeldende-dager').innerText = (overstyrFelt && overstyrFelt.value !== "")
-            ? `Gjeldende dager i beregningen: ${gjeldendeDager} (overstyrt)`
-            : `Gjeldende dager i beregningen: ${gjeldendeDager} (kalender, man–fre)`;
-
-        if (!document.getElementById('vakt-dato').value) {
-            oppdaterStandardDatoForVakt(year, month);
-        }
-        beregnAlt();
-        lagreInnstillinger();
-    }
-
-    function oppdaterStandardDatoForVakt(year, month) {
-        let m = month + 1;
-        let mStr = m < 10 ? '0' + m : m;
-        document.getElementById('vakt-dato').value = `${year}-${mStr}-01`;
-    }
-
-    function sjekkDatoUkedag() {
-        const datoValgt = document.getElementById('vakt-dato').value;
-        if (!datoValgt) return;
-        const d = new Date(datoValgt);
-        const dag = d.getDay();
-        const tilleggType = document.getElementById('tillegg-type');
-        if (dag === 0 || dag === 6) {
-            if (!tilleggType.value.startsWith('helg')) tilleggType.value = 'helg50';
-        } else {
-            if (!tilleggType.value.startsWith('hverdag')) tilleggType.value = 'hverdag50';
-        }
-    }
-
-    function settHurtigVakt(t, m, type, timebank) {
-        document.getElementById('vakt-timer').value = t;
-        document.getElementById('vakt-minutter').value = m;
-        document.getElementById('tillegg-type').value = type;
-        document.getElementById('vakt-timebank').checked = !!timebank;
-        if (!document.getElementById('vakt-dato').value) {
-            const year = document.getElementById('year').value;
-            let month = parseInt(document.getElementById('month').value) + 1;
-            let mStr = month < 10 ? '0' + month : month;
-            document.getElementById('vakt-dato').value = `${year}-${mStr}-01`;
-        }
-        sjekkDatoUkedag();
-    }
-
-    function byttSkattType() {
-        const type = document.getElementById('skatt-type').value;
-        if (type === 'prosent') {
-            document.getElementById('skattetabell-boks').style.display = 'none';
-            document.getElementById('skatteprosent-boks').style.display = 'flex';
-        } else {
-            document.getElementById('skattetabell-boks').style.display = 'flex';
-            document.getElementById('skatteprosent-boks').style.display = 'none';
-        }
-    }
-
-    function regnUtProsentFraKroner() {
-        const betaltKr = parseFloat(document.getElementById('fagforening-kroner-input').value) || 0;
-        const brutto = window.sisteBrutto || 0;
-        if (betaltKr > 0 && brutto > 0) {
-            const pctVal = (betaltKr / brutto) * 100;
-            document.getElementById('fagforening-prosent').value = pctVal.toFixed(2);
-            beregnAlt();
-            lagreInnstillinger();
-        }
-    }
-
-    function visLogo(data) {
-        const wrapper = document.getElementById('logo-wrapper');
-        if (!wrapper) return;
-
-        let src = OFFICIAL_SELAND_LOGO;
-        if (data && typeof data === 'string' && data.startsWith("data:image")) {
-            src = data;
-        }
-
-        wrapper.innerHTML = `<img src="${src}" alt="Sigurd Seland AS" style="max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; display: block; margin: auto;">`;
-    }
-
-    function lastOppLogo(input) {
-        if (input.files && input.files[0]) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const dataUrl = e.target.result;
-                localStorage.setItem('lonn_logo', dataUrl);
-                visLogo(dataUrl);
-            };
-            reader.readAsDataURL(input.files[0]);
-        }
-    }
-
-    function fjernLogo() {
-        localStorage.removeItem('lonn_logo');
-        visLogo(OFFICIAL_SELAND_LOGO);
-    }
-
-    function leggTilVakt(event) {
-        event.preventDefault();
-        const datoValgt = document.getElementById('vakt-dato').value;
-        if (!datoValgt) {
-            alert("Velg en dato for vakten.");
-            return;
-        }
-        const d = new Date(datoValgt);
-        const vaktAar = d.getFullYear();
-        const vaktMnd = d.getMonth();
-
-        document.getElementById('year').value = vaktAar;
-        document.getElementById('month').value = vaktMnd;
-
-        const timer = parseInt(document.getElementById('vakt-timer').value) || 0;
-        const minutter = parseInt(document.getElementById('vakt-minutter').value) || 0;
-        if (timer === 0 && minutter === 0) {
-            alert("Oppgi timer eller minutter.");
-            return;
-        }
-
-        const type = document.getElementById('tillegg-type').value;
-        const typeTekst = document.getElementById('tillegg-type').options[document.getElementById('tillegg-type').selectedIndex].text;
-        const desimalTimer = timer + (minutter / 60);
-        const erTimebank = document.getElementById('vakt-timebank').checked;
-
-        const formatertDato = `${ukedager[d.getDay()]} ${d.getDate()}.${d.getMonth()+1}`;
-
-        registrerteVakter.push({
-            id: Math.random().toString(36).substring(2),
-            date: datoValgt,
-            dateLabel: formatertDato,
-            kind: type,
-            kindLabel: typeTekst.split(' (')[0],
-            hours: timer,
-            minutes: minutter,
-            desimalTimer,
-            year: vaktAar,
-            month: vaktMnd,
-            isTimebank: erTimebank
-        });
-
-        document.getElementById('vakt-timer').value = 0;
-        document.getElementById('vakt-minutter').value = 0;
-        document.getElementById('vakt-timebank').checked = false;
-
-        sorterOgOppdaterVakter();
-    }
-
-    function slettVakt(id) {
-        registrerteVakter = registrerteVakter.filter(v => v.id !== id);
-        sorterOgOppdaterVakter();
-    }
-
-    function sorterOgOppdaterVakter() {
-        registrerteVakter.sort((a, b) => new Date(a.date) - new Date(b.date));
-        oppdaterVaktTabell();
-        beregnAlt();
-        lagreInnstillinger();
-    }
-
-    function hentAktiveVakter() {
-        const yearSelect = document.getElementById('year');
-        const monthSelect = document.getElementById('month');
-        if (!yearSelect || !monthSelect || !yearSelect.value || monthSelect.value === "") return [];
-        const year = parseInt(yearSelect.value);
-        const month = parseInt(monthSelect.value);
-        return registrerteVakter.filter(v => v.year === year && v.month === month);
-    }
-
-    function oppdaterVaktTabell() {
-        const container = document.getElementById('vakt-tabell-container');
-        const monthSelect = document.getElementById('month');
-        if (!container || !monthSelect || monthSelect.value === "") return;
-
-        const aktive = hentAktiveVakter();
-        const monthName = maanedsNavn[parseInt(monthSelect.value)];
-        document.getElementById('tittel-vaktliste').innerText = `Registrerte vakter i ${monthName.toLowerCase()}`;
-
-        if (aktive.length === 0) {
-            container.innerHTML = `<p style="border-radius: 0.5rem; border: 1px dashed var(--line); padding: 2rem; text-align: center; font-size: 0.875rem; color: var(--muted); font-style: italic;">Ingen vakter registrert i denne måneden.</p>`;
-            return;
-        }
-
-        const timelonn = parseFloat(document.getElementById('timelonn').value) || 316.5;
-
-        let html = '<ul style="display: flex; flex-direction: column; gap: 0.5rem; list-style: none; padding: 0; margin: 0;">';
-        aktive.forEach(v => {
-            const faktor = v.isTimebank ? (v.kind.includes('50') ? 0.5 : 1.0) : (v.kind.includes('50') ? 1.5 : 2.0);
-            const brutto = v.desimalTimer * (timelonn * faktor);
-            const tbBadge = v.isTimebank ? `<span style="font-size: 0.70rem; background: var(--brass-soft); color: var(--brass); padding: 0.15rem 0.4rem; border-radius: 0.25rem; font-weight: 600; margin-left: 0.375rem;">🏦 Timebank (+${v.desimalTimer.toFixed(1)}t)</span>` : '';
-
-            html += `<li style="display: flex; align-items: center; gap: 0.75rem; border-radius: 0.5rem; border: 1px solid var(--line); padding: 0.625rem 0.875rem; background: var(--card);">
-                <div style="flex: 1; min-width: 0;">
-                    <p style="font-weight: 500; margin: 0;">${v.dateLabel}${tbBadge}</p>
-                    <p style="font-size: 0.8125rem; color: var(--muted); margin: 0;">${v.kindLabel} · ${v.hours}t ${v.minutes}m ${v.isTimebank ? '(kun tillegg utbetalt)' : ''}</p>
-                </div>
-                <p class="font-mono" style="font-size: 0.875rem; font-variant-numeric: tabular-nums; margin: 0;">${brutto.toFixed(2).replace('.', ',')} kr</p>
-                <button type="button" class="btn no-print" style="width: 2.5rem; height: 2.5rem; color: var(--loss); background: var(--loss-soft);" onclick="slettVakt('${v.id}')">🗑️</button>
-            </li>`;
-        });
-        html += '</ul>';
-        container.innerHTML = html;
-    }
-
-    function kopierVaktliste() {
-        const aktive = hentAktiveVakter();
-        if (aktive.length === 0) {
-            alert("Ingen vakter å kopiere for denne måneden.");
-            return;
-        }
-        let txt = "Registrerte tilleggsvakter:\n";
-        aktive.forEach(v => {
-            txt += `- ${v.dateLabel}: ${v.kindLabel} (${v.hours}t ${v.minutes}m) ${v.isTimebank ? '[Timebank]' : ''}\n`;
-        });
-        navigator.clipboard.writeText(txt);
-        alert("Vaktlisten er kopiert til utklippstavlen!");
-    }
-
-    function beregnAlt() {
-        const yearSelect = document.getElementById('year');
-        const monthSelect = document.getElementById('month');
-        if (!yearSelect || !monthSelect || !yearSelect.value || monthSelect.value === "") return;
-
-        const year = parseInt(yearSelect.value);
-        const month = parseInt(monthSelect.value);
-        const realDays = countWeekdays(year, month);
-
-        let dager = realDays;
-        const overstyrFelt = document.getElementById('overstyr-dager');
-        if (overstyrFelt && overstyrFelt.value !== "") {
-            const n = parseInt(overstyrFelt.value);
-            if (!isNaN(n)) dager = Math.min(n, realDays);
-        }
-
-        const harFastlonn = document.getElementById('inkluder-fastlonn').checked;
-        const timelonn = parseFloat(document.getElementById('timelonn').value) || 316.5;
-        const timerPrDag = parseFloat(document.getElementById('timer-dag').value) || 7.5;
-        const feriedager = parseInt(document.getElementById('feriedager').value) || 0;
-
-        const fastlBrunto = harFastlonn ? (dager * timerPrDag * timelonn) : 0;
-        const ferieTrekk = harFastlonn ? (feriedager * timerPrDag * timelonn) : 0;
-
-        const radFastlonn = document.getElementById('rad-fastlonn');
-        if (harFastlonn) {
-            document.getElementById('vis-fastlonn').innerText = fastlBrunto.toFixed(2).replace('.', ',') + " kr";
-            document.getElementById('vis-fastlonn-sub').innerText = `${dager} dager × ${timerPrDag.toString().replace('.', ',')} t × ${timelonn.toFixed(2).replace('.', ',')} kr`;
-            radFastlonn.style.display = 'block';
-        } else {
-            radFastlonn.style.display = 'none';
-        }
-
-        const radFerie = document.getElementById('rad-ferietrekk');
-        if (harFastlonn && feriedager > 0) {
-            document.getElementById('vis-ferietrekk').innerText = "− " + ferieTrekk.toFixed(2).replace('.', ',') + " kr";
-            radFerie.style.display = 'block';
-        } else {
-            radFerie.style.display = 'none';
-        }
-
-        let hverdag50 = 0, hverdag100 = 0, helg50 = 0, helg100 = 0, sumVaktBrutto = 0, sumVaktTimer = 0, sumTimebankTimer = 0;
-        const aktive = hentAktiveVakter();
-        aktive.forEach(v => {
-            const faktor = v.isTimebank ? (v.kind.includes('50') ? 0.5 : 1.0) : (v.kind.includes('50') ? 1.5 : 2.0);
-            const b = v.desimalTimer * (timelonn * faktor);
-            sumVaktBrutto += b;
-
-            if (v.isTimebank) {
-                sumTimebankTimer += v.desimalTimer;
-            } else {
-                sumVaktTimer += v.desimalTimer;
-            }
-
-            if (v.kind === 'hverdag50') hverdag50 += b;
-            if (v.kind === 'hverdag100') hverdag100 += b;
-            if (v.kind === 'helg50') helg50 += b;
-            if (v.kind === 'helg100') helg100 += b;
-        });
-
-        document.getElementById('vis-hverdag50').innerText = hverdag50.toFixed(2).replace('.', ',') + " kr";
-        document.getElementById('vis-hverdag100').innerText = hverdag100.toFixed(2).replace('.', ',') + " kr";
-        document.getElementById('vis-helg50').innerText = helg50.toFixed(2).replace('.', ',') + " kr";
-        document.getElementById('vis-helg100').innerText = helg100.toFixed(2).replace('.', ',') + " kr";
-
-        // Timebank / Timer
-        const ordinareTimer = harFastlonn ? ((dager - feriedager) * timerPrDag) : 0;
-        const totalTimer = ordinareTimer + sumVaktTimer + sumTimebankTimer;
-        document.getElementById('vis-totaltimer').innerText = totalTimer.toFixed(1).replace('.', ',') + " t";
-        document.getElementById('vis-ordinartimer').innerText = ordinareTimer.toFixed(1).replace('.', ',') + " t";
-        document.getElementById('vis-vakttimer').innerText = sumVaktTimer.toFixed(1).replace('.', ',') + " t";
-        document.getElementById('vis-timebank-vakttimer').innerText = sumTimebankTimer.toFixed(1).replace('.', ',') + " t";
-        document.getElementById('vis-timebank-saldo').innerText = "+ " + sumTimebankTimer.toFixed(1).replace('.', ',') + " t";
-
-        const totalBrutto = fastlBrunto - ferieTrekk + sumVaktBrutto;
-        window.sisteBrutto = totalBrutto;
-        document.getElementById('vis-brutto').innerText = totalBrutto.toFixed(2).replace('.', ',') + " kr";
-
-        const unionPct = parseFloat(document.getElementById('fagforening-prosent').value) || 1.5;
-        const unionKr = Math.max(0, totalBrutto * (unionPct / 100));
-        document.getElementById('fagforening-label-mnd').innerText = `Fagforeningtrekk (${unionPct.toString().replace('.', ',')} %)`;
-        document.getElementById('vis-fagforening-mnd').innerText = "− " + unionKr.toFixed(2).replace('.', ',') + " kr";
-
-        const skattType = document.getElementById('skatt-type').value;
-        let skattKr = 0;
-        const skattGrunnlag = Math.max(0, totalBrutto - unionKr);
-        if (skattType === 'tabell') {
-            skattKr = beregnUniversellTabellskatt(skattGrunnlag, document.getElementById('skatte-tabellnummer').value || "7101");
-            document.getElementById('skatt-tittel').innerText = `Skattetrekk (tabell ${document.getElementById('skatte-tabellnummer').value || "7101"}, estimat)`;
-        } else {
-            const pctTax = parseFloat(document.getElementById('skatt').value) || 30;
-            skattKr = skattGrunnlag * (pctTax / 100);
-            document.getElementById('skatt-tittel').innerText = `Skattetrekk (${pctTax.toString().replace('.', ',')} %)`;
-        }
-
-        document.getElementById('vis-skattetrekk').innerText = "− " + skattKr.toFixed(2).replace('.', ',') + " kr";
-
-        const netto = totalBrutto - unionKr - skattKr;
-        document.getElementById('vis-netto').innerText = netto.toFixed(2).replace('.', ',') + " kr";
-        document.getElementById('vis-netto-hoved').innerText = netto.toFixed(2).replace('.', ',') + " kr";
-        document.getElementById('vis-netto-mobil').innerText = netto.toFixed(2).replace('.', ',') + " kr";
-
-        // Spesifikk vakt-netto
-        const vaktNetto = Math.max(0, sumVaktBrutto - (sumVaktBrutto * (unionPct / 100)) - (sumVaktBrutto * (skattKr / Math.max(1, totalBrutto))));
-        document.getElementById('vis-sumvakt-brutto').innerText = sumVaktBrutto.toFixed(2).replace('.', ',') + " kr";
-        document.getElementById('vis-sumvakt-netto').innerText = vaktNetto.toFixed(2).replace('.', ',') + " kr";
-
-        document.getElementById('vis-periode-tittel').innerText = `${maanedsNavn[month]} ${year} · ${skattType === 'tabell' ? 'Tabell ' + (document.getElementById('skatte-tabellnummer').value || '7101') : (document.getElementById('skatt').value || '30') + ' %'}`;
-
-        const overtidAndel = totalBrutto > 0 ? (sumVaktBrutto / totalBrutto) * 100 : 0;
-        document.getElementById('vis-tillegg-prosent').innerText = `Tillegg utgjør ${overtidAndel.toFixed(1).replace('.', ',')}% av brutto`;
-
-        // Feriepenger måned
-        const feriepengerMnd = Math.max(0, totalBrutto * 0.12);
-        document.getElementById('vis-feriepenger').innerText = feriepengerMnd.toFixed(2).replace('.', ',') + " kr";
-
-        // Årsprognose
-        const fastAarBrutto = harFastlonn ? ((5 * timerPrDag) * timelonn * 47 * (dager / realDays)) : 0;
-        const ukerMnd = dager / 5;
-        const tilleggAar = ukerMnd > 0 ? (sumVaktBrutto / ukerMnd) * 47 : 0;
-        const totalAarMedFeriepenger = (fastAarBrutto + tilleggAar) * 1.12;
-
-        document.getElementById('vis-aarslonn-fast').innerText = (fastAarBrutto * 1.12).toFixed(2).replace('.', ',') + " kr";
-        document.getElementById('vis-aarslonn-total').innerText = totalAarMedFeriepenger.toFixed(2).replace('.', ',') + " kr";
-        document.getElementById('vis-aarslonn-aar').innerText = (totalAarMedFeriepenger * (unionPct / 100)).toFixed(2).replace('.', ',') + " kr";
-    }
-
-    function beregnUniversellTabellskatt(brutto, tabellNummerStr) {
-        let avrundetBrutto = Math.floor(brutto);
-        let tabellNummer = parseInt(tabellNummerStr);
-        if (isNaN(tabellNummer)) tabellNummer = 7101;
-        let hovedSerie = Math.floor(tabellNummer / 100);
-        let tabellVariasjon = tabellNummer % 100;
-        if (tabellNummer < 100) { hovedSerie = tabellNummer; tabellVariasjon = 1; }
-
-        let fribelop = tabellVariasjon * 40;
-        let justert = avrundetBrutto - fribelop;
-        let skatt = 0;
-        if (justert <= 7100) skatt = 0;
-        else if (justert <= 16500) skatt = (justert - 16500) * 0.28;
-        else if (justert <= 60000) skatt = 2632 + (justert - 16500) * 0.34;
-        else if (justert <= 95000) skatt = 17422 + (justert - 60000) * 0.44;
-        else skatt = 32822 + (justert - 95000) * 0.49;
-
-        return Math.max(0, Math.round(skatt));
-    }
-
-    function lagreInnstillinger() {
-        localStorage.setItem('lonn_year', document.getElementById('year').value);
-        localStorage.setItem('lonn_month', document.getElementById('month').value);
-        localStorage.setItem('lonn_inkl_fastlonn', document.getElementById('inkluder-fastlonn').checked ? '1' : '0');
-        localStorage.setItem('lonn_timelonn', document.getElementById('timelonn').value);
-        localStorage.setItem('lonn_timer', document.getElementById('timer-dag').value);
-        localStorage.setItem('lonn_ferier', document.getElementById('feriedager').value);
-        localStorage.setItem('lonn_skatt_type', document.getElementById('skatt-type').value);
-        localStorage.setItem('lonn_tabell', document.getElementById('skatte-tabellnummer').value);
-        localStorage.setItem('lonn_skatt_pct', document.getElementById('skatt').value);
-        localStorage.setItem('lonn_union_pct', document.getElementById('fagforening-prosent').value);
-        localStorage.setItem('lonn_vakter_tabs_v25', JSON.stringify(registrerteVakter));
-    }
-
-    function lastInnstillinger() {
-        initTheme();
-        byggAarsOgMaanedsLister();
-
-        // Vis portal / hovedmeny ved oppstart
-        visHovedmeny();
-
-        const savedTab = localStorage.getItem('lonn_active_tab') || 'oversikt';
-        switchTab(savedTab);
-
-        if (localStorage.getItem('lonn_year')) document.getElementById('year').value = localStorage.getItem('lonn_year');
-        if (localStorage.getItem('lonn_month')) document.getElementById('month').value = localStorage.getItem('lonn_month');
-
-        if (localStorage.getItem('lonn_inkl_fastlonn') !== null) {
-            document.getElementById('inkluder-fastlonn').checked = localStorage.getItem('lonn_inkl_fastlonn') === '1';
-        } else {
-            document.getElementById('inkluder-fastlonn').checked = true;
-        }
-
-        if (localStorage.getItem('lonn_timelonn')) document.getElementById('timelonn').value = localStorage.getItem('lonn_timelonn');
-        if (localStorage.getItem('lonn_timer')) document.getElementById('timer-dag').value = localStorage.getItem('lonn_timer');
-        if (localStorage.getItem('lonn_ferier')) document.getElementById('feriedager').value = localStorage.getItem('lonn_ferier');
-        if (localStorage.getItem('lonn_skatt_type')) {
-            document.getElementById('skatt-type').value = localStorage.getItem('lonn_skatt_type');
-        }
-        if (localStorage.getItem('lonn_tabell')) document.getElementById('skatte-tabellnummer').value = localStorage.getItem('lonn_tabell');
-        if (localStorage.getItem('lonn_skatt_pct')) document.getElementById('skatt').value = localStorage.getItem('lonn_skatt_pct');
-        if (localStorage.getItem('lonn_union_pct')) document.getElementById('fagforening-prosent').value = localStorage.getItem('lonn_union_pct');
-
-        if (localStorage.getItem('lonn_vakter_tabs_v25')) {
-            try { registrerteVakter = JSON.parse(localStorage.getItem('lonn_vakter_tabs_v25')); } catch(e){}
-        }
-
-        let savedLogo = localStorage.getItem('lonn_logo');
-        visLogo(savedLogo);
-
-        byttSkattType();
-        oppdaterAarOgMaaned();
-        oppdaterVaktTabell();
-        beregnAlt();
-
-        // Initialiser Maskineringskalkulator
-        beregnGjengefresing();
-        beregnGjengerInnvendig();
-        beregnGjengerUtvendig();
-        beregnFinnVc();
-        beregnFinnRpm();
-        beregnFinnMmMin();
-        beregnGraderPrMin();
-    }
-
-    function nullstillAlt() {
-        if (confirm("Slette alle lagrede tall, vakter og logo?")) {
-            localStorage.clear();
-            registrerteVakter = [];
-            byggAarsOgMaanedsLister();
-            visHovedmeny();
-            switchTab('oversikt');
-            document.getElementById('inkluder-fastlonn').checked = true;
-            document.getElementById('timelonn').value = "316.5";
-            document.getElementById('timer-dag').value = "7.5";
-            document.getElementById('feriedager').value = "0";
-            document.getElementById('skatt-type').value = "tabell";
-            document.getElementById('skatte-tabellnummer').value = "7101";
-            document.getElementById('skatt').value = "30";
-            document.getElementById('fagforening-prosent').value = "1.5";
-            fjernLogo();
-            byttSkattType();
-            oppdaterAarOgMaaned();
-            oppdaterVaktTabell();
-            beregnAlt();
-        }
-    }
-
-    lastInnstillinger();
 </script>
 
 </body>
