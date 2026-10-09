@@ -10,7 +10,7 @@
     <meta http-equiv="Expires" content="0">
 
     <script>
-        const APP_BUILD_VER = "v4.1";
+        const APP_BUILD_VER = "v5.0";
         if (localStorage.getItem('app_build_v') !== APP_BUILD_VER) {
             localStorage.setItem('app_build_v', APP_BUILD_VER);
             if ('serviceWorker' in navigator) {
@@ -208,6 +208,18 @@
         }
         .btn-purple { background: var(--purple-deep); color: white; height: 2.875rem; padding: 0 1.25rem; }
         .btn-outline { border: 1px solid var(--line); background: var(--card); color: var(--ink); height: 2.875rem; padding: 0 1rem; }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.2rem 0.6rem;
+            border-radius: 9999px;
+            background: var(--primary-soft);
+            color: var(--primary-deep);
+        }
     </style>
 </head>
 <body>
@@ -215,9 +227,12 @@
 <div class="main-layout">
     <header>
         <div>
-            <p style="font-size: 0.75rem; letter-spacing: 0.18em; color: var(--purple); text-transform: uppercase; margin: 0 0 4px 0; font-weight: 800;">Sigurd Seland AS · Etablert 1902</p>
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 4px;">
+                <p style="font-size: 0.75rem; letter-spacing: 0.18em; color: var(--purple); text-transform: uppercase; margin: 0; font-weight: 800;">Sigurd Seland AS · Etablert 1902</p>
+                <span class="status-badge" id="net-status">🟢 Online</span>
+            </div>
             <h1 style="font-size: 1.75rem; font-weight: 800; margin: 0;" id="txt-title">🤖 Sigrid — AI Verkstedsassistent</h1>
-            <p style="font-size: 0.8125rem; color: var(--muted); margin: 0.125rem 0 0 0;" id="txt-sub">Full tilgang til alt på nettstedet: Maskinering, Gibbs, G-kder, M/BSP-gjenger, ISO-toleranser og lønn</p>
+            <p style="font-size: 0.8125rem; color: var(--muted); margin: 0.125rem 0 0 0;" id="txt-sub">Full tilgang til alt på nettstedet: Maskinering, Gibbs, G-koder, M/BSP-gjenger, ISO-toleranser og lønn</p>
         </div>
         <div style="display: flex; align-items: center; gap: 0.5rem;">
             <button type="button" class="btn btn-outline" style="height: 2.875rem; padding: 0 0.75rem; font-size: 0.875rem;" onclick="toggleLanguage()" id="lang-toggle-btn">🇳🇴 NO</button>
@@ -231,7 +246,7 @@
         <div class="chat-messages" id="chat-box">
             <div class="msg-bubble msg-ai" id="txt-welcome-msg">
                 👋 <strong>Hei! Jeg er Sigrid, din AI Verkstedsassistent for Sigurd Seland AS.</strong><br>
-                Jeg har full kunnskap om alt på nettstedet vårt! Spør meg om gjengefresing/sirkulær mating i Gibbs, M- og BSP-rørgjenger, ISO-toleranser (6H/6g), skjæredata (Vc/fz), CNC G-kder, eller hvordan lønn, vakter og timebanken regnes ut. Hva vil du vite?
+                Jeg har full kunnskap om alt på nettstedet vårt! Spør meg om sirkulær mating i Gibbs, M- og BSP-rørgjenger, ISO-toleranser (6H/6g), skjæredata (Vc/fz), CNC G-koder, eller hvordan lønn, vakter og timebanken regnes ut. Hva vil du vite?
             </div>
         </div>
 
@@ -302,7 +317,24 @@
         updateLanguageUI(newLang);
     }
 
+    function updateOnlineStatus() {
+        const badge = document.getElementById('net-status');
+        if (navigator.onLine) {
+            badge.innerText = "🟢 Online";
+            badge.style.background = "var(--primary-soft)";
+            badge.style.color = "var(--primary-deep)";
+        } else {
+            badge.innerText = "⚪ Offline";
+            badge.style.background = "rgba(100, 116, 139, 0.15)";
+            badge.style.color = "var(--muted)";
+        }
+    }
+
+    window.addEventListener('online', updateOnlineStatus);
+    window.addEventListener('offline', updateOnlineStatus);
+
     window.addEventListener('load', function() {
+        updateOnlineStatus();
         const curLang = localStorage.getItem('seland_lang') || 'no';
         updateLanguageUI(curLang);
     });
@@ -325,12 +357,10 @@
         document.getElementById('theme-toggle-btn').innerText = '🌙';
     }
 
-    // SIGRID INTELLIGENT KUNNSKAPSBASIS (FULL KUNNSKAP OM HELE NETTSTEDET)
     function generateSigridResponse(input) {
         const q = input.toLowerCase();
         const isEn = (localStorage.getItem('seland_lang') === 'en');
 
-        // 1. BSP / RØRGJENGER & KJERNEBOR
         if (q.includes('bsp') || q.includes('rørgjeng') || q.includes('1/2') || q.includes('1/4') || q.includes('3/8') || q.includes('3/4') || q.includes('r-gjeng') || q.includes('pipe thread')) {
             if (isEn) {
                 return `🔩 <strong>Sigrid's BSP & Pipe Thread Table:</strong><br>
@@ -352,7 +382,6 @@
             • <strong>Konisk BSPT (R 1/2"):</strong> Kjernebor <strong>18.3 mm</strong>.`;
         }
 
-        // 2. GJENGE-TOLERANSER (6H / 6g)
         if (q.includes('toleranse') || q.includes('6h') || q.includes('6g') || q.includes('flange') || q.includes('delings') || q.includes('pitch dia')) {
             if (isEn) {
                 return `📐 <strong>Sigrid's Thread Tolerance Limits (ISO 6H / 6g):</strong><br>
@@ -370,7 +399,6 @@
             💡 <em>Tips:</em> Slå opp alle mål for M3–M24 under <strong>Verkstedtabeller (verksted.html)</strong>!`;
         }
 
-        // 3. GIBBS / SIRKULÆR MATING
         if (q.includes('gibbs') || q.includes('sirkulær') || q.includes('cirkulær') || q.includes('aksling') || q.includes('mating')) {
             if (isEn) {
                 return `🌀 <strong>Sigrid's Circular Feed Calculation for Gibbs CAM:</strong><br>
@@ -386,7 +414,6 @@
             💡 <em>Eksempel:</em> Vc = 350, Fres Ø84, Hull Ø410, 6 tenner, fz 0.18 ➔ <strong>1327 RPM og 1140 mm/min</strong> i Gibbs!`;
         }
 
-        // 4. METRISK KJERNEBOR
         if (q.includes('bor') || q.includes('kjernebor') || q.includes('m12') || q.includes('m16') || q.includes('m10') || q.includes('m8') || q.includes('drill')) {
             return `🔩 <strong>Sigrids Metriske Kjernebor-tabell:</strong><br>
             • <strong>M3:</strong> 2.5 mm bor (stigning 0.5 mm)<br>
@@ -401,7 +428,6 @@
             • <strong>M24:</strong> 21.0 mm bor (stigning 3.0 mm)`;
         }
 
-        // 5. G-KODER
         if (q.includes('g-kode') || q.includes('g-koder') || q.includes('cnc') || q.includes('g81') || q.includes('g83') || q.includes('g84') || q.includes('g-code')) {
             return `⚙️ <strong>Sigrids Oversikt over CNC G-koder:</strong><br>
             • <strong>G00:</strong> Ilgang (Ilgangsbevegelse)<br>
@@ -415,7 +441,6 @@
             • <strong>M30:</strong> Programslutt`;
         }
 
-        // 6. LØNN & TIMEBANK
         if (q.includes('timebank') || q.includes('overtid') || q.includes('50') || q.includes('100') || q.includes('skatt') || q.includes('lønn') || q.includes('fastlønn') || q.includes('salary')) {
             return `💰 <strong>Sigrids Lønns- & Timebank-guide for Sigurd Seland AS:</strong><br>
             • <strong>Fastlønn:</strong> Arbeidsdager i måneden (man–fre) × 7.5t × timelønn.<br>

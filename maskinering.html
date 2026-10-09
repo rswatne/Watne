@@ -10,7 +10,7 @@
     <meta http-equiv="Expires" content="0">
 
     <script>
-        const APP_BUILD_VER = "v3.2";
+        const APP_BUILD_VER = "v5.0";
         if (localStorage.getItem('app_build_v') !== APP_BUILD_VER) {
             localStorage.setItem('app_build_v', APP_BUILD_VER);
             if ('serviceWorker' in navigator) {
@@ -29,41 +29,40 @@
 
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0284c7">
-    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Maskinering">
     <link rel="apple-touch-icon" href="https://sigurd-seland.no/uploads/lge5O4Vz/354x0_458x0/35f30681-5749-426a-bc82-3ec4dc053599.png">
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #0284c7;
             --primary-deep: #0369a1;
             --primary-soft: #e0f2fe;
-            --brass: #b45309;
+            --brass: #d97706;
             --brass-soft: #fef3c7;
             --card: #ffffff;
             --bg: #f8fafc;
-            --ink: #1e293b;
+            --ink: #0f172a;
             --muted: #64748b;
             --line: #e2e8f0;
             --radius: 12px;
-            --shadow: 0 4px 15px -3px rgba(0, 0, 0, 0.05);
+            --shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.05);
         }
 
         body.dark-mode {
             --primary: #38bdf8;
             --primary-deep: #0284c7;
-            --primary-soft: rgba(56, 189, 248, 0.15);
-            --brass: #d97706;
-            --brass-soft: rgba(217, 119, 6, 0.15);
+            --primary-soft: rgba(56, 189, 248, 0.12);
+            --brass: #f59e0b;
+            --brass-soft: rgba(245, 158, 11, 0.12);
             --card: #1e293b;
             --bg: #0f172a;
             --ink: #f8fafc;
             --muted: #94a3b8;
             --line: #334155;
-            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+            --shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.35);
         }
 
         * { box-sizing: border-box; }
@@ -100,20 +99,22 @@
         .font-mono { font-family: 'JetBrains Mono', monospace; }
 
         .field-class {
-            height: 2.75rem;
+            height: 2.875rem;
             width: 100%;
-            border-radius: 0.5rem;
+            border-radius: 0.625rem;
             border: 1px solid var(--line);
             background-color: var(--card);
-            padding: 0 0.75rem;
+            padding: 0 0.875rem;
             font-size: 1rem;
             color: var(--ink);
             outline: none;
+            transition: border-color 0.2s ease;
         }
+        .field-class:focus { border-color: var(--primary); }
 
         .grid-2 {
             display: grid;
-            gap: 0.75rem;
+            gap: 0.875rem;
         }
         @media (min-width: 640px) {
             .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -124,12 +125,13 @@
             align-items: center;
             justify-content: center;
             gap: 0.5rem;
-            border-radius: 0.5rem;
+            border-radius: 0.625rem;
             font-size: 0.875rem;
             font-weight: 600;
             cursor: pointer;
             border: none;
             text-decoration: none;
+            transition: all 0.2s ease;
         }
 
         .btn-outline {
@@ -142,11 +144,11 @@
             justify-content: space-between; gap: 0.75rem;
             padding: 0.375rem 0;
         }
-        .line-row.strong { font-weight: 600; }
+        .line-row.strong { font-weight: 700; }
 
         .calc-card {
             background: var(--card);
-            border-radius: 0.75rem;
+            border-radius: 1rem;
             border: 1px solid var(--line);
             padding: 1.25rem;
             margin-bottom: 1.25rem;
@@ -154,16 +156,28 @@
         }
         .result-box {
             background: var(--primary-soft);
-            border-radius: 0.5rem;
+            border-radius: 0.625rem;
             border-left: 4px solid var(--primary);
             padding: 0.875rem 1rem;
             margin-top: 0.875rem;
         }
 
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.2rem 0.6rem;
+            border-radius: 9999px;
+            background: var(--primary-soft);
+            color: var(--primary-deep);
+        }
+
         .app-footer {
             margin-top: 2.5rem;
             margin-bottom: 2rem;
-            border-top: 2px solid var(--line);
+            border-top: 1px solid var(--line);
             padding-top: 1.25rem;
             text-align: center;
             font-size: 0.8125rem;
@@ -192,15 +206,18 @@
 <div class="main-layout">
     <header>
         <div>
-            <p style="font-size: 0.75rem; letter-spacing: 0.18em; color: var(--primary); text-transform: uppercase; margin: 0 0 4px 0; font-weight: 700;">Sigurd Seland AS · Etablert 1902</p>
-            <h1 style="font-size: 1.75rem; font-weight: 700; margin: 0;" id="txt-title">Maskineringskalkulator</h1>
-            <p style="font-size: 0.8125rem; color: var(--muted); margin: 0.125rem 0 0 0;" id="txt-sub">Smie & Mekanisk Verksted • Lyngdal</p>
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 4px;">
+                <p style="font-size: 0.75rem; letter-spacing: 0.18em; color: var(--primary); text-transform: uppercase; margin: 0; font-weight: 800;">Sigurd Seland AS · Etablert 1902</p>
+                <span class="status-badge" id="net-status">🟢 Online</span>
+            </div>
+            <h1 style="font-size: 1.875rem; font-weight: 800; margin: 0; letter-spacing: -0.02em;" id="txt-title">Maskineringskalkulator</h1>
+            <p style="font-size: 0.8125rem; color: var(--muted); margin: 0.25rem 0 0 0;" id="txt-sub">Smie & Mekanisk Verksted • Lyngdal</p>
         </div>
         <div style="display: flex; align-items: center; gap: 0.5rem;">
             <button type="button" class="btn btn-outline no-print" style="height: 2.75rem; padding: 0 0.75rem; font-size: 0.875rem;" onclick="toggleLanguage()" id="lang-toggle-btn">🇳🇴 NO</button>
             <a href="index.html" class="btn btn-outline no-print" style="height: 2.75rem; padding: 0 0.875rem; font-size: 0.875rem;" id="txt-btn-home">🏠 Hovedmeny</a>
-            <button type="button" class="btn btn-outline no-print" style="height: 2.75rem; width: 2.75rem; padding: 0; border-radius: 50%; font-size: 1.1rem;" onclick="toggleTheme()" id="theme-toggle-btn">🌙</button>
-            <div style="min-width: 10rem; max-width: 13rem; height: 4.5rem; display: flex; align-items: center; justify-content: center; overflow: hidden; border-radius: 0.5rem; border: 1px dashed var(--line); background: white; padding: 0.5rem;" id="logo-wrapper">
+            <button type="button" class="btn btn-outline no-print" style="height: 2.75rem; width: 2.75rem; padding: 0; border-radius: 50%; font-size: 1.15rem;" onclick="toggleTheme()" id="theme-toggle-btn">🌙</button>
+            <div style="min-width: 10.5rem; max-width: 13.5rem; height: 4.5rem; display: flex; align-items: center; justify-content: center; overflow: hidden; border-radius: 0.75rem; border: 1px dashed var(--line); background: white; padding: 0.5rem;" id="logo-wrapper">
                 <img src="https://sigurd-seland.no/uploads/lge5O4Vz/354x0_458x0/35f30681-5749-426a-bc82-3ec4dc053599.png" alt="Sigurd Seland AS" style="max-width: 100%; max-height: 100%; object-fit: contain;">
             </div>
         </div>
@@ -216,27 +233,27 @@
         <div class="grid-2">
             <label style="display: flex; flex-direction: column; gap: 0.25rem;">
                 <span style="font-size: 0.8125rem; font-weight: 600;" id="lbl-vc">Skjærehastighet Vc (m/min)</span>
-                <input type="number" id="gf-vc" class="field-class" value="350" oninput="beregnSirkulaerMating()">
+                <input type="number" id="gf-vc" class="field-class" inputmode="decimal" value="350" oninput="beregnSirkulaerMating()">
             </label>
 
             <label style="display: flex; flex-direction: column; gap: 0.25rem;">
                 <span style="font-size: 0.8125rem; font-weight: 600;" id="lbl-fz">Mating pr. tann fz (mm)</span>
-                <input type="number" step="0.01" id="gf-fz" class="field-class" value="0.18" oninput="beregnSirkulaerMating()">
+                <input type="number" step="0.01" id="gf-fz" class="field-class" inputmode="decimal" value="0.18" oninput="beregnSirkulaerMating()">
             </label>
 
             <label style="display: flex; flex-direction: column; gap: 0.25rem;">
                 <span style="font-size: 0.8125rem; font-weight: 600;" id="lbl-z">Antall skjær / tenner (z)</span>
-                <input type="number" id="gf-z" class="field-class" value="6" oninput="beregnSirkulaerMating()">
+                <input type="number" id="gf-z" class="field-class" inputmode="numeric" value="6" oninput="beregnSirkulaerMating()">
             </label>
 
             <label style="display: flex; flex-direction: column; gap: 0.25rem;">
                 <span style="font-size: 0.8125rem; font-weight: 600;" id="lbl-dfres">Diameter på fres (mm)</span>
-                <input type="number" id="gf-dfres" class="field-class" value="84" oninput="beregnSirkulaerMating()">
+                <input type="number" id="gf-dfres" class="field-class" inputmode="decimal" value="84" oninput="beregnSirkulaerMating()">
             </label>
 
             <label style="display: flex; flex-direction: column; gap: 0.25rem; grid-column: span 2;">
                 <span style="font-size: 0.8125rem; font-weight: 600;" id="lbl-dhull">Diameter på hull / aksling (mm)</span>
-                <input type="number" id="gf-dhull" class="field-class" value="410" oninput="beregnSirkulaerMating()">
+                <input type="number" id="gf-dhull" class="field-class" inputmode="decimal" value="410" oninput="beregnSirkulaerMating()">
             </label>
         </div>
 
@@ -257,15 +274,15 @@
             <h3 style="grid-column: span 2; font-size: 0.9375rem; font-weight: 600; margin: 0; color: var(--brass);" id="txt-in-title">1. Innvendige gjenger (Mutter)</h3>
             <label style="display: flex; flex-direction: column; gap: 0.25rem;">
                 <span style="font-size: 0.8125rem; font-weight: 600;" class="lbl-storedia">Store dia (mm)</span>
-                <input type="number" id="gjin-storedia" class="field-class" value="180" oninput="beregnGjengerInnvendig()">
+                <input type="number" id="gjin-storedia" class="field-class" inputmode="decimal" value="180" oninput="beregnGjengerInnvendig()">
             </label>
             <label style="display: flex; flex-direction: column; gap: 0.25rem;">
                 <span style="font-size: 0.8125rem; font-weight: 600;" class="lbl-stigning">Stigning (mm)</span>
-                <input type="number" id="gjin-stigning" class="field-class" value="3" oninput="beregnGjengerInnvendig()">
+                <input type="number" id="gjin-stigning" class="field-class" inputmode="decimal" value="3" oninput="beregnGjengerInnvendig()">
             </label>
             <label style="display: flex; flex-direction: column; gap: 0.25rem; grid-column: span 2;">
                 <span style="font-size: 0.8125rem; font-weight: 600;" class="lbl-justering">Justeringfaktor (standard 0.125)</span>
-                <input type="number" step="0.001" id="gjin-justering" class="field-class" value="0.125" oninput="beregnGjengerInnvendig()">
+                <input type="number" step="0.001" id="gjin-justering" class="field-class" inputmode="decimal" value="0.125" oninput="beregnGjengerInnvendig()">
             </label>
             <div class="result-box" style="grid-column: span 2; margin-top: 0.25rem;">
                 <div class="line-row strong"><span style="color: var(--brass);" class="lbl-lilledia">Lille dia / Gibbs dia:</span><span id="gjin-res-lilledia" class="font-mono" style="font-size: 1.125rem; color: var(--brass);">0,00 mm</span></div>
@@ -276,15 +293,15 @@
             <h3 style="grid-column: span 2; font-size: 0.9375rem; font-weight: 600; margin: 0; color: var(--primary-deep);" id="txt-ut-title">2. Utvendige gjenger (Skrue)</h3>
             <label style="display: flex; flex-direction: column; gap: 0.25rem;">
                 <span style="font-size: 0.8125rem; font-weight: 600;" class="lbl-storedia">Store dia (mm)</span>
-                <input type="number" id="gjut-storedia" class="field-class" value="30" oninput="beregnGjengerUtvendig()">
+                <input type="number" id="gjut-storedia" class="field-class" inputmode="decimal" value="30" oninput="beregnGjengerUtvendig()">
             </label>
             <label style="display: flex; flex-direction: column; gap: 0.25rem;">
                 <span style="font-size: 0.8125rem; font-weight: 600;" class="lbl-stigning">Stigning (mm)</span>
-                <input type="number" id="gjut-stigning" class="field-class" value="2" oninput="beregnGjengerUtvendig()">
+                <input type="number" id="gjut-stigning" class="field-class" inputmode="decimal" value="2" oninput="beregnGjengerUtvendig()">
             </label>
             <label style="display: flex; flex-direction: column; gap: 0.25rem; grid-column: span 2;">
                 <span style="font-size: 0.8125rem; font-weight: 600;" class="lbl-justering-ut">Justeringfaktor (standard 0.25)</span>
-                <input type="number" step="0.001" id="gjut-justering" class="field-class" value="0.25" oninput="beregnGjengerUtvendig()">
+                <input type="number" step="0.001" id="gjut-justering" class="field-class" inputmode="decimal" value="0.25" oninput="beregnGjengerUtvendig()">
             </label>
             <div class="result-box" style="grid-column: span 2; margin-top: 0.25rem;">
                 <div class="line-row strong"><span style="color: var(--primary-deep);" class="lbl-lilledia">Lille dia / Gibbs dia:</span><span id="gjut-res-lilledia" class="font-mono" style="font-size: 1.125rem; color: var(--primary-deep);">0,00 mm</span></div>
@@ -304,11 +321,11 @@
                 <h4 style="margin: 0 0 0.5rem 0; font-size: 0.875rem;" id="txt-calc1">1. Finne Vc ut fra RPM</h4>
                 <label style="display: flex; flex-direction: column; gap: 0.25rem; margin-bottom: 0.375rem;">
                     <span style="font-size: 0.75rem;" class="lbl-dia">Diameter (mm)</span>
-                    <input type="number" id="fvc-d" class="field-class" style="height: 2.25rem;" value="44" oninput="beregnFinnVc()">
+                    <input type="number" id="fvc-d" class="field-class" style="height: 2.25rem;" inputmode="decimal" value="44" oninput="beregnFinnVc()">
                 </label>
                 <label style="display: flex; flex-direction: column; gap: 0.25rem; margin-bottom: 0.5rem;">
                     <span style="font-size: 0.75rem;">RPM (n)</span>
-                    <input type="number" id="fvc-rpm" class="field-class" style="height: 2.25rem;" value="2533" oninput="beregnFinnVc()">
+                    <input type="number" id="fvc-rpm" class="field-class" style="height: 2.25rem;" inputmode="numeric" value="2533" oninput="beregnFinnVc()">
                 </label>
                 <div class="line-row strong"><span style="font-size: 0.8125rem;">Vc:</span><span id="res-fvc" class="font-mono" style="font-weight: 700; color: var(--primary);">0 m/min</span></div>
             </div>
@@ -317,11 +334,11 @@
                 <h4 style="margin: 0 0 0.5rem 0; font-size: 0.875rem;" id="txt-calc2">2. Finne RPM ut fra Vc</h4>
                 <label style="display: flex; flex-direction: column; gap: 0.25rem; margin-bottom: 0.375rem;">
                     <span style="font-size: 0.75rem;" class="lbl-dia">Diameter (mm)</span>
-                    <input type="number" id="frpm-d" class="field-class" style="height: 2.25rem;" value="27.7" oninput="beregnFinnRpm()">
+                    <input type="number" id="frpm-d" class="field-class" style="height: 2.25rem;" inputmode="decimal" value="27.7" oninput="beregnFinnRpm()">
                 </label>
                 <label style="display: flex; flex-direction: column; gap: 0.25rem; margin-bottom: 0.5rem;">
                     <span style="font-size: 0.75rem;">Vc (m/min)</span>
-                    <input type="number" id="frpm-vc" class="field-class" style="height: 2.25rem;" value="350" oninput="beregnFinnRpm()">
+                    <input type="number" id="frpm-vc" class="field-class" style="height: 2.25rem;" inputmode="decimal" value="350" oninput="beregnFinnRpm()">
                 </label>
                 <div class="line-row strong"><span style="font-size: 0.8125rem;">RPM (n):</span><span id="res-frpm" class="font-mono" style="font-weight: 700; color: var(--primary);">0 RPM</span></div>
             </div>
@@ -331,15 +348,15 @@
                 <div class="grid-2">
                     <label style="display: flex; flex-direction: column; gap: 0.25rem;">
                         <span style="font-size: 0.75rem;" id="lbl-skjaerr">Antall skjær (z)</span>
-                        <input type="number" id="fmm-z" class="field-class" style="height: 2.25rem;" value="6" oninput="beregnFinnMmMin()">
+                        <input type="number" id="fmm-z" class="field-class" style="height: 2.25rem;" inputmode="numeric" value="6" oninput="beregnFinnMmMin()">
                     </label>
                     <label style="display: flex; flex-direction: column; gap: 0.25rem;">
                         <span style="font-size: 0.75rem;">RPM (n)</span>
-                        <input type="number" id="fmm-rpm" class="field-class" style="height: 2.25rem;" value="4024" oninput="beregnFinnMmMin()">
+                        <input type="number" id="fmm-rpm" class="field-class" style="height: 2.25rem;" inputmode="numeric" value="4024" oninput="beregnFinnMmMin()">
                     </label>
                     <label style="display: flex; flex-direction: column; gap: 0.25rem; grid-column: span 2;">
                         <span style="font-size: 0.75rem;" id="lbl-fz-sub">Mating pr tann fz (mm)</span>
-                        <input type="number" step="0.001" id="fmm-fz" class="field-class" style="height: 2.25rem;" value="0.05" oninput="beregnFinnMmMin()">
+                        <input type="number" step="0.001" id="fmm-fz" class="field-class" style="height: 2.25rem;" inputmode="decimal" value="0.05" oninput="beregnFinnMmMin()">
                     </label>
                 </div>
                 <div class="line-row strong" style="margin-top: 0.5rem;"><span style="font-size: 0.875rem; color: var(--primary-deep);" id="lbl-vf-res">Bordmating mm/min (Vf):</span><span id="res-fmm" class="font-mono" style="font-size: 1.125rem; font-weight: 700; color: var(--primary-deep);">0 mm/min</span></div>
@@ -357,12 +374,12 @@
         <div class="grid-2">
             <label style="display: flex; flex-direction: column; gap: 0.25rem;">
                 <span style="font-size: 0.8125rem; font-weight: 600;" id="lbl-feed-mmmin">Mating mm/min (Vf)</span>
-                <input type="number" id="deg-mmmin" class="field-class" value="1400" oninput="beregnGraderPrMin()">
+                <input type="number" id="deg-mmmin" class="field-class" inputmode="decimal" value="1400" oninput="beregnGraderPrMin()">
             </label>
 
             <label style="display: flex; flex-direction: column; gap: 0.25rem;">
                 <span style="font-size: 0.8125rem; font-weight: 600;" id="lbl-emnediameter">Emnediameter DIA (mm)</span>
-                <input type="number" step="0.01" id="deg-dia" class="field-class" value="3.14" oninput="beregnGraderPrMin()">
+                <input type="number" step="0.01" id="deg-dia" class="field-class" inputmode="decimal" value="3.14" oninput="beregnGraderPrMin()">
             </label>
         </div>
 
@@ -375,7 +392,7 @@
     <!-- FREMHEVET SYNLIG BUNNTEKST MED VERSJON -->
     <footer class="app-footer">
         <p style="margin: 0; font-weight: 500;">
-            Sigurd Seland AS • Smie & Mekanisk Verksted • <span class="version-badge">Versjon 3.2</span>
+            Sigurd Seland AS • Smie & Mekanisk Verksted • <span class="version-badge">Versjon 5.0 Ultra</span>
         </p>
     </footer>
 </div>
@@ -508,7 +525,24 @@
         updateLanguageUI(newLang);
     }
 
+    function updateOnlineStatus() {
+        const badge = document.getElementById('net-status');
+        if (navigator.onLine) {
+            badge.innerText = "🟢 Online";
+            badge.style.background = "var(--primary-soft)";
+            badge.style.color = "var(--primary-deep)";
+        } else {
+            badge.innerText = "⚪ Offline";
+            badge.style.background = "rgba(100, 116, 139, 0.15)";
+            badge.style.color = "var(--muted)";
+        }
+    }
+
+    window.addEventListener('online', updateOnlineStatus);
+    window.addEventListener('offline', updateOnlineStatus);
+
     window.addEventListener('load', function() {
+        updateOnlineStatus();
         const curLang = localStorage.getItem('seland_lang') || 'no';
         updateLanguageUI(curLang);
     });

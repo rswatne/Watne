@@ -10,7 +10,7 @@
     <meta http-equiv="Expires" content="0">
 
     <script>
-        const APP_BUILD_VER = "v4.0";
+        const APP_BUILD_VER = "v5.0";
         if (localStorage.getItem('app_build_v') !== APP_BUILD_VER) {
             localStorage.setItem('app_build_v', APP_BUILD_VER);
             if ('serviceWorker' in navigator) {
@@ -49,6 +49,7 @@
             --ink: #0f172a;
             --muted: #64748b;
             --line: #e2e8f0;
+            --radius: 12px;
             --shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.05);
         }
 
@@ -213,6 +214,18 @@
             display: flex; justify-content: space-between; align-items: center;
         }
 
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.2rem 0.6rem;
+            border-radius: 9999px;
+            background: var(--primary-soft);
+            color: var(--primary-deep);
+        }
+
         .app-footer {
             margin-top: 2.5rem;
             margin-bottom: 2rem;
@@ -259,7 +272,7 @@
             <p style="margin: 0;" id="txt-modal-body2"><strong>Algoritme:</strong> Appen benytter Skatteetatens standard tabellformel for månedslønn (f.eks. Tabell 7101), der fribeløp trekkes fra og skattesatsen skalerer progressivt basert på den samlede månedsinntekten.</p>
             <div style="background: var(--primary-soft); padding: 0.875rem; border-radius: 0.625rem; border-left: 4px solid var(--primary); font-size: 0.8125rem; color: var(--primary-deep); margin-top: 0.25rem;" id="txt-modal-disclaimer">
                 <strong>⚠️ Ansvarsfraskrivelse (Disclaimer):</strong><br>
-                Beregningen i appen er kun et veiledende estimat. Det nøyaktige skattetrekket på din offisielle lønnsslipp fastsettes av din arbeidsgivers lønnssystem og ditt gjeldende skattekort hos Skatteetaten.
+                Beregningen i appen er kun et veiledending estimat. Det nøyaktige skattetrekket på din offisielle lønnsslipp fastsettes av din arbeidsgivers lønnssystem og ditt gjeldende skattekort hos Skatteetaten.
             </div>
         </div>
 
@@ -270,7 +283,10 @@
 <div class="main-layout">
     <header>
         <div>
-            <p style="font-size: 0.75rem; letter-spacing: 0.18em; color: var(--primary); text-transform: uppercase; margin: 0 0 4px 0; font-weight: 800;">Sigurd Seland AS · Etablert 1902</p>
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 4px;">
+                <p style="font-size: 0.75rem; letter-spacing: 0.18em; color: var(--primary); text-transform: uppercase; margin: 0; font-weight: 800;">Sigurd Seland AS · Etablert 1902</p>
+                <span class="status-badge" id="net-status">🟢 Online</span>
+            </div>
             <h1 style="font-size: 1.875rem; font-weight: 800; margin: 0; letter-spacing: -0.02em;" id="txt-title">Lønnskalkulator</h1>
             <p style="font-size: 0.8125rem; color: var(--muted); margin: 0.25rem 0 0 0;" id="txt-sub">Smie & Mekanisk Verksted • Lyngdal</p>
         </div>
@@ -411,11 +427,11 @@
                 <div class="grid-2">
                     <label style="display: flex; flex-direction: column; gap: 0.375rem;">
                         <span style="font-size: 0.875rem; font-weight: 600;" id="lbl-timer">Timer</span>
-                        <input id="vakt-timer" class="field-class" type="number" min="0" value="0">
+                        <input id="vakt-timer" class="field-class" type="number" inputmode="decimal" min="0" value="0">
                     </label>
                     <label style="display: flex; flex-direction: column; gap: 0.375rem;">
                         <span style="font-size: 0.875rem; font-weight: 600;" id="lbl-minutter">Minutter</span>
-                        <input id="vakt-minutter" class="field-class" type="number" min="0" max="59" value="0">
+                        <input id="vakt-minutter" class="field-class" type="number" inputmode="decimal" min="0" max="59" value="0">
                     </label>
                 </div>
                 <label style="display: flex; flex-direction: column; gap: 0.375rem;">
@@ -444,7 +460,8 @@
             </div>
 
             <div style="margin-top: 1.25rem; display: flex; flex-direction: column; gap: 0.5rem;">
-                <button type="button" class="btn btn-soft" style="flex: 1; justify-content: center;" onclick="kopierVaktliste()" id="btn-copy-shifts">📋 Kopier vaktliste som tekst</button>
+                <button type="button" class="btn btn-soft" style="flex: 1; justify-content: center;" onclick="eksporterVakttilExcel()" id="btn-export-csv">📊 Eksporter vaktliste til Excel (.CSV)</button>
+                <button type="button" class="btn btn-outline" style="flex: 1; justify-content: center;" onclick="kopierVaktliste()" id="btn-copy-shifts">📋 Kopier vaktliste som tekst</button>
                 <button type="button" class="btn btn-outline" style="flex: 1; justify-content: center;" onclick="window.print()" id="btn-print-pdf">🖨️ Lagre PDF / skriv ut</button>
             </div>
         </section>
@@ -466,11 +483,11 @@
             <div class="grid-2">
                 <label style="display: flex; flex-direction: column; gap: 0.375rem;">
                     <span style="font-size: 0.875rem; font-weight: 600;" id="lbl-hourly">Timelønn (kr)</span>
-                    <input id="timelonn" class="field-class" type="number" step="0.1" value="316.5" oninput="beregnAlt(); lagreInnstillinger();">
+                    <input id="timelonn" class="field-class" type="number" inputmode="decimal" step="0.1" value="316.5" oninput="beregnAlt(); lagreInnstillinger();">
                 </label>
                 <label style="display: flex; flex-direction: column; gap: 0.375rem;">
                     <span style="font-size: 0.875rem; font-weight: 600;" id="lbl-hours-day">Timer pr. dag</span>
-                    <input id="timer-dag" class="field-class" type="number" step="0.1" value="7.5" oninput="beregnAlt(); lagreInnstillinger();">
+                    <input id="timer-dag" class="field-class" type="number" inputmode="decimal" step="0.1" value="7.5" oninput="beregnAlt(); lagreInnstillinger();">
                 </label>
             </div>
             <div style="margin-top: 0.875rem;">
@@ -508,24 +525,24 @@
                 <div id="skattetabell-boks" style="display: flex; flex-direction: column; gap: 0.375rem;">
                     <label for="skatte-tabellnummer" style="font-size: 0.875rem; font-weight: 600;" id="lbl-tax-tab-no">Tabellnummer</label>
                     <div style="display: flex; gap: 0.5rem; align-items: center;">
-                        <input id="skatte-tabellnummer" class="field-class" value="7101" oninput="beregnAlt(); lagreInnstillinger();" style="flex: 1;">
+                        <input id="skatte-tabellnummer" class="field-class" inputmode="numeric" value="7101" oninput="beregnAlt(); lagreInnstillinger();" style="flex: 1;">
                         <button type="button" class="btn btn-outline" style="height: 2.875rem; padding: 0 0.75rem; font-size: 0.8125rem; white-space: nowrap; gap: 0.375rem;" onclick="visTabellskattModal()" title="Fakta om utregningsmetoden">ℹ️ Fakta</button>
                     </div>
                 </div>
 
                 <label id="skatteprosent-boks" style="display: none; flex-direction: column; gap: 0.375rem;">
                     <span style="font-size: 0.875rem; font-weight: 600;" id="lbl-tax-pct">Skatteprosent (%)</span>
-                    <input id="skatt" class="field-class" type="number" step="0.1" value="30" oninput="beregnAlt(); lagreInnstillinger();">
+                    <input id="skatt" class="field-class" type="number" inputmode="decimal" step="0.1" value="30" oninput="beregnAlt(); lagreInnstillinger();">
                 </label>
 
                 <label style="display: flex; flex-direction: column; gap: 0.375rem;">
                     <span style="font-size: 0.875rem; font-weight: 600;" id="lbl-union-pct">Kontingentsats (%)</span>
-                    <input id="fagforening-prosent" class="field-class" type="number" step="0.01" value="1.5" oninput="beregnAlt(); lagreInnstillinger();">
+                    <input id="fagforening-prosent" class="field-class" type="number" inputmode="decimal" step="0.01" value="1.5" oninput="beregnAlt(); lagreInnstillinger();">
                 </label>
 
                 <label style="display: flex; flex-direction: column; gap: 0.375rem;">
                     <span style="font-size: 0.875rem; font-weight: 600;" id="lbl-union-kr">Betalt kontingent i kroner</span>
-                    <input id="fagforening-kroner-input" class="field-class" type="number" placeholder="f.eks. 750" oninput="regnUtProsentFraKroner()">
+                    <input id="fagforening-kroner-input" class="field-class" type="number" inputmode="decimal" placeholder="f.eks. 750" oninput="regnUtProsentFraKroner()">
                 </label>
             </div>
         </section>
@@ -542,7 +559,7 @@
     <!-- FREMHEVET SYNLIG BUNNTEKST MED VERSJON -->
     <footer class="app-footer">
         <p style="margin: 0; font-weight: 500;">
-            Sigurd Seland AS • Smie & Mekanisk Verksted • <span class="version-badge">Versjon 4.0 Pro</span>
+            Sigurd Seland AS • Smie & Mekanisk Verksted • <span class="version-badge">Versjon 5.0 Ultra</span>
         </p>
     </footer>
 </div>
@@ -593,6 +610,7 @@
             type: "Type tillegg",
             tbCheck: "🏦 Sett ordinær time i timebanken (få kun utbetalt 50%/100% tillegget)",
             addShift: "Legg vakt til i måneden",
+            exportCsv: "📊 Eksporter vaktliste til Excel (.CSV)",
             copyShifts: "📋 Kopier vaktliste som tekst",
             printPdf: "🖨️ Lagre PDF / skriv ut",
             sec3Head: "Lønn og satser",
@@ -647,6 +665,7 @@
             type: "Supplement type",
             tbCheck: "🏦 Deposit standard hour into time bank (payout only 50%/100% supplement)",
             addShift: "Add shift to month",
+            exportCsv: "📊 Export shift list to Excel (.CSV)",
             copyShifts: "📋 Copy shift list as text",
             printPdf: "🖨️ Save PDF / Print",
             sec3Head: "Salary & Rates",
@@ -704,6 +723,7 @@
         document.getElementById('lbl-type').innerText = t.type;
         document.getElementById('lbl-tb-check').innerText = t.tbCheck;
         document.getElementById('btn-add-shift').innerText = t.addShift;
+        document.getElementById('btn-export-csv').innerText = t.exportCsv;
         document.getElementById('btn-copy-shifts').innerText = t.copyShifts;
         document.getElementById('btn-print-pdf').innerText = t.printPdf;
         document.getElementById('txt-sec3-head').innerText = t.sec3Head;
@@ -731,7 +751,24 @@
         updateLanguageUI(newLang);
     }
 
+    function updateOnlineStatus() {
+        const badge = document.getElementById('net-status');
+        if (navigator.onLine) {
+            badge.innerText = "🟢 Online";
+            badge.style.background = "var(--primary-soft)";
+            badge.style.color = "var(--primary-deep)";
+        } else {
+            badge.innerText = "⚪ Offline";
+            badge.style.background = "rgba(100, 116, 139, 0.15)";
+            badge.style.color = "var(--muted)";
+        }
+    }
+
+    window.addEventListener('online', updateOnlineStatus);
+    window.addEventListener('offline', updateOnlineStatus);
+
     window.addEventListener('load', function() {
+        updateOnlineStatus();
         const curLang = localStorage.getItem('seland_lang') || 'no';
         updateLanguageUI(curLang);
     });
@@ -985,6 +1022,28 @@
         aktive.forEach(v => { txt += `- ${v.dateLabel}: ${v.kindLabel} (${v.hours}t ${v.minutes}m) ${v.isTimebank ? '[Timebank]' : ''}\n`; });
         navigator.clipboard.writeText(txt);
         alert("Vaktlisten er kopiert til utklippstavlen!");
+    }
+
+    function eksporterVakttilExcel() {
+        const aktive = hentAktiveVakter();
+        if (aktive.length === 0) { alert("Ingen vakter å eksportere for denne måneden."); return; }
+
+        const timelonn = parseFloat(document.getElementById('timelonn').value) || 316.5;
+        let csvContent = "data:text/csv;charset=utf-8,Dato;Type;Timer;Minutter;Timebank;Brutto (NOK)\n";
+
+        aktive.forEach(v => {
+            const faktor = v.isTimebank ? (v.kind.includes('50') ? 0.5 : 1.0) : (v.kind.includes('50') ? 1.5 : 2.0);
+            const brutto = v.desimalTimer * (timelonn * faktor);
+            csvContent += `${v.date};${v.kindLabel};${v.hours};${v.minutes};${v.isTimebank ? 'Ja' : 'Nei'};${brutto.toFixed(2).replace('.', ',')}\n`;
+        });
+
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", `Vaktliste_${document.getElementById('year').value}_${document.getElementById('month').value}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
     }
 
     function beregnAlt() {
