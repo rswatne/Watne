@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Verkstedtabeller - Sigurd Seland AS</title>
+
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+
+    <!-- AUTOMATISK TVUNGET CACHE-CLEARING KODE -->
+    <script>
+        const APP_BUILD_VERSION = "v2.8";
+        if (localStorage.getItem('app_build_ver') !== APP_BUILD_VERSION) {
+            localStorage.setItem('app_build_ver', APP_BUILD_VERSION);
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.getRegistrations().then(regs => {
+                    for (let reg of regs) reg.unregister();
+                });
+            }
+            if ('caches' in window) {
+                caches.keys().then(names => {
+                    for (let name of names) caches.delete(name);
+                });
+            }
+            window.location.reload(true);
+        }
+    </script>
+
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0284c7">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Verkstedtabeller">
+    <link rel="apple-touch-icon" href="https://sigurd-seland.no/uploads/lge5O4Vz/354x0_458x0/35f30681-5749-426a-bc82-3ec4dc053599.png">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0284c7;
+            --primary-deep: #0369a1;
+            --primary-soft: #e0f2fe;
+            --brass: #b45309;
+            --brass-soft: #fef3c7;
+            --card: #ffffff;
+            --bg: #f8fafc;
+            --ink: #1e293b;
+            --muted: #64748b;
+            --line: #e2e8f0;
+            --radius: 12px;
+            --shadow: 0 4px 15px -3px rgba(0, 0, 0, 0.05);
+        }
+
+        body.dark-mode {
+            --primary: #38bdf8;
+            --primary-deep: #0284c7;
+            --primary-soft: rgba(56, 189, 248, 0.15);
+            --brass: #d97706;
+            --brass-soft: rgba(217, 119, 6, 0.15);
+            --card: #1e293b;
+            --bg: #0f172a;
+            --ink: #f8fafc;
+            --muted: #94a3b8;
+            --line: #334155;
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--ink);
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        .main-layout {
+            max-width: 54rem;
+            margin: 0 auto;
+            padding: 1.5rem 1rem 5rem 1rem;
+        }
+        @media (min-width: 640px) {
+            .main-layout { padding: 2rem 1.5rem 4rem 1.5rem; }
+        }
+
+        header {
+            margin-bottom: 1.25rem;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+
+        .field-class {
+            height: 2.75rem;
+            width: 100%;
+            border-radius: 0.5rem;
+            border: 1px solid var(--line);
+            background-color: var(--card);
+            padding: 0 0.75rem;
+            font-size: 1rem;
+            color: var(--ink);
+            outline: none;
+        }
+
+        .grid-2 {
+            display: grid;
+            gap: 0.75rem;
+        }
+        @media (min-width: 640px) {
+            .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            text-decoration: none;
+        }
+
+        .btn-outline {
+            height: 2.75rem; border: 1px solid var(--line);
+            background: var(--card); color: var(--ink); padding: 0 1rem;
+        }
+
+        .line-row {
+            display: flex; align-items: baseline;
+            justify-content: space-between; gap: 0.75rem;
+            padding: 0.375rem 0;
+        }
+        .line-row.strong { font-weight: 600; }
+
+        .calc-card {
+            background: var(--card);
+            border-radius: 0.75rem;
+            border: 1px solid var(--line);
+            padding: 1.25rem;
+            margin-bottom: 1.25rem;
+            box-shadow: var(--shadow);
+        }
+        .result-box {
+            background: var(--primary-soft);
+            border-radius: 0.5rem;
+            border-left: 4px solid var(--primary);
+            padding: 0.875rem 1rem;
+            margin-top: 0.875rem;
+        }
+
+        .app-footer {
+            margin-top: 2.5rem;
+            margin-bottom: 2rem;
+            border-top: 2px solid var(--line);
+            padding-top: 1.25rem;
+            text-align: center;
+            font-size: 0.8125rem;
+            color: var(--muted);
+        }
+        .version-badge {
+            display: inline-block;
+            background: var(--primary-soft);
+            color: var(--primary-deep);
+            padding: 0.2rem 0.6rem;
+            border-radius: 9999px;
+            font-weight: 700;
+            font-size: 0.75rem;
+            margin-left: 0.375rem;
+        }
+
+        @media print {
+            .no-print, form, .btn, .field-class, select, input, .app-footer { display: none !important; }
+            .main-layout { padding: 0 !important; max-width: 100% !important; }
+            .calc-card { border: none !important; box-shadow: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="main-layout">
+    <header>
+        <div>
+            <p style="font-size: 0.75rem; letter-spacing: 0.18em; color: var(--primary); text-transform: uppercase; margin: 0 0 4px 0; font-weight: 700;">Sigurd Seland AS · Etablert 1902</p>
+            <h1 style="font-size: 1.75rem; font-weight: 700; margin: 0;">Verkstedtabeller & Bor</h1>
+            <p style="font-size: 0.8125rem; color: var(--muted); margin: 0.125rem 0 0 0;">Smie & Mekanisk Verksted • Lyngdal</p>
+        </div>
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <a href="index.html" class="btn btn-outline no-print" style="height: 2.75rem; padding: 0 0.875rem; font-size: 0.875rem;">🏠 Hovedmeny</a>
+            <button type="button" class="btn btn-outline no-print" style="height: 2.75rem; width: 2.75rem; padding: 0; border-radius: 50%; font-size: 1.1rem;" onclick="toggleTheme()" id="theme-toggle-btn">🌙</button>
+            <div style="min-width: 10rem; max-width: 13rem; height: 4.5rem; display: flex; align-items: center; justify-content: center; overflow: hidden; border-radius: 0.5rem; border: 1px dashed var(--line); background: white; padding: 0.5rem;" id="logo-wrapper">
+                <img src="https://sigurd-seland.no/uploads/lge5O4Vz/354x0_458x0/35f30681-5749-426a-bc82-3ec4dc053599.png" alt="Sigurd Seland AS" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+            </div>
+        </div>
+    </header>
+
+    <!-- VERKSTEDVERKTØY 1: MATERIALVELGER & ANBEFALTE SKJÆREDATA -->
+    <div class="calc-card">
+        <header style="margin-bottom: 1rem; border-bottom: 1px solid var(--line); padding-bottom: 0.5rem;">
+            <h2 style="font-size: 1.125rem; font-weight: 700; margin: 0; color: var(--primary-deep);">🧪 Materialvelger & Anbefalte Skjæredata (Vc & fz)</h2>
+            <p style="font-size: 0.8125rem; color: var(--muted); margin: 0.25rem 0 0 0;">Velg verkstedmateriale for å få opp anbefalte skjærehastigheter for skrubb og slett.</p>
+        </header>
+
+        <div class="grid-2">
+            <label style="display: flex; flex-direction: column; gap: 0.25rem; grid-column: span 2;">
+                <span style="font-size: 0.8125rem; font-weight: 600;">Velg materiale</span>
+                <select id="mat-select" class="field-class" onchange="oppdaterMaterialeData()">
+                    <option value="s355">Konstruksjonsstål / S355 / St52 (P1)</option>
+                    <option value="c45">Seigherdingsstål / C45 / 42CrMo4 (P2)</option>
+                    <option value="ss316">Rustfritt / Syrefast 316L / A4 (M1)</option>
+                    <option value="duplex">Duplex / Super Duplex 2205 (M2)</option>
+                    <option value="alu">Aluminium 6082-T6 / 7075 (N1)</option>
+                    <option value="brass">Messing / Kobber (N2)</option>
+                    <option value="cast">Støpejern GG25 / GGG40 (K1)</option>
+                </select>
+            </label>
+
+            <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                <span style="font-size: 0.8125rem; font-weight: 600;">Verktøydiameter (mm)</span>
+                <input type="number" id="mat-dia" class="field-class" value="12" oninput="oppdaterMaterialeData()">
+            </label>
+
+            <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                <span style="font-size: 0.8125rem; font-weight: 600;">Antall skjær (z)</span>
+                <input type="number" id="mat-z" class="field-class" value="4" oninput="oppdaterMaterialeData()">
+            </label>
+        </div>
+
+        <div class="result-box">
+            <div class="line-row strong"><span style="color: var(--primary-deep);">Anbefalt Vc (Skrubb / Slett):</span><span id="mat-res-vc" class="font-mono" style="font-size: 1.125rem; color: var(--primary-deep);">180 - 240 m/min</span></div>
+            <div class="line-row strong" style="margin-top: 0.25rem;"><span style="color: var(--primary-deep);">Beregnet RPM (Spindel):</span><span id="mat-res-rpm" class="font-mono" style="font-size: 1.125rem; color: var(--primary-deep);">4775 RPM</span></div>
+            <div class="line-row strong" style="margin-top: 0.25rem;"><span style="color: var(--primary-deep); font-size: 1.05rem;">Beregnet Mating (Vf):</span><span id="mat-res-mating" class="font-mono" style="font-size: 1.25rem; color: var(--primary-deep);">1146 mm/min</span></div>
+        </div>
+    </div>
+
+    <!-- VERKSTEDVERKTØY 2: GJENGETABELL & KJERNEBOR -->
+    <div class="calc-card">
+        <header style="margin-bottom: 1rem; border-bottom: 1px solid var(--line); padding-bottom: 0.5rem;">
+            <h2 style="font-size: 1.125rem; font-weight: 700; margin: 0; color: var(--brass);">🔩 Gjengetabell & Kjernebor-oppslag</h2>
+            <p style="font-size: 0.8125rem; color: var(--muted); margin: 0.25rem 0 0 0;">Oppslag for kjernebor, stigning og frigi-boring for M-gjenger og BSP-gjenger.</p>
+        </header>
+
+        <div class="grid-2">
+            <label style="display: flex; flex-direction: column; gap: 0.25rem; grid-column: span 2;">
+                <span style="font-size: 0.8125rem; font-weight: 600;">Velg gjengetype / størrelse</span>
+                <select id="tap-select" class="field-class" onchange="oppdaterGjengeTabell()">
+                    <option value="M3">M3 × 0.5 mm</option>
+                    <option value="M4">M4 × 0.7 mm</option>
+                    <option value="M5">M5 × 0.8 mm</option>
+                    <option value="M6">M6 × 1.0 mm</option>
+                    <option value="M8">M8 × 1.25 mm</option>
+                    <option value="M10" selected>M10 × 1.5 mm</option>
+                    <option value="M12">M12 × 1.75 mm</option>
+                    <option value="M16">M16 × 2.0 mm</option>
+                    <option value="M20">M20 × 2.5 mm</option>
+                    <option value="M24">M24 × 3.0 mm</option>
+
+                    <option value="G1/8">G 1/8" Rørgjenge (28 tpi)</option>
+                    <option value="G1/4">G 1/4" Rørgjenge (19 tpi)</option>
+                    <option value="G3/8">G 3/8" Rørgjenge (19 tpi)</option>
+                    <option value="G1/2">G 1/2" Rørgjenge (14 tpi)</option>
+                </select>
+            </label>
+        </div>
+
+        <div class="result-box" style="background: var(--brass-soft); border-left-color: var(--brass);">
+            <div class="line-row strong"><span style="color: var(--brass);">Anbefalt Kjernebor:</span><span id="tap-res-drill" class="font-mono" style="font-size: 1.25rem; color: var(--brass);">8.5 mm</span></div>
+            <div class="line-row strong" style="margin-top: 0.25rem;"><span style="color: var(--brass);">Gjengestigning (Pitch):</span><span id="tap-res-pitch" class="font-mono" style="font-size: 1rem; color: var(--brass);">1.50 mm</span></div>
+            <div class="line-row strong" style="margin-top: 0.25rem;"><span style="color: var(--brass);">Frigangshull (Passbor):</span><span id="tap-res-clearance" class="font-mono" style="font-size: 1rem; color: var(--brass);">10.5 mm</span></div>
+        </div>
+    </div>
+
+    <!-- VERKSTEDVERKTØY 3: BOREDYBDE & SPISSTILLEGG -->
+    <div class="calc-card">
+        <header style="margin-bottom: 1rem; border-bottom: 1px solid var(--line); padding-bottom: 0.5rem;">
+            <h2 style="font-size: 1.125rem; font-weight: 700; margin: 0; color: var(--primary-deep);">📐 Boredybde & Bor-spisstillegg</h2>
+            <p style="font-size: 0.8125rem; color: var(--muted); margin: 0.25rem 0 0 0;">Beregning av bor-spissens ekstra dybde for gjennomboring av plater.</p>
+        </header>
+
+        <div class="grid-2">
+            <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                <span style="font-size: 0.8125rem; font-weight: 600;">Bordiameter (mm)</span>
+                <input type="number" id="drill-dia" class="field-class" value="16" oninput="beregnBoredybde()">
+            </label>
+
+            <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                <span style="font-size: 0.8125rem; font-weight: 600;">Bor-spissvinkel</span>
+                <select id="drill-angle" class="field-class" onchange="beregnBoredybde()">
+                    <option value="118">118° (Standard HSS bor)</option>
+                    <option value="140">140° (VHM / Hardmetall bor)</option>
+                    <option value="90">90° (Forsenker / NC-Spot)</option>
+                </select>
+            </label>
+
+            <label style="display: flex; flex-direction: column; gap: 0.25rem; grid-column: span 2;">
+                <span style="font-size: 0.8125rem; font-weight: 600;">Ønsket sylindrisk boredybde (mm)</span>
+                <input type="number" id="drill-depth" class="field-class" value="25" oninput="beregnBoredybde()">
+            </label>
+        </div>
+
+        <div class="result-box">
+            <div class="line-row strong"><span style="color: var(--primary-deep);">Ekstra spisstillegg (h):</span><span id="drill-res-tip" class="font-mono" style="font-size: 1.125rem; color: var(--primary-deep);">4.80 mm</span></div>
+            <div class="line-row strong" style="margin-top: 0.375rem;"><span style="color: var(--primary-deep); font-size: 1.125rem;">Total Z-boredybde i CNC:</span><span id="drill-res-total" class="font-mono" style="font-size: 1.35rem; color: var(--primary-deep);">29.80 mm</span></div>
+        </div>
+    </div>
+
+    <!-- VERKSTEDVERKTØY 4: ISO PASSNINGER & TOLERANSER -->
+    <div class="calc-card">
+        <header style="margin-bottom: 1rem; border-bottom: 1px solid var(--line); padding-bottom: 0.5rem;">
+            <h2 style="font-size: 1.125rem; font-weight: 700; margin: 0; color: var(--brass);">📏 ISO Passninger & Toleranser (H7 / g6)</h2>
+            <p style="font-size: 0.8125rem; color: var(--muted); margin: 0.25rem 0 0 0;">Oppslag for min/maks toleranseforskjeller for aksling og hull.</p>
+        </header>
+
+        <div class="grid-2">
+            <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                <span style="font-size: 0.8125rem; font-weight: 600;">Nominelt mål (mm)</span>
+                <input type="number" id="iso-dia" class="field-class" value="40" oninput="beregnIsoToleranse()">
+            </label>
+
+            <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                <span style="font-size: 0.8125rem; font-weight: 600;">Toleranseklasse</span>
+                <select id="iso-class" class="field-class" onchange="beregnIsoToleranse()">
+                    <option value="H7">H7 (Standard Hull - Smidiggrense)</option>
+                    <option value="H8">H8 (Grovt Hull)</option>
+                    <option value="h6">h6 (Standard Aksling)</option>
+                    <option value="g6">g6 (Glidende Aksling)</option>
+                    <option value="f7">f7 (Løs Aksling)</option>
+                    <option value="k6">k6 (Presspassning Aksling)</option>
+                </select>
+            </label>
+        </div>
+
+        <div class="result-box" style="background: var(--brass-soft); border-left-color: var(--brass);">
+            <div class="line-row strong"><span style="color: var(--brass);">Toleranseavvik (µm):</span><span id="iso-res-um" class="font-mono" style="font-size: 1.125rem; color: var(--brass);">+25 µm / 0 µm</span></div>
+            <div class="line-row strong" style="margin-top: 0.25rem;"><span style="color: var(--brass); font-size: 1.05rem;">Tillatt målområde:</span><span id="iso-res-range" class="font-mono" style="font-size: 1.2rem; color: var(--brass);">40.000 mm – 40.025 mm</span></div>
+        </div>
+    </div>
+
+    <!-- FREMHEVET SYNLIG BUNNTEKST MED VERSJON -->
+    <footer class="app-footer">
+        <p style="margin: 0; font-weight: 500;">
+            Sigurd Seland AS • Smie & Mekanisk Verksted • <span class="version-badge">Versjon 2.8</span>
+        </p>
+    </footer>
+</div>
+
+<script>
+    function toggleTheme() {
+        const isDark = document.body.classList.contains('dark-mode');
+        if (isDark) {
+            document.body.classList.remove('dark-mode');
+            localStorage.setItem('lonn_theme', 'light');
+            document.getElementById('theme-toggle-btn').innerText = '☀️';
+        } else {
+            document.body.classList.add('dark-mode');
+            localStorage.setItem('lonn_theme', 'dark');
+            document.getElementById('theme-toggle-btn').innerText = '🌙';
+        }
+    }
+
+    if (localStorage.getItem('lonn_theme') === 'dark') {
+        document.body.classList.add('dark-mode');
+        document.getElementById('theme-toggle-btn').innerText = '🌙';
+    }
+
+    // DATA FOR MATERIALER
+    const materialData = {
+        s355: { name: "Konstruksjonsstål / S355", vcRough: 180, fzRough: 0.12, vcFinish: 240, fzFinish: 0.08 },
+        c45: { name: "Seigherdingsstål / C45", vcRough: 140, fzRough: 0.10, vcFinish: 180, fzFinish: 0.06 },
+        ss316: { name: "Syrefast / 316L", vcRough: 90, fzRough: 0.08, vcFinish: 120, fzFinish: 0.05 },
+        duplex: { name: "Duplex / 2205", vcRough: 70, fzRough: 0.06, vcFinish: 95, fzFinish: 0.04 },
+        alu: { name: "Aluminium 6082", vcRough: 450, fzRough: 0.20, vcFinish: 650, fzFinish: 0.12 },
+        brass: { name: "Messing / Kobber", vcRough: 280, fzRough: 0.15, vcFinish: 380, fzFinish: 0.08 },
+        cast: { name: "Støpejern GG25", vcRough: 160, fzRough: 0.12, vcFinish: 210, fzFinish: 0.07 }
+    };
+
+    function oppdaterMaterialeData() {
+        const matKey = document.getElementById('mat-select').value;
+        const dia = parseFloat(document.getElementById('mat-dia').value) || 10;
+        const z = parseFloat(document.getElementById('mat-z').value) || 4;
+
+        const data = materialData[matKey] || materialData.s355;
+
+        // RPM = (Vc * 1000) / (PI * D)
+        const rpm = (data.vcRough * 1000) / (Math.PI * dia);
+        const vf = rpm * data.fzRough * z;
+
+        document.getElementById('mat-res-vc').innerText = `${data.vcRough} - ${data.vcFinish} m/min`;
+        document.getElementById('mat-res-rpm').innerText = `${Math.round(rpm)} RPM`;
+        document.getElementById('mat-res-mating').innerText = `${Math.round(vf)} mm/min`;
+    }
+
+    // DATA FOR GJENGER
+    const threadData = {
+        M3: { drill: 2.5, pitch: 0.5, clear: 3.4 },
+        M4: { drill: 3.3, pitch: 0.7, clear: 4.5 },
+        M5: { drill: 4.2, pitch: 0.8, clear: 5.5 },
+        M6: { drill: 5.0, pitch: 1.0, clear: 6.6 },
+        M8: { drill: 6.8, pitch: 1.25, clear: 9.0 },
+        M10: { drill: 8.5, pitch: 1.5, clear: 11.0 },
+        M12: { drill: 10.2, pitch: 1.75, clear: 13.5 },
+        M16: { drill: 14.0, pitch: 2.0, clear: 17.5 },
+        M20: { drill: 17.5, pitch: 2.5, clear: 22.0 },
+        M24: { drill: 21.0, pitch: 3.0, clear: 26.0 },
+        "G1/8": { drill: 8.8, pitch: 0.907, clear: 10.0 },
+        "G1/4": { drill: 11.8, pitch: 1.337, clear: 13.5 },
+        "G3/8": { drill: 15.2, pitch: 1.337, clear: 17.0 },
+        "G1/2": { drill: 19.0, pitch: 1.814, clear: 21.5 }
+    };
+
+    function oppdaterGjengeTabell() {
+        const tapKey = document.getElementById('tap-select').value;
+        const info = threadData[tapKey] || threadData.M10;
+
+        document.getElementById('tap-res-drill').innerText = `${info.drill.toFixed(1)} mm`;
+        document.getElementById('tap-res-pitch').innerText = `${info.pitch.toFixed(2)} mm`;
+        document.getElementById('tap-res-clearance').innerText = `${info.clear.toFixed(1)} mm`;
+    }
+
+    function beregnBoredybde() {
+        const dia = parseFloat(document.getElementById('drill-dia').value) || 10;
+        const angle = parseFloat(document.getElementById('drill-angle').value) || 118;
+        const depth = parseFloat(document.getElementById('drill-depth').value) || 20;
+
+        // Tip height h = (D / 2) / tan(angle / 2 in rad)
+        const rad = (angle / 2) * (Math.PI / 180);
+        const tip = (dia / 2) / Math.tan(rad);
+        const total = depth + tip;
+
+        document.getElementById('drill-res-tip').innerText = `${tip.toFixed(2).replace('.', ',')} mm`;
+        document.getElementById('drill-res-total').innerText = `${total.toFixed(2).replace('.', ',')} mm`;
+    }
+
+    function beregnIsoToleranse() {
+        const dia = parseFloat(document.getElementById('iso-dia').value) || 30;
+        const cls = document.getElementById('iso-class').value;
+
+        let upperUm = 0, lowerUm = 0;
+        if (cls === 'H7') { upperUm = Math.round(10 + dia * 0.35); lowerUm = 0; }
+        else if (cls === 'H8') { upperUm = Math.round(14 + dia * 0.5); lowerUm = 0; }
+        else if (cls === 'h6') { upperUm = 0; lowerUm = -Math.round(6 + dia * 0.25); }
+        else if (cls === 'g6') { upperUm = -Math.round(4 + dia * 0.15); lowerUm = upperUm - Math.round(6 + dia * 0.25); }
+        else if (cls === 'f7') { upperUm = -Math.round(10 + dia * 0.3); lowerUm = upperUm - Math.round(10 + dia * 0.35); }
+        else if (cls === 'k6') { upperUm = Math.round(8 + dia * 0.2); lowerUm = 2; }
+
+        const minMm = dia + (lowerUm / 1000);
+        const maxMm = dia + (upperUm / 1000);
+
+        const upSign = upperUm >= 0 ? `+${upperUm}` : `${upperUm}`;
+        const lowSign = lowerUm >= 0 ? `+${lowerUm}` : `${lowerUm}`;
+
+        document.getElementById('iso-res-um').innerText = `${upSign} µm / ${lowSign} µm`;
+        document.getElementById('iso-res-range').innerText = `${minMm.toFixed(3).replace('.', ',')} mm – ${maxMm.toFixed(3).replace('.', ',')} mm`;
+    }
+
+    // Initialiser
+    oppdaterMaterialeData();
+    oppdaterGjengeTabell();
+    beregnBoredybde();
+    beregnIsoToleranse();
+</script>
+
+</body>
+</html>

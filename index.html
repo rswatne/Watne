@@ -12,7 +12,7 @@
 
     <!-- AUTOMATISK TVUNGET CACHE-CLEARING KODE -->
     <script>
-        const APP_BUILD_VERSION = "v2.7";
+        const APP_BUILD_VERSION = "v2.8";
         if (localStorage.getItem('app_build_ver') !== APP_BUILD_VERSION) {
             localStorage.setItem('app_build_ver', APP_BUILD_VERSION);
             if ('serviceWorker' in navigator) {
@@ -243,9 +243,19 @@
         </div>
     </a>
 
+    <!-- KORT 3: VERKSTEDTABELLER & BOR/TOLERANSER -->
+    <a href="verksted.html" class="portal-card">
+        <div class="portal-icon" style="background: rgba(16, 185, 129, 0.15);">🛠️</div>
+        <div style="flex: 1;">
+            <h3 style="margin: 0 0 0.25rem 0; font-size: 1.25rem; font-weight: 700; color: #059669;">Verkstedtabeller & Bor</h3>
+            <p style="margin: 0 0 0.75rem 0; font-size: 0.875rem; color: var(--muted);">Materialvelger med anbefalt Vc/fz, kjernebor for M-/Gjenger, bor-spisstillegg og ISO Passninger/Toleranser.</p>
+            <span class="btn btn-soft" style="height: 2.25rem; font-size: 0.8125rem; background: rgba(16, 185, 129, 0.15); color: #059669;">Åpne Verkstedtabeller ➔</span>
+        </div>
+    </a>
+
     <footer class="app-footer">
         <p style="margin: 0; font-weight: 500;">
-            Sigurd Seland AS • Smie & Mekanisk Verksted • <span class="version-badge">Versjon 2.7</span>
+            Sigurd Seland AS • Smie & Mekanisk Verksted • <span class="version-badge">Versjon 2.8</span>
         </p>
     </footer>
 </div>
