@@ -9,6 +9,24 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
 
+    <script>
+        const APP_BUILD_VER = "v3.2";
+        if (localStorage.getItem('app_build_v') !== APP_BUILD_VER) {
+            localStorage.setItem('app_build_v', APP_BUILD_VER);
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.getRegistrations().then(regs => {
+                    for (let reg of regs) reg.unregister();
+                });
+            }
+            if ('caches' in window) {
+                caches.keys().then(names => {
+                    for (let name of names) caches.delete(name);
+                });
+            }
+            window.location.reload(true);
+        }
+    </script>
+
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0284c7">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -195,11 +213,12 @@
     <header>
         <div>
             <p style="font-size: 0.75rem; letter-spacing: 0.18em; color: var(--primary); text-transform: uppercase; margin: 0 0 4px 0; font-weight: 700;">Sigurd Seland AS · Etablert 1902</p>
-            <h1 style="font-size: 1.75rem; font-weight: 700; margin: 0;">🤖 AI Verkstedsassistent</h1>
-            <p style="font-size: 0.8125rem; color: var(--muted); margin: 0.125rem 0 0 0;">Spør AI om maskinering, G-koder, gjenger, skjæredata og lønn</p>
+            <h1 style="font-size: 1.75rem; font-weight: 700; margin: 0;" id="txt-title">🤖 AI Verkstedsassistent</h1>
+            <p style="font-size: 0.8125rem; color: var(--muted); margin: 0.125rem 0 0 0;" id="txt-sub">Spør AI om maskinering, G-koder, gjenger, skjæredata og lønn</p>
         </div>
-        <div style="display: flex; align-items: center; gap: 0.75rem;">
-            <a href="index.html" class="btn btn-outline" style="height: 2.75rem; padding: 0 0.875rem; font-size: 0.875rem;">🏠 Hovedmeny</a>
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <button type="button" class="btn btn-outline" style="height: 2.75rem; padding: 0 0.75rem; font-size: 0.875rem;" onclick="toggleLanguage()" id="lang-toggle-btn">🇳🇴 NO</button>
+            <a href="index.html" class="btn btn-outline" style="height: 2.75rem; padding: 0 0.875rem; font-size: 0.875rem;" id="txt-btn-home">🏠 Hovedmeny</a>
             <button type="button" class="btn btn-outline" style="height: 2.75rem; width: 2.75rem; padding: 0; border-radius: 50%; font-size: 1.1rem;" onclick="toggleTheme()" id="theme-toggle-btn">🌙</button>
         </div>
     </header>
@@ -207,7 +226,7 @@
     <div class="chat-container">
         <!-- CHAT MELDINGER -->
         <div class="chat-messages" id="chat-box">
-            <div class="msg-bubble msg-ai">
+            <div class="msg-bubble msg-ai" id="txt-welcome-msg">
                 👋 <strong>Hei! Jeg er AI Verkstedsassistenten for Sigurd Seland AS.</strong><br>
                 Jeg kan hjelpe deg med skjæredata ($V_c$, $f_z$, RPM), gjengeboringer, G-koder, verktøyvalg, feilsøking ved dreiing/fresing, eller spørsmål om vakter og timebank! Hva lurer du på i dag?
             </div>
@@ -215,21 +234,76 @@
 
         <!-- HURTIGMELDINGER -->
         <div class="quick-prompts">
-            <span class="prompt-chip" onclick="sendQuickPrompt('Hva er anbefalt Vc for syrefast stål 316L?')">💡 Skjæredata Syrefast</span>
-            <span class="prompt-chip" onclick="sendQuickPrompt('Hvilket bor skal jeg bruke til M12 og M16 gjenger?')">🔩 Bor til M12/M16</span>
-            <span class="prompt-chip" onclick="sendQuickPrompt('Hva er de viktigste CNC G-kodene for fresing?')">⚙️ CNC G-koder</span>
-            <span class="prompt-chip" onclick="sendQuickPrompt('Hvordan regnes 50% og 100% overtid i timebanken?')">💰 Timebank & Overtid</span>
+            <span class="prompt-chip" onclick="sendQuickPrompt('Hva er anbefalt Vc for syrefast stål 316L?')" id="chip1">💡 Skjæredata Syrefast</span>
+            <span class="prompt-chip" onclick="sendQuickPrompt('Hvilket bor skal jeg bruke til M12 og M16 gjenger?')" id="chip2">🔩 Bor til M12/M16</span>
+            <span class="prompt-chip" onclick="sendQuickPrompt('Hva er de viktigste CNC G-kodene for fresing?')" id="chip3">⚙️ CNC G-koder</span>
+            <span class="prompt-chip" onclick="sendQuickPrompt('Hvordan regnes 50% og 100% overtid i timebanken?')" id="chip4">💰 Timebank & Overtid</span>
         </div>
 
         <!-- CHAT INPUT -->
         <form class="chat-input-bar" onsubmit="handleChatSubmit(event)">
+            <label for="user-input" class="sr-only" style="display:none;">Meldingsfelt</label>
             <input type="text" id="user-input" class="field-class" placeholder="Skriv spørsmål om maskinering, gjenger, G-koder eller lønn..." autocomplete="off">
-            <button type="submit" class="btn btn-primary">Send 🚀</button>
+            <button type="submit" class="btn btn-primary" id="btn-send">Send 🚀</button>
         </form>
     </div>
 </div>
 
 <script>
+    const i18n = {
+        no: {
+            title: "🤖 AI Verkstedsassistent",
+            sub: "Spør AI om maskinering, G-koder, gjenger, skjæredata og lønn",
+            btnHome: "🏠 Hovedmeny",
+            welcomeMsg: "👋 <strong>Hei! Jeg er AI Verkstedsassistenten for Sigurd Seland AS.</strong><br>Jeg kan hjelpe deg med skjæredata ($V_c$, $f_z$, RPM), gjengeboringer, G-koder, verktøyvalg, feilsøking ved dreiing/fresing, eller spørsmål om vakter og timebank! Hva lurer du på i dag?",
+            chip1: "💡 Skjæredata Syrefast",
+            chip2: "🔩 Bor til M12/M16",
+            chip3: "⚙️ CNC G-koder",
+            chip4: "💰 Timebank & Overtid",
+            placeholder: "Skriv spørsmål om maskinering, gjenger, G-koder eller lønn...",
+            sendBtn: "Send 🚀"
+        },
+        en: {
+            title: "🤖 AI Workshop Assistant",
+            sub: "Ask AI about machining, G-codes, tapping drills, cutting speeds, and salary",
+            btnHome: "🏠 Main Menu",
+            welcomeMsg: "👋 <strong>Hi! I am the AI Workshop Assistant for Sigurd Seland AS.</strong><br>I can help with cutting data ($V_c$, $f_z$, RPM), tap drills, G-codes, tool selection, machining troubleshooting, or questions about shifts and time bank! What can I help you with today?",
+            chip1: "💡 Cutting Speeds Stainless",
+            chip2: "🔩 Tap Drills M12/M16",
+            chip3: "⚙️ CNC G-codes",
+            chip4: "💰 Time Bank & Overtime",
+            placeholder: "Ask a question about machining, threads, G-codes, or salary...",
+            sendBtn: "Send 🚀"
+        }
+    };
+
+    function updateLanguageUI(lang) {
+        const t = i18n[lang] || i18n.no;
+        document.getElementById('txt-title').innerText = t.title;
+        document.getElementById('txt-sub').innerText = t.sub;
+        document.getElementById('txt-btn-home').innerText = t.btnHome;
+        document.getElementById('txt-welcome-msg').innerHTML = t.welcomeMsg;
+        document.getElementById('chip1').innerText = t.chip1;
+        document.getElementById('chip2').innerText = t.chip2;
+        document.getElementById('chip3').innerText = t.chip3;
+        document.getElementById('chip4').innerText = t.chip4;
+        document.getElementById('user-input').placeholder = t.placeholder;
+        document.getElementById('btn-send').innerText = t.sendBtn;
+        document.getElementById('lang-toggle-btn').innerText = (lang === 'en') ? '🇬🇧 EN' : '🇳🇴 NO';
+    }
+
+    function toggleLanguage() {
+        let cur = localStorage.getItem('seland_lang') || 'no';
+        let newLang = (cur === 'no') ? 'en' : 'no';
+        localStorage.setItem('seland_lang', newLang);
+        updateLanguageUI(newLang);
+    }
+
+    window.addEventListener('load', function() {
+        const curLang = localStorage.getItem('seland_lang') || 'no';
+        updateLanguageUI(curLang);
+    });
+
     function toggleTheme() {
         const isDark = document.body.classList.contains('dark-mode');
         if (isDark) {
@@ -248,11 +322,20 @@
         document.getElementById('theme-toggle-btn').innerText = '🌙';
     }
 
-    // AI KUNNSKAPSBABASE OG RESPONSER FOR VERKSTED & LØNN
     function generateAiResponse(input) {
         const q = input.toLowerCase();
+        const isEn = (localStorage.getItem('seland_lang') === 'en');
 
-        if (q.includes('vc') || q.includes('skjærehastighet') || q.includes('syrefast') || q.includes('316') || q.includes('duplex') || q.includes('s355')) {
+        if (q.includes('vc') || q.includes('skjærehastighet') || q.includes('syrefast') || q.includes('316') || q.includes('duplex') || q.includes('s355') || q.includes('cutting speed') || q.includes('stainless')) {
+            if (isEn) {
+                return `🛠️ <strong>Recommended Cutting Speeds (Vc):</strong><br>
+                • <strong>Structural Steel (S355/St52):</strong> Vc = 180–240 m/min (Roughing) / 220–280 m/min (Finishing)<br>
+                • <strong>Alloy Steel (C45/42CrMo4):</strong> Vc = 140–180 m/min<br>
+                • <strong>Stainless Steel (316L/A4):</strong> Vc = 90–120 m/min (Use flood coolant & steady feed!)<br>
+                • <strong>Duplex (2205):</strong> Vc = 70–95 m/min<br>
+                • <strong>Aluminum (6082-T6):</strong> Vc = 450–700 m/min<br><br>
+                💡 <em>Spindle Speed Formula:</em> <code>RPM = (Vc × 1000) / (π × Diameter)</code>`;
+            }
             return `🛠️ <strong>Anbefalte skjærehastigheter (Vc):</strong><br>
             • <strong>Konstruksjonsstål (S355/St52):</strong> Vc = 180–240 m/min (Skrubb) / 220–280 m/min (Slett)<br>
             • <strong>Seigherdingsstål (C45/42CrMo4):</strong> Vc = 140–180 m/min<br>
@@ -262,7 +345,20 @@
             💡 <em>Formel for Spindelhastighet:</em> <code>RPM = (Vc × 1000) / (π × Diameter)</code>`;
         }
 
-        if (q.includes('bor') || q.includes('gjeng') || q.includes('kjernebor') || q.includes('m12') || q.includes('m16') || q.includes('m10') || q.includes('m8')) {
+        if (q.includes('bor') || q.includes('gjeng') || q.includes('kjernebor') || q.includes('m12') || q.includes('m16') || q.includes('m10') || q.includes('m8') || q.includes('tap') || q.includes('drill')) {
+            if (isEn) {
+                return `🔩 <strong>Standard Tap Drill Sizes for M-Threads:</strong><br>
+                • <strong>M3:</strong> 2.5 mm drill (pitch 0.5 mm)<br>
+                • <strong>M4:</strong> 3.3 mm drill (pitch 0.7 mm)<br>
+                • <strong>M5:</strong> 4.2 mm drill (pitch 0.8 mm)<br>
+                • <strong>M6:</strong> 5.0 mm drill (pitch 1.0 mm)<br>
+                • <strong>M8:</strong> 6.8 mm drill (pitch 1.25 mm)<br>
+                • <strong>M10:</strong> 8.5 mm drill (pitch 1.5 mm)<br>
+                • <strong>M12:</strong> 10.2 mm drill (pitch 1.75 mm)<br>
+                • <strong>M16:</strong> 14.0 mm drill (pitch 2.0 mm)<br>
+                • <strong>M20:</strong> 17.5 mm drill (pitch 2.5 mm)<br><br>
+                💡 <em>Rule of thumb:</em> <code>Tap Drill = Nominal Diameter − Pitch</code> (e.g., M10 − 1.5 = 8.5 mm).`;
+            }
             return `🔩 <strong>Standard Kjernebor-størrelser for M-Gjenger:</strong><br>
             • <strong>M3:</strong> 2.5 mm bor (stigning 0.5 mm)<br>
             • <strong>M4:</strong> 3.3 mm bor (stigning 0.7 mm)<br>
@@ -276,42 +372,23 @@
             💡 <em>Huskeregel:</em> <code>Kjernebor = Nominell diameter − Stigning</code> (f.eks. M10 − 1.5 = 8.5 mm).`;
         }
 
-        if (q.includes('g-kode') || q.includes('g-koder') || q.includes('cnc') || q.includes('m-kode') || q.includes('g81') || q.includes('g83')) {
-            return `⚙️ <strong>Viktige CNC G-koder & M-koder:</strong><br>
-            • <strong>G00:</strong> Ilgang (Ilgangsbevegelse)<br>
-            • <strong>G01:</strong> Lineær arbeidsmating<br>
-            • <strong>G02 / G03:</strong> Sirkulær interpolasjon med klokken / mot klokken<br>
-            • <strong>G81:</strong> Standard boresyklus<br>
-            • <strong>G83:</strong> Sponbrytende boredybdesyklus (Peck drilling)<br>
-            • <strong>G84:</strong> Gjengeskjæringssyklus (Tapping)<br>
-            • <strong>M03 / M04:</strong> Spindel på med klokken / mot klokken<br>
-            • <strong>M08 / M09:</strong> Kjølevæske PÅ / AV<br>
-            • <strong>M30:</strong> Programslutt og tilbakestilling`;
+        if (q.includes('g-kode') || q.includes('g-koder') || q.includes('cnc') || q.includes('m-kode') || q.includes('g81') || q.includes('g83') || q.includes('g-code')) {
+            return `⚙️ <strong>Essential CNC G-codes & M-codes:</strong><br>
+            • <strong>G00:</strong> Rapid positioning<br>
+            • <strong>G01:</strong> Linear feed motion<br>
+            • <strong>G02 / G03:</strong> Circular interpolation CW / CCW<br>
+            • <strong>G81:</strong> Standard drilling cycle<br>
+            • <strong>G83:</strong> Peck drilling cycle<br>
+            • <strong>G84:</strong> Tapping cycle<br>
+            • <strong>M03 / M04:</strong> Spindle ON CW / CCW<br>
+            • <strong>M08 / M09:</strong> Coolant ON / OFF<br>
+            • <strong>M30:</strong> Program end and reset`;
         }
 
-        if (q.includes('timebank') || q.includes('overtid') || q.includes('50') || q.includes('100') || q.includes('skatt') || q.includes('lønn')) {
-            return `💰 <strong>Lønn & Timebank i Verkstedsportalen:</strong><br>
-            • <strong>50 % overtid:</strong> Timelønn × 1.5 utbetales.<br>
-            • <strong>100 % overtid:</strong> Timelønn × 2.0 utbetales (f.eks. helg/natt).<br>
-            • <strong>Timebank (avspasering):</strong> Når du huker av for timebank på en overtidstime, blir den 1 ordinære timen satt inn i timebanken til avspasering, mens 50 % eller 100 % tillegget utbetales direkte på lønnsslippen!<br>
-            • <strong>Tabellskatt:</strong> Tabellskatten (f.eks. Tabell 7101) beregnes av bruttoinntekt etter fratrekk av fagforeningskontingent.`;
+        if (isEn) {
+            return `🤖 <strong>Thank you for your question!</strong><br>I am trained on machining, workshop data, and salary rules for Sigurd Seland AS.<br><br>Try asking me about:<br>• <em>"Cutting speed for stainless steel"</em><br>• <em>"Drill size for M12 thread"</em><br>• <em>"Essential CNC G-codes"</em><br>• <em>"How does overtime pay work?"</em>`;
         }
-
-        if (q.includes('vibrasjon') || q.includes('overflate') || q.includes('spon') || q.includes('uromoment') || q.includes('kamm')) {
-            return `💡 <strong>Tips for å fjerne vibrasjon / kast i maskinering:</strong><br>
-            1. **Reduser utheng:** Gjør verktøysuthenget fra holderen så kort som overhodet mulig.<br>
-            2. **Øk matingen pr. tann ($f_z$):** For lav mating skaper gnissing og vibrasjon.<br>
-            3. **Endre RPM ($n$):** Reduser eller øk spindelhastigheten med 10–15 % for å gå ut av ressonansfrekvensen.<br>
-            4. **Hardmetallfreser med variabel stigning:** Bruk ulik tannavstand for å bryte harmoniske svingninger.`;
-        }
-
-        return `🤖 <strong>Takk for spørsmålet!</strong><br>
-        Jeg er programmert for maskinering, verkstedtabeller og lønn for Sigurd Seland AS.<br><br>
-        Prøv å spørre meg om:<br>
-        • <em>"Skjærehastighet for syrefast"</em><br>
-        • <em>"Bor til M12 gjenge"</em><br>
-        • <em>"Viktige G-koder for CNC"</em><br>
-        • <em>"Hvordan fungerer timebanken?"</em>`;
+        return `🤖 <strong>Takk for spørsmålet!</strong><br>Jeg er programmert for maskinering, verkstedtabeller og lønn for Sigurd Seland AS.<br><br>Prøv å spørre meg om:<br>• <em>"Skjærehastighet for syrefast"</em><br>• <em>"Bor til M12 gjenge"</em><br>• <em>"Viktige G-koder for CNC"</em><br>• <em>"Hvordan fungerer timebanken?"</em>`;
     }
 
     function appendMessage(text, isUser) {
