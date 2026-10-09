@@ -15,7 +15,7 @@
     <link rel="prefetch" href="chat.html">
 
     <script>
-        const APP_BUILD_VER = "v8.1-CleanText";
+        const APP_BUILD_VER = "v13.0-PWAInstall";
         if (localStorage.getItem('app_build_v') !== APP_BUILD_VER) {
             localStorage.setItem('app_build_v', APP_BUILD_VER);
             if ('serviceWorker' in navigator) {
@@ -36,7 +36,7 @@
     <meta name="theme-color" content="#0284c7">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Verksteds-App">
+    <meta name="apple-mobile-web-app-title" content="Verkstedsportal">
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
     <style>
@@ -187,6 +187,17 @@
         .btn-outline { border: 1px solid var(--line); background: var(--card); color: var(--ink); }
         .btn-outline:hover { border-color: var(--primary); color: var(--primary); }
 
+        .btn-install {
+            background: #059669;
+            color: white;
+            border: none;
+            animation: pulseInstall 2s infinite ease-in-out;
+        }
+        @keyframes pulseInstall {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(5, 150, 105, 0.4); }
+            50% { box-shadow: 0 0 0 10px rgba(5, 150, 105, 0); }
+        }
+
         .status-badge {
             display: inline-flex;
             align-items: center;
@@ -223,6 +234,30 @@
 </head>
 <body>
 
+<!-- MODAL FOR IOS INSTALLASJONS-GUIDE -->
+<div id="ios-install-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(4px); z-index: 99999; justify-content: center; align-items: center; padding: 1.25rem;">
+    <div style="background: var(--card); border-radius: 1.25rem; border: 1px solid var(--line); max-width: 26rem; width: 100%; padding: 1.5rem; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.35);">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; border-bottom: 1px solid var(--line); padding-bottom: 0.75rem;">
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <span style="font-size: 1.5rem;">📲</span>
+                <h3 style="margin: 0; font-size: 1.125rem; font-weight: 800;" id="txt-ios-modal-title">Legg til på Hjemmeskjerm</h3>
+            </div>
+            <button type="button" style="background: none; border: none; font-size: 1.25rem; cursor: pointer; color: var(--muted); padding: 0;" onclick="lukkIosModal()">✕</button>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 0.875rem; font-size: 0.875rem; line-height: 1.5;">
+            <p style="margin: 0;" id="txt-ios-modal-body">For å installere appen direkte på iPhone/iPad:</p>
+            <ol style="margin: 0; padding-left: 1.25rem; display: flex; flex-direction: column; gap: 0.5rem;">
+                <li>Trykk på <strong>Del-ikonet</strong> <span style="font-size: 1.1rem;">⎕↑</span> i nettleser-menyen (Safari).</li>
+                <li>Rull ned og velg <strong>«Legg til på Hjemmeskjerm»</strong> ➕.</li>
+                <li>Trykk <strong>Legg til</strong> øverst i hjørnet!</li>
+            </ol>
+        </div>
+
+        <button type="button" class="btn btn-primary" style="margin-top: 1.25rem; height: 2.75rem; width: 100%;" onclick="lukkIosModal()" id="txt-ios-modal-close">Forstått 👍</button>
+    </div>
+</div>
+
 <div class="main-layout">
     <header>
         <div>
@@ -232,7 +267,9 @@
             <h1 style="font-size: 1.875rem; font-weight: 800; margin: 0; letter-spacing: -0.02em;" id="txt-title">Verkstedsportal</h1>
         </div>
 
-        <div style="display: flex; align-items: center; gap: 0.625rem;">
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <!-- PWA INSTALLER KNAPP -->
+            <button type="button" class="btn btn-install" onclick="utforAppInstallasjon()" id="btn-install-app">📲 Installer App</button>
             <button type="button" class="btn btn-outline" style="height: 2.75rem; padding: 0 0.75rem; font-size: 0.875rem;" onclick="toggleLanguage()" id="lang-toggle-btn">🇳🇴 NO</button>
             <button type="button" class="btn btn-outline" style="height: 2.75rem; width: 2.75rem; padding: 0; border-radius: 50%; font-size: 1.15rem;" onclick="toggleTheme()" id="theme-toggle-btn">🌙</button>
         </div>
@@ -309,15 +346,43 @@
 
     <footer class="app-footer">
         <p style="margin: 0; font-weight: 500;">
-            <span class="version-badge">Versjon 8.1</span>
+            <span class="version-badge">Versjon 13.0 PWA</span>
         </p>
     </footer>
 </div>
 
 <script>
+    let deferredPrompt = null;
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        const btn = document.getElementById('btn-install-app');
+        if (btn) btn.style.display = 'inline-flex';
+    });
+
+    function utforAppInstallasjon() {
+        if (deferredPrompt) {
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then((choiceResult) => {
+                if (choiceResult.outcome === 'accepted') {
+                    console.log('App installert av brukeren!');
+                }
+                deferredPrompt = null;
+            });
+        } else {
+            // Viss iOS Safari instruksjons-modal
+            visIosModal();
+        }
+    }
+
+    function visIosModal() { document.getElementById('ios-install-modal').style.display = 'flex'; }
+    function lukkIosModal() { document.getElementById('ios-install-modal').style.display = 'none'; }
+
     const i18n = {
         no: {
             title: "Verkstedsportal",
+            btnInstall: "📲 Installer App",
             welcome: "Velkommen til Verkstedsportalen",
             choose: "Digitalt verktøysett for produksjon, beregninger, vakter og lønn.",
             c1_title: "Lønnskalkulator & Vakter",
@@ -335,6 +400,7 @@
         },
         en: {
             title: "Workshop Portal",
+            btnInstall: "📲 Install App",
             welcome: "Welcome to the Workshop Portal",
             choose: "Digital toolkit for machining, calculations, shifts, and salary.",
             c1_title: "Paycheck Calculator & Shifts",
@@ -355,6 +421,7 @@
     function updateLanguageUI(lang) {
         const t = i18n[lang] || i18n.no;
         document.getElementById('txt-title').innerText = t.title;
+        document.getElementById('btn-install-app').innerText = t.btnInstall;
         document.getElementById('txt-welcome').innerText = t.welcome;
         document.getElementById('txt-choose').innerText = t.choose;
         document.getElementById('txt-c1-title').innerText = t.c1_title;
