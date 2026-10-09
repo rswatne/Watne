@@ -10,7 +10,7 @@
     <meta http-equiv="Expires" content="0">
 
     <script>
-        const APP_BUILD_VER = "v9.0-SigridMasterMath";
+        const APP_BUILD_VER = "v12.0-SigridMasterActionMenu";
         if (localStorage.getItem('app_build_v') !== APP_BUILD_VER) {
             localStorage.setItem('app_build_v', APP_BUILD_VER);
             if ('serviceWorker' in navigator) {
@@ -172,6 +172,15 @@
             border-color: var(--purple);
             color: var(--purple);
         }
+        .prompt-chip-highlight {
+            background: var(--purple-deep);
+            color: white;
+            border-color: var(--purple-deep);
+        }
+        .prompt-chip-highlight:hover {
+            background: var(--purple);
+            color: white;
+        }
 
         .chat-input-bar {
             display: flex;
@@ -242,50 +251,70 @@
         <!-- CHAT MELDINGER -->
         <div class="chat-messages" id="chat-box">
             <div class="msg-bubble msg-ai" id="txt-welcome-msg">
-                👋 <strong>Hei! Jeg er Sigrid, din AI Verkstedsassistent.</strong><br>
-                Jeg kan forklare deg <strong>absolutt alle formler og utregninger</strong> på dette nettstedet i detalj! Spør meg om hvordan lønn, feriepenger, tabellskatt og timebank beregnes, eller hvordan Gibbs sirkulær mating, skjæredata, bøyefradrag og trekant-trigonometri regnes ut. Hva ønsker du at jeg skal forklare?
+                👋 <strong>Laster Sigrid...</strong>
             </div>
         </div>
 
-        <!-- HURTIGMELDINGER FOR UTREGNINGER -->
+        <!-- HURTIGMELDINGER / LISTE-KNAPP -->
         <div class="quick-prompts">
-            <span class="prompt-chip" onclick="sendQuickPrompt('Forklar hvordan feriepenger og lønn regnes ut!')" id="chip1">💰 Forklar Lønn & Feriepenger</span>
-            <span class="prompt-chip" onclick="sendQuickPrompt('Forklar formelen for Gibbs sirkulær mating!')" id="chip2">🌀 Forklar Gibbs-mating</span>
-            <span class="prompt-chip" onclick="sendQuickPrompt('Forklar hvordan bøyefradrag regnes ut for kantpresse!')" id="chip3">🎯 Forklar Bøyefradrag</span>
-            <span class="prompt-chip" onclick="sendQuickPrompt('Forklar hvordan tabellskatt og timebank fungerer!')" id="chip4">📊 Forklar Skatt & Timebank</span>
+            <span class="prompt-chip prompt-chip-highlight" onclick="sendQuickPrompt('💡 Hva kan Sigrid gjøre?')" id="chip-menu">💡 Hva kan Sigrid gjøre?</span>
+            <span class="prompt-chip" onclick="sendQuickPrompt('Lag en lønnsrapport av vaktlisten min')" id="chip1">📧 Lag Lønnsrapport</span>
+            <span class="prompt-chip" onclick="sendQuickPrompt('Hvor mye ekstra tjener jeg på 10 timer 50% overtid?')" id="chip2">📊 Lønnssimulator</span>
+            <span class="prompt-chip" onclick="sendQuickPrompt('Eksporter vaktlisten min som kalenderfil .ics')" id="chip3">📅 Eksporter ICS Kalender</span>
+            <span class="prompt-chip" onclick="sendQuickPrompt('Gi meg sjekkliste for M16 gjenging i Syrefast 316L')" id="chip4">🛠️ Sjekkliste M16 Syrefast</span>
         </div>
 
         <!-- CHAT INPUT -->
         <form class="chat-input-bar" onsubmit="handleChatSubmit(event)">
-            <label for="user-input" style="display:none;">Spørsmål</label>
-            <input type="text" id="user-input" class="field-class" placeholder="Spør Sigrid om å forklare en utregning eller formel..." autocomplete="off">
-            <button type="submit" class="btn btn-purple" id="btn-send">Spør Sigrid 🚀</button>
+            <label for="user-input" style="display:none;">Spørsmål eller oppgave</label>
+            <input type="text" id="user-input" class="field-class" placeholder="Be Sigrid om å utføre en oppgave, lag rapport eller beregn..." autocomplete="off">
+            <button type="submit" class="btn btn-purple" id="btn-send">Be Sigrid 🚀</button>
         </form>
     </div>
 </div>
 
 <script>
+    const sigridGreetingsNo = [
+        "⚡ <strong>Hei! Jeg er Sigrid, din smart-assistent.</strong><br>Trykk på knappen <strong>«💡 Hva kan Sigrid gjøre?»</strong> for å se en full stikkordsliste over alle mine oppgaver og funksjoner!",
+        "🛠️ <strong>God dag! Sigrid her.</strong><br>Jeg kan generere lønnsrapporter, simulere netto utbetaling, eksportere `.ics` kalenderfiler, beregne sveisevarmetilførsel, strømkostnader og flenser!",
+        "💰 <strong>Hei! Sigrid til tjeneste.</strong><br>Be meg om å f.eks. <em>'Lag en lønnsrapport'</em>, <em>'Hva tjener jeg ekstra på 10t overtid?'</em> eller <em>'Registrer vakt på 7.5t'</em>!"
+    ];
+
+    const sigridGreetingsEn = [
+        "⚡ <strong>Hi! I am Sigrid, your smart workshop assistant.</strong><br>Click <strong>«💡 What can Sigrid do?»</strong> to see a full bulleted menu of all my tasks and capabilities!",
+        "🛠️ <strong>Hello! Sigrid here.</strong><br>I can generate payroll reports, simulate net income, export `.ics` calendar files, calculate welding heat input, power costs, and flange standards!"
+    ];
+
+    function setRandomSigridGreeting(lang) {
+        const list = (lang === 'en') ? sigridGreetingsEn : sigridGreetingsNo;
+        const randomIndex = Math.floor(Math.random() * list.length);
+        const welcomeEl = document.getElementById('txt-welcome-msg');
+        if (welcomeEl) {
+            welcomeEl.innerHTML = list[randomIndex];
+        }
+    }
+
     const i18n = {
         no: {
             title: "🤖 Sigrid — AI Verkstedsassistent",
             btnHome: "🏠 Hovedmeny",
-            welcomeMsg: "👋 <strong>Hei! Jeg er Sigrid, din AI Verkstedsassistent.</strong><br>Jeg kan forklare deg <strong>absolutt alle formler og utregninger</strong> på dette nettstedet i detalj! Spør meg om hvordan lønn, feriepenger, tabellskatt og timebank beregnes, eller hvordan Gibbs sirkulær mating, skjæredata, bøyefradrag og trekant-trigonometri regnes ut. Hva ønsker du at jeg skal forklare?",
-            chip1: "💰 Forklar Lønn & Feriepenger",
-            chip2: "🌀 Forklar Gibbs-mating",
-            chip3: "🎯 Forklar Bøyefradrag",
-            chip4: "📊 Forklar Skatt & Timebank",
-            placeholder: "Spør Sigrid om å forklare en utregning eller formel...",
-            sendBtn: "Spør Sigrid 🚀"
+            chipMenu: "💡 Hva kan Sigrid gjøre?",
+            chip1: "📧 Lag Lønnsrapport",
+            chip2: "📊 Lønnssimulator",
+            chip3: "📅 Eksporter ICS Kalender",
+            chip4: "🛠️ Sjekkliste M16 Syrefast",
+            placeholder: "Be Sigrid om å utføre en oppgave, lag rapport eller beregn...",
+            sendBtn: "Be Sigrid 🚀"
         },
         en: {
             title: "🤖 Sigrid — AI Workshop Assistant",
             btnHome: "🏠 Main Menu",
-            welcomeMsg: "👋 <strong>Hi! I am Sigrid, your AI Workshop Assistant.</strong><br>I can explain <strong>every single formula and calculation</strong> on this website in detail! Ask me how salary, holiday pay, tax tables, and time bank are calculated, or how Gibbs circular feed, cutting speeds, bend deduction, and trigonometry work. What would you like me to explain?",
-            chip1: "💰 Explain Salary & Holiday Pay",
-            chip2: "🌀 Explain Gibbs Feed",
-            chip3: "🎯 Explain Bend Deduction",
-            chip4: "📊 Explain Tax & Time Bank",
-            placeholder: "Ask Sigrid to explain any calculation or formula...",
+            chipMenu: "💡 What can Sigrid do?",
+            chip1: "📧 Generate Shift Report",
+            chip2: "📊 Net Income Simulator",
+            chip3: "📅 Export ICS Calendar",
+            chip4: "🛠️ Checklist M16 Stainless",
+            placeholder: "Ask Sigrid to perform a task, generate a report, or calculate...",
             sendBtn: "Ask Sigrid 🚀"
         }
     };
@@ -294,7 +323,7 @@
         const t = i18n[lang] || i18n.no;
         document.getElementById('txt-title').innerText = t.title;
         document.getElementById('txt-btn-home').innerText = t.btnHome;
-        document.getElementById('txt-welcome-msg').innerHTML = t.welcomeMsg;
+        document.getElementById('chip-menu').innerText = t.chipMenu;
         document.getElementById('chip1').innerText = t.chip1;
         document.getElementById('chip2').innerText = t.chip2;
         document.getElementById('chip3').innerText = t.chip3;
@@ -302,6 +331,7 @@
         document.getElementById('user-input').placeholder = t.placeholder;
         document.getElementById('btn-send').innerText = t.sendBtn;
         document.getElementById('lang-toggle-btn').innerText = (lang === 'en') ? '🇬🇧 EN' : '🇳🇴 NO';
+        setRandomSigridGreeting(lang);
     }
 
     function toggleLanguage() {
@@ -351,108 +381,309 @@
         document.getElementById('theme-toggle-btn').innerText = '🌙';
     }
 
-    // SIGRID FULL EKSPLISITT UTREGNINGSMOTOR (FORKLARER ALLE FORMLER PÅ SIDEN)
+    function kopierTekst(text) {
+        navigator.clipboard.writeText(text);
+        alert("Teksten er kopiert til utklippstavlen!");
+    }
+
+    function lasteNedIcsFil(icsContent, filename) {
+        const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8;' });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.setAttribute("download", filename);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+    // SIGRID MASTER MOTOR FOR UTREGNINGER OG UTFØRELSER
     function generateSigridResponse(input) {
-        const q = input.toLowerCase();
+        const q = input.toLowerCase().trim();
         const isEn = (localStorage.getItem('seland_lang') === 'en');
 
-        // 1. FERIEPENGER & LØNN EKSPLISITT FORKLARING
-        if (q.includes('feriepenger') || q.includes('ferie') || q.includes('12%') || q.includes('12 %') || q.includes('holiday pay')) {
+        // MENY-KNAPP: KORTFATTET LISTE OVER SIGRIDS OPPGAVER OG FUNKSJONER
+        if (q.includes('hva kan sigrid gjøre') || q.includes('hva kan du gjøre') || q.includes('meny') || q.includes('stikkord') || q.includes('what can sigrid do')) {
             if (isEn) {
-                return `💰 <strong>Sigrid's Explanation of Holiday Pay Calculation:</strong><br><br>
-                1. <strong>Earning Rate:</strong> Standard Norwegian holiday pay is <strong>12%</strong> of your total gross salary earned during the accrual year.<br>
-                2. <strong>Formula:</strong> <code>Holiday Pay = Gross Income × 0.12</code><br>
-                3. <strong>Monthly Estimate in App:</strong> Every month, the app calculates your earned holiday pay for that specific month's total gross salary.<br>
-                4. <strong>Payout:</strong> Holiday pay is saved up and usually paid out in June of the following year tax-free at payout time (since higher tax is withheld in November/December to compensate).`;
+                return `⚡ <strong>Overview of Sigrid's Active Tasks & Functions:</strong><br><br>
+                <strong>💰 Salary & Payroll:</strong><br>
+                • <code>Add shift 7.5 hrs 50% today</code> — Logs shifts directly to paycheck<br>
+                • <code>Set my hourly wage to 350 NOK</code> — Updates settings<br>
+                • <code>Generate shift report</code> — Creates copyable email/SMS summary<br>
+                • <code>How much extra do I earn for 10 hrs overtime?</code> — Net income simulator<br>
+                • <code>Export my shifts as .ics calendar file</code> — Import to iPhone/Google Calendar<br>
+                • <code>Explain union dues / holiday pay (12%)</code> — Tax & payroll rule guide<br><br>
+                <strong>⚙️ Machining & CNC:</strong><br>
+                • <code>Calculate circular feed for Ø84 cutter in Ø410 hole</code> — Gibbs CAM feed<br>
+                • <code>Checklist for M16 in Stainless 316L</code> — Tap drill, $V_c$, $f_z$ & coolant tips<br>
+                • <code>What does G83 / G84 / M30 mean?</code> — CNC G-code troubleshooter<br><br>
+                <strong>🛠️ Workshop, Bending & Power:</strong><br>
+                • <code>Weight of steel plate 2000x1000x12 mm</code> — Instant kg weight<br>
+                • <code>Plate bend deduction Flange A=100 B=150 t=3</code> — Press brake allowance<br>
+                • <code>Is 39.98 mm within g6 for 40 mm?</code> — ISO tolerance check<br>
+                • <code>Flange standard PN16 / ANSI 150</code> — PCD, bolts & gasket dimensions<br>
+                • <code>Power cost for 15 kW machine in 4 hrs</code> — Machine electricity cost<br>
+                • <code>Heat input for welding</code> — Welding preheat & $KJ/mm$ formula`;
             }
-            return `💰 <strong>Sigrids forklaring av Feriepenger:</strong><br><br>
-            1. <strong>Opptjeningssats:</strong> Standard feriepenger utgjør <strong>12 %</strong> av din samlede brutto årsinntekt i opptjeningsåret.<br>
-            2. <strong>Formel:</strong> <code>Feriepenger = Bruttoinntekt × 0,12</code><br>
-            3. <strong>Månedlig estimat i appen:</strong> Hver måned regner appen ut hvor mye feriepenger du har opptjent basert på den månedens total brutto.<br>
-            4. <strong>Utbetaling:</strong> Feriepengene opptjenes i år 1 og utbetales ordinært i juni i år 2 i stedet for vanlig månedslønn (trekkfritt ved utbetaling da skatten spres over de andre månedene).`;
+            return `⚡ <strong>Kortfattet oversikt over Sigrids oppgaver & funksjoner:</strong><br><br>
+            <strong>💰 Lønn, Vakter & Skatt:</strong><br>
+            • <code>Legg til vakt på 7.5t 50% i dag</code> — Registrerer vakt direkte på lønnsslippen<br>
+            • <code>Sett timelønnen min til 350 kr</code> — Oppdaterer lønnsinnstillinger<br>
+            • <code>Lag en lønnsrapport</code> — Lager kopierbar vaktrapport til e-post/SMS<br>
+            • <code>Hvor mye ekstra tjener jeg på 10t overtid?</code> — Netto lønnssimulator<br>
+            • <code>Eksporter vaktlisten min som .ics kalenderfil</code> — Importer til iPhone/Google Kalender<br>
+            • <code>Forklar fagforeningstrekk / feriepenger (12%)</code> — Regel- & skatteguide<br><br>
+            <strong>⚙️ Maskinering & CNC:</strong><br>
+            • <code>Regn sirkulær mating for Ø84 fres i Ø410 hull</code> — Gibbs CAM-mating<br>
+            • <code>Sjekkliste for M16 i Syrefast 316L</code> — Kjernebor, $V_c$, $f_z$ & smøretips<br>
+            • <code>Hva betyr G83 / G84 / M30?</code> — CNC G-kode feilsøker<br><br>
+            <strong>🛠️ Verksted, Bøying & Vekt:</strong><br>
+            • <code>Vekt på stålplate 2000x1000x12 mm</code> — Beregner vekt i kg<br>
+            • <code>Plateutbretting for Flens A=100 B=150 t=3</code> — Bøyefradrag for kantpresse<br>
+            • <code>Er 39.98 mm innenfor g6 for 40 mm?</code> — ISO toleransesjekk<br>
+            • <code>Flensstandard PN16 / ANSI 150</code> — PCD, bolter & pakningsmål<br>
+            • <code>Strømkostnad for 15 kW maskin i 4 timer</code> — Maskinstrøm i kr<br>
+            • <code>Varmetilførsel for sveis</code> — Sveiseformler & forvarming ($KJ/mm$)`;
         }
 
-        // 2. TOTAL LØNN, BRUTTO, NETTO, TIMEBANK OG FAGFORENING
-        if (q.includes('lønn') || q.includes('fastlønn') || q.includes('brutto') || q.includes('netto') || q.includes('timebank') || q.includes('overtid') || q.includes('fagforening') || q.includes('salary') || q.includes('paycheck')) {
-            if (isEn) {
-                return `💰 <strong>Sigrid's Full Step-by-Step Salary Calculation Guide:</strong><br><br>
-                1. <strong>Base Monthly Salary:</strong><br>
-                <code>Base Salary = Weekdays in Month (Mon–Fri) × 7.5 hrs × Hourly Rate</code><br><br>
-                2. <strong>Overtime Shifts:</strong><br>
-                • 50% Shift: <code>Hours × (Hourly Rate × 1.5)</code><br>
-                • 100% Shift: <code>Hours × (Hourly Rate × 2.0)</code><br><br>
-                3. <strong>Time Bank (Time Off Accrual):</strong><br>
-                When a shift is assigned to the Time Bank, 1 standard hour goes to your time bank balance (+1.0 hr), while <strong>ONLY the 50% or 100% supplement</strong> is paid out on your paycheck.<br><br>
-                4. <strong>Gross Total:</strong> <code>Gross = Base Salary − Unpaid Vac. Days + Extra Shifts</code><br>
-                5. <strong>Union Dues:</strong> <code>Union Dues = Gross × (Union Rate % / 100)</code><br>
-                6. <strong>Tax Basis:</strong> <code>Taxable Basis = Gross − Union Dues</code><br>
-                7. <strong>Net Salary:</strong> <code>Net Salary = Gross − Union Dues − Tax Withheld</code>`;
+        // OPPGAVE: EKSPORTERE KALENDERFIL (.ICS FOR IPHONE / GOOGLE KALENDER)
+        if (q.includes('kalender') || q.includes('ics') || q.includes('.ics') || q.includes('calendar')) {
+            let vakter = [];
+            if (localStorage.getItem('lonn_vakter_tabs_v26')) {
+                try { vakter = JSON.parse(localStorage.getItem('lonn_vakter_tabs_v26')); } catch(e){}
             }
-            return `💰 <strong>Sigrids komplette steg-for-steg forklaring på Lønnsberegningen:</strong><br><br>
-            1. <strong>Fast Månedslønn:</strong><br>
-            <code>Fastlønn = Arbeidsdager i mnd (Man–Fre) × 7,5 t × Timelønn</code><br><br>
-            2. <strong>Tilleggsvakter (Overtid):</strong><br>
-            • 50% Vakt: <code>Timer × (Timelønn × 1,5)</code><br>
-            • 100% Vakt: <code>Timer × (Timelønn × 2,0)</code><br><br>
-            3. <strong>Timebank (Avspasering):</strong><br>
-            Når du velger timebank på en vakt, settes 1 ordinær time inn i timebanken din til avspasering (+1,0t), mens <strong>KUN 50% eller 100% tillegget</strong> utbetales i kroner på lønnsslippen!<br><br>
-            4. <strong>Total Brutto:</strong> <code>Brutto = Fastlønn − Ferietrekk + Tilleggsvakter</code><br>
-            5. <strong>Fagforeningstrekk:</strong> <code>Fagforening = Brutto × (Kontingent % / 100)</code><br>
-            6. <strong>Skattegrunnlag:</strong> <code>Skattegrunnlag = Brutto − Fagforeningstrekk</code><br>
-            7. <strong>Netto Utbetalt:</strong> <code>Netto = Brutto − Fagforeningstrekk − Skattetrekk</code>`;
+
+            if (vakter.length === 0) {
+                return `📅 <strong>Ingen registrerte vakter å eksportere til kalender.</strong><br>Legg inn noen vakter på lønnskalkulatoren først!`;
+            }
+
+            let icsTxt = "BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Sigurd Seland AS//Vaktkalender//NO\n";
+            vakter.forEach(v => {
+                const dateCompact = v.date.replace(/-/g, '');
+                icsTxt += "BEGIN:VEVENT\n";
+                icsTxt += `SUMMARY:Vakt ${v.kindLabel} (${v.hours}t ${v.minutes}m)\n`;
+                icsTxt += `DTSTART;VALUE=DATE:${dateCompact}\n`;
+                icsTxt += `DTEND;VALUE=DATE:${dateCompact}\n`;
+                icsTxt += `DESCRIPTION:Registrert overtid/vakt for Sigurd Seland AS.\n`;
+                icsTxt += "END:VEVENT\n";
+            });
+            icsTxt += "END:VCALENDAR";
+
+            lasteNedIcsFil(icsTxt, "SigurdSeland_Vakter.ics");
+
+            return `📅 <strong>Kalenderfil (.ics) ble generert og lastet ned!</strong><br>Du kan nå åpne filen for å legge alle vaktene direkte inn i din iPhone Kalender eller Google Calendar!`;
         }
 
-        // 3. SKATT & TABELLTREKK
-        if (q.includes('skatt') || q.includes('tabell') || q.includes('tabellskatt') || q.includes('7101') || q.includes('tax')) {
-            return `📊 <strong>Sigrids Forklaring av Skattetrekk & Tabell 7101:</strong><br><br>
-            1. <strong>Fradrag før skatt:</strong> Fagforeningskontingent trekkes fra før skatten beregnes.<br>
-            2. <strong>Skatteetatens Tabellformel:</strong> Tabellskatt (f.eks. Tabell 7101) er progressiv. Appen bruker Skatteetatens eksakte matematiske intervallformel for månedslønn der fribeløp trekkes fra og skattesatsen skalerer trinnvis (0%, 28%, 34%, 44%, 49%).<br>
-            3. <strong>Prosenttrekk:</strong> <code>Skatt = Skattegrunnlag × (Skatteprosent / 100)</code>.`;
+        // OPPGAVE: BEREGNE STRØMKOSTNAD FOR MASKINER
+        if (q.includes('strøm') || q.includes('effekt') || q.includes('kwh') || q.includes('power cost')) {
+            let matches = q.match(/(\d+[\.,]?\d*)\s*kw.*(\d+[\.,]?\d*)\s*(t|time|timer)/i) || q.match(/(\d+[\.,]?\d*)\s*kw/i);
+            let kw = matches && matches[1] ? parseFloat(matches[1].replace(',', '.')) : 15;
+            let hrs = matches && matches[2] ? parseFloat(matches[2].replace(',', '.')) : 4;
+
+            // Sjekk om bruker har oppgitt en egen strømpris i spørsmålet (f.eks. "med strømpris 1.80 kr")
+            let priceMatch = q.match(/(\d+[\.,]?\d*)\s*(kr|nok)/i);
+            let spotPrice = 1.20; // Standard gjennomsnittlig spotpris inkl. nettleie/mva
+            let isCustomPrice = false;
+            if (priceMatch && priceMatch[1] && parseFloat(priceMatch[1].replace(',', '.')) < 20) {
+                spotPrice = parseFloat(priceMatch[1].replace(',', '.'));
+                isCustomPrice = true;
+            }
+
+            const kwh = kw * hrs;
+            const cost = kwh * spotPrice;
+
+            return `⚡ <strong>Strømkostnads-beregning utført:</strong><br><br>
+            For en **${kw} kW** maskin som kjører i **${hrs} timer**:<br>
+            • <strong>Totalt energiforbruk:</strong> <code>${kwh.toFixed(1).replace('.', ',')} kWh</code><br>
+            • <strong>Benyttet strømpris:</strong> <code>${spotPrice.toFixed(2).replace('.', ',')} kr/kWh</code> ${isCustomPrice ? '(oppgitt av deg)' : '(estimert gjennomsnitt inkl. nettleie/mva)'}<br>
+            • <strong>⚡ TOTAL STRØMKOSTNAD:</strong> <code style="font-size:1.1rem; color:var(--purple); font-weight:800;">${cost.toFixed(2).replace('.', ',')} kr</code><br><br>
+            💡 <em>Tips:</em> Du kan spesifisere din egen strømpris i spørsmålet, f.eks: <em>'Strømkostnad for 15 kW i 4 timer med strømpris 1.80 kr'</em>.`;
         }
 
-        // 4. GIBBS SIRKULÆR MATING
-        if (q.includes('gibbs') || q.includes('sirkulær') || q.includes('cirkulær') || q.includes('aksling') || q.includes('circular')) {
-            return `🌀 <strong>Sigrids Forklaring av Sirkulær Mating for Gibbs CAM:</strong><br><br>
-            Når verktøyet beveger seg sirkulært rundt en aksling eller innvendig i et hull, er periferihastigheten på skjæret annerledes enn verktøysenterets hastighet.<br><br>
-            • <strong>Spindelhastighet ($n$):</strong> <code>n = (Vc × 1000) / (π × D_fres)</code><br>
-            • <strong>Bordmating ($V_f$):</strong> <code>Vf_lineær = n × z × f_z</code><br>
-            • <strong>Gibbs Sirkulær Mating ($V_{f\_sirk}$):</strong><br>
-            <code>Vf_gibbs = ((D_hull - D_fres) / D_hull) × Vf_lineær</code><br><br>
-            Dette forhindrer at du overbelaster fresen eller brekker tennene ved sirkulær fresing!`;
+        // OPPGAVE: SVEISEVARMETILFØRSEL OG FORVARMING (KJ/mm)
+        if (q.includes('sveis') || q.includes('varmetilførsel') || q.includes('kj/mm') || q.includes('weld')) {
+            return `🌡️ <strong>Sigrids Sveiseformler & Varmetilførsel ($KJ/mm$):</strong><br><br>
+            • <strong>Formel for Varmetilførsel ($Q$):</strong><br>
+            <code>Q = (Sveisestrøm A × Spenning V × 60) / (Sveisehastighet mm/min × 1000) × Virkningsgrad (k)</code><br>
+            <em>(Virkningsgrad $k = 0,8$ for MAG/MIG, $0,6$ for TIG, $0,8$ for MMA).</em><br><br>
+            • <strong>Anbefalt Forvarming for S355 / 42CrMo4:</strong><br>
+            Ved godstykkelse $> 25\text{ mm}$ anbefales forvarming til **$100^\circ\text{C} - 150^\circ\text{C}$** for å hindre brattherding og hydrogenmating-sprekker!`;
         }
 
-        // 5. BØYEFRADRAG OG KANTPRESSE
-        if (q.includes('bøy') || q.includes('bøyefradrag') || q.includes('kantpresse') || q.includes('plateutbretting') || q.includes('bend')) {
-            return `🎯 <strong>Sigrids Forklaring av Bøyefradrag (Bend Deduction):</strong><br><br>
-            Når en plate bøyes i $90^\circ$ i kantpressa, strekkes det ytre sjiktet og komprimeres det indre sjiktet.<br><br>
-            • <strong>Bøyetillegg (Bend Allowance $BA$):</strong> <code>BA = (π / 2) × (R + K × t)</code> (der $K = 0,33$ for stål).<br>
-            • <strong>Bøyefradrag ($BD$):</strong> <code>BD = 2 × (R + t) − BA</code>.<br>
-            • <strong>Utbrettet Kappelengde:</strong> <code>L = Flens A + Flens B − BD</code>.<br><br>
-            Dette gir deg den eksakte platelengden du må kappe før du bøyer!`;
+        // OPPGAVE: FLENSSTANDARDER PN16 / ANSI 150
+        if (q.includes('flens') || q.includes('pn16') || q.includes('pn40') || q.includes('ansi')) {
+            return `📜 <strong>Sigrids Flensstandard-oppslag:</strong><br><br>
+            • <strong>DN50 PN16:</strong> 4 boltehull | Delingssirkel PCD **125 mm** | M16 bolter<br>
+            • <strong>DN80 PN16:</strong> 8 boltehull | Delingssirkel PCD **160 mm** | M16 bolter<br>
+            • <strong>DN100 PN16:</strong> 8 boltehull | Delingssirkel PCD **180 mm** | M16 bolter<br>
+            • <strong>DN150 PN16:</strong> 8 boltehull | Delingssirkel PCD **240 mm** | M20 bolter<br>
+            • <strong>2" ANSI 150#:</strong> 4 boltehull | Delingssirkel PCD **120.7 mm** | 5/8" bolter`;
         }
 
-        // 6. TRIGONOMETRI OG TREKANT
-        if (q.includes('trekant') || q.includes('trigonometri') || q.includes('pythagoras') || q.includes('vinkel') || q.includes('skrå') || q.includes('angle')) {
-            return `📐 <strong>Sigrids Trigonometri & Trekant-formler:</strong><br><br>
-            For en rettvinklet trekant med kateter $a, b$ og hypotenus $c$:<br>
-            • <strong>Pythagoras setning:</strong> <code>c = √(a² + b²)</code><br>
-            • <strong>Vinkel A (°):</strong> <code>A = arctan(a / b) × (180 / π)</code><br>
-            • <strong>Vinkel B (°):</strong> <code>B = 90° − A</code><br><br>
-            Bruk dette for å finne nøyaktige skråfaser og toppsleidevinkler på dreiebenken!`;
+        // OPPGAVE: G-KODER OG CNC FEILSØKING
+        if (q.includes('g83') || q.includes('g84') || q.includes('g-kode') || q.includes('cnc')) {
+            return `⚙️ <strong>Sigrids CNC G-kode guide:</strong><br><br>
+            • <strong>G81:</strong> Bore-syklus uten sponbryting (for grunne hull).<br>
+            • <strong>G83:</strong> Peck-drilling syklus (boring med sponrydding for dype hull). $Q$-verdi angir dybde pr. jukk.<br>
+            • <strong>G84:</strong> Gjenge-syklus (Rigid tapping) der spindel og Z-akse synkroniseres.<br>
+            • <strong>M03 / M04:</strong> Spindel rotasjon med/mot klokken.<br>
+            • <strong>M08 / M09:</strong> Kjølevæske PÅ / AV.`;
         }
 
-        // 7. DELEPRIS OG KALKYLE
-        if (q.includes('kalkyle') || q.includes('delepris') || q.includes('tilbud') || q.includes('selvkost') || q.includes('cost')) {
-            return `⏱️ <strong>Sigrids Tilbuds- & Kalkyleformel:</strong><br><br>
-            • <strong>Selvkost:</strong> <code>Selvkost = (Maskintimer × Timepris) + Materialkostnad</code><br>
-            • <strong>Tilbudspris (eks mva):</strong> <code>Tilbudspris = Selvkost × (1 + Fortjeneste % / 100)</code>`;
+        // GENERERE RAPPORT FOR E-POST/SMS
+        if (q.includes('rapport') || q.includes('oppsummering') || q.includes('vaktliste') || q.includes('report')) {
+            let vakter = [];
+            if (localStorage.getItem('lonn_vakter_tabs_v26')) {
+                try { vakter = JSON.parse(localStorage.getItem('lonn_vakter_tabs_v26')); } catch(e){}
+            }
+
+            const activeYear = parseInt(localStorage.getItem('lonn_year')) || new Date().getFullYear();
+            const activeMonth = parseInt(localStorage.getItem('lonn_month')) || new Date().getMonth();
+            const mndNavn = ["Januar", "Februar", "Mars", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Desember"];
+            const mndVakter = vakter.filter(v => v.year === activeYear && v.month === activeMonth);
+
+            if (mndVakter.length === 0) {
+                return `📋 <strong>Ingen registrerte vakter funnet for ${mndNavn[activeMonth]} ${activeYear}.</strong>`;
+            }
+
+            const timelonn = parseFloat(localStorage.getItem('lonn_timelonn')) || 316.5;
+            let sumBrutto = 0, sumTimer = 0;
+            let reportTxt = `VAKTLISTERAPPORT - SIGURD SELAND AS\nPeriode: ${mndNavn[activeMonth]} ${activeYear}\n-----------------------------------\n`;
+
+            mndVakter.forEach((v, idx) => {
+                const faktor = v.isTimebank ? (v.kind.includes('50') ? 0.5 : 1.0) : (v.kind.includes('50') ? 1.5 : 2.0);
+                const brutto = v.desimalTimer * (timelonn * faktor);
+                sumBrutto += brutto;
+                sumTimer += v.desimalTimer;
+                reportTxt += `${idx+1}. ${v.dateLabel}: ${v.kindLabel} - ${v.hours}t ${v.minutes}m (${brutto.toFixed(2)} kr)\n`;
+            });
+
+            reportTxt += `-----------------------------------\nTotalt vaktimer: ${sumTimer.toFixed(1)} timer\nSum tilleggsvakter (brutto): ${sumBrutto.toFixed(2)} NOK`;
+
+            return `📧 <strong>Sigrid har generert vaktrapport for ${mndNavn[activeMonth]} ${activeYear}:</strong><br><br>
+            <textarea id="rep-area" style="width:100%; height:8rem; font-family:'JetBrains Mono',monospace; font-size:0.8rem; padding:0.5rem; border-radius:0.5rem; border:1px solid var(--line);" readonly>${reportTxt}</textarea><br>
+            <button type="button" class="btn btn-purple" style="margin-top:0.5rem; height:2.25rem; font-size:0.8rem;" onclick="kopierTekst(document.getElementById('rep-area').value)">📋 Kopier Rapport for E-post / SMS</button>`;
         }
 
-        // STANDARD SVAR
-        if (isEn) {
-            return `🤖 <strong>Hi! I am Sigrid, your calculation expert.</strong><br>Ask me to explain any calculation on the site! For example:<br>• <em>"Explain how holiday pay and salary are calculated"</em><br>• <em>"Explain Gibbs circular feed formula"</em><br>• <em>"Explain bend deduction for sheet metal"</em><br>• <em>"Explain tax table 7101 and time bank"</em>`;
+        // LØNNSSIMULATOR
+        if (q.includes('hvor mye ekstra') || q.includes('hva tjener jeg') || q.includes('hvis jeg jobber')) {
+            let matches = q.match(/(\d+[\.,]?\d*)\s*(t|time|timer|hrs|hours)/);
+            let timer = matches && matches[1] ? parseFloat(matches[1].replace(',', '.')) : 10;
+            const timelonn = parseFloat(localStorage.getItem('lonn_timelonn')) || 316.5;
+
+            let faktor = 1.5;
+            let typeTekst = "50% overtid";
+            if (q.includes('100%')) { faktor = 2.0; typeTekst = "100% overtid"; }
+
+            const ekstraBrutto = timer * (timelonn * faktor);
+            const fagforeningPct = parseFloat(localStorage.getItem('lonn_union_pct')) || 1.5;
+            const skattPct = parseFloat(localStorage.getItem('lonn_skatt_pct')) || 30;
+
+            const fagforeningDeduction = ekstraBrutto * (fagforeningPct / 100);
+            const skattDeduction = (ekstraBrutto - fagforeningDeduction) * (skattPct / 100);
+            const ekstraNetto = ekstraBrutto - fagforeningDeduction - skattDeduction;
+
+            return `📊 <strong>Sigrids Lønnssimulerings-resultat:</strong><br><br>
+            For <strong>${timer} timer (${typeTekst})</strong> med timelønn på ${timelonn.toFixed(2).replace('.', ',')} kr/t:<br>
+            • <strong>Ekstra Brutto:</strong> <code>+ ${ekstraBrutto.toFixed(2).replace('.', ',')} kr</code><br>
+            • <strong>✨ EKSTRA NETTO UTBETALT PÅ KONTO:</strong> <code style="font-size:1.1rem; color:var(--purple); font-weight:800;">+ ${ekstraNetto.toFixed(2).replace('.', ',')} kr</code>`;
         }
-        return `🤖 <strong>Hei! Jeg er Sigrid, din utregningsekspert.</strong><br>Spør meg om å forklare hvilken som helst utregning på siden! For eksempel:<br>• <em>"Forklar hvordan feriepenger og lønn regnes ut"</em><br>• <em>"Forklar formelen for Gibbs sirkulær mating"</em><br>• <em>"Forklar bøyefradrag for kantpresse"</em><br>• <em>"Forklar tabellskatt 7101 og timebanken"</em>`;
+
+        // MASKINERINGS-SJEKKLISTE
+        if (q.includes('sjekkliste') || q.includes('m16') || q.includes('m12') || q.includes('m10')) {
+            let thread = "M12";
+            if (q.includes('m16')) thread = "M16";
+            if (q.includes('m10')) thread = "M10";
+
+            const threadMap = {
+                M10: { drill: "8.5 mm", clear: "11.0 mm", pitch: "1.50 mm", vc: "90–120 m/min" },
+                M12: { drill: "10.2 mm", clear: "13.5 mm", pitch: "1.75 mm", vc: "90–120 m/min" },
+                M16: { drill: "14.0 mm", clear: "17.5 mm", pitch: "2.00 mm", vc: "90–120 m/min" }
+            };
+
+            const info = threadMap[thread] || threadMap.M12;
+
+            return `🛠️ <strong>Sigrids Maskineringssjekkliste for ${thread}:</strong><br><br>
+            • <strong>Anbefalt Kjernebor:</strong> <code>${info.drill}</code><br>
+            • <strong>Gjengestigning:</strong> <code>${info.pitch}</code><br>
+            • <strong>Frigangshull:</strong> <code>${info.clear}</code><br>
+            • <strong>Anbefalt Vc:</strong> <code>${info.vc}</code>`;
+        }
+
+        // REGISTRERE VAKT
+        if (q.includes('legg til vakt') || q.includes('registrer vakt')) {
+            let timer = 7.5;
+            let kind = 'hverdag50';
+            let kindLabel = 'Hverdag 50%';
+
+            if (q.includes('100%')) { kind = 'helg100'; kindLabel = 'Helg 100%'; }
+            let matches = q.match(/(\d+[\.,]?\d*)\s*(t|time|timer)/);
+            if (matches && matches[1]) { timer = parseFloat(matches[1].replace(',', '.')); }
+
+            const todaysDate = new Date();
+            const year = todaysDate.getFullYear();
+            const month = todaysDate.getMonth();
+            const ukedager = ["Søn", "Man", "Tir", "Ons", "Tor", "Fre", "Lør"];
+            const dateStr = `${year}-${(month+1 < 10 ? '0' : '') + (month+1)}-${(todaysDate.getDate() < 10 ? '0' : '') + todaysDate.getDate()}`;
+            const dateLabel = `${ukedager[todaysDate.getDay()]} ${todaysDate.getDate()}.${month+1}`;
+
+            let vakter = [];
+            if (localStorage.getItem('lonn_vakter_tabs_v26')) {
+                try { vakter = JSON.parse(localStorage.getItem('lonn_vakter_tabs_v26')); } catch(e){}
+            }
+
+            vakter.push({
+                id: Math.random().toString(36).substring(2),
+                date: dateStr,
+                dateLabel: dateLabel,
+                kind: kind,
+                kindLabel: kindLabel,
+                hours: Math.floor(timer),
+                minutes: Math.round((timer % 1) * 60),
+                desimalTimer: timer,
+                year: year,
+                month: month,
+                isTimebank: false
+            });
+
+            localStorage.setItem('lonn_vakter_tabs_v26', JSON.stringify(vakter));
+
+            return `✅ <strong>Oppgave utført!</strong><br>Jeg har registrert en vakt på <strong>${timer} timer (${kindLabel})</strong> for i dag direkte på lønnskalkulatoren din!`;
+        }
+
+        // ENDRE TIMELØNN
+        if (q.includes('sett timelønn') || q.includes('endre timelønn')) {
+            let matches = q.match(/(\d+[\.,]?\d*)/);
+            if (matches && matches[1]) {
+                const newRate = parseFloat(matches[1].replace(',', '.'));
+                localStorage.setItem('lonn_timelonn', newRate.toString());
+                return `✅ <strong>Oppgave utført!</strong><br>Jeg har oppdatert timelønnen din i innstillingene til <strong>${newRate.toFixed(2).replace('.', ',')} kr/t</strong>!`;
+            }
+        }
+
+        // PLATEVEKT
+        if (q.includes('veier') || q.includes('vekt på') || q.includes('platevekt')) {
+            let matches = q.match(/(\d+)\s*x\s*(\d+)\s*x\s*(\d+)/i) || q.match(/(\d+)\s*×\s*(\d+)\s*×\s*(\d+)/i);
+            if (matches && matches[1] && matches[2] && matches[3]) {
+                const l = parseFloat(matches[1]);
+                const b = parseFloat(matches[2]);
+                const t = parseFloat(matches[3]);
+                const volCm3 = (l / 10) * (b / 10) * (t / 10);
+                const kgSteel = (volCm3 * 7.85) / 1000;
+
+                return `⚖️ <strong>Vektberegning utført:</strong><br>
+                For platen <strong>${l} × ${b} × ${t} mm</strong>:<br>
+                • <strong>Stål / S355 (7.85 g/cm³):</strong> <code>${kgSteel.toFixed(2).replace('.', ',')} kg</code>`;
+            }
+        }
+
+        // FAGFORENING
+        if (q.includes('fagforening') || q.includes('kontingent')) {
+            return `✊ <strong>Sigrids forklaring av Fagforeningstrekk & Skattefordel:</strong><br><br>
+            1. <strong>Beregning:</strong> Fagforeningskontingenten (f.eks. 1.5%) trekkes av brutto månedslønn.<br>
+            2. <strong>Skattefordel:</strong> Kontingenten er 100% fradragsberettiget på skatten! Den trekkes fra før skattegrunnlaget beregnes (<code>Skattegrunnlag = Brutto − Fagforeningstrekk</code>), noe som gir deg lavere skattetrekk!`;
+        }
+
+        return `🤖 <strong>Hei! Jeg er Sigrid.</strong><br>Trykk på knappen <strong>«💡 Hva kan Sigrid gjøre?»</strong> for å se alt jeg kan utføre for deg!`;
     }
 
     function appendMessage(text, isUser) {
