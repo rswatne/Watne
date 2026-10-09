@@ -398,7 +398,7 @@
                 background: #ffffff !important;
                 color: #000000 !important;
             }
-            #splash-screen, .mobile-bar, .no-print, form, .btn, .field-class, select, input, #tabellskatt-modal {
+            #splash-screen, .mobile-bar, .no-print, form, .btn, .field-class, select, input, .module-switcher, #tabellskatt-modal {
                 display: none !important;
             }
             .tab-content, .module-view {
@@ -955,11 +955,12 @@ const DEFAULT_LOGO_BASE64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAw8AA
 </div>
 
 <script>
-    // Registrer Service Worker for PWA
+    // Registrer Service Worker for PWA (Multi-plattform support med reg.update)
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', function() {
             navigator.serviceWorker.register('sw.js').then(function(reg) {
                 console.log('[PWA] ServiceWorker registrert:', reg.scope);
+                reg.update();
             }).catch(function(err) {
                 console.log('[PWA] ServiceWorker feilet:', err);
             });
@@ -1579,19 +1580,15 @@ const DEFAULT_LOGO_BASE64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAw8AA
         localStorage.setItem('lonn_tabell', document.getElementById('skatte-tabellnummer').value);
         localStorage.setItem('lonn_skatt_pct', document.getElementById('skatt').value);
         localStorage.setItem('lonn_union_pct', document.getElementById('fagforening-prosent').value);
-        localStorage.setItem('lonn_vakter_tabs_v24', JSON.stringify(registrerteVakter));
+        localStorage.setItem('lonn_vakter_tabs_v25', JSON.stringify(registrerteVakter));
     }
 
     function lastInnstillinger() {
         initTheme();
         byggAarsOgMaanedsLister();
 
-        const savedModule = localStorage.getItem('lonn_active_module');
-        if (savedModule && savedModule !== 'portal') {
-            velgModul(savedModule);
-        } else {
-            visHovedmeny();
-        }
+        // Vis portal / hovedmeny ved oppstart
+        visHovedmeny();
 
         const savedTab = localStorage.getItem('lonn_active_tab') || 'oversikt';
         switchTab(savedTab);
@@ -1615,8 +1612,8 @@ const DEFAULT_LOGO_BASE64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAw8AA
         if (localStorage.getItem('lonn_skatt_pct')) document.getElementById('skatt').value = localStorage.getItem('lonn_skatt_pct');
         if (localStorage.getItem('lonn_union_pct')) document.getElementById('fagforening-prosent').value = localStorage.getItem('lonn_union_pct');
 
-        if (localStorage.getItem('lonn_vakter_tabs_v24')) {
-            try { registrerteVakter = JSON.parse(localStorage.getItem('lonn_vakter_tabs_v24')); } catch(e){}
+        if (localStorage.getItem('lonn_vakter_tabs_v25')) {
+            try { registrerteVakter = JSON.parse(localStorage.getItem('lonn_vakter_tabs_v25')); } catch(e){}
         }
 
         let savedLogo = localStorage.getItem('lonn_logo');
