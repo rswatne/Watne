@@ -1,7 +1,7 @@
 {
-  "name": "Lønnskalkulator - Sigurd Seland AS",
-  "short_name": "Lønnskalkulator",
-  "description": "Vakt- og timelønnskalkulator med timebank for Sigurd Seland AS",
+  "name": "Verksted Portalen",
+  "short_name": "Verksted Portalen",
+  "description": "Digital verkstedsportal for produksjon, beregninger, vakter og lønn",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#0f172a",
