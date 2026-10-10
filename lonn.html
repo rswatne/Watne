@@ -554,6 +554,7 @@
                 <div style="margin-top: 1rem; padding-top: 0.75rem; border-top: 1px dashed var(--emerald); display: flex; flex-direction: column; gap: 0.5rem;">
                     <p style="margin: 0; font-size: 0.8125rem; font-weight: 700; color: #047857;" id="visma-diff-status">Sammenligning mot appens estimat: 100% Match!</p>
                     <a href="chat.html" class="btn" style="background: var(--purple-deep); color: white; height: 2.5rem; font-size: 0.8125rem; width: 100%; justify-content: center; margin-top: 0.25rem;">🤖 Spør Sigrid AI om denne lønnsslippen ➔</a>
+                    <button type="button" class="btn btn-outline" style="height: 2.5rem; width: 100%; justify-content: center; margin-top: 0.25rem; color: var(--loss); border-color: var(--line);" onclick="nullstillVismaAnalysert()">🔄 Nullstill / Slett avlest lønnsslipp</button>
                 </div>
             </div>
         </section>
@@ -905,10 +906,14 @@
         }
     }
 
-    // VISMA LØNNSSLIPP LESER / TEKSTANALYSE
+    // VISMA LØNNSSLIPP LESER & AVSANSERER NORSK REGEX PARSER
     function lesVismaFil(e) {
         const file = e.target.files[0];
         if (!file) return;
+
+        if (file.type.startsWith('image/')) {
+            alert("Bilde valgt! Dersom teksten ikke analyseres automatisk fra skjermbilde, kan du raskt fylle ut de 4 tallene i boksene under.");
+        }
 
         const reader = new FileReader();
         reader.onload = function(event) {
@@ -919,25 +924,52 @@
         reader.readAsText(file);
     }
 
+    function parseNorwegianAmount(str) {
+        if (!str) return 0;
+        // Fjerner spaces (f.eks "12 400,00" -> "12400.00")
+        let cleaned = str.replace(/\s+/g, '').replace('kr', '').replace('−', '').replace('-', '').trim();
+        cleaned = cleaned.replace(',', '.');
+        return Math.abs(parseFloat(cleaned)) || 0;
+    }
+
     function analyserVismaTekst() {
         const txt = document.getElementById('visma-text-input').value;
         if (!txt.trim()) { alert("Lim inn teksten fra din Visma lønnsslipp først."); return; }
 
         let brutto = 0, skatt = 0, fagforening = 0, netto = 0;
 
-        // RegEx parser for Visma lønnsslipper
-        let bruttoMatch = txt.match(/brutto\w*\s*:?\s*(\d+[\.,]?\d*)/i) || txt.match(/bruttolønn\s*:?\s*(\d+[\.,]?\d*)/i);
-        let skattMatch = txt.match(/skatt\w*\s*:?\s*(\d+[\.,]?\d*)/i) || txt.match(/forskuddstrekk\s*:?\s*(\d+[\.,]?\d*)/i);
-        let nettoMatch = txt.match(/netto\w*\s*:?\s*(\d+[\.,]?\d*)/i) || txt.match(/til utbetaling\s*:?\s*(\d+[\.,]?\d*)/i);
-        let unionMatch = txt.match(/fagforening\w*\s*:?\s*(\d+[\.,]?\d*)/i) || txt.match(/kontingent\s*:?\s*(\d+[\.,]?\d*)/i);
+        // Spesifikke Visma Lønnsslipp RegEx mønstre
+        let bruttoMatch = txt.match(/(?:bruttolønn|brutto|bruttoinntekt)\s*:?\s*([\d\s]+[\.,]?\d*)/i);
+        let skattMatch = txt.match(/(?:forskuddstrekk|prosenttrekk|skattetrekk|tabellskatt|skatt)\s*:?\s*-?\s*([\d\s]+[\.,]?\d*)/i);
+        let unionMatch = txt.match(/(?:fagforeningstrekk|trukket fagforeningskontingent|fagforening|fellesforbundet|kontingent)\w*\s*:?\s*-?\s*([\d\s]+[\.,]?\d*)/i);
+        let nettoMatch = txt.match(/(?:netto til utbetaling|nettolønn|netto|til utbetaling)\w*\s*:?\s*([\d\s]+[\.,]?\d*)/i);
 
-        if (bruttoMatch) brutto = parseFloat(bruttoMatch[1].replace(',', '.'));
-        if (skattMatch) skatt = parseFloat(skattMatch[1].replace(',', '.'));
-        if (nettoMatch) netto = parseFloat(nettoMatch[1].replace(',', '.'));
-        if (unionMatch) fagforening = parseFloat(unionMatch[1].replace(',', '.'));
+        if (bruttoMatch) brutto = parseNorwegianAmount(bruttoMatch[1]);
+        if (skattMatch) skatt = parseNorwegianAmount(skattMatch[1]);
+        if (unionMatch) fagforening = parseNorwegianAmount(unionMatch[1]);
+        if (nettoMatch) netto = parseNorwegianAmount(nettoMatch[1]);
 
+        // Spesifikk sjekk for Visma sammendrag i bunnen
+        let linjer = txt.split('\n');
+        linjer.forEach(linje => {
+            let l = linje.toLowerCase();
+            if (l.includes('forskuddstrekk') && skatt === 0) {
+                let m = linje.match(/-?([\d\s]+[\.,]\d{2})/);
+                if (m) skatt = parseNorwegianAmount(m[1]);
+            }
+            if (l.includes('fagforeningstrekk') && fagforening === 0) {
+                let m = linje.match(/-?([\d\s]+[\.,]\d{2})/);
+                if (m) fagforening = parseNorwegianAmount(m[1]);
+            }
+            if (l.includes('netto til utbetaling') && netto === 0) {
+                let m = linje.match(/([\d\s]+[\.,]\d{2})/);
+                if (m) netto = parseNorwegianAmount(m[1]);
+            }
+        });
+
+        // Fallbacks dersom en verdi mangler
         if (brutto === 0 && window.sisteBrutto) brutto = window.sisteBrutto;
-        if (netto === 0 && window.sisteBrutto) netto = window.sisteBrutto * 0.68;
+        if (netto === 0 && brutto > 0) netto = Math.max(0, brutto - skatt - fagforening);
 
         document.getElementById('visma-res-brutto').innerText = brutto.toFixed(2).replace('.', ',') + " kr";
         document.getElementById('visma-res-skatt').innerText = "− " + skatt.toFixed(2).replace('.', ',') + " kr";
@@ -947,6 +979,15 @@
         const mndSelect = document.getElementById('month');
         const yearSelect = document.getElementById('year');
         document.getElementById('visma-res-mnd').innerText = `${maanedsNavn[mndSelect.value]} ${yearSelect.value}`;
+
+        document.getElementById('visma-result-card').style.display = 'block';
+    }
+
+    function nullstillVismaAnalysert() {
+        document.getElementById('visma-text-input').value = '';
+        document.getElementById('visma-file-input').value = '';
+        document.getElementById('visma-result-card').style.display = 'none';
+    }
 
         document.getElementById('visma-result-card').style.display = 'block';
     }
