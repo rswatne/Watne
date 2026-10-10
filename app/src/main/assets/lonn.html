@@ -983,18 +983,6 @@
         return Math.abs(parseFloat(cleaned)) || 0;
     }
 
-    function oppdaterVismaMaanedligeTall() {
-        const brutto = parseFloat(document.getElementById('v-edit-brutto').value) || 0;
-        const skatt = parseFloat(document.getElementById('v-edit-skatt').value) || 0;
-        const union = parseFloat(document.getElementById('v-edit-union').value) || 0;
-        const netto = Math.max(0, brutto - skatt - union);
-
-        document.getElementById('visma-res-brutto').innerText = brutto.toFixed(2).replace('.', ',') + " kr";
-        document.getElementById('visma-res-skatt').innerText = "− " + skatt.toFixed(2).replace('.', ',') + " kr";
-        document.getElementById('visma-res-union').innerText = "− " + union.toFixed(2).replace('.', ',') + " kr";
-        document.getElementById('visma-res-netto').innerText = netto.toFixed(2).replace('.', ',') + " kr";
-    }
-
     function analyserVismaTekst() {
         const txt = document.getElementById('visma-text-input').value;
         if (!txt.trim()) { alert("Lim inn teksten fra din Visma lønnsslipp først."); return; }
@@ -1040,11 +1028,10 @@
         }
         if (netto === 0) netto = Math.max(0, brutto - skatt - fagforening);
 
-        document.getElementById('v-edit-brutto').value = brutto.toFixed(2);
-        document.getElementById('v-edit-skatt').value = skatt.toFixed(2);
-        document.getElementById('v-edit-union').value = fagforening.toFixed(2);
-
-        oppdaterVismaMaanedligeTall();
+        document.getElementById('visma-res-brutto').innerText = brutto.toFixed(2).replace('.', ',') + " kr";
+        document.getElementById('visma-res-skatt').innerText = "− " + skatt.toFixed(2).replace('.', ',') + " kr";
+        document.getElementById('visma-res-union').innerText = "− " + fagforening.toFixed(2).replace('.', ',') + " kr";
+        document.getElementById('visma-res-netto').innerText = netto.toFixed(2).replace('.', ',') + " kr";
 
         const mndSelect = document.getElementById('month');
         const yearSelect = document.getElementById('year');
