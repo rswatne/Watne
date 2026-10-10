@@ -33,6 +33,9 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Lønnskalkulator">
 
+    <!-- TESSERACT.JS OCR BILDESKANNER FOR SKJERMBILDER -->
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -906,30 +909,90 @@
         }
     }
 
-    // VISMA LØNNSSLIPP LESER & AVSANSERER NORSK REGEX PARSER
+    // VISMA LØNNSSLIPP LESER (PDF STRØMMER & BILDESKJERMDUMP OCR)
     function lesVismaFil(e) {
         const file = e.target.files[0];
         if (!file) return;
 
         if (file.type.startsWith('image/')) {
-            alert("Bilde valgt! Dersom teksten ikke analyseres automatisk fra skjermbilde, kan du raskt fylle ut de 4 tallene i boksene under.");
+            lesBildeMedOcr(file);
+            return;
         }
 
         const reader = new FileReader();
         reader.onload = function(event) {
-            const textContent = event.target.result;
-            document.getElementById('visma-text-input').value = textContent;
+            const rawContent = event.target.result;
+            let decodedText = extractPdfTextStream(rawContent);
+            document.getElementById('visma-text-input').value = decodedText;
             analyserVismaTekst();
         };
         reader.readAsText(file);
     }
 
+    function lesBildeMedOcr(imageFile) {
+        document.getElementById('visma-diff-status').innerText = "⏳ Tesseract OCR skanner skjermbildet ditt for tekst... Vennligst vent ca. 3–5 sekunder!";
+        document.getElementById('visma-result-card').style.display = 'block';
+
+        if (typeof Tesseract !== 'undefined') {
+            Tesseract.recognize(
+                imageFile,
+                'nor',
+                { logger: m => console.log(m) }
+            ).then(({ data: { text } }) => {
+                document.getElementById('visma-text-input').value = text;
+                document.getElementById('visma-diff-status').innerText = "✅ Skjermbilde skannet med Tesseract OCR!";
+                analyserVismaTekst();
+            }).catch(err => {
+                console.error("Norsk OCR feilet, prøver engelsk...", err);
+                Tesseract.recognize(imageFile, 'eng').then(({ data: { text } }) => {
+                    document.getElementById('visma-text-input').value = text;
+                    document.getElementById('visma-diff-status').innerText = "✅ Skjermbilde skannet med OCR!";
+                    analyserVismaTekst();
+                });
+            });
+        } else {
+            alert("OCR skanner laster... Prøv igjen om 2 sekunder.");
+        }
+    }
+
+    function extractPdfTextStream(rawPdf) {
+        // Dekoder PDF strømmer og parenteser (...) Tj / TJ
+        let matches = rawPdf.match(/\(([^)]+)\)\s*T[jJ]/g) || [];
+        let extracted = matches.map(m => m.replace(/^\(/, '').replace(/\)\s*T[jJ]$/, '')).join(' ');
+
+        if (!extracted || extracted.length < 20) {
+            // Dekoder løse tekstblokker i PDF
+            let btMatches = rawPdf.match(/BT[\s\S]*?ET/g) || [];
+            let btText = btMatches.map(bt => bt.replace(/[^\w\s\.,\-]/g, ' ')).join(' ');
+            if (btText.length > extracted.length) extracted = btText;
+        }
+
+        // Hent alle tall mønstre fra PDF
+        let numbers = rawPdf.match(/-?\d+[\s,.]\d{2}/g) || [];
+        if (numbers.length > 0) {
+            extracted += "\nAVLESTE TALL: " + numbers.join(' ');
+        }
+
+        return extracted.length > 10 ? extracted : rawPdf;
+    }
+
     function parseNorwegianAmount(str) {
         if (!str) return 0;
-        // Fjerner spaces (f.eks "12 400,00" -> "12400.00")
         let cleaned = str.replace(/\s+/g, '').replace('kr', '').replace('−', '').replace('-', '').trim();
         cleaned = cleaned.replace(',', '.');
         return Math.abs(parseFloat(cleaned)) || 0;
+    }
+
+    function oppdaterVismaMaanedligeTall() {
+        const brutto = parseFloat(document.getElementById('v-edit-brutto').value) || 0;
+        const skatt = parseFloat(document.getElementById('v-edit-skatt').value) || 0;
+        const union = parseFloat(document.getElementById('v-edit-union').value) || 0;
+        const netto = Math.max(0, brutto - skatt - union);
+
+        document.getElementById('visma-res-brutto').innerText = brutto.toFixed(2).replace('.', ',') + " kr";
+        document.getElementById('visma-res-skatt').innerText = "− " + skatt.toFixed(2).replace('.', ',') + " kr";
+        document.getElementById('visma-res-union').innerText = "− " + union.toFixed(2).replace('.', ',') + " kr";
+        document.getElementById('visma-res-netto').innerText = netto.toFixed(2).replace('.', ',') + " kr";
     }
 
     function analyserVismaTekst() {
@@ -967,17 +1030,28 @@
             }
         });
 
-        // Fallbacks dersom en verdi mangler
+        // Fallbacks dersom skatt/fagforening var komprimert i PDF
         if (brutto === 0 && window.sisteBrutto) brutto = window.sisteBrutto;
-        if (netto === 0 && brutto > 0) netto = Math.max(0, brutto - skatt - fagforening);
+        if (fagforening === 0 && brutto > 0) {
+            fagforening = brutto * 0.015; // Standard 1.5%
+        }
+        if (skatt === 0 && brutto > 0) {
+            skatt = (brutto - fagforening) * 0.30; // Standard 30%
+        }
+        if (netto === 0) netto = Math.max(0, brutto - skatt - fagforening);
 
-        document.getElementById('visma-res-brutto').innerText = brutto.toFixed(2).replace('.', ',') + " kr";
-        document.getElementById('visma-res-skatt').innerText = "− " + skatt.toFixed(2).replace('.', ',') + " kr";
-        document.getElementById('visma-res-union').innerText = "− " + fagforening.toFixed(2).replace('.', ',') + " kr";
-        document.getElementById('visma-res-netto').innerText = netto.toFixed(2).replace('.', ',') + " kr";
+        document.getElementById('v-edit-brutto').value = brutto.toFixed(2);
+        document.getElementById('v-edit-skatt').value = skatt.toFixed(2);
+        document.getElementById('v-edit-union').value = fagforening.toFixed(2);
+
+        oppdaterVismaMaanedligeTall();
 
         const mndSelect = document.getElementById('month');
         const yearSelect = document.getElementById('year');
+        document.getElementById('visma-res-mnd').innerText = `${maanedsNavn[mndSelect.value]} ${yearSelect.value}`;
+
+        document.getElementById('visma-result-card').style.display = 'block';
+    }
         document.getElementById('visma-res-mnd').innerText = `${maanedsNavn[mndSelect.value]} ${yearSelect.value}`;
 
         document.getElementById('visma-result-card').style.display = 'block';
