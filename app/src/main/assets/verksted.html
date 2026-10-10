@@ -1,0 +1,1367 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Verkstedtabeller - Sigurd Seland AS</title>
+
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+
+    <script>
+        const APP_BUILD_VER = "v8.1-CleanText";
+        if (localStorage.getItem('app_build_v') !== APP_BUILD_VER) {
+            localStorage.setItem('app_build_v', APP_BUILD_VER);
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.getRegistrations().then(regs => {
+                    for (let reg of regs) reg.unregister();
+                });
+            }
+            if ('caches' in window) {
+                caches.keys().then(names => {
+                    for (let name of names) caches.delete(name);
+                });
+            }
+            window.location.reload(true);
+        }
+    </script>
+
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0284c7">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Verkstedtabeller">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0284c7;
+            --primary-deep: #0369a1;
+            --primary-soft: #e0f2fe;
+            --brass: #d97706;
+            --brass-soft: #fef3c7;
+            --emerald: #059669;
+            --emerald-soft: #d1fae5;
+            --purple: #7c3aed;
+            --purple-soft: #f3e8ff;
+            --card: #ffffff;
+            --bg: #f1f5f9;
+            --ink: #0f172a;
+            --muted: #64748b;
+            --line: #cbd5e1;
+            --shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.08);
+        }
+
+        body.dark-mode {
+            --primary: #38bdf8;
+            --primary-deep: #0284c7;
+            --primary-soft: rgba(56, 189, 248, 0.12);
+            --brass: #f59e0b;
+            --brass-soft: rgba(245, 158, 11, 0.12);
+            --emerald: #10b981;
+            --emerald-soft: rgba(16, 185, 129, 0.12);
+            --purple: #a78bfa;
+            --purple-soft: rgba(167, 139, 250, 0.12);
+            --card: #0f172a;
+            --bg: #070a11;
+            --ink: #f8fafc;
+            --muted: #94a3b8;
+            --line: #1e293b;
+            --shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.6);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--ink);
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        .main-layout {
+            max-width: 54rem;
+            margin: 0 auto;
+            padding: 1.5rem 1rem 5rem 1rem;
+        }
+        @media (min-width: 640px) {
+            .main-layout { padding: 2rem 1.5rem 4rem 1.5rem; }
+        }
+
+        header {
+            margin-bottom: 1.25rem;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 1rem;
+            border-bottom: 2px solid var(--line);
+            padding-bottom: 1.25rem;
+        }
+
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+
+        .field-class {
+            height: 2.875rem;
+            width: 100%;
+            border-radius: 0.625rem;
+            border: 1px solid var(--line);
+            background-color: var(--card);
+            padding: 0 0.875rem;
+            font-size: 1rem;
+            color: var(--ink);
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+        .field-class:focus { border-color: var(--primary); }
+
+        .swipe-hint {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 0.25rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.375rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        @media (min-width: 768px) {
+            .swipe-hint { display: none; }
+        }
+
+        .tab-bar-container {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .tab-bar {
+            display: flex;
+            gap: 0.375rem;
+            background: var(--card);
+            padding: 0.375rem;
+            border-radius: 0.875rem;
+            border: 1px solid var(--line);
+            box-shadow: var(--shadow);
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary) transparent;
+        }
+
+        .tab-bar::-webkit-scrollbar { height: 5px; }
+        .tab-bar::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 9999px; }
+
+        .tab-btn {
+            background: transparent;
+            color: var(--muted);
+            border: none;
+            border-radius: 0.625rem;
+            font-weight: 700;
+            font-size: 0.8125rem;
+            padding: 0.75rem 0.875rem;
+            flex: 1;
+            white-space: nowrap;
+            cursor: pointer;
+            scroll-snap-align: start;
+            transition: all 0.2s ease;
+        }
+        .tab-btn.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
+        }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.25s ease; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+        .grid-2 {
+            display: grid;
+            gap: 0.875rem;
+        }
+        @media (min-width: 640px) {
+            .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            border-radius: 0.625rem;
+            font-size: 0.875rem;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn-outline {
+            height: 2.75rem; border: 1px solid var(--line);
+            background: var(--card); color: var(--ink); padding: 0 1rem;
+        }
+
+        .line-row {
+            display: flex; align-items: baseline;
+            justify-content: space-between; gap: 0.75rem;
+            padding: 0.375rem 0;
+        }
+        .line-row.strong { font-weight: 700; }
+
+        .calc-card {
+            background: var(--card);
+            border-radius: 1.25rem;
+            border: 1px solid var(--line);
+            padding: 1.5rem;
+            margin-bottom: 1.25rem;
+            box-shadow: var(--shadow);
+            position: relative;
+        }
+
+        .result-box {
+            background: var(--primary-soft);
+            border-radius: 0.75rem;
+            border-left: 4px solid var(--primary);
+            padding: 0.875rem 1rem;
+            margin-top: 0.875rem;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.25rem 0.65rem;
+            border-radius: 9999px;
+            background: var(--primary-soft);
+            color: var(--primary-deep);
+            border: 1px solid var(--line);
+        }
+
+        .app-footer {
+            margin-top: 3.5rem;
+            border-top: 1px solid var(--line);
+            padding-top: 1.5rem;
+            text-align: center;
+            font-size: 0.8125rem;
+            color: var(--muted);
+        }
+        .version-badge {
+            display: inline-block;
+            background: var(--primary-soft);
+            color: var(--primary-deep);
+            padding: 0.25rem 0.65rem;
+            border-radius: 9999px;
+            font-weight: 700;
+            font-size: 0.75rem;
+            font-family: 'JetBrains Mono', monospace;
+            margin-left: 0.375rem;
+        }
+
+        @media print {
+            .no-print, form, .btn, .field-class, select, input, .app-footer, .tab-bar-container { display: none !important; }
+            .tab-content { display: block !important; }
+            .main-layout { padding: 0 !important; max-width: 100% !important; }
+            .calc-card { border: none !important; box-shadow: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="main-layout">
+    <header>
+        <div>
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 4px;">
+                <span class="status-badge" id="net-status">🟢 Online</span>
+            </div>
+            <h1 style="font-size: 1.875rem; font-weight: 800; margin: 0; letter-spacing: -0.02em;" id="txt-title">Verkstedtabeller & Bor</h1>
+        </div>
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <button type="button" class="btn btn-outline no-print" style="height: 2.75rem; padding: 0 0.75rem; font-size: 0.875rem;" onclick="toggleLanguage()" id="lang-toggle-btn">🇳🇴 NO</button>
+            <a href="index.html" class="btn btn-outline no-print" style="height: 2.75rem; padding: 0 0.875rem; font-size: 0.875rem;" id="txt-btn-home">🏠 Hovedmeny</a>
+            <button type="button" class="btn btn-outline no-print" style="height: 2.75rem; width: 2.75rem; padding: 0; border-radius: 50%; font-size: 1.15rem;" onclick="toggleTheme()" id="theme-toggle-btn">🌙</button>
+        </div>
+    </header>
+
+    <!-- FANE-MENY MED TYDELIG SVEIP-INDIKATOR FOR MOBIL -->
+    <div class="tab-bar-container no-print">
+        <div class="swipe-hint" id="txt-swipe-hint">👈 SVEIP FANER 👉</div>
+        <div class="tab-bar">
+            <button type="button" class="tab-btn active" onclick="switchVerkstedTab('skjaeredata')" id="btn-tab-skjaeredata">🧪 Skjæredata & Bor</button>
+            <button type="button" class="tab-btn" onclick="switchVerkstedTab('gjenger')" id="btn-tab-gjenger">🔩 Gjenger & Toleranser</button>
+            <button type="button" class="tab-btn" onclick="switchVerkstedTab('vekt')" id="btn-tab-vekt">⚖️ Vekt, Skruer & PCD</button>
+            <button type="button" class="tab-btn" onclick="switchVerkstedTab('matte')" id="btn-tab-matte">📐 Matte & Konverterer</button>
+        </div>
+    </div>
+
+    <!-- ==================== FANE 1: SKJÆREDATA & BOR ==================== -->
+    <div id="vtab-skjaeredata" class="tab-content active">
+        <!-- MATERIALVELGER & SKJÆREDATA -->
+        <div class="calc-card" style="border-left: 5px solid var(--primary);">
+            <header style="margin-bottom: 1rem; border-bottom: 1px solid var(--line); padding-bottom: 0.5rem;">
+                <h2 style="font-size: 1.125rem; font-weight: 800; margin: 0; color: var(--primary-deep);" id="txt-sec1-title">🧪 Materialvelger & Anbefalte Skjæredata (Vc & fz)</h2>
+                <p style="font-size: 0.8125rem; color: var(--muted); margin: 0.25rem 0 0 0;" id="txt-sec1-sub">Velg verkstedmateriale for å få opp anbefalte skjærehastigheter for skrubb og slett.</p>
+            </header>
+
+            <div class="grid-2">
+                <label style="display: flex; flex-direction: column; gap: 0.25rem; grid-column: span 2;">
+                    <span style="font-size: 0.8125rem; font-weight: 600;" id="lbl-select-mat">Velg materiale</span>
+                    <select id="mat-select" class="field-class" onchange="oppdaterMaterialeData()">
+                        <option value="s355">Konstruksjonsstål / S355 / St52 (P1)</option>
+                        <option value="c45">Seigherdingsstål / C45 / 42CrMo4 (P2)</option>
+                        <option value="ss316">Rustfritt / Syrefast 316L / A4 (M1)</option>
+                        <option value="duplex">Duplex / Super Duplex 2205 (M2)</option>
+                        <option value="alu">Aluminium 6082-T6 / 7075 (N1)</option>
+                        <option value="brass">Messing / Kobber (N2)</option>
+                        <option value="cast">Støpejern GG25 / GGG40 (K1)</option>
+                    </select>
+                </label>
+
+                <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                    <span style="font-size: 0.8125rem; font-weight: 600;" id="lbl-tool-dia">Verktøydiameter (mm)</span>
+                    <input type="number" id="mat-dia" class="field-class" inputmode="decimal" value="12" oninput="oppdaterMaterialeData()">
+                </label>
+
+                <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                    <span style="font-size: 0.8125rem; font-weight: 600;" id="lbl-teeth-z">Antall skjær (z)</span>
+                    <input type="number" id="mat-z" class="field-class" inputmode="numeric" value="4" oninput="oppdaterMaterialeData()">
+                </label>
+            </div>
+
+            <div class="result-box">
+                <div class="line-row strong"><span style="color: var(--primary-deep);" id="lbl-rec-vc">Anbefalt Vc (Skrubb / Slett):</span><span id="mat-res-vc" class="font-mono" style="font-size: 1.125rem; color: var(--primary-deep);">180 - 240 m/min</span></div>
+                <div class="line-row strong" style="margin-top: 0.25rem;"><span style="color: var(--primary-deep);" id="lbl-calc-rpm">Beregnet RPM (Spindel):</span><span id="mat-res-rpm" class="font-mono" style="font-size: 1.125rem; color: var(--primary-deep);">4775 RPM</span></div>
+                <div class="line-row strong" style="margin-top: 0.25rem;"><span style="color: var(--primary-deep); font-size: 1.05rem;" id="lbl-calc-vf">Beregnet Mating (Vf):</span><span id="mat-res-mating" class="font-mono" style="font-size: 1.25rem; color: var(--primary-deep);">1146 mm/min</span></div>
+            </div>
+        </div>
+
+        <!-- BOREDYBDE & SPISSTILLEGG -->
+        <div class="calc-card" style="border-left: 5px solid var(--primary);">
+            <header style="margin-bottom: 1rem; border-bottom: 1px solid var(--line); padding-bottom: 0.5rem;">
+                <h2 style="font-size: 1.125rem; font-weight: 800; margin: 0; color: var(--primary-deep);" id="txt-sec3-title">📐 Boredybde & Bor-spisstillegg</h2>
+                <p style="font-size: 0.8125rem; color: var(--muted); margin: 0.25rem 0 0 0;" id="txt-sec3-sub">Beregning av bor-spissens ekstra dybde for gjennomboring av plater.</p>
+            </header>
+
+            <div class="grid-2">
+                <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                    <span style="font-size: 0.8125rem; font-weight: 600;" id="lbl-drill-dia">Bordiameter (mm)</span>
+                    <input type="number" id="drill-dia" class="field-class" inputmode="decimal" value="16" oninput="beregnBoredybde()">
+                </label>
+
+                <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                    <span style="font-size: 0.8125rem; font-weight: 600;" id="lbl-drill-angle">Bor-spissvinkel</span>
+                    <select id="drill-angle" class="field-class" onchange="beregnBoredybde()">
+                        <option value="118">118° (Standard HSS bor)</option>
+                        <option value="140">140° (VHM / Hardmetall bor)</option>
+                        <option value="90">90° (Forsenker / NC-Spot)</option>
+                    </select>
+                </label>
+
+                <label style="display: flex; flex-direction: column; gap: 0.25rem; grid-column: span 2;">
+                    <span style="font-size: 0.8125rem; font-weight: 600;" id="lbl-drill-depth">Ønsket sylindrisk boredybde (mm)</span>
+                    <input type="number" id="drill-depth" class="field-class" inputmode="decimal" value="25" oninput="beregnBoredybde()">
+                </label>
+            </div>
+
+            <div class="result-box">
+                <div class="line-row strong"><span style="color: var(--primary-deep);" id="lbl-tip-extra">Ekstra spisstillegg (h):</span><span id="drill-res-tip" class="font-mono" style="font-size: 1.125rem; color: var(--primary-deep);">4.80 mm</span></div>
+                <div class="line-row strong" style="margin-top: 0.375rem;"><span style="color: var(--primary-deep); font-size: 1.125rem;" id="lbl-tot-zdepth">Total Z-boredybde i CNC:</span><span id="drill-res-total" class="font-mono" style="font-size: 1.35rem; color: var(--primary-deep);">29.80 mm</span></div>
+            </div>
+        </div>
+
+        <!-- ISO PASSNINGER & TOLERANSER -->
+        <div class="calc-card" style="border-left: 5px solid var(--primary);">
+            <header style="margin-bottom: 1rem; border-bottom: 1px solid var(--line); padding-bottom: 0.5rem;">
+                <h2 style="font-size: 1.125rem; font-weight: 800; margin: 0; color: var(--primary-deep);" id="txt-sec4-title">📏 ISO Passninger & Toleranser (H7 / g6)</h2>
+                <p style="font-size: 0.8125rem; color: var(--muted); margin: 0.25rem 0 0 0;" id="txt-sec4-sub">Oppslag for min/maks toleranseforskjeller for aksling og hull.</p>
+            </header>
+
+            <div class="grid-2">
+                <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                    <span style="font-size: 0.8125rem; font-weight: 600;" id="lbl-nom-dia">Nominelt mål (mm)</span>
+                    <input type="number" id="iso-dia" class="field-class" inputmode="decimal" value="40" oninput="beregnIsoToleranse()">
+                </label>
+
+                <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                    <span style="font-size: 0.8125rem; font-weight: 600;" id="lbl-tol-class">Toleranseklasse</span>
+                    <select id="iso-class" class="field-class" onchange="beregnIsoToleranse()">
+                        <option value="H7">H7 (Standard Hull - Smidiggrense)</option>
+                        <option value="H8">H8 (Grovt Hull)</option>
+                        <option value="h6">h6 (Standard Aksling)</option>
+                        <option value="g6">g6 (Glidende Aksling)</option>
+                        <option value="f7">f7 (Løs Aksling)</option>
+                        <option value="k6">k6 (Presspassning Aksling)</option>
+                    </select>
+                </label>
+            </div>
+
+            <div class="result-box">
+                <div class="line-row strong"><span style="color: var(--primary-deep);" id="lbl-tol-um">Toleranseavvik (µm):</span><span id="iso-res-um" class="font-mono" style="font-size: 1.125rem; color: var(--primary-deep);">+25 µm / 0 µm</span></div>
+                <div class="line-row strong" style="margin-top: 0.25rem;"><span style="color: var(--primary-deep); font-size: 1.05rem;" id="lbl-tol-range">Tillatt målområde:</span><span id="iso-res-range" class="font-mono" style="font-size: 1.2rem; color: var(--primary-deep);">40.000 mm – 40.025 mm</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== FANE 2: GJENGER & TOLERANSER ==================== -->
+    <div id="vtab-gjenger" class="tab-content">
+        <!-- GJENGETABELL (M & BSP) -->
+        <div class="calc-card" style="border-left: 5px solid var(--brass);">
+            <header style="margin-bottom: 1rem; border-bottom: 1px solid var(--line); padding-bottom: 0.5rem;">
+                <h2 style="font-size: 1.125rem; font-weight: 800; margin: 0; color: var(--brass);" id="txt-sec2-title">🔩 Gjengetabell & Kjernebor (M & BSP / Rørgjenger)</h2>
+                <p style="font-size: 0.8125rem; color: var(--muted); margin: 0.25rem 0 0 0;" id="txt-sec2-sub">Oppslag for kjernebor, stigning og frigi-boring for M-gjenger og BSP / G / R-rørgjenger.</p>
+            </header>
+
+            <div class="grid-2">
+                <label style="display: flex; flex-direction: column; gap: 0.25rem; grid-column: span 2;">
+                    <span style="font-size: 0.8125rem; font-weight: 600;" id="lbl-select-thread">Velg gjengetype / størrelse</span>
+                    <select id="tap-select" class="field-class" onchange="oppdaterGjengeTabell()">
+                        <optgroup label="Metriske Gjenger (ISO Metric)">
+                            <option value="M3">M3 × 0.5 mm</option>
+                            <option value="M4">M4 × 0.7 mm</option>
+                            <option value="M5">M5 × 0.8 mm</option>
+                            <option value="M6">M6 × 1.0 mm</option>
+                            <option value="M8">M8 × 1.25 mm</option>
+                            <option value="M10" selected>M10 × 1.5 mm</option>
+                            <option value="M12">M12 × 1.75 mm</option>
+                            <option value="M14">M14 × 2.0 mm</option>
+                            <option value="M16">M16 × 2.0 mm</option>
+                            <option value="M20">M20 × 2.5 mm</option>
+                            <option value="M24">M24 × 3.0 mm</option>
+                            <option value="M30">M30 × 3.5 mm</option>
+                        </optgroup>
+
+                        <optgroup label="BSP / G Rørgjenger (Sylinderformet BSPP)">
+                            <option value="G1/8">BSP / G 1/8" (28 tpi - Kjernebor 8.8 mm)</option>
+                            <option value="G1/4">BSP / G 1/4" (19 tpi - Kjernebor 11.8 mm)</option>
+                            <option value="G3/8">BSP / G 3/8" (19 tpi - Kjernebor 15.25 mm)</option>
+                            <option value="G1/2">BSP / G 1/2" (14 tpi - Kjernebor 19.0 mm)</option>
+                            <option value="G3/4">BSP / G 3/4" (14 tpi - Kjernebor 24.5 mm)</option>
+                            <option value="G1">BSP / G 1" (11 tpi - Kjernebor 30.75 mm)</option>
+                            <option value="G1-1/4">BSP / G 1 1/4" (11 tpi - Kjernebor 39.5 mm)</option>
+                            <option value="G1-1/2">BSP / G 1 1/2" (11 tpi - Kjernebor 45.3 mm)</option>
+                            <option value="G2">BSP / G 2" (11 tpi - Kjernebor 57.0 mm)</option>
+                        </optgroup>
+
+                        <optgroup label="BSPT / R Rørgjenger (Konisk BSPT)">
+                            <option value="R1/8">BSPT / R 1/8" Konisk (Kjernebor 8.4 mm)</option>
+                            <option value="R1/4">BSPT / R 1/4" Konisk (Kjernebor 11.2 mm)</option>
+                            <option value="R3/8">BSPT / R 3/8" Konisk (Kjernebor 14.7 mm)</option>
+                            <option value="R1/2">BSPT / R 1/2" Konisk (Kjernebor 18.3 mm)</option>
+                            <option value="R3/4">BSPT / R 3/4" Konisk (Kjernebor 23.7 mm)</option>
+                            <option value="R1">BSPT / R 1" Konisk (Kjernebor 29.9 mm)</option>
+                        </optgroup>
+                    </select>
+                </label>
+            </div>
+
+            <div class="result-box" style="background: var(--brass-soft); border-left-color: var(--brass);">
+                <div class="line-row strong"><span style="color: var(--brass);" id="lbl-rec-drill">Anbefalt Kjernebor:</span><span id="tap-res-drill" class="font-mono" style="font-size: 1.25rem; color: var(--brass);">8.5 mm</span></div>
+                <div class="line-row strong" style="margin-top: 0.25rem;"><span style="color: var(--brass);" id="lbl-pitch">Gjengestigning (Pitch):</span><span id="tap-res-pitch" class="font-mono" style="font-size: 1rem; color: var(--brass);">1.50 mm</span></div>
+                <div class="line-row strong" style="margin-top: 0.25rem;"><span style="color: var(--brass);" id="lbl-clearance">Frigangshull (Passbor):</span><span id="tap-res-clearance" class="font-mono" style="font-size: 1rem; color: var(--brass);">10.5 mm</span></div>
+            </div>
+        </div>
+
+        <!-- GJENGE-TOLERANSER (6H / 6g) -->
+        <div class="calc-card" style="border-left: 5px solid var(--brass);">
+            <header style="margin-bottom: 1rem; border-bottom: 1px solid var(--line); padding-bottom: 0.5rem;">
+                <h2 style="font-size: 1.125rem; font-weight: 800; margin: 0; color: var(--brass);" id="txt-sec-ttol-title">📐 Gjenge-Toleranser & Målegrenser (6H / 6g ISO)</h2>
+                <p style="font-size: 0.8125rem; color: var(--muted); margin: 0.25rem 0 0 0;" id="txt-sec-ttol-sub">Oppslag for min og maks tillatt store diameter, flangediameter (delingsdiameter) og kjernediameter.</p>
+            </header>
+
+            <div class="grid-2">
+                <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                    <span style="font-size: 0.8125rem; font-weight: 600;" id="lbl-ttol-size">Gjengestørrelse</span>
+                    <select id="ttol-select" class="field-class" onchange="beregnGjengeToleranse()">
+                        <option value="M3">M3 × 0.5</option>
+                        <option value="M4">M4 × 0.7</option>
+                        <option value="M5">M5 × 0.8</option>
+                        <option value="M6">M6 × 1.0</option>
+                        <option value="M8">M8 × 1.25</option>
+                        <option value="M10" selected>M10 × 1.5</option>
+                        <option value="M12">M12 × 1.75</option>
+                        <option value="M16">M16 × 2.0</option>
+                        <option value="M20">M20 × 2.5</option>
+                        <option value="M24">M24 × 3.0</option>
+                    </select>
+                </label>
+
+                <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                    <span style="font-size: 0.8125rem; font-weight: 600;" id="lbl-ttol-fit">Gjengepassning / Klasse</span>
+                    <select id="ttol-fit" class="field-class" onchange="beregnGjengeToleranse()">
+                        <option value="6H">Mutter 6H (Innvendig gjenge - Standard)</option>
+                        <option value="6g">Skrue / Bolt 6g (Utvendig gjenge - Standard)</option>
+                    </select>
+                </label>
+            </div>
+
+            <div class="result-box" style="background: var(--brass-soft); border-left-color: var(--brass);">
+                <div class="line-row strong"><span style="color: var(--brass);" id="lbl-ttol-major">Store diameter (Major Dia):</span><span id="ttol-res-major" class="font-mono" style="font-size: 1.125rem; color: var(--brass);">10.000 mm – 10.250 mm</span></div>
+                <div class="line-row strong" style="margin-top: 0.25rem;"><span style="color: var(--brass);" id="lbl-ttol-pitch">Flangedia / Delingsdia (Pitch Dia):</span><span id="ttol-res-pitch" class="font-mono" style="font-size: 1.125rem; color: var(--brass);">9.026 mm – 9.206 mm</span></div>
+                <div class="line-row strong" style="margin-top: 0.25rem;"><span style="color: var(--brass);" id="lbl-ttol-minor">Lille dia / Kjernedia (Minor Dia):</span><span id="ttol-res-minor" class="font-mono" style="font-size: 1.125rem; color: var(--brass);">8.376 mm – 8.676 mm</span></div>
+            </div>
+        </div>
+
+        <!-- KONUS & VINKELKALKULATOR -->
+        <div class="calc-card" style="border-left: 5px solid var(--brass);">
+            <header style="margin-bottom: 1rem; border-bottom: 1px solid var(--line); padding-bottom: 0.5rem;">
+                <h2 style="font-size: 1.125rem; font-weight: 800; margin: 0; color: var(--brass);">📐 Konus- & Vinkelkalkulator (Dreiing)</h2>
+                <p style="font-size: 0.8125rem; color: var(--muted); margin: 0.25rem 0 0 0;">Regn ut halv vinkel α (toppsleide-innstilling) og konusforhold for koniske emner.</p>
+            </header>
+
+            <div class="grid-2">
+                <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                    <span style="font-size: 0.8125rem; font-weight: 600;">Stor diameter D (mm)</span>
+                    <input type="number" id="taper-d1" class="field-class" inputmode="decimal" value="50" oninput="beregnKonus()">
+                </label>
+
+                <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                    <span style="font-size: 0.8125rem; font-weight: 600;">Liten diameter d (mm)</span>
+                    <input type="number" id="taper-d2" class="field-class" inputmode="decimal" value="40" oninput="beregnKonus()">
+                </label>
+
+                <label style="display: flex; flex-direction: column; gap: 0.25rem; grid-column: span 2;">
+                    <span style="font-size: 0.8125rem; font-weight: 600;">Konuslengde L (mm)</span>
+                    <input type="number" id="taper-len" class="field-class" inputmode="decimal" value="100" oninput="beregnKonus()">
+                </label>
+            </div>
+
+            <div class="result-box" style="background: var(--brass-soft); border-left-color: var(--brass);">
+                <div class="line-row strong"><span style="color: var(--brass);">Toppsleidevinkel (Halv vinkel α):</span><span id="taper-res-alpha" class="font-mono" style="font-size: 1.25rem; color: var(--brass);">2.86°</span></div>
+                <div class="line-row strong" style="margin-top: 0.25rem;"><span style="color: var(--brass);">Total inkludert toppvinkel (2α):</span><span id="taper-res-2alpha" class="font-mono" style="font-size: 1rem; color: var(--brass);">5.72°</span></div>
+                <div class="line-row strong" style="margin-top: 0.25rem;"><span style="color: var(--brass);">Konusforhold:</span><span id="taper-res-ratio" class="font-mono" style="font-size: 1rem; color: var(--brass);">1 : 10</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== FANE 3: VEKT, SKRUER & PCD ==================== -->
+    <div id="vtab-vekt" class="tab-content">
+        <!-- VEKT- OG MATERIALKALKULATOR -->
+        <div class="calc-card" style="border-left: 5px solid #059669;">
+            <header style="margin-bottom: 1rem; border-bottom: 1px solid var(--line); padding-bottom: 0.5rem;">
+                <h2 style="font-size: 1.125rem; font-weight: 800; margin: 0; color: #059669;">⚖️ Vekt- & Materialkalkulator (Plate, Aksling, Rør)</h2>
+                <p style="font-size: 0.8125rem; color: var(--muted); margin: 0.25rem 0 0 0;">Regn ut nøyaktig vekt i kg for stål, syrefast, aluminium og messing ut fra emneform.</p>
+            </header>
+
+            <div class="grid-2">
+                <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                    <span style="font-size: 0.8125rem; font-weight: 600;">Velg Emneform</span>
+                    <select id="w-type" class="field-class" onchange="byttVektForm()">
+                        <option value="plate">Plate / Flattstål (B x L x T)</option>
+                        <option value="shaft">Rund Aksling (Ø x L)</option>
+                        <option value="pipe">Rør (Utv Ø x Innv Ø x L)</option>
+                    </select>
+                </label>
+
+                <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                    <span style="font-size: 0.8125rem; font-weight: 600;">Materiale</span>
+                    <select id="w-mat" class="field-class" onchange="beregnVekt()">
+                        <option value="7.85">Stål / S355 / C45 (7.85 g/cm³)</option>
+                        <option value="8.0">Syrefast / Rustfritt 316L (8.0 g/cm³)</option>
+                        <option value="2.7">Aluminium (2.7 g/cm³)</option>
+                        <option value="8.5">Messing / Kobber (8.5 g/cm³)</option>
+                        <option value="1.15">Plast / NYLON (1.15 g/cm³)</option>
+                    </select>
+                </label>
+
+                <!-- INPUTS FOR PLATE -->
+                <div id="w-inputs-plate" class="grid-2" style="grid-column: span 2;">
+                    <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                        <span style="font-size: 0.8125rem; font-weight: 600;">Lengde (mm)</span>
+                        <input type="number" id="wp-l" class="field-class" inputmode="decimal" value="1000" oninput="beregnVekt()">
+                    </label>
+                    <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                        <span style="font-size: 0.8125rem; font-weight: 600;">Bredde (mm)</span>
+                        <input type="number" id="wp-b" class="field-class" inputmode="decimal" value="500" oninput="beregnVekt()">
+                    </label>
+                    <label style="display: flex; flex-direction: column; gap: 0.25rem; grid-column: span 2;">
+                        <span style="font-size: 0.8125rem; font-weight: 600;">Tykkelse (mm)</span>
+                        <input type="number" id="wp-t" class="field-class" inputmode="decimal" value="10" oninput="beregnVekt()">
+                    </label>
+                </div>
+
+                <!-- INPUTS FOR AKSLING -->
+                <div id="w-inputs-shaft" class="grid-2" style="grid-column: span 2; display: none;">
+                    <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                        <span style="font-size: 0.8125rem; font-weight: 600;">Aksling Diameter Ø (mm)</span>
+                        <input type="number" id="ws-d" class="field-class" inputmode="decimal" value="80" oninput="beregnVekt()">
+                    </label>
+                    <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                        <span style="font-size: 0.8125rem; font-weight: 600;">Lengde (mm)</span>
+                        <input type="number" id="ws-l" class="field-class" inputmode="decimal" value="1000" oninput="beregnVekt()">
+                    </label>
+                </div>
+
+                <!-- INPUTS FOR RØR -->
+                <div id="w-inputs-pipe" class="grid-2" style="grid-column: span 2; display: none;">
+                    <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                        <span style="font-size: 0.8125rem; font-weight: 600;">Utvendig Diameter Ø (mm)</span>
+                        <input type="number" id="wpi-dout" class="field-class" inputmode="decimal" value="114.3" oninput="beregnVekt()">
+                    </label>
+                    <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                        <span style="font-size: 0.8125rem; font-weight: 600;">Godstykkelse (mm)</span>
+                        <input type="number" id="wpi-wall" class="field-class" inputmode="decimal" value="6.3" oninput="beregnVekt()">
+                    </label>
+                    <label style="display: flex; flex-direction: column; gap: 0.25rem; grid-column: span 2;">
+                        <span style="font-size: 0.8125rem; font-weight: 600;">Lengde (mm)</span>
+                        <input type="number" id="wpi-l" class="field-class" inputmode="decimal" value="1000" oninput="beregnVekt()">
+                    </label>
+                </div>
+            </div>
+
+            <div class="result-box" style="background: rgba(16, 185, 129, 0.12); border-left-color: #059669;">
+                <div class="line-row strong"><span style="color: #059669;">Beregnet Vekt i Kilo (kg):</span><span id="w-res-kg" class="font-mono" style="font-size: 1.35rem; color: #059669;">39.25 kg</span></div>
+            </div>
+        </div>
+
+        <!-- TILTREKKINGSMOMENT FOR SKRUER -->
+        <div class="calc-card" style="border-left: 5px solid #059669;">
+            <header style="margin-bottom: 1rem; border-bottom: 1px solid var(--line); padding-bottom: 0.5rem;">
+                <h2 style="font-size: 1.125rem; font-weight: 800; margin: 0; color: #059669;">🔧 Tiltrekkingsmoment for Skruer (Nm & Force)</h2>
+                <p style="font-size: 0.8125rem; color: var(--muted); margin: 0.25rem 0 0 0;">Anbefalt moment i Nm og tiltrekkingskraft for stålskruer (8.8, 10.9, 12.9 og A4-80).</p>
+            </header>
+
+            <div class="grid-2">
+                <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                    <span style="font-size: 0.8125rem; font-weight: 600;">Skruestørrelse</span>
+                    <select id="torq-size" class="field-class" onchange="beregnMoment()">
+                        <option value="M4">M4</option>
+                        <option value="M5">M5</option>
+                        <option value="M6">M6</option>
+                        <option value="M8">M8</option>
+                        <option value="M10" selected>M10</option>
+                        <option value="M12">M12</option>
+                        <option value="M16">M16</option>
+                        <option value="M20">M20</option>
+                        <option value="M24">M24</option>
+                        <option value="M30">M30</option>
+                    </select>
+                </label>
+
+                <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                    <span style="font-size: 0.8125rem; font-weight: 600;">Kvalitetsklasse</span>
+                    <select id="torq-class" class="field-class" onchange="beregnMoment()">
+                        <option value="8.8">Stål 8.8 (Standard)</option>
+                        <option value="10.9">Stål 10.9 (Høyfast)</option>
+                        <option value="12.9">Stål 12.9 (Ekstra sterk)</option>
+                        <option value="A4-80">Syrefast A4-80</option>
+                    </select>
+                </label>
+            </div>
+
+            <div class="result-box" style="background: rgba(16, 185, 129, 0.12); border-left-color: #059669;">
+                <div class="line-row strong"><span style="color: #059669;">Anbefalt Tiltrekkingsmoment (Nm):</span><span id="torq-res-nm" class="font-mono" style="font-size: 1.35rem; color: #059669;">49 Nm</span></div>
+                <div class="line-row strong" style="margin-top: 0.25rem;"><span style="color: #059669;">Tiltrekkingskraft (kilonewton):</span><span id="torq-res-kn" class="font-mono" style="font-size: 1.125rem; color: #059669;">26 kN</span></div>
+            </div>
+        </div>
+
+        <!-- DELINGSSIRKEL OG FLENSE-KOORDINATER (PCD) -->
+        <div class="calc-card" style="border-left: 5px solid #059669;">
+            <header style="margin-bottom: 1rem; border-bottom: 1px solid var(--line); padding-bottom: 0.5rem;">
+                <h2 style="font-size: 1.125rem; font-weight: 800; margin: 0; color: #059669;">⭕ Delingssirkel & Flense-koordinater (PCD)</h2>
+                <p style="font-size: 0.8125rem; color: var(--muted); margin: 0.25rem 0 0 0;">Regn ut kordeavstand fra hull til hull og CNC X/Y koordinater for flenseboring.</p>
+            </header>
+
+            <div class="grid-2">
+                <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                    <span style="font-size: 0.8125rem; font-weight: 600;">Delingssirkel Ø (PCD mm)</span>
+                    <input type="number" id="pcd-dia" class="field-class" inputmode="decimal" value="200" oninput="beregnPcd()">
+                </label>
+
+                <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                    <span style="font-size: 0.8125rem; font-weight: 600;">Antall hull (N)</span>
+                    <input type="number" id="pcd-num" class="field-class" inputmode="numeric" value="8" oninput="beregnPcd()">
+                </label>
+            </div>
+
+            <div class="result-box" style="background: rgba(16, 185, 129, 0.12); border-left-color: #059669;">
+                <div class="line-row strong"><span style="color: #059669;">Kordeavstand (Hull-til-Hull måles direkte):</span><span id="pcd-res-chord" class="font-mono" style="font-size: 1.25rem; color: #059669;">76.54 mm</span></div>
+                <div class="line-row strong" style="margin-top: 0.25rem;"><span style="color: #059669;">Vinkel pr. hull:</span><span id="pcd-res-angle" class="font-mono" style="font-size: 1.05rem; color: #059669;">45.0°</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== FANE 4: MATTE & KONVERTERER ==================== -->
+    <div id="vtab-matte" class="tab-content">
+        <!-- 1. TRIGONOMETRI & TREKANTKALKULATOR -->
+        <div class="calc-card" style="border-left: 5px solid #7c3aed;">
+            <header style="margin-bottom: 1rem; border-bottom: 1px solid var(--line); padding-bottom: 0.5rem;">
+                <h2 style="font-size: 1.125rem; font-weight: 800; margin: 0; color: #7c3aed;">📐 Trigonometri & Trekantkalkulator (Pythagoras)</h2>
+                <p style="font-size: 0.8125rem; color: var(--muted); margin: 0.25rem 0 0 0;">Regn ut ukjente sider, vinkler og skråfaser for rettvinklede trekanter.</p>
+            </header>
+
+            <div class="grid-2">
+                <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                    <span style="font-size: 0.8125rem; font-weight: 600;">Katet a (mm)</span>
+                    <input type="number" id="tri-a" class="field-class" inputmode="decimal" placeholder="f.eks. 30" oninput="beregnTrekant()">
+                </label>
+
+                <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                    <span style="font-size: 0.8125rem; font-weight: 600;">Katet b (mm)</span>
+                    <input type="number" id="tri-b" class="field-class" inputmode="decimal" placeholder="f.eks. 40" oninput="beregnTrekant()">
+                </label>
+
+                <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                    <span style="font-size: 0.8125rem; font-weight: 600;">Hypotenus c (mm)</span>
+                    <input type="number" id="tri-c" class="field-class" inputmode="decimal" placeholder="Valgfritt (c)" oninput="beregnTrekant()">
+                </label>
+
+                <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                    <span style="font-size: 0.8125rem; font-weight: 600;">Vinkel A (grader °)</span>
+                    <input type="number" id="tri-deg" class="field-class" inputmode="decimal" placeholder="Valgfritt (A°)" oninput="beregnTrekant()">
+                </label>
+            </div>
+
+            <div class="result-box" style="background: rgba(124, 58, 237, 0.12); border-left-color: #7c3aed;">
+                <div class="line-row strong"><span style="color: #6d28d9;">Hypotenus c (Skrålengde):</span><span id="tri-res-c" class="font-mono" style="font-size: 1.25rem; color: #6d28d9;">50.00 mm</span></div>
+                <div class="line-row strong" style="margin-top: 0.25rem;"><span style="color: #6d28d9;">Vinkler (A° og B°):</span><span id="tri-res-angles" class="font-mono" style="font-size: 1rem; color: #6d28d9;">A = 36.87° | B = 53.13°</span></div>
+            </div>
+        </div>
+
+        <!-- 2. VERKSTEDETS ENHETSKONVERTERER -->
+        <div class="calc-card" style="border-left: 5px solid #7c3aed;">
+            <header style="margin-bottom: 1rem; border-bottom: 1px solid var(--line); padding-bottom: 0.5rem;">
+                <h2 style="font-size: 1.125rem; font-weight: 800; margin: 0; color: #7c3aed;">🧮 Enhetskonverterer (Tommer ➔ MM, PSI ➔ Bar)</h2>
+                <p style="font-size: 0.8125rem; color: var(--muted); margin: 0.25rem 0 0 0;">Omregning av tomme-fraksjoner, PSI trykk, lbs vekt og Fahrenheit temperatur.</p>
+            </header>
+
+            <div class="grid-2">
+                <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                    <span style="font-size: 0.8125rem; font-weight: 600;">Velg Tomme-fraksjon</span>
+                    <select id="conv-frac" class="field-class" onchange="byttTommeFraksjon()">
+                        <option value="0.0625">1/16" (1.588 mm)</option>
+                        <option value="0.125">1/8" (3.175 mm)</option>
+                        <option value="0.1875">3/16" (4.763 mm)</option>
+                        <option value="0.25">1/4" (6.350 mm)</option>
+                        <option value="0.375" selected>3/8" (9.525 mm)</option>
+                        <option value="0.5">1/2" (12.700 mm)</option>
+                        <option value="0.625">5/8" (15.875 mm)</option>
+                        <option value="0.75">3/4" (19.050 mm)</option>
+                        <option value="0.875">7/8" (22.225 mm)</option>
+                        <option value="1.0">1" (25.400 mm)</option>
+                        <option value="1.25">1 1/4" (31.750 mm)</option>
+                        <option value="1.5">1 1/2" (38.100 mm)</option>
+                        <option value="2.0">2" (50.800 mm)</option>
+                    </select>
+                </label>
+
+                <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                    <span style="font-size: 0.8125rem; font-weight: 600;">Egendefinert Tommer (Inches)</span>
+                    <input type="number" id="conv-inch" class="field-class" inputmode="decimal" value="0.375" oninput="beregnEnheter()">
+                </label>
+
+                <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                    <span style="font-size: 0.8125rem; font-weight: 600;">Trykk i PSI</span>
+                    <input type="number" id="conv-psi" class="field-class" inputmode="decimal" value="3000" oninput="beregnEnheter()">
+                </label>
+
+                <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                    <span style="font-size: 0.8125rem; font-weight: 600;">Vekt i Lbs (Pund)</span>
+                    <input type="number" id="conv-lbs" class="field-class" inputmode="decimal" value="220" oninput="beregnEnheter()">
+                </label>
+            </div>
+
+            <div class="result-box" style="background: rgba(124, 58, 237, 0.12); border-left-color: #7c3aed;">
+                <div class="line-row strong"><span style="color: #6d28d9;">Tommer til MM:</span><span id="conv-res-mm" class="font-mono" style="font-size: 1.25rem; color: #6d28d9;">9.525 mm</span></div>
+                <div class="line-row strong" style="margin-top: 0.25rem;"><span style="color: #6d28d9;">PSI til Bar / MPa:</span><span id="conv-res-bar" class="font-mono" style="font-size: 1rem; color: #6d28d9;">206.8 Bar (20.68 MPa)</span></div>
+                <div class="line-row strong" style="margin-top: 0.25rem;"><span style="color: #6d28d9;">Lbs til Kilo (kg):</span><span id="conv-res-kg" class="font-mono" style="font-size: 1rem; color: #6d28d9;">99.79 kg</span></div>
+            </div>
+        </div>
+
+        <!-- 3. PLATEUTBRETTING OG BØYEFRADRAG (KANTPRESSE) -->
+        <div class="calc-card" style="border-left: 5px solid #7c3aed;">
+            <header style="margin-bottom: 1rem; border-bottom: 1px solid var(--line); padding-bottom: 0.5rem;">
+                <h2 style="font-size: 1.125rem; font-weight: 800; margin: 0; color: #7c3aed;">🎯 Plateutbretting & Bøyefradrag (Kantpresse)</h2>
+                <p style="font-size: 0.8125rem; color: var(--muted); margin: 0.25rem 0 0 0;">Regn ut nøyaktig utbrettet platelengde før bøy for $90^\circ$ vinkler.</p>
+            </header>
+
+            <div class="grid-2">
+                <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                    <span style="font-size: 0.8125rem; font-weight: 600;">Utvendig Flens A (mm)</span>
+                    <input type="number" id="bend-a" class="field-class" inputmode="decimal" value="100" oninput="beregnBøy()">
+                </label>
+
+                <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                    <span style="font-size: 0.8125rem; font-weight: 600;">Utvendig Flens B (mm)</span>
+                    <input type="number" id="bend-b" class="field-class" inputmode="decimal" value="150" oninput="beregnBøy()">
+                </label>
+
+                <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                    <span style="font-size: 0.8125rem; font-weight: 600;">Platetykkelse t (mm)</span>
+                    <input type="number" id="bend-t" class="field-class" inputmode="decimal" value="3" oninput="beregnBøy()">
+                </label>
+
+                <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                    <span style="font-size: 0.8125rem; font-weight: 600;">Innvendig Bøyeradius R (mm)</span>
+                    <input type="number" id="bend-r" class="field-class" inputmode="decimal" value="3" oninput="beregnBøy()">
+                </label>
+            </div>
+
+            <div class="result-box" style="background: rgba(124, 58, 237, 0.12); border-left-color: #7c3aed;">
+                <div class="line-row strong"><span style="color: #6d28d9;">Bøyefradrag (BD - Bend Deduction):</span><span id="bend-res-bd" class="font-mono" style="font-size: 1.125rem; color: #6d28d9;">5.43 mm</span></div>
+                <div class="line-row strong" style="margin-top: 0.375rem;"><span style="color: #6d28d9; font-size: 1.125rem;">Utbrettet Kappe-lengde før bøy:</span><span id="bend-res-len" class="font-mono" style="font-size: 1.35rem; color: #6d28d9;">244.57 mm</span></div>
+            </div>
+        </div>
+
+        <!-- 4. DELEPRIS & KALKYLE -->
+        <div class="calc-card" style="border-left: 5px solid #7c3aed;">
+            <header style="margin-bottom: 1rem; border-bottom: 1px solid var(--line); padding-bottom: 0.5rem;">
+                <h2 style="font-size: 1.125rem; font-weight: 800; margin: 0; color: #7c3aed;">⏱️ Delepris & Tilbudskalkulator (Kalkyle)</h2>
+                <p style="font-size: 0.8125rem; color: var(--muted); margin: 0.25rem 0 0 0;">Regn ut selvkost og tilbudspris for en jobb ut fra maskintid, arbeidstimer og materialer.</p>
+            </header>
+
+            <div class="grid-2">
+                <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                    <span style="font-size: 0.8125rem; font-weight: 600;">Maskintid (Timer)</span>
+                    <input type="number" id="cost-mhours" class="field-class" inputmode="decimal" value="2.5" oninput="beregnPris()">
+                </label>
+
+                <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                    <span style="font-size: 0.8125rem; font-weight: 600;">Verkstedets Timepris (kr/t)</span>
+                    <input type="number" id="cost-rate" class="field-class" inputmode="decimal" value="850" oninput="beregnPris()">
+                </label>
+
+                <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                    <span style="font-size: 0.8125rem; font-weight: 600;">Materialkostnad (kr)</span>
+                    <input type="number" id="cost-mat" class="field-class" inputmode="decimal" value="1200" oninput="beregnPris()">
+                </label>
+
+                <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                    <span style="font-size: 0.8125rem; font-weight: 600;">Fortjeneste / Påslag (%)</span>
+                    <input type="number" id="cost-margin" class="field-class" inputmode="decimal" value="20" oninput="beregnPris()">
+                </label>
+            </div>
+
+            <div class="result-box" style="background: rgba(124, 58, 237, 0.12); border-left-color: #7c3aed;">
+                <div class="line-row strong"><span style="color: #6d28d9;">Ren Selvkost:</span><span id="cost-res-base" class="font-mono" style="font-size: 1.125rem; color: #6d28d9;">3 325,00 kr</span></div>
+                <div class="line-row strong" style="margin-top: 0.375rem;"><span style="color: #6d28d9; font-size: 1.125rem;">Anbefalt Tilbudspris (eks mva):</span><span id="cost-res-offer" class="font-mono" style="font-size: 1.35rem; color: #6d28d9;">3 990,00 kr</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FREMHEVET SYNLIG BUNNTEKST MED VERSJON -->
+    <footer class="app-footer">
+        <p style="margin: 0; font-weight: 500;">
+            <span class="version-badge">Versjon 8.1</span>
+        </p>
+    </footer>
+</div>
+
+<script>
+    function switchVerkstedTab(tabId) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+
+        document.getElementById(`vtab-${tabId}`).classList.add('active');
+        document.getElementById(`btn-tab-${tabId}`).classList.add('active');
+        localStorage.setItem('verksted_active_tab', tabId);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    const i18n = {
+        no: {
+            title: "Verkstedtabeller & Bor",
+            btnHome: "🏠 Hovedmeny",
+            swipeHint: "👈 SVEIP FANER 👉",
+            tabData: "🧪 Skjæredata & Bor",
+            tabThreads: "🔩 Gjenger & Toleranser",
+            tabWeight: "⚖️ Vekt, Skruer & PCD",
+            tabMath: "📐 Matte & Konverterer",
+            sec1Title: "🧪 Materialvelger & Anbefalte Skjæredata (Vc & fz)",
+            sec1Sub: "Velg verkstedmateriale for å få opp anbefalte skjærehastigheter for skrubb og slett.",
+            selectMat: "Velg materiale",
+            toolDia: "Verktøydiameter (mm)",
+            teethZ: "Antall skjær (z)",
+            recVc: "Anbefalt Vc (Skrubb / Slett):",
+            calcRpm: "Beregnet RPM (Spindel):",
+            calcVf: "Beregnet Mating (Vf):",
+            sec2Title: "🔩 Gjengetabell & Kjernebor (M & BSP / Rørgjenger)",
+            sec2Sub: "Oppslag for kjernebor, stigning og frigi-boring for M-gjenger og BSP / G / R-rørgjenger.",
+            selectThread: "Velg gjengetype / størrelse",
+            recDrill: "Anbefalt Kjernebor:",
+            pitch: "Gjengestigning (Pitch):",
+            clearance: "Frigangshull (Passbor):",
+            secTtolTitle: "📐 Gjenge-Toleranser & Målegrenser (6H / 6g ISO)",
+            secTtolSub: "Oppslag for min og maks tillatt store diameter, flangediameter (delingsdiameter) og kjernediameter.",
+            lblTtolSize: "Gjengestørrelse",
+            lblTtolFit: "Gjengepassning / Klasse",
+            lblTtolMajor: "Store diameter (Major Dia):",
+            lblTtolPitch: "Flangedia / Delingsdia (Pitch Dia):",
+            lblTtolMinor: "Lille dia / Kjernedia (Minor Dia):",
+            sec3Title: "📐 Boredybde & Bor-spisstillegg",
+            sec3Sub: "Beregning av bor-spissens ekstra dybde for gjennomboring av plater.",
+            drillDia: "Bordiameter (mm)",
+            drillAngle: "Bor-spissvinkel",
+            drillDepth: "Ønsket sylindrisk boredybde (mm)",
+            tipExtra: "Ekstra spisstillegg (h):",
+            totZdepth: "Total Z-boredybde i CNC:",
+            sec4Title: "📏 ISO Passninger & Toleranser (H7 / g6)",
+            sec4Sub: "Oppslag for min/maks toleranseforskjeller for aksling og hull."
+        },
+        en: {
+            title: "Workshop Tables & Drills",
+            btnHome: "🏠 Main Menu",
+            swipeHint: "👈 SWIPE TABS 👉",
+            tabData: "🧪 Cutting Data & Drills",
+            tabThreads: "🔩 Threads & Tolerances",
+            tabWeight: "⚖️ Weight, Screws & PCD",
+            tabMath: "📐 Math & Converters",
+            sec1Title: "🧪 Material Selector & Recommended Speeds (Vc & fz)",
+            sec1Sub: "Select workshop material to view recommended roughing and finishing speeds.",
+            selectMat: "Select material",
+            toolDia: "Tool diameter (mm)",
+            teethZ: "Number of flutes (z)",
+            recVc: "Recommended Vc (Rough / Finish):",
+            calcRpm: "Calculated RPM (Spindle):",
+            calcVf: "Calculated Feed (Vf):",
+            sec2Title: "🔩 Tap Drill & Thread Tables (M & BSP Pipe Threads)",
+            sec2Sub: "Lookup tap drill sizes, pitch, and clearance holes for M and BSP pipe threads.",
+            selectThread: "Select thread type / size",
+            recDrill: "Recommended Tap Drill:",
+            pitch: "Thread Pitch:",
+            clearance: "Clearance Hole:",
+            secTtolTitle: "📐 Thread Tolerances & Limits (6H / 6g ISO)",
+            secTtolSub: "Lookup min and max allowed major diameter, pitch diameter, and minor diameter.",
+            lblTtolSize: "Thread size",
+            lblTtolFit: "Thread fit / class",
+            lblTtolMajor: "Major Diameter:",
+            lblTtolPitch: "Pitch Diameter:",
+            lblTtolMinor: "Minor Diameter:",
+            sec3Title: "📐 Drilling Depth & Point Offset",
+            sec3Sub: "Calculate drill point extra depth for piercing through plates.",
+            drillDia: "Drill diameter (mm)",
+            drillAngle: "Drill point angle",
+            drillDepth: "Desired cylindrical depth (mm)",
+            tipExtra: "Extra point offset (h):",
+            totZdepth: "Total Z depth in CNC:",
+            sec4Title: "📏 ISO Fits & Tolerances (H7 / g6)",
+            sec4Sub: "Lookup min/max tolerance deviations for shafts and holes."
+        }
+    };
+
+    function updateLanguageUI(lang) {
+        const t = i18n[lang] || i18n.no;
+        document.getElementById('txt-title').innerText = t.title;
+        document.getElementById('txt-btn-home').innerText = t.btnHome;
+        document.getElementById('txt-swipe-hint').innerText = t.swipeHint;
+        document.getElementById('btn-tab-skjaeredata').innerText = t.tabData;
+        document.getElementById('btn-tab-gjenger').innerText = t.tabThreads;
+        document.getElementById('btn-tab-vekt').innerText = t.tabWeight;
+        document.getElementById('btn-tab-matte').innerText = t.tabMath;
+        document.getElementById('txt-sec1-title').innerText = t.sec1Title;
+        document.getElementById('txt-sec1-sub').innerText = t.sec1Sub;
+        document.getElementById('lbl-select-mat').innerText = t.selectMat;
+        document.getElementById('lbl-tool-dia').innerText = t.toolDia;
+        document.getElementById('lbl-teeth-z').innerText = t.teethZ;
+        document.getElementById('lbl-rec-vc').innerText = t.recVc;
+        document.getElementById('lbl-calc-rpm').innerText = t.calcRpm;
+        document.getElementById('lbl-calc-vf').innerText = t.calcVf;
+        document.getElementById('txt-sec2-title').innerText = t.sec2Title;
+        document.getElementById('txt-sec2-sub').innerText = t.sec2Sub;
+        document.getElementById('lbl-select-thread').innerText = t.selectThread;
+        document.getElementById('lbl-rec-drill').innerText = t.recDrill;
+        document.getElementById('lbl-pitch').innerText = t.pitch;
+        document.getElementById('lbl-clearance').innerText = t.clearance;
+        document.getElementById('txt-sec-ttol-title').innerText = t.secTtolTitle;
+        document.getElementById('txt-sec-ttol-sub').innerText = t.secTtolSub;
+        document.getElementById('lbl-ttol-size').innerText = t.lblTtolSize;
+        document.getElementById('lbl-ttol-fit').innerText = t.lblTtolFit;
+        document.getElementById('lbl-ttol-major').innerText = t.lblTtolMajor;
+        document.getElementById('lbl-ttol-pitch').innerText = t.lblTtolPitch;
+        document.getElementById('lbl-ttol-minor').innerText = t.lblTtolMinor;
+        document.getElementById('txt-sec3-title').innerText = t.sec3Title;
+        document.getElementById('txt-sec3-sub').innerText = t.sec3Sub;
+        document.getElementById('lbl-drill-dia').innerText = t.drillDia;
+        document.getElementById('lbl-drill-angle').innerText = t.drillAngle;
+        document.getElementById('lbl-drill-depth').innerText = t.drillDepth;
+        document.getElementById('lbl-tip-extra').innerText = t.tipExtra;
+        document.getElementById('lbl-tot-zdepth').innerText = t.totZdepth;
+        document.getElementById('txt-sec4-title').innerText = t.sec4Title;
+        document.getElementById('txt-sec4-sub').innerText = t.sec4Sub;
+        document.getElementById('lbl-nom-dia').innerText = t.nomDia;
+        document.getElementById('lbl-tol-class').innerText = t.tolClass;
+        document.getElementById('lbl-tol-um').innerText = t.tolUm;
+        document.getElementById('lbl-tol-range').innerText = t.tolRange;
+        document.getElementById('lang-toggle-btn').innerText = (lang === 'en') ? '🇬🇧 EN' : '🇳🇴 NO';
+    }
+
+    function toggleLanguage() {
+        let cur = localStorage.getItem('seland_lang') || 'no';
+        let newLang = (cur === 'no') ? 'en' : 'no';
+        localStorage.setItem('seland_lang', newLang);
+        updateLanguageUI(newLang);
+    }
+
+    function updateOnlineStatus() {
+        const badge = document.getElementById('net-status');
+        if (navigator.onLine) {
+            badge.innerText = "🟢 Online";
+            badge.style.background = "var(--primary-soft)";
+            badge.style.color = "var(--primary-deep)";
+        } else {
+            badge.innerText = "⚪ Offline";
+            badge.style.background = "rgba(100, 116, 139, 0.15)";
+            badge.style.color = "var(--muted)";
+        }
+    }
+
+    window.addEventListener('online', updateOnlineStatus);
+    window.addEventListener('offline', updateOnlineStatus);
+
+    window.addEventListener('load', function() {
+        updateOnlineStatus();
+        const curLang = localStorage.getItem('seland_lang') || 'no';
+        updateLanguageUI(curLang);
+
+        const activeVerkstedTab = localStorage.getItem('verksted_active_tab') || 'skjaeredata';
+        switchVerkstedTab(activeVerkstedTab);
+    });
+
+    function toggleTheme() {
+        const isDark = document.body.classList.contains('dark-mode');
+        if (isDark) {
+            document.body.classList.remove('dark-mode');
+            localStorage.setItem('lonn_theme', 'light');
+            document.getElementById('theme-toggle-btn').innerText = '☀️';
+        } else {
+            document.body.classList.add('dark-mode');
+            localStorage.setItem('lonn_theme', 'dark');
+            document.getElementById('theme-toggle-btn').innerText = '🌙';
+        }
+    }
+
+    if (localStorage.getItem('lonn_theme') === 'dark') {
+        document.body.classList.add('dark-mode');
+        document.getElementById('theme-toggle-btn').innerText = '🌙';
+    }
+
+    // DATA FOR MATERIALER
+    const materialData = {
+        s355: { name: "Konstruksjonsstål / S355", vcRough: 180, fzRough: 0.12, vcFinish: 240, fzFinish: 0.08 },
+        c45: { name: "Seigherdingsstål / C45", vcRough: 140, fzRough: 0.10, vcFinish: 180, fzFinish: 0.06 },
+        ss316: { name: "Syrefast / 316L", vcRough: 90, fzRough: 0.08, vcFinish: 120, fzFinish: 0.05 },
+        duplex: { name: "Duplex / 2205", vcRough: 70, fzRough: 0.06, vcFinish: 95, fzFinish: 0.04 },
+        alu: { name: "Aluminium 6082", vcRough: 450, fzRough: 0.20, vcFinish: 650, fzFinish: 0.12 },
+        brass: { name: "Messing / Kobber", vcRough: 280, fzRough: 0.15, vcFinish: 380, fzFinish: 0.08 },
+        cast: { name: "Støpejern GG25", vcRough: 160, fzRough: 0.12, vcFinish: 210, fzFinish: 0.07 }
+    };
+
+    function oppdaterMaterialeData() {
+        const matKey = document.getElementById('mat-select').value;
+        const dia = parseFloat(document.getElementById('mat-dia').value) || 10;
+        const z = parseFloat(document.getElementById('mat-z').value) || 4;
+
+        const data = materialData[matKey] || materialData.s355;
+
+        const rpm = (data.vcRough * 1000) / (Math.PI * dia);
+        const vf = rpm * data.fzRough * z;
+
+        document.getElementById('mat-res-vc').innerText = `${data.vcRough} - ${data.vcFinish} m/min`;
+        document.getElementById('mat-res-rpm').innerText = `${Math.round(rpm)} RPM`;
+        document.getElementById('mat-res-mating').innerText = `${Math.round(vf)} mm/min`;
+    }
+
+    // DATA FOR METRISKE OG BSP / G / R GJENGER
+    const threadData = {
+        M3: { drill: 2.5, pitch: 0.5, clear: 3.4 },
+        M4: { drill: 3.3, pitch: 0.7, clear: 4.5 },
+        M5: { drill: 4.2, pitch: 0.8, clear: 5.5 },
+        M6: { drill: 5.0, pitch: 1.0, clear: 6.6 },
+        M8: { drill: 6.8, pitch: 1.25, clear: 9.0 },
+        M10: { drill: 8.5, pitch: 1.5, clear: 11.0 },
+        M12: { drill: 10.2, pitch: 1.75, clear: 13.5 },
+        M14: { drill: 12.0, pitch: 2.0, clear: 15.5 },
+        M16: { drill: 14.0, pitch: 2.0, clear: 17.5 },
+        M20: { drill: 17.5, pitch: 2.5, clear: 22.0 },
+        M24: { drill: 21.0, pitch: 3.0, clear: 26.0 },
+        M30: { drill: 26.5, pitch: 3.5, clear: 33.0 },
+
+        "G1/8": { drill: 8.8, pitch: 0.907, clear: 10.0 },
+        "G1/4": { drill: 11.8, pitch: 1.337, clear: 13.5 },
+        "G3/8": { drill: 15.25, pitch: 1.337, clear: 17.0 },
+        "G1/2": { drill: 19.0, pitch: 1.814, clear: 21.5 },
+        "G3/4": { drill: 24.5, pitch: 1.814, clear: 27.0 },
+        "G1": { drill: 30.75, pitch: 2.309, clear: 33.5 },
+        "G1-1/4": { drill: 39.5, pitch: 2.309, clear: 42.5 },
+        "G1-1/2": { drill: 45.3, pitch: 2.309, clear: 48.5 },
+        "G2": { drill: 57.0, pitch: 2.309, clear: 60.0 },
+
+        "R1/8": { drill: 8.4, pitch: 0.907, clear: 10.0 },
+        "R1/4": { drill: 11.2, pitch: 1.337, clear: 13.5 },
+        "R3/8": { drill: 14.7, pitch: 1.337, clear: 17.0 },
+        "R1/2": { drill: 18.3, pitch: 1.814, clear: 21.5 },
+        "R3/4": { drill: 23.7, pitch: 1.814, clear: 27.0 },
+        "R1": { drill: 29.9, pitch: 2.309, clear: 33.5 }
+    };
+
+    function oppdaterGjengeTabell() {
+        const tapKey = document.getElementById('tap-select').value;
+        const info = threadData[tapKey] || threadData.M10;
+
+        document.getElementById('tap-res-drill').innerText = `${info.drill.toFixed(1)} mm`;
+        document.getElementById('tap-res-pitch').innerText = `${info.pitch.toFixed(2)} mm`;
+        document.getElementById('tap-res-clearance').innerText = `${info.clear.toFixed(1)} mm`;
+    }
+
+    // DATA FOR ISO GJENGE-TOLERANSER (6H & 6g)
+    const threadTolData = {
+        M3: {
+            "6H": { maj: "3.000 – 3.200", pitch: "2.675 – 2.775", min: "2.459 – 2.599" },
+            "6g": { maj: "2.874 – 2.980", pitch: "2.580 – 2.655", min: "2.273 – 2.387" }
+        },
+        M4: {
+            "6H": { maj: "4.000 – 4.250", pitch: "3.545 – 3.663", min: "3.242 – 3.422" },
+            "6g": { maj: "3.858 – 3.976", pitch: "3.433 – 3.523", min: "3.018 – 3.141" }
+        },
+        M5: {
+            "6H": { maj: "5.000 – 5.280", pitch: "4.480 – 4.605", min: "4.134 – 4.334" },
+            "6g": { maj: "4.826 – 4.976", pitch: "4.361 – 4.456", min: "3.889 – 4.019" }
+        },
+        M6: {
+            "6H": { maj: "6.000 – 6.330", pitch: "5.350 – 5.500", min: "4.917 – 5.153" },
+            "6g": { maj: "5.794 – 5.974", pitch: "5.212 – 5.324", min: "4.619 – 4.773" }
+        },
+        M8: {
+            "6H": { maj: "8.000 – 8.380", pitch: "7.188 – 7.348", min: "6.647 – 6.912" },
+            "6g": { maj: "7.760 – 7.972", pitch: "7.042 – 7.160", min: "6.326 – 6.503" }
+        },
+        M10: {
+            "6H": { maj: "10.000 – 10.420", pitch: "9.026 – 9.206", min: "8.376 – 8.676" },
+            "6g": { maj: "9.732 – 9.968", pitch: "8.862 – 8.994", min: "8.001 – 8.203" }
+        },
+        M12: {
+            "6H": { maj: "12.000 – 12.450", pitch: "10.863 – 11.063", min: "10.106 – 10.441" },
+            "6g": { maj: "11.701 – 11.966", pitch: "10.686 – 10.829", min: "9.680 – 9.893" }
+        },
+        M16: {
+            "6H": { maj: "16.000 – 16.500", pitch: "14.701 – 14.913", min: "13.835 – 14.210" },
+            "6g": { maj: "15.682 – 15.962", pitch: "14.503 – 14.663", min: "13.354 – 13.596" }
+        },
+        M20: {
+            "6H": { maj: "20.000 – 20.600", pitch: "18.376 – 18.600", min: "17.294 – 17.744" },
+            "6g": { maj: "19.623 – 19.958", pitch: "18.164 – 18.334", min: "16.738 – 17.013" }
+        },
+        M24: {
+            "6H": { maj: "24.000 – 24.700", pitch: "22.051 – 22.316", min: "20.752 – 21.252" },
+            "6g": { maj: "23.577 – 23.952", pitch: "21.803 – 21.983", min: "20.093 – 20.403" }
+        }
+    };
+
+    function beregnGjengeToleranse() {
+        const size = document.getElementById('ttol-select').value;
+        const fit = document.getElementById('ttol-fit').value;
+
+        const sizeObj = threadTolData[size] || threadTolData.M10;
+        const info = sizeObj[fit] || sizeObj["6H"];
+
+        document.getElementById('ttol-res-major').innerText = `${info.maj} mm`;
+        document.getElementById('ttol-res-pitch').innerText = `${info.pitch} mm`;
+        document.getElementById('ttol-res-minor').innerText = `${info.min} mm`;
+    }
+
+    function beregnKonus() {
+        const d1 = parseFloat(document.getElementById('taper-d1').value) || 0;
+        const d2 = parseFloat(document.getElementById('taper-d2').value) || 0;
+        const len = parseFloat(document.getElementById('taper-len').value) || 1;
+
+        const diff = Math.abs(d1 - d2);
+        const alphaRad = Math.atan((diff / 2) / len);
+        const alphaDeg = alphaRad * (180 / Math.PI);
+        const ratio = diff > 0 ? (len / (diff / 2)) : 0;
+
+        document.getElementById('taper-res-alpha').innerText = `${alphaDeg.toFixed(2)}°`;
+        document.getElementById('taper-res-2alpha').innerText = `${(alphaDeg * 2).toFixed(2)}°`;
+        document.getElementById('taper-res-ratio').innerText = `1 : ${ratio.toFixed(1)}`;
+    }
+
+    function byttVektForm() {
+        const type = document.getElementById('w-type').value;
+        document.getElementById('w-inputs-plate').style.display = (type === 'plate') ? 'grid' : 'none';
+        document.getElementById('w-inputs-shaft').style.display = (type === 'shaft') ? 'grid' : 'none';
+        document.getElementById('w-inputs-pipe').style.display = (type === 'pipe') ? 'grid' : 'none';
+        beregnVekt();
+    }
+
+    function beregnVekt() {
+        const type = document.getElementById('w-type').value;
+        const density = parseFloat(document.getElementById('w-mat').value) || 7.85; // g/cm³
+        let volCm3 = 0;
+
+        if (type === 'plate') {
+            const l = parseFloat(document.getElementById('wp-l').value) || 0;
+            const b = parseFloat(document.getElementById('wp-b').value) || 0;
+            const t = parseFloat(document.getElementById('wp-t').value) || 0;
+            volCm3 = (l / 10) * (b / 10) * (t / 10);
+        } else if (type === 'shaft') {
+            const d = parseFloat(document.getElementById('ws-d').value) || 0;
+            const l = parseFloat(document.getElementById('ws-l').value) || 0;
+            const rCm = (d / 2) / 10;
+            const lCm = l / 10;
+            volCm3 = Math.PI * Math.pow(rCm, 2) * lCm;
+        } else if (type === 'pipe') {
+            const dout = parseFloat(document.getElementById('wpi-dout').value) || 0;
+            const wall = parseFloat(document.getElementById('wpi-wall').value) || 0;
+            const din = Math.max(0, dout - (wall * 2));
+            const l = parseFloat(document.getElementById('wpi-l').value) || 0;
+
+            const rOutCm = (dout / 2) / 10;
+            const rInCm = (din / 2) / 10;
+            const lCm = l / 10;
+
+            volCm3 = Math.PI * (Math.pow(rOutCm, 2) - Math.pow(rInCm, 2)) * lCm;
+        }
+
+        const kg = (volCm3 * density) / 1000;
+        document.getElementById('w-res-kg').innerText = `${kg.toFixed(2).replace('.', ',')} kg`;
+    }
+
+    // DATA FOR TILTREKKINGSMOMENT
+    const torqueData = {
+        M4: { "8.8": "2.9 Nm (1.5 kN)", "10.9": "4.1 Nm (2.2 kN)", "12.9": "4.9 Nm (2.6 kN)", "A4-80": "2.6 Nm (1.3 kN)" },
+        M5: { "8.8": "5.7 Nm (2.5 kN)", "10.9": "8.1 Nm (3.6 kN)", "12.9": "9.7 Nm (4.3 kN)", "A4-80": "5.1 Nm (2.2 kN)" },
+        M6: { "8.8": "9.8 Nm (3.6 kN)", "10.9": "14 Nm (5.1 kN)", "12.9": "16.5 Nm (6.1 kN)", "A4-80": "8.8 Nm (3.2 kN)" },
+        M8: { "8.8": "24 Nm (6.5 kN)", "10.9": "33 Nm (9.2 kN)", "12.9": "40 Nm (11.0 kN)", "A4-80": "21.4 Nm (5.8 kN)" },
+        M10: { "8.8": "47 Nm (10.4 kN)", "10.9": "67 Nm (14.8 kN)", "12.9": "79 Nm (17.6 kN)", "A4-80": "42 Nm (9.3 kN)" },
+        M12: { "8.8": "81 Nm (15.1 kN)", "10.9": "115 Nm (21.5 kN)", "12.9": "135 Nm (25.5 kN)", "A4-80": "73 Nm (13.5 kN)" },
+        M16: { "8.8": "197 Nm (28.2 kN)", "10.9": "277 Nm (40.0 kN)", "12.9": "333 Nm (48.0 kN)", "A4-80": "177 Nm (25.0 kN)" },
+        M20: { "8.8": "385 Nm (44.0 kN)", "10.9": "540 Nm (62.0 kN)", "12.9": "650 Nm (75.0 kN)", "A4-80": "346 Nm (39.0 kN)" },
+        M24: { "8.8": "665 Nm (63.0 kN)", "10.9": "935 Nm (89.0 kN)", "12.9": "1120 Nm (107 kN)", "A4-80": "598 Nm (56.0 kN)" },
+        M30: { "8.8": "1310 Nm (101 kN)", "10.9": "1840 Nm (142 kN)", "12.9": "2210 Nm (171 kN)", "A4-80": "1180 Nm (90.0 kN)" }
+    };
+
+    function beregnMoment() {
+        const size = document.getElementById('torq-size').value;
+        const cls = document.getElementById('torq-class').value;
+
+        const sizeObj = torqueData[size] || torqueData.M10;
+        const valStr = sizeObj[cls] || "47 Nm (10.4 kN)";
+
+        const parts = valStr.split(' (');
+        const nm = parts[0];
+        const kn = parts[1] ? parts[1].replace(')', '') : '';
+
+        document.getElementById('torq-res-nm').innerText = nm;
+        document.getElementById('torq-res-kn').innerText = kn;
+    }
+
+    function beregnPcd() {
+        const pcd = parseFloat(document.getElementById('pcd-dia').value) || 100;
+        const num = parseInt(document.getElementById('pcd-num').value) || 4;
+
+        const rad = (180 / Math.max(1, num)) * (Math.PI / 180);
+        const chord = pcd * Math.sin(rad);
+        const angle = 360 / Math.max(1, num);
+
+        document.getElementById('pcd-res-chord').innerText = `${chord.toFixed(2).replace('.', ',')} mm`;
+        document.getElementById('pcd-res-angle').innerText = `${angle.toFixed(1).replace('.', ',')}°`;
+    }
+
+    function beregnTrekant() {
+        let a = parseFloat(document.getElementById('tri-a').value);
+        let b = parseFloat(document.getElementById('tri-b').value);
+        let c = parseFloat(document.getElementById('tri-c').value);
+        let degA = parseFloat(document.getElementById('tri-deg').value);
+
+        let resC = 0, degResA = 0, degResB = 0;
+
+        if (!isNaN(a) && !isNaN(b)) {
+            resC = Math.sqrt(a * a + b * b);
+            degResA = Math.atan(a / b) * (180 / Math.PI);
+            degResB = 90 - degResA;
+        } else if (!isNaN(a) && !isNaN(c) && c > a) {
+            b = Math.sqrt(c * c - a * a);
+            resC = c;
+            degResA = Math.asin(a / c) * (180 / Math.PI);
+            degResB = 90 - degResA;
+        } else if (!isNaN(a) && !isNaN(degA) && degA > 0 && degA < 90) {
+            let radA = degA * (Math.PI / 180);
+            resC = a / Math.sin(radA);
+            b = a / Math.tan(radA);
+            degResA = degA;
+            degResB = 90 - degA;
+        } else {
+            document.getElementById('tri-res-c').innerText = "Venter på 2 verdier...";
+            document.getElementById('tri-res-angles').innerText = "Fyll inn enten a+b, a+c eller a+vinkel";
+            return;
+        }
+
+        document.getElementById('tri-res-c').innerText = `${resC.toFixed(2).replace('.', ',')} mm`;
+        document.getElementById('tri-res-angles').innerText = `A = ${degResA.toFixed(2)}° | B = ${degResB.toFixed(2)}°`;
+    }
+
+    function byttTommeFraksjon() {
+        const val = document.getElementById('conv-frac').value;
+        document.getElementById('conv-inch').value = val;
+        beregnEnheter();
+    }
+
+    function beregnEnheter() {
+        const inch = parseFloat(document.getElementById('conv-inch').value) || 0;
+        const psi = parseFloat(document.getElementById('conv-psi').value) || 0;
+        const lbs = parseFloat(document.getElementById('conv-lbs').value) || 0;
+
+        const mm = inch * 25.4;
+        const bar = psi * 0.0689476;
+        const mpa = bar / 10;
+        const kg = lbs * 0.453592;
+
+        document.getElementById('conv-res-mm').innerText = `${mm.toFixed(3).replace('.', ',')} mm`;
+        document.getElementById('conv-res-bar').innerText = `${bar.toFixed(1).replace('.', ',')} Bar (${mpa.toFixed(2).replace('.', ',')} MPa)`;
+        document.getElementById('conv-res-kg').innerText = `${kg.toFixed(2).replace('.', ',')} kg`;
+    }
+
+    function beregnBøy() {
+        const a = parseFloat(document.getElementById('bend-a').value) || 0;
+        const b = parseFloat(document.getElementById('bend-b').value) || 0;
+        const t = parseFloat(document.getElementById('bend-t').value) || 0;
+        const r = parseFloat(document.getElementById('bend-r').value) || 0;
+
+        const k = 0.33;
+        const bendAllowance = (Math.PI / 2) * (r + k * t);
+        const bendDeduction = 2 * (r + t) - bendAllowance;
+        const totalLen = Math.max(0, a + b - bendDeduction);
+
+        document.getElementById('bend-res-bd').innerText = `${bendDeduction.toFixed(2).replace('.', ',')} mm`;
+        document.getElementById('bend-res-len').innerText = `${totalLen.toFixed(2).replace('.', ',')} mm`;
+    }
+
+    function beregnPris() {
+        const mHours = parseFloat(document.getElementById('cost-mhours').value) || 0;
+        const rate = parseFloat(document.getElementById('cost-rate').value) || 0;
+        const mat = parseFloat(document.getElementById('cost-mat').value) || 0;
+        const margin = parseFloat(document.getElementById('cost-margin').value) || 0;
+
+        const baseCost = (mHours * rate) + mat;
+        const totalOffer = baseCost * (1 + (margin / 100));
+
+        document.getElementById('cost-res-base').innerText = `${baseCost.toFixed(2).replace('.', ',')} kr`;
+        document.getElementById('cost-res-offer').innerText = `${totalOffer.toFixed(2).replace('.', ',')} kr`;
+    }
+
+    // Initialiser
+    oppdaterMaterialeData();
+    oppdaterGjengeTabell();
+    beregnGjengeToleranse();
+    beregnKonus();
+    beregnVekt();
+    beregnMoment();
+    beregnPcd();
+    beregnBoredybde();
+    beregnIsoToleranse();
+    beregnTrekant();
+    beregnEnheter();
+    beregnBøy();
+    beregnPris();
+</script>
+
+</body>
+</html>

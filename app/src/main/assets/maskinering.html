@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Maskineringskalkulator - Sigurd Seland AS</title>
+
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+
+    <script>
+        const APP_BUILD_VER = "v8.1-CleanText";
+        if (localStorage.getItem('app_build_v') !== APP_BUILD_VER) {
+            localStorage.setItem('app_build_v', APP_BUILD_VER);
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.getRegistrations().then(regs => {
+                    for (let reg of regs) reg.unregister();
+                });
+            }
+            if ('caches' in window) {
+                caches.keys().then(names => {
+                    for (let name of names) caches.delete(name);
+                });
+            }
+            window.location.reload(true);
+        }
+    </script>
+
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0284c7">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Maskinering">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0284c7;
+            --primary-deep: #0369a1;
+            --primary-glow: rgba(2, 132, 199, 0.15);
+            --brass: #d97706;
+            --brass-soft: #fef3c7;
+            --card: #ffffff;
+            --bg: #f1f5f9;
+            --ink: #0f172a;
+            --muted: #64748b;
+            --line: #cbd5e1;
+            --shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.08);
+        }
+
+        body.dark-mode {
+            --primary: #38bdf8;
+            --primary-deep: #0284c7;
+            --primary-glow: rgba(56, 189, 248, 0.18);
+            --brass: #f59e0b;
+            --brass-soft: rgba(245, 158, 11, 0.12);
+            --card: #0f172a;
+            --bg: #070a11;
+            --ink: #f8fafc;
+            --muted: #94a3b8;
+            --line: #1e293b;
+            --shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.6);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--ink);
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        .main-layout {
+            max-width: 54rem;
+            margin: 0 auto;
+            padding: 1.5rem 1rem 5rem 1rem;
+        }
+        @media (min-width: 640px) {
+            .main-layout { padding: 2rem 1.5rem 4rem 1.5rem; }
+        }
+
+        header {
+            margin-bottom: 1.25rem;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 1rem;
+            border-bottom: 2px solid var(--line);
+            padding-bottom: 1.25rem;
+        }
+
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+
+        .field-class {
+            height: 2.875rem;
+            width: 100%;
+            border-radius: 0.625rem;
+            border: 1px solid var(--line);
+            background-color: var(--card);
+            padding: 0 0.875rem;
+            font-size: 1rem;
+            color: var(--ink);
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+        .field-class:focus { border-color: var(--primary); }
+
+        .grid-2 {
+            display: grid;
+            gap: 0.875rem;
+        }
+        @media (min-width: 640px) {
+            .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            border-radius: 0.625rem;
+            font-size: 0.875rem;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn-outline {
+            height: 2.75rem; border: 1px solid var(--line);
+            background: var(--card); color: var(--ink); padding: 0 1rem;
+        }
+
+        .line-row {
+            display: flex; align-items: baseline;
+            justify-content: space-between; gap: 0.75rem;
+            padding: 0.375rem 0;
+        }
+        .line-row.strong { font-weight: 700; }
+
+        .calc-card {
+            background: var(--card);
+            border-radius: 1.25rem;
+            border: 1px solid var(--line);
+            padding: 1.5rem;
+            margin-bottom: 1.25rem;
+            box-shadow: var(--shadow);
+            position: relative;
+        }
+
+        .result-box {
+            background: var(--primary-glow);
+            border-radius: 0.75rem;
+            border-left: 4px solid var(--primary);
+            padding: 1rem 1.25rem;
+            margin-top: 1rem;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.25rem 0.65rem;
+            border-radius: 9999px;
+            background: var(--primary-glow);
+            color: var(--primary);
+            border: 1px solid var(--line);
+        }
+
+        .app-footer {
+            margin-top: 3.5rem;
+            border-top: 1px solid var(--line);
+            padding-top: 1.5rem;
+            text-align: center;
+            font-size: 0.8125rem;
+            color: var(--muted);
+        }
+        .version-badge {
+            display: inline-block;
+            background: var(--primary-glow);
+            color: var(--primary);
+            padding: 0.25rem 0.65rem;
+            border-radius: 9999px;
+            font-weight: 700;
+            font-size: 0.75rem;
+            font-family: 'JetBrains Mono', monospace;
+            margin-left: 0.375rem;
+        }
+
+        @media print {
+            .no-print, form, .btn, .field-class, select, input, .app-footer { display: none !important; }
+            .main-layout { padding: 0 !important; max-width: 100% !important; }
+            .calc-card { border: none !important; box-shadow: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="main-layout">
+    <header>
+        <div>
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 4px;">
+                <span class="status-badge" id="net-status">🟢 Online</span>
+            </div>
+            <h1 style="font-size: 1.875rem; font-weight: 800; margin: 0; letter-spacing: -0.02em;" id="txt-title">Maskineringskalkulator</h1>
+        </div>
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <button type="button" class="btn btn-outline no-print" style="height: 2.75rem; padding: 0 0.75rem; font-size: 0.875rem;" onclick="toggleLanguage()" id="lang-toggle-btn">🇳🇴 NO</button>
+            <a href="index.html" class="btn btn-outline no-print" style="height: 2.75rem; padding: 0 0.875rem; font-size: 0.875rem;" id="txt-btn-home">🏠 Hovedmeny</a>
+            <button type="button" class="btn btn-outline no-print" style="height: 2.75rem; width: 2.75rem; padding: 0; border-radius: 50%; font-size: 1.15rem;" onclick="toggleTheme()" id="theme-toggle-btn">🌙</button>
+        </div>
+    </header>
+
+    <!-- VERKSTEDSKALKURATOR 1: REGNE OM TIL SIRKULÆR MATING (AKSLING / GJENGEFRESING) -->
+    <div class="calc-card" style="border-left: 5px solid var(--primary);">
+        <header style="margin-bottom: 1rem; border-bottom: 1px solid var(--line); padding-bottom: 0.5rem;">
+            <h2 style="font-size: 1.125rem; font-weight: 800; margin: 0; color: var(--primary-deep);" id="txt-sec1-title">🌀 Regne om til Sirkulær Mating (Aksling / Gjengefresing)</h2>
+            <p style="font-size: 0.8125rem; color: var(--muted); margin: 0.25rem 0 0 0;" id="txt-sec1-sub">Regn om bordmating til effektiv sirkulær mating for aksling/fresing og gjengefresing i Gibbs.</p>
+        </header>
+
+        <div class="grid-2">
+            <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                <span style="font-size: 0.8125rem; font-weight: 600;" id="lbl-vc">Skjærehastighet Vc (m/min)</span>
+                <input type="number" id="gf-vc" class="field-class" inputmode="decimal" value="350" oninput="beregnSirkulaerMating()">
+            </label>
+
+            <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                <span style="font-size: 0.8125rem; font-weight: 600;" id="lbl-fz">Mating pr. tann fz (mm)</span>
+                <input type="number" step="0.01" id="gf-fz" class="field-class" inputmode="decimal" value="0.18" oninput="beregnSirkulaerMating()">
+            </label>
+
+            <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                <span style="font-size: 0.8125rem; font-weight: 600;" id="lbl-z">Antall skjær / tenner (z)</span>
+                <input type="number" id="gf-z" class="field-class" inputmode="numeric" value="6" oninput="beregnSirkulaerMating()">
+            </label>
+
+            <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                <span style="font-size: 0.8125rem; font-weight: 600;" id="lbl-dfres">Diameter på fres (mm)</span>
+                <input type="number" id="gf-dfres" class="field-class" inputmode="decimal" value="84" oninput="beregnSirkulaerMating()">
+            </label>
+
+            <label style="display: flex; flex-direction: column; gap: 0.25rem; grid-column: span 2;">
+                <span style="font-size: 0.8125rem; font-weight: 600;" id="lbl-dhull">Diameter på hull / aksling (mm)</span>
+                <input type="number" id="gf-dhull" class="field-class" inputmode="decimal" value="410" oninput="beregnSirkulaerMating()">
+            </label>
+        </div>
+
+        <div class="result-box">
+            <div class="line-row strong"><span style="color: var(--ink);" id="res-lbl-rpm">Spindelhastighet RPM (n):</span><span id="gf-res-rpm" class="font-mono" style="font-size: 1.125rem; color: var(--primary-deep);">0 RPM</span></div>
+            <div class="line-row strong" style="margin-top: 0.375rem;"><span style="color: var(--primary-deep); font-size: 1.05rem;" id="res-lbl-mating">Mating i Gibbs / Sirkulær mating (Vf):</span><span id="gf-res-mating" class="font-mono" style="font-size: 1.25rem; color: var(--primary-deep);">0 mm/min</span></div>
+        </div>
+    </div>
+
+    <!-- VERKSTEDSKALKURATOR 2: INNVENDIGE & UTVENDIGE GJENGER -->
+    <div class="calc-card" style="border-left: 5px solid var(--brass);">
+        <header style="margin-bottom: 1rem; border-bottom: 1px solid var(--line); padding-bottom: 0.5rem;">
+            <h2 style="font-size: 1.125rem; font-weight: 800; margin: 0; color: var(--brass);" id="txt-sec2-title">🔩 Innvendige & Utvendige Gjenger</h2>
+            <p style="font-size: 0.8125rem; color: var(--muted); margin: 0.25rem 0 0 0;" id="txt-sec2-sub">Beregning av lille diameter / dia du legger inn i Gibbs eller dreiebenk.</p>
+        </header>
+
+        <div class="grid-2" style="margin-bottom: 1.25rem;">
+            <h3 style="grid-column: span 2; font-size: 0.9375rem; font-weight: 700; margin: 0; color: var(--brass);" id="txt-in-title">1. Innvendige gjenger (Mutter)</h3>
+            <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                <span style="font-size: 0.8125rem; font-weight: 600;" class="lbl-storedia">Store dia (mm)</span>
+                <input type="number" id="gjin-storedia" class="field-class" inputmode="decimal" value="180" oninput="beregnGjengerInnvendig()">
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                <span style="font-size: 0.8125rem; font-weight: 600;" class="lbl-stigning">Stigning (mm)</span>
+                <input type="number" id="gjin-stigning" class="field-class" inputmode="decimal" value="3" oninput="beregnGjengerInnvendig()">
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 0.25rem; grid-column: span 2;">
+                <span style="font-size: 0.8125rem; font-weight: 600;" class="lbl-justering">Justeringfaktor (standard 0.125)</span>
+                <input type="number" step="0.001" id="gjin-justering" class="field-class" inputmode="decimal" value="0.125" oninput="beregnGjengerInnvendig()">
+            </label>
+            <div class="result-box" style="grid-column: span 2; background: var(--brass-soft); border-left-color: var(--brass);">
+                <div class="line-row strong"><span style="color: var(--brass);" class="lbl-lilledia">Lille dia / Gibbs dia:</span><span id="gjin-res-lilledia" class="font-mono" style="font-size: 1.125rem; color: var(--brass);">0,00 mm</span></div>
+            </div>
+        </div>
+
+        <div class="grid-2" style="border-top: 1px dashed var(--line); padding-top: 1rem;">
+            <h3 style="grid-column: span 2; font-size: 0.9375rem; font-weight: 700; margin: 0; color: var(--primary-deep);" id="txt-ut-title">2. Utvendige gjenger (Skrue)</h3>
+            <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                <span style="font-size: 0.8125rem; font-weight: 600;" class="lbl-storedia">Store dia (mm)</span>
+                <input type="number" id="gjut-storedia" class="field-class" inputmode="decimal" value="30" oninput="beregnGjengerUtvendig()">
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                <span style="font-size: 0.8125rem; font-weight: 600;" class="lbl-stigning">Stigning (mm)</span>
+                <input type="number" id="gjut-stigning" class="field-class" inputmode="decimal" value="2" oninput="beregnGjengerUtvendig()">
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 0.25rem; grid-column: span 2;">
+                <span style="font-size: 0.8125rem; font-weight: 600;" class="lbl-justering-ut">Justeringfaktor (standard 0.25)</span>
+                <input type="number" step="0.001" id="gjut-justering" class="field-class" inputmode="decimal" value="0.25" oninput="beregnGjengerUtvendig()">
+            </label>
+            <div class="result-box" style="grid-column: span 2;">
+                <div class="line-row strong"><span style="color: var(--primary-deep);" class="lbl-lilledia">Lille dia / Gibbs dia:</span><span id="gjut-res-lilledia" class="font-mono" style="font-size: 1.125rem; color: var(--primary-deep);">0,00 mm</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- VERKSTEDSKALKURATOR 3: SKJÆREDATA & FORMEL-KALKURATOR -->
+    <div class="calc-card" style="border-left: 5px solid var(--primary);">
+        <header style="margin-bottom: 1rem; border-bottom: 1px solid var(--line); padding-bottom: 0.5rem;">
+            <h2 style="font-size: 1.125rem; font-weight: 800; margin: 0; color: var(--primary-deep);" id="txt-sec3-title">🏎️ Hurtigkalkulator Skjæredata (Vc / RPM / Mating)</h2>
+            <p style="font-size: 0.8125rem; color: var(--muted); margin: 0.25rem 0 0 0;" id="txt-sec3-sub">Regn ut Vc ut fra RPM, RPM ut fra Vc, eller bordmating ut fra fz.</p>
+        </header>
+
+        <div class="grid-2">
+            <div style="background: var(--bg); padding: 0.875rem; border-radius: 0.75rem; border: 1px solid var(--line);">
+                <h4 style="margin: 0 0 0.5rem 0; font-size: 0.875rem; font-weight: 700;" id="txt-calc1">1. Finne Vc ut fra RPM</h4>
+                <label style="display: flex; flex-direction: column; gap: 0.25rem; margin-bottom: 0.375rem;">
+                    <span style="font-size: 0.75rem; font-weight: 600;" class="lbl-dia">Diameter (mm)</span>
+                    <input type="number" id="fvc-d" class="field-class" style="height: 2.375rem;" inputmode="decimal" value="44" oninput="beregnFinnVc()">
+                </label>
+                <label style="display: flex; flex-direction: column; gap: 0.25rem; margin-bottom: 0.5rem;">
+                    <span style="font-size: 0.75rem; font-weight: 600;">RPM (n)</span>
+                    <input type="number" id="fvc-rpm" class="field-class" style="height: 2.375rem;" inputmode="numeric" value="2533" oninput="beregnFinnVc()">
+                </label>
+                <div class="line-row strong"><span style="font-size: 0.8125rem;">Vc:</span><span id="res-fvc" class="font-mono" style="font-weight: 700; color: var(--primary);">0 m/min</span></div>
+            </div>
+
+            <div style="background: var(--bg); padding: 0.875rem; border-radius: 0.75rem; border: 1px solid var(--line);">
+                <h4 style="margin: 0 0 0.5rem 0; font-size: 0.875rem; font-weight: 700;" id="txt-calc2">2. Finne RPM ut fra Vc</h4>
+                <label style="display: flex; flex-direction: column; gap: 0.25rem; margin-bottom: 0.375rem;">
+                    <span style="font-size: 0.75rem; font-weight: 600;" class="lbl-dia">Diameter (mm)</span>
+                    <input type="number" id="frpm-d" class="field-class" style="height: 2.375rem;" inputmode="decimal" value="27.7" oninput="beregnFinnRpm()">
+                </label>
+                <label style="display: flex; flex-direction: column; gap: 0.25rem; margin-bottom: 0.5rem;">
+                    <span style="font-size: 0.75rem; font-weight: 600;">Vc (m/min)</span>
+                    <input type="number" id="frpm-vc" class="field-class" style="height: 2.375rem;" inputmode="decimal" value="350" oninput="beregnFinnRpm()">
+                </label>
+                <div class="line-row strong"><span style="font-size: 0.8125rem;">RPM (n):</span><span id="res-frpm" class="font-mono" style="font-weight: 700; color: var(--primary);">0 RPM</span></div>
+            </div>
+
+            <div style="background: var(--bg); padding: 0.875rem; border-radius: 0.75rem; border: 1px solid var(--line); grid-column: span 2;">
+                <h4 style="margin: 0 0 0.5rem 0; font-size: 0.875rem; font-weight: 700;" id="txt-calc3">3. Finne bordmating mm/min (Vf) ut fra fz</h4>
+                <div class="grid-2">
+                    <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                        <span style="font-size: 0.75rem; font-weight: 600;" id="lbl-skjaerr">Antall skjær (z)</span>
+                        <input type="number" id="fmm-z" class="field-class" style="height: 2.375rem;" inputmode="numeric" value="6" oninput="beregnFinnMmMin()">
+                    </label>
+                    <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                        <span style="font-size: 0.75rem; font-weight: 600;">RPM (n)</span>
+                        <input type="number" id="fmm-rpm" class="field-class" style="height: 2.375rem;" inputmode="numeric" value="4024" oninput="beregnFinnMmMin()">
+                    </label>
+                    <label style="display: flex; flex-direction: column; gap: 0.25rem; grid-column: span 2;">
+                        <span style="font-size: 0.75rem; font-weight: 600;" id="lbl-fz-sub">Mating pr tann fz (mm)</span>
+                        <input type="number" step="0.001" id="fmm-fz" class="field-class" style="height: 2.375rem;" inputmode="decimal" value="0.05" oninput="beregnFinnMmMin()">
+                    </label>
+                </div>
+                <div class="line-row strong" style="margin-top: 0.5rem;"><span style="font-size: 0.875rem; color: var(--primary-deep);" id="lbl-vf-res">Bordmating mm/min (Vf):</span><span id="res-fmm" class="font-mono" style="font-size: 1.125rem; font-weight: 700; color: var(--primary-deep);">0 mm/min</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- VERKSTEDSKALKURATOR 4: MM/MIN TIL GRADER/MIN (C-AKSE / 4. AKSE) -->
+    <div class="calc-card" style="border-left: 5px solid var(--brass);">
+        <header style="margin-bottom: 1rem; border-bottom: 1px solid var(--line); padding-bottom: 0.5rem;">
+            <h2 style="font-size: 1.125rem; font-weight: 800; margin: 0; color: var(--brass);" id="txt-sec4-title">🔄 MM/MIN til Grader/MIN (C-Akse / 4. Akse)</h2>
+            <p style="font-size: 0.8125rem; color: var(--muted); margin: 0.25rem 0 0 0;" id="txt-sec4-sub">Omregning fra lineær mating mm/min til roterende grader/min basert på emnediameter.</p>
+        </header>
+
+        <div class="grid-2">
+            <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                <span style="font-size: 0.8125rem; font-weight: 600;" id="lbl-feed-mmmin">Mating mm/min (Vf)</span>
+                <input type="number" id="deg-mmmin" class="field-class" inputmode="decimal" value="1400" oninput="beregnGraderPrMin()">
+            </label>
+
+            <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                <span style="font-size: 0.8125rem; font-weight: 600;" id="lbl-emnediameter">Emnediameter DIA (mm)</span>
+                <input type="number" step="0.01" id="deg-dia" class="field-class" inputmode="decimal" value="3.14" oninput="beregnGraderPrMin()">
+            </label>
+        </div>
+
+        <div class="result-box" style="background: var(--brass-soft); border-left-color: var(--brass);">
+            <div class="line-row strong"><span style="color: var(--brass);" id="lbl-onedeg">1 Grad tilsvarer:</span><span id="deg-res-onegrad" class="font-mono" style="font-size: 1rem; color: var(--brass);">0 mm</span></div>
+            <div class="line-row strong" style="margin-top: 0.375rem;"><span style="color: var(--brass); font-size: 1.05rem;" id="lbl-degmin">Mating i Grader/MIN (C-akse):</span><span id="deg-res-gradmin" class="font-mono" style="font-size: 1.25rem; color: var(--brass);">0 °/min</span></div>
+        </div>
+    </div>
+
+    <!-- FREMHEVET SYNLIG BUNNTEKST MED VERSJON -->
+    <footer class="app-footer">
+        <p style="margin: 0; font-weight: 500;">
+            <span class="version-badge">Versjon 8.1</span>
+        </p>
+    </footer>
+</div>
+
+<script>
+    const i18n = {
+        no: {
+            title: "Maskineringskalkulator",
+            btnHome: "🏠 Hovedmeny",
+            sec1Title: "🌀 Regne om til Sirkulær Mating (Aksling / Gjengefresing)",
+            sec1Sub: "Regn om bordmating til effektiv sirkulær mating for aksling/fresing og gjengefresing i Gibbs.",
+            vc: "Skjærehastighet Vc (m/min)",
+            fz: "Mating pr. tann fz (mm)",
+            z: "Antall skjær / tenner (z)",
+            dfres: "Diameter på fres (mm)",
+            dhull: "Diameter på hull / aksling (mm)",
+            rpmRes: "Spindelhastighet RPM (n):",
+            matingRes: "Mating i Gibbs / Sirkulær mating (Vf):",
+            sec2Title: "🔩 Innvendige & Utvendige Gjenger",
+            sec2Sub: "Beregning av lille diameter / dia du legger inn i Gibbs eller dreiebenk.",
+            inTitle: "1. Innvendige gjenger (Mutter)",
+            utTitle: "2. Utvendige gjenger (Skrue)",
+            storedia: "Store dia (mm)",
+            stigning: "Stigning (mm)",
+            justering: "Justeringfaktor (standard 0.125)",
+            justeringUt: "Justeringfaktor (standard 0.25)",
+            lilledia: "Lille dia / Gibbs dia:",
+            sec3Title: "🏎️ Hurtigkalkulator Skjæredata (Vc / RPM / Mating)",
+            sec3Sub: "Regn ut Vc ut fra RPM, RPM ut fra Vc, eller bordmating ut fra fz.",
+            calc1: "1. Finne Vc ut fra RPM",
+            calc2: "2. Finne RPM ut fra Vc",
+            calc3: "3. Finne bordmating mm/min (Vf) ut fra fz",
+            dia: "Diameter (mm)",
+            skjaer: "Antall skjær (z)",
+            fzSub: "Mating pr tann fz (mm)",
+            vfRes: "Bordmating mm/min (Vf):",
+            sec4Title: "🔄 MM/MIN til Grader/MIN (C-Akse / 4. Akse)",
+            sec4Sub: "Omregning fra lineær mating mm/min til roterende grader/min basert på emnediameter.",
+            feedMmmin: "Mating mm/min (Vf)",
+            emnediameter: "Emnediameter DIA (mm)",
+            oneDeg: "1 Grad tilsvarer:",
+            degMin: "Mating i Grader/MIN (C-akse):"
+        },
+        en: {
+            title: "Machining Calculator",
+            btnHome: "🏠 Main Menu",
+            sec1Title: "🌀 Circular Feed Conversion (Shaft / Thread Milling)",
+            sec1Sub: "Convert linear table feed to effective circular feed for shafts and thread milling in Gibbs.",
+            vc: "Cutting Speed Vc (m/min)",
+            fz: "Feed per tooth fz (mm)",
+            z: "Number of teeth / flutes (z)",
+            dfres: "Cutter Diameter (mm)",
+            dhull: "Hole / Shaft Diameter (mm)",
+            rpmRes: "Spindle Speed RPM (n):",
+            matingRes: "Gibbs Feed / Circular Feed (Vf):",
+            sec2Title: "🔩 Internal & External Threads",
+            sec2Sub: "Calculate minor diameter / diameter for Gibbs or lathe.",
+            inTitle: "1. Internal Threads (Nut)",
+            utTitle: "2. External Threads (Screw)",
+            storedia: "Major Diameter (mm)",
+            stigning: "Pitch (mm)",
+            justering: "Adjustment factor (default 0.125)",
+            justeringUt: "Adjustment factor (default 0.25)",
+            lilledia: "Minor Dia / Gibbs Dia:",
+            sec3Title: "🏎️ Quick Cutting Data Calculator (Vc / RPM / Feed)",
+            sec3Sub: "Calculate Vc from RPM, RPM from Vc, or table feed from fz.",
+            calc1: "1. Find Vc from RPM",
+            calc2: "2. Find RPM from Vc",
+            calc3: "3. Find table feed mm/min (Vf) from fz",
+            dia: "Diameter (mm)",
+            skjaer: "Number of flutes (z)",
+            fzSub: "Feed per tooth fz (mm)",
+            vfRes: "Table Feed mm/min (Vf):",
+            sec4Title: "🔄 MM/MIN to Degrees/MIN (C-Axis / 4th Axis)",
+            sec4Sub: "Convert linear feed mm/min to rotary degrees/min based on workpiece diameter.",
+            feedMmmin: "Feed mm/min (Vf)",
+            emnediameter: "Workpiece Diameter DIA (mm)",
+            oneDeg: "1 Degree equals:",
+            degMin: "Rotary Feed Degrees/MIN (C-axis):"
+        }
+    };
+
+    function updateLanguageUI(lang) {
+        const t = i18n[lang] || i18n.no;
+        document.getElementById('txt-title').innerText = t.title;
+        document.getElementById('txt-btn-home').innerText = t.btnHome;
+        document.getElementById('txt-sec1-title').innerText = t.sec1Title;
+        document.getElementById('txt-sec1-sub').innerText = t.sec1Sub;
+        document.getElementById('lbl-vc').innerText = t.vc;
+        document.getElementById('lbl-fz').innerText = t.fz;
+        document.getElementById('lbl-z').innerText = t.z;
+        document.getElementById('lbl-dfres').innerText = t.dfres;
+        document.getElementById('lbl-dhull').innerText = t.dhull;
+        document.getElementById('res-lbl-rpm').innerText = t.rpmRes;
+        document.getElementById('res-lbl-mating').innerText = t.matingRes;
+        document.getElementById('txt-sec2-title').innerText = t.sec2Title;
+        document.getElementById('txt-sec2-sub').innerText = t.sec2Sub;
+        document.getElementById('txt-in-title').innerText = t.inTitle;
+        document.getElementById('txt-ut-title').innerText = t.utTitle;
+        document.querySelectorAll('.lbl-storedia').forEach(el => el.innerText = t.storedia);
+        document.querySelectorAll('.lbl-stigning').forEach(el => el.innerText = t.stigning);
+        document.querySelectorAll('.lbl-justering').forEach(el => el.innerText = t.justering);
+        document.querySelectorAll('.lbl-justering-ut').forEach(el => el.innerText = t.justeringUt);
+        document.querySelectorAll('.lbl-lilledia').forEach(el => el.innerText = t.lilledia);
+        document.getElementById('txt-sec3-title').innerText = t.sec3Title;
+        document.getElementById('txt-sec3-sub').innerText = t.sec3Sub;
+        document.getElementById('txt-calc1').innerText = t.calc1;
+        document.getElementById('txt-calc2').innerText = t.calc2;
+        document.getElementById('txt-calc3').innerText = t.calc3;
+        document.querySelectorAll('.lbl-dia').forEach(el => el.innerText = t.dia);
+        document.getElementById('lbl-skjaerr').innerText = t.skjaer;
+        document.getElementById('lbl-fz-sub').innerText = t.fzSub;
+        document.getElementById('lbl-vf-res').innerText = t.vfRes;
+        document.getElementById('txt-sec4-title').innerText = t.sec4Title;
+        document.getElementById('txt-sec4-sub').innerText = t.sec4Sub;
+        document.getElementById('lbl-feed-mmmin').innerText = t.feedMmmin;
+        document.getElementById('lbl-emnediameter').innerText = t.emnediameter;
+        document.getElementById('lbl-onedeg').innerText = t.oneDeg;
+        document.getElementById('lbl-degmin').innerText = t.degMin;
+        document.getElementById('lang-toggle-btn').innerText = (lang === 'en') ? '🇬🇧 EN' : '🇳🇴 NO';
+    }
+
+    function toggleLanguage() {
+        let cur = localStorage.getItem('seland_lang') || 'no';
+        let newLang = (cur === 'no') ? 'en' : 'no';
+        localStorage.setItem('seland_lang', newLang);
+        updateLanguageUI(newLang);
+    }
+
+    function updateOnlineStatus() {
+        const badge = document.getElementById('net-status');
+        if (navigator.onLine) {
+            badge.innerText = "🟢 Online";
+            badge.style.background = "var(--primary-glow)";
+            badge.style.color = "var(--primary)";
+        } else {
+            badge.innerText = "⚪ Offline";
+            badge.style.background = "rgba(100, 116, 139, 0.15)";
+            badge.style.color = "var(--muted)";
+        }
+    }
+
+    window.addEventListener('online', updateOnlineStatus);
+    window.addEventListener('offline', updateOnlineStatus);
+
+    window.addEventListener('load', function() {
+        updateOnlineStatus();
+        const curLang = localStorage.getItem('seland_lang') || 'no';
+        updateLanguageUI(curLang);
+    });
+
+    function toggleTheme() {
+        const isDark = document.body.classList.contains('dark-mode');
+        if (isDark) {
+            document.body.classList.remove('dark-mode');
+            localStorage.setItem('lonn_theme', 'light');
+            document.getElementById('theme-toggle-btn').innerText = '☀️';
+        } else {
+            document.body.classList.add('dark-mode');
+            localStorage.setItem('lonn_theme', 'dark');
+            document.getElementById('theme-toggle-btn').innerText = '🌙';
+        }
+    }
+
+    if (localStorage.getItem('lonn_theme') === 'dark') {
+        document.body.classList.add('dark-mode');
+        document.getElementById('theme-toggle-btn').innerText = '🌙';
+    }
+
+    function beregnSirkulaerMating() {
+        const vc = parseFloat(document.getElementById('gf-vc').value) || 0;
+        const fz = parseFloat(document.getElementById('gf-fz').value) || 0;
+        const z = parseFloat(document.getElementById('gf-z').value) || 0;
+        const dFres = parseFloat(document.getElementById('gf-dfres').value) || 1;
+        const dHull = parseFloat(document.getElementById('gf-dhull').value) || 1;
+
+        const rpm = (vc * 1000) / (Math.PI * dFres);
+        const mating = ((dHull - dFres) / dHull) * (rpm * z * fz);
+
+        document.getElementById('gf-res-rpm').innerText = Math.round(rpm) + " RPM";
+        document.getElementById('gf-res-mating').innerText = Math.round(mating) + " mm/min";
+    }
+
+    function beregnGjengerInnvendig() {
+        const storeDia = parseFloat(document.getElementById('gjin-storedia').value) || 0;
+        const stigning = parseFloat(document.getElementById('gjin-stigning').value) || 0;
+        const justering = parseFloat(document.getElementById('gjin-justering').value) || 0;
+
+        const lilleDia = (stigning * justering) + storeDia;
+        document.getElementById('gjin-res-lilledia').innerText = lilleDia.toFixed(3).replace('.', ',') + " mm";
+    }
+
+    function beregnGjengerUtvendig() {
+        const storeDia = parseFloat(document.getElementById('gjut-storedia').value) || 0;
+        const stigning = parseFloat(document.getElementById('gjut-stigning').value) || 0;
+        const justering = parseFloat(document.getElementById('gjut-justering').value) || 0;
+
+        const lilleDia = storeDia - (stigning * justering);
+        document.getElementById('gjut-res-lilledia').innerText = lilleDia.toFixed(3).replace('.', ',') + " mm";
+    }
+
+    function beregnFinnVc() {
+        const d = parseFloat(document.getElementById('fvc-d').value) || 0;
+        const rpm = parseFloat(document.getElementById('fvc-rpm').value) || 0;
+
+        const vc = (Math.PI * d * rpm) / 1000;
+        document.getElementById('res-fvc').innerText = Math.round(vc) + " m/min";
+    }
+
+    function beregnFinnRpm() {
+        const d = parseFloat(document.getElementById('frpm-d').value) || 0;
+        const vc = parseFloat(document.getElementById('frpm-vc').value) || 0;
+
+        const rpm = (vc * 1000) / (Math.PI * d);
+        document.getElementById('res-frpm').innerText = Math.round(rpm) + " RPM";
+    }
+
+    function beregnFinnMmMin() {
+        const z = parseFloat(document.getElementById('fmm-z').value) || 0;
+        const rpm = parseFloat(document.getElementById('fmm-rpm').value) || 0;
+        const fz = parseFloat(document.getElementById('fmm-fz').value) || 0;
+
+        const vf = rpm * fz * z;
+        document.getElementById('res-fmm').innerText = Math.round(vf) + " mm/min";
+    }
+
+    function beregnGraderPrMin() {
+        const mmmin = parseFloat(document.getElementById('deg-mmmin').value) || 0;
+        const dia = parseFloat(document.getElementById('deg-dia').value) || 0;
+
+        const oneGrad = (dia * Math.PI) / 360;
+        const gradMin = oneGrad > 0 ? (mmmin / oneGrad) : 0;
+
+        document.getElementById('deg-res-onegrad').innerText = oneGrad.toFixed(4).replace('.', ',') + " mm/°";
+        document.getElementById('deg-res-gradmin').innerText = gradMin.toFixed(1).replace('.', ',') + " °/min";
+    }
+
+    // Initialiser
+    beregnSirkulaerMating();
+    beregnGjengerInnvendig();
+    beregnGjengerUtvendig();
+    beregnFinnVc();
+    beregnFinnRpm();
+    beregnFinnMmMin();
+    beregnGraderPrMin();
+</script>
+
+</body>
+</html>
