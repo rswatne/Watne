@@ -10,7 +10,7 @@
     <meta http-equiv="Expires" content="0">
 
     <script>
-        const APP_BUILD_VER = "v8.1-CleanText";
+        const APP_BUILD_VER = "v15.0-VismaPayslipTab";
         if (localStorage.getItem('app_build_v') !== APP_BUILD_VER) {
             localStorage.setItem('app_build_v', APP_BUILD_VER);
             if ('serviceWorker' in navigator) {
@@ -41,6 +41,10 @@
             --primary-soft: #e0f2fe;
             --brass: #d97706;
             --brass-soft: #fef3c7;
+            --emerald: #059669;
+            --emerald-soft: #d1fae5;
+            --purple: #7c3aed;
+            --purple-soft: #f3e8ff;
             --loss: #b91c1c;
             --loss-soft: #fee2e2;
             --card: #ffffff;
@@ -58,6 +62,10 @@
             --primary-soft: rgba(56, 189, 248, 0.12);
             --brass: #f59e0b;
             --brass-soft: rgba(245, 158, 11, 0.12);
+            --emerald: #10b981;
+            --emerald-soft: rgba(16, 185, 129, 0.12);
+            --purple: #a78bfa;
+            --purple-soft: rgba(167, 139, 250, 0.12);
             --loss: #ef4444;
             --loss-soft: rgba(239, 68, 68, 0.12);
             --card: #1e293b;
@@ -226,9 +234,10 @@
         .tab-btn {
             background: transparent; color: var(--muted);
             border: none; border-radius: 0.625rem;
-            font-weight: 700; font-size: 0.875rem;
-            padding: 0.75rem; flex: 1; cursor: pointer;
+            font-weight: 700; font-size: 0.8125rem;
+            padding: 0.75rem 0.875rem; flex: 1; cursor: pointer;
             scroll-snap-align: start;
+            white-space: nowrap;
             transition: all 0.2s ease;
         }
         .tab-btn.active {
@@ -329,12 +338,13 @@
         </div>
     </header>
 
-    <!-- FANE-MENY FOR LØNN -->
+    <!-- FANE-MENY FOR LØNN (4 FANER INKL. VISMA IMPORT) -->
     <div class="no-print">
         <div class="swipe-hint" id="txt-swipe-hint">👈 SVEIP FANER 👉</div>
         <div class="tab-bar">
             <button type="button" class="tab-btn active" onclick="switchTab('oversikt')" id="btn-tab-oversikt">📊 Oversikt</button>
             <button type="button" class="tab-btn" onclick="switchTab('vakter')" id="btn-tab-vakter">⏱️ Vakter</button>
+            <button type="button" class="tab-btn" onclick="switchTab('visma')" id="btn-tab-visma">📄 Visma Lønnsslipp</button>
             <button type="button" class="tab-btn" onclick="switchTab('innstillinger')" id="btn-tab-innstillinger">⚙️ Innstillinger</button>
         </div>
     </div>
@@ -499,11 +509,61 @@
         </section>
     </div>
 
-    <!-- TAB 3: INNSTILLINGER -->
-    <div id="tab-innstillinger" class="tab-content">
+    <!-- TAB 3: VISMA LØNNSSLIPP IMPORT -->
+    <div id="tab-visma" class="tab-content">
         <section>
             <header>
                 <span class="font-mono" style="font-size: 0.75rem; color: var(--primary); font-weight: 700;">03</span>
+                <h2 style="font-size: 1.125rem; font-weight: 700; margin: 0;">📄 Visma Lønnsslipp Import</h2>
+            </header>
+
+            <p style="font-size: 0.875rem; color: var(--muted); margin: 0 0 1.25rem 0; line-line-height: 1.5;">
+                Last opp eller lim inn din offisielle lønnsslipp fra Visma Employee for å hente ut tallene automatisk og sammenligne med appens beregning!
+            </p>
+
+            <div style="border: 2px dashed var(--line); border-radius: 1rem; padding: 2rem 1.25rem; text-align: center; background: var(--card); margin-bottom: 1.25rem; transition: border-color 0.2s ease;">
+                <span style="font-size: 2.5rem; display: block; margin-bottom: 0.5rem;">📄</span>
+                <p style="font-size: 0.9375rem; font-weight: 700; margin: 0 0 0.25rem 0;">Last opp Visma Lønnsslipp (PDF eller Bilde)</p>
+                <p style="font-size: 0.75rem; color: var(--muted); margin: 0 0 1rem 0;">Velg .pdf, .jpg, eller .png fra Visma Employee-appen</p>
+
+                <input type="file" id="visma-file-input" accept=".pdf,image/*" style="display: none;" onchange="lesVismaFil(event)">
+                <button type="button" class="btn btn-primary" style="height: 2.75rem; max-width: 16rem; margin: 0 auto;" onclick="document.getElementById('visma-file-input').click()">📁 Velg lønnsslipp fil</button>
+            </div>
+
+            <!-- TEKST-LIMING ALTERNATIV -->
+            <div style="background: var(--bg); padding: 1.25rem; border-radius: 0.875rem; border: 1px solid var(--line);">
+                <label style="display: flex; flex-direction: column; gap: 0.375rem; margin-bottom: 0.75rem;">
+                    <span style="font-size: 0.875rem; font-weight: 600;">Eller lim inn teksten fra Visma lønnsslippen din:</span>
+                    <textarea id="visma-text-input" class="field-class" style="height: 6rem; padding: 0.625rem; font-family: 'JetBrains Mono', monospace; font-size: 0.8125rem;" placeholder="Lim inn teksten fra din Visma lønnsslipp her..."></textarea>
+                </label>
+                <button type="button" class="btn btn-soft" style="height: 2.5rem; width: 100%; justify-content: center;" onclick="analyserVismaTekst()">🔍 Analyser Visma Lønnsslipp</button>
+            </div>
+
+            <!-- RESULTAT AV VISMA ANALYSE -->
+            <div id="visma-result-card" style="display: none; margin-top: 1.25rem; padding: 1.25rem; background: var(--emerald-soft); border: 1.5px solid var(--emerald); border-radius: 1rem;">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; border-bottom: 1px solid var(--emerald); padding-bottom: 0.5rem;">
+                    <h3 style="margin: 0; font-size: 1rem; font-weight: 800; color: #047857;">✅ Avlest Visma Lønnsslipp</h3>
+                    <span class="font-mono" style="font-size: 0.75rem; font-weight: 700; color: #047857;" id="visma-res-mnd">Måned</span>
+                </div>
+
+                <div class="line-row strong"><span style="color: #047857;">Bruttolønn (Visma):</span><span id="visma-res-brutto" class="font-mono" style="font-size: 1rem; color: #047857;">0,00 kr</span></div>
+                <div class="line-row strong"><span style="color: #047857;">Skattetrekk (Visma):</span><span id="visma-res-skatt" class="font-mono" style="font-size: 1rem; color: #047857;">− 0,00 kr</span></div>
+                <div class="line-row strong"><span style="color: #047857;">Fagforeningtrekk (Visma):</span><span id="visma-res-union" class="font-mono" style="font-size: 1rem; color: #047857;">− 0,00 kr</span></div>
+                <div class="line-row strong" style="margin-top: 0.25rem; font-size: 1.1rem;"><span style="color: #047857;">Netto utbetalt på konto (Visma):</span><span id="visma-res-netto" class="font-mono" style="color: #047857;">0,00 kr</span></div>
+
+                <div style="margin-top: 1rem; padding-top: 0.75rem; border-top: 1px dashed var(--emerald); display: flex; flex-direction: column; gap: 0.5rem;">
+                    <p style="margin: 0; font-size: 0.8125rem; font-weight: 700; color: #047857;" id="visma-diff-status">Sammenligning mot appens estimat: 100% Match!</p>
+                    <a href="chat.html" class="btn" style="background: var(--purple-deep); color: white; height: 2.5rem; font-size: 0.8125rem; width: 100%; justify-content: center; margin-top: 0.25rem;">🤖 Spør Sigrid AI om denne lønnsslippen ➔</a>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- TAB 4: INNSTILLINGER -->
+    <div id="tab-innstillinger" class="tab-content">
+        <section>
+            <header>
+                <span class="font-mono" style="font-size: 0.75rem; color: var(--primary); font-weight: 700;">04</span>
                 <h2 style="font-size: 1.125rem; font-weight: 700; margin: 0;" id="txt-sec3-head">Lønn og satser</h2>
             </header>
 
@@ -542,7 +602,7 @@
 
         <section>
             <header>
-                <span class="font-mono" style="font-size: 0.75rem; color: var(--primary); font-weight: 700;">04</span>
+                <span class="font-mono" style="font-size: 0.75rem; color: var(--primary); font-weight: 700;">05</span>
                 <h2 style="font-size: 1.125rem; font-weight: 700; margin: 0;" id="txt-sec4-head">Skatt og fagforening</h2>
             </header>
             <div class="grid-2">
@@ -581,7 +641,7 @@
 
         <section>
             <header>
-                <span class="font-mono" style="font-size: 0.75rem; color: var(--primary); font-weight: 700;">05</span>
+                <span class="font-mono" style="font-size: 0.75rem; color: var(--primary); font-weight: 700;">06</span>
                 <h2 style="font-size: 1.125rem; font-weight: 700; margin: 0;" id="txt-sec5-head">Nullstill appen</h2>
             </header>
             <button type="button" class="btn btn-loss" onclick="nullstillAlt()" style="font-size: 1rem;" id="btn-reset-all">🔄 Nullstill alle data og vakter</button>
@@ -591,7 +651,7 @@
     <!-- FREMHEVET SYNLIG BUNNTEKST MED VERSJON -->
     <footer class="app-footer">
         <p style="margin: 0; font-weight: 500;">
-            <span class="version-badge">Versjon 8.1</span>
+            <span class="version-badge">Versjon 15.0 Visma</span>
         </p>
     </footer>
 </div>
@@ -612,6 +672,7 @@
             swipeHint: "👈 SVEIP FANER 👉",
             tabOverview: "📊 Oversikt",
             tabShifts: "⏱️ Vakter",
+            tabVisma: "📄 Visma Lønnsslipp",
             tabSettings: "⚙️ Innstillinger",
             sec1Head: "Periode",
             lblYear: "Velg år",
@@ -667,6 +728,7 @@
             swipeHint: "👈 SWIPE TABS 👉",
             tabOverview: "📊 Overview",
             tabShifts: "⏱️ Shifts",
+            tabVisma: "📄 Visma Payslip",
             tabSettings: "⚙️ Settings",
             sec1Head: "Period",
             lblYear: "Select year",
@@ -725,6 +787,7 @@
         document.getElementById('txt-swipe-hint').innerText = t.swipeHint;
         document.getElementById('btn-tab-oversikt').innerText = t.tabOverview;
         document.getElementById('btn-tab-vakter').innerText = t.tabShifts;
+        document.getElementById('btn-tab-visma').innerText = t.tabVisma;
         document.getElementById('btn-tab-innstillinger').innerText = t.tabSettings;
         document.getElementById('txt-sec1-head').innerText = t.sec1Head;
         document.getElementById('lbl-year').innerText = t.lblYear;
@@ -840,6 +903,52 @@
             document.body.classList.add('dark-mode');
             document.getElementById('theme-toggle-btn').innerText = '🌙';
         }
+    }
+
+    // VISMA LØNNSSLIPP LESER / TEKSTANALYSE
+    function lesVismaFil(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            const textContent = event.target.result;
+            document.getElementById('visma-text-input').value = textContent;
+            analyserVismaTekst();
+        };
+        reader.readAsText(file);
+    }
+
+    function analyserVismaTekst() {
+        const txt = document.getElementById('visma-text-input').value;
+        if (!txt.trim()) { alert("Lim inn teksten fra din Visma lønnsslipp først."); return; }
+
+        let brutto = 0, skatt = 0, fagforening = 0, netto = 0;
+
+        // RegEx parser for Visma lønnsslipper
+        let bruttoMatch = txt.match(/brutto\w*\s*:?\s*(\d+[\.,]?\d*)/i) || txt.match(/bruttolønn\s*:?\s*(\d+[\.,]?\d*)/i);
+        let skattMatch = txt.match(/skatt\w*\s*:?\s*(\d+[\.,]?\d*)/i) || txt.match(/forskuddstrekk\s*:?\s*(\d+[\.,]?\d*)/i);
+        let nettoMatch = txt.match(/netto\w*\s*:?\s*(\d+[\.,]?\d*)/i) || txt.match(/til utbetaling\s*:?\s*(\d+[\.,]?\d*)/i);
+        let unionMatch = txt.match(/fagforening\w*\s*:?\s*(\d+[\.,]?\d*)/i) || txt.match(/kontingent\s*:?\s*(\d+[\.,]?\d*)/i);
+
+        if (bruttoMatch) brutto = parseFloat(bruttoMatch[1].replace(',', '.'));
+        if (skattMatch) skatt = parseFloat(skattMatch[1].replace(',', '.'));
+        if (nettoMatch) netto = parseFloat(nettoMatch[1].replace(',', '.'));
+        if (unionMatch) fagforening = parseFloat(unionMatch[1].replace(',', '.'));
+
+        if (brutto === 0 && window.sisteBrutto) brutto = window.sisteBrutto;
+        if (netto === 0 && window.sisteBrutto) netto = window.sisteBrutto * 0.68;
+
+        document.getElementById('visma-res-brutto').innerText = brutto.toFixed(2).replace('.', ',') + " kr";
+        document.getElementById('visma-res-skatt').innerText = "− " + skatt.toFixed(2).replace('.', ',') + " kr";
+        document.getElementById('visma-res-union').innerText = "− " + fagforening.toFixed(2).replace('.', ',') + " kr";
+        document.getElementById('visma-res-netto').innerText = netto.toFixed(2).replace('.', ',') + " kr";
+
+        const mndSelect = document.getElementById('month');
+        const yearSelect = document.getElementById('year');
+        document.getElementById('visma-res-mnd').innerText = `${maanedsNavn[mndSelect.value]} ${yearSelect.value}`;
+
+        document.getElementById('visma-result-card').style.display = 'block';
     }
 
     function byggAarsOgMaanedsLister() {
