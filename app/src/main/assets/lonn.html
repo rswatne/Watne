@@ -937,28 +937,38 @@
 
         let brutto = 0, skatt = 0, fagforening = 0, netto = 0;
 
-        // Utvidede Norske Visma RegEx mønstre
-        let bruttoMatch = txt.match(/(?:brutto|bruttolønn|lønn i alt|bruttoinntekt|sum brutto)\w*\s*:?\s*([\d\s]+[\.,]?\d*)/i);
-        let skattMatch = txt.match(/(?:skatt|forskuddstrekk|tabellskatt|prosentskatt|skattetrekk|skatteetaten)\w*\s*:?\s*([\d\s]+[\.,]?\d*)/i);
-        let nettoMatch = txt.match(/(?:netto|til utbetaling|utbetalt|nettolønn|netto utbetalt)\w*\s*:?\s*([\d\s]+[\.,]?\d*)/i);
-        let unionMatch = txt.match(/(?:fagforening|kontingent|fellesforbundet|fagforeningskontingent|ff kontingent|lo kontingent)\w*\s*:?\s*([\d\s]+[\.,]?\d*)/i);
+        // Spesifikke Visma Lønnsslipp RegEx mønstre
+        let bruttoMatch = txt.match(/(?:bruttolønn|brutto|bruttoinntekt)\s*:?\s*([\d\s]+[\.,]?\d*)/i);
+        let skattMatch = txt.match(/(?:forskuddstrekk|prosenttrekk|skattetrekk|tabellskatt|skatt)\s*:?\s*-?\s*([\d\s]+[\.,]?\d*)/i);
+        let unionMatch = txt.match(/(?:fagforeningstrekk|trukket fagforeningskontingent|fagforening|fellesforbundet|kontingent)\w*\s*:?\s*-?\s*([\d\s]+[\.,]?\d*)/i);
+        let nettoMatch = txt.match(/(?:netto til utbetaling|nettolønn|netto|til utbetaling)\w*\s*:?\s*([\d\s]+[\.,]?\d*)/i);
 
         if (bruttoMatch) brutto = parseNorwegianAmount(bruttoMatch[1]);
         if (skattMatch) skatt = parseNorwegianAmount(skattMatch[1]);
-        if (nettoMatch) netto = parseNorwegianAmount(nettoMatch[1]);
         if (unionMatch) fagforening = parseNorwegianAmount(unionMatch[1]);
+        if (nettoMatch) netto = parseNorwegianAmount(nettoMatch[1]);
 
-        // Fallbacks fra lønnskalkulatorens estimat dersom noe mangler fra skjemdump
+        // Spesifikk sjekk for Visma sammendrag i bunnen
+        let linjer = txt.split('\n');
+        linjer.forEach(linje => {
+            let l = linje.toLowerCase();
+            if (l.includes('forskuddstrekk') && skatt === 0) {
+                let m = linje.match(/-?([\d\s]+[\.,]\d{2})/);
+                if (m) skatt = parseNorwegianAmount(m[1]);
+            }
+            if (l.includes('fagforeningstrekk') && fagforening === 0) {
+                let m = linje.match(/-?([\d\s]+[\.,]\d{2})/);
+                if (m) fagforening = parseNorwegianAmount(m[1]);
+            }
+            if (l.includes('netto til utbetaling') && netto === 0) {
+                let m = linje.match(/([\d\s]+[\.,]\d{2})/);
+                if (m) netto = parseNorwegianAmount(m[1]);
+            }
+        });
+
+        // Fallbacks dersom en verdi mangler
         if (brutto === 0 && window.sisteBrutto) brutto = window.sisteBrutto;
-        if (fagforening === 0 && brutto > 0) {
-            const unionPct = parseFloat(document.getElementById('fagforening-prosent').value) || 1.5;
-            fagforening = brutto * (unionPct / 100);
-        }
-        if (skatt === 0 && brutto > 0) {
-            const unionKr = Math.max(0, brutto * (parseFloat(document.getElementById('fagforening-prosent').value) || 1.5) / 100);
-            skatt = beregnUniversellTabellskatt(Math.max(0, brutto - unionKr), document.getElementById('skatte-tabellnummer').value || "7101");
-        }
-        if (netto === 0) netto = Math.max(0, brutto - skatt - fagforening);
+        if (netto === 0 && brutto > 0) netto = Math.max(0, brutto - skatt - fagforening);
 
         document.getElementById('visma-res-brutto').innerText = brutto.toFixed(2).replace('.', ',') + " kr";
         document.getElementById('visma-res-skatt').innerText = "− " + skatt.toFixed(2).replace('.', ',') + " kr";
@@ -968,6 +978,9 @@
         const mndSelect = document.getElementById('month');
         const yearSelect = document.getElementById('year');
         document.getElementById('visma-res-mnd').innerText = `${maanedsNavn[mndSelect.value]} ${yearSelect.value}`;
+
+        document.getElementById('visma-result-card').style.display = 'block';
+    }
 
         document.getElementById('visma-result-card').style.display = 'block';
     }
