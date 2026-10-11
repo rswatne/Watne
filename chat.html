@@ -264,6 +264,17 @@
             <span class="prompt-chip" onclick="sendQuickPrompt('Gi meg sjekkliste for M16 gjenging i Syrefast 316L')" id="chip4">🛠️ Sjekkliste M16 Syrefast</span>
         </div>
 
+        <!-- LIVE GEMINI AI API BAR -->
+        <div style="padding: 0.625rem 1rem; background: var(--bg); border-top: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; font-size: 0.8125rem; flex-wrap: wrap;">
+            <div style="display: flex; align-items: center; gap: 0.5rem; flex: 1; min-width: 16rem;">
+                <span style="font-weight: 700; color: var(--purple-deep);">🔑 Live Gemini AI:</span>
+                <label for="gemini-api-key" style="display:none;">Google Gemini API Nøkkel</label>
+                <input type="password" id="gemini-api-key" class="field-class" style="height: 2.125rem; font-size: 0.75rem; max-width: 15rem;" placeholder="Lim inn gratis Google Gemini API-nøkkel..." onchange="lagreApiKey()">
+                <span id="gemini-status-badge" style="font-size: 0.7rem; font-weight: 700; color: var(--muted);">⚡ Lokal modus</span>
+            </div>
+            <button type="button" class="btn btn-outline" style="height: 2.125rem; padding: 0 0.625rem; font-size: 0.75rem;" onclick="visApiKeyHjelp()">ℹ️ Gratis Nøkkel (30 sek)</button>
+        </div>
+
         <!-- CHAT INPUT -->
         <form class="chat-input-bar" onsubmit="handleChatSubmit(event)">
             <label for="user-input" style="display:none;">Spørsmål eller oppgave</label>
@@ -715,6 +726,79 @@
         return `🤖 <strong>Hei! Jeg er Sigrid.</strong><br>Trykk på knappen <strong>«💡 Hva kan Sigrid gjøre?»</strong> for å se alt jeg kan utføre for deg!`;
     }
 
+    function lagreApiKey() {
+        const key = document.getElementById('gemini-api-key').value.trim();
+        if (key) {
+            localStorage.setItem('sigrid_gemini_api_key', key);
+            oppdaterApiKeyUI();
+            alert("✅ Live Google Gemini API-nøkkel lagret! Sigrid AI er nå koblet til live AI!");
+        } else {
+            localStorage.removeItem('sigrid_gemini_api_key');
+            oppdaterApiKeyUI();
+        }
+    }
+
+    function oppdaterApiKeyUI() {
+        const key = localStorage.getItem('sigrid_gemini_api_key');
+        const badge = document.getElementById('gemini-status-badge');
+        const input = document.getElementById('gemini-api-key');
+        if (key) {
+            if (input) input.value = key;
+            if (badge) {
+                badge.innerText = "🟢 Live Gemini 1.5 Flash AI Aktiv";
+                badge.style.color = "var(--emerald)";
+            }
+        } else {
+            if (badge) {
+                badge.innerText = "⚡ Lokal modus";
+                badge.style.color = "var(--muted)";
+            }
+        }
+    }
+
+    function visApiKeyHjelp() {
+        alert("🔑 Slik får du gratis Google Gemini API-nøkkel (30 sek):\n\n1. Gå til Google AI Studio: aistudio.google.com/app/apikey\n2. Logg inn med din Google-konto og trykk 'Create API key'.\n3. Kopier nøkkelen og lim den inn her!\n\nNøkkelen er 100% gratis for personlig bruk.");
+    }
+
+    async function queryGeminiApi(userPrompt) {
+        const apiKey = localStorage.getItem('sigrid_gemini_api_key');
+        if (!apiKey) return null;
+
+        const systemInstruction = `Du er Sigrid, en erfaren mekaniker, CNC-programmerer, GibbsCAM-ekspert og lønnsekspert for Sigurd Seland Smie & Mek. Verksted AS i Lyngdal.
+Du har tilgang til hele Watne Pro portalen:
+1. Lønnskalkulator (lonn.html): Fastlønn, overtid (50%/100%), timebank, tabellskatt 7101, fagforening (1.5%), 12% feriepenger.
+2. Maskineringskalkulator (maskinering.html): Vc, n=(Vc*1000)/(pi*D), Vf=fz*z*n, Q=(ap*ae*Vf)/1000, Tc=L/Vf, Fc, Pc, Mc.
+3. Verkstedtabeller (verksted.html): S355, 316L, 304, Aluminium 6082-T6, Messing, POM. Kjernebor M/BSP, ISO 6H/6g, borspiss 118deg.
+4. Elbil-Kalkulator (elbil.html): Ladetid, tilført km, ladekostnad, besparelse over bensin/diesel, vinter-rekkeviddetap.
+
+Brukerens innstillinger:
+- Timelønn: ${localStorage.getItem('lonn_timelonn') || '316.50'} kr/t
+- Fagforening: ${localStorage.getItem('lonn_union_pct') || '1.5'} %
+- Tabell: ${localStorage.getItem('lonn_tabell') || '7101'}
+
+Svar presist, vennlig og hjelpsomt på norsk med HTML-formatering (f.eks <strong>, <code>, <br>).`;
+
+        try {
+            const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    contents: [
+                        { role: 'user', parts: [{ text: systemInstruction + "\n\nSpørsmål fra bruker: " + userPrompt }] }
+                    ]
+                })
+            });
+            const data = await res.json();
+            if (data && data.candidates && data.candidates[0] && data.candidates[0].content) {
+                let replyText = data.candidates[0].content.parts[0].text;
+                return replyText.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            }
+        } catch(e) {
+            console.error("Gemini API error", e);
+        }
+        return null;
+    }
+
     function appendMessage(text, isUser) {
         const box = document.getElementById('chat-box');
         const div = document.createElement('div');
@@ -724,7 +808,7 @@
         box.scrollTop = box.scrollHeight;
     }
 
-    function handleChatSubmit(e) {
+    async function handleChatSubmit(e) {
         e.preventDefault();
         const input = document.getElementById('user-input');
         const text = input.value.trim();
@@ -732,6 +816,19 @@
 
         appendMessage(text, true);
         input.value = '';
+
+        const apiKey = localStorage.getItem('sigrid_gemini_api_key');
+        if (apiKey) {
+            appendMessage("🤖 <em>Sigrid tenker med live Gemini AI...</em>", false);
+            const geminiReply = await queryGeminiApi(text);
+            const box = document.getElementById('chat-box');
+            if (box.lastChild) box.removeChild(box.lastChild);
+
+            if (geminiReply) {
+                appendMessage(geminiReply, false);
+                return;
+            }
+        }
 
         setTimeout(() => {
             const reply = generateSigridResponse(text);
@@ -743,6 +840,11 @@
         document.getElementById('user-input').value = promptText;
         handleChatSubmit(new Event('submit'));
     }
+
+    // Init API-nøkkel visning
+    window.addEventListener('load', function() {
+        oppdaterApiKeyUI();
+    });
 </script>
 
 </body>
