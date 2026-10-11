@@ -499,24 +499,53 @@
             💡 <em>Tips:</em> Du kan spesifisere din egen strømpris i spørsmålet, f.eks: <em>'Strømkostnad for 15 kW i 4 timer med strømpris 1.80 kr'</em>.`;
         }
 
-        // OPPGAVE: SVEISEVARMETILFØRSEL OG FORVARMING (KJ/mm)
-        if (q.includes('sveis') || q.includes('varmetilførsel') || q.includes('kj/mm') || q.includes('weld')) {
-            return `🌡️ <strong>Sigrids Sveiseformler & Varmetilførsel ($KJ/mm$):</strong><br><br>
-            • <strong>Formel for Varmetilførsel ($Q$):</strong><br>
-            <code>Q = (Sveisestrøm A × Spenning V × 60) / (Sveisehastighet mm/min × 1000) × Virkningsgrad (k)</code><br>
-            <em>(Virkningsgrad $k = 0,8$ for MAG/MIG, $0,6$ for TIG, $0,8$ for MMA).</em><br><br>
-            • <strong>Anbefalt Forvarming for S355 / 42CrMo4:</strong><br>
-            Ved godstykkelse $> 25\text{ mm}$ anbefales forvarming til **$100^\circ\text{C} - 150^\circ\text{C}$** for å hindre brattherding og hydrogenmating-sprekker!`;
+        // MASKINERING MASTER-FORMLE
+        if (q.includes('formel') || q.includes('omdreining') || q.includes('skjærehastighet') || q.includes('bordsmating') || q.includes('sponavvirkning') || q.includes('effekt') || q.includes('dreiemoment')) {
+            return `⚙️ <strong>Sigrids Master Maskinerings-Formler:</strong><br><br>
+            • <strong>Spindel-omdreininger ($n$):</strong><br>
+            <code>n = (V_c × 1000) / (π × D) [RPM]</code><br><br>
+            • <strong>Bordsmating ($V_f$):</strong><br>
+            <code>V_f = f_z × z × n [mm/min]</code><br><br>
+            • <strong>Sponavvirkningsrate ($Q$):</strong><br>
+            <code>Q = (a_p × a_e × V_f) / 1000 [cm³/min]</code><br><br>
+            • <strong>Maskineringstid ($T_c$):</strong><br>
+            <code>T_c = L / V_f [minutter]</code><br><br>
+            • <strong>Skjærekraft ($F_c$):</strong><br>
+            <code>F_c = k_{c1.1} × a_p × f_z^{(1 - mc)} [N]</code><br><br>
+            • <strong>Spindeleffektbehov ($P_c$):</strong><br>
+            <code>P_c = (F_c × V_c) / (60000 × η) [kW]</code><br><br>
+            • <strong>Spindel-dreiemoment ($M_c$):</strong><br>
+            <code>M_c = (P_c × 9550) / n [Nm]</code>`;
         }
 
-        // OPPGAVE: FLENSSTANDARDER PN16 / ANSI 150
-        if (q.includes('flens') || q.includes('pn16') || q.includes('pn40') || q.includes('ansi')) {
-            return `📜 <strong>Sigrids Flensstandard-oppslag:</strong><br><br>
-            • <strong>DN50 PN16:</strong> 4 boltehull | Delingssirkel PCD **125 mm** | M16 bolter<br>
-            • <strong>DN80 PN16:</strong> 8 boltehull | Delingssirkel PCD **160 mm** | M16 bolter<br>
-            • <strong>DN100 PN16:</strong> 8 boltehull | Delingssirkel PCD **180 mm** | M16 bolter<br>
-            • <strong>DN150 PN16:</strong> 8 boltehull | Delingssirkel PCD **240 mm** | M20 bolter<br>
-            • <strong>2" ANSI 150#:</strong> 4 boltehull | Delingssirkel PCD **120.7 mm** | 5/8" bolter`;
+        // VERKSTEDSTABELLER, MATERIALER OG KJERNEBOR
+        if (q.includes('material') || q.includes('316l') || q.includes('304') || q.includes('s355') || q.includes('aluminium') || q.includes('messing') || q.includes('pom') || q.includes('pehd') || q.includes('kjernebor') || q.includes('borspiss') || q.includes('toleranse')) {
+            return `🛠️ <strong>Sigrids Verksteds & Material-Guide:</strong><br><br>
+            • <strong>Materialer & Skjæredata ($V_c$ / $f_z$):</strong><br>
+            - <strong>S355/S235 Stål:</strong> $V_c = 180-250\text{ m/min}$, $f_z = 0,08-0,15\text{ mm/tann}$<br>
+            - <strong>AISI 316L Syrefast:</strong> $V_c = 90-140\text{ m/min}$, $f_z = 0,05-0,10\text{ mm/tann}$ (Bruk rigide oppspenningsverktøy og god kjølevæske!)<br>
+            - <strong>Aluminium 6082-T6:</strong> $V_c = 400-800\text{ m/min}$, $f_z = 0,10-0,25\text{ mm/tann}$<br>
+            - <strong>Messing:</strong> $V_c = 200-350\text{ m/min}$, $f_z = 0,08-0,18\text{ mm/tann}$<br>
+            - <strong>POM Plast:</strong> $V_c = 300-500\text{ m/min}$, $f_z = 0,10-0,25\text{ mm/tann}$ (Skarpt verktøy uten fas!)<br><br>
+            • <strong>M-Gjenger Kjernebor:</strong><br>
+            - M6: <strong>5.0 mm</strong> | M8: <strong>6.8 mm</strong> | M10: <strong>8.5 mm</strong> | M12: <strong>10.2 mm</strong> | M16: <strong>14.0 mm</strong> | M20: <strong>17.5 mm</strong><br><br>
+            • <strong>BSP Rørgjenger Kjernebor:</strong><br>
+            - G 1/8": <strong>8.8 mm</strong> | G 1/4": <strong>11.8 mm</strong> | G 3/8": <strong>15.2 mm</strong> | G 1/2": <strong>19.0 mm</strong> | G 3/4": <strong>24.5 mm</strong> | G 1": <strong>30.8 mm</strong><br><br>
+            • <strong>Borspisstillegg ($118^\circ$ vinkel):</strong><br>
+            Formel: <code>h = (D / 2) / tan(59°) ≈ 0.30 × Diameter</code> (Legges til ved blindhull for at hele diameteren skal gå gjennom!)`;
+        }
+
+        // LØNN, TABELLSKATT 7101 OG SKATTEVEILEDNING
+        if (q.includes('tabellskatt') || q.includes('7101') || q.includes('skatt') || q.includes('feriepenger') || q.includes('fastlønn') || q.includes('timebank')) {
+            return `💰 <strong>Sigrids Lønns- & Skatte-Guide:</strong><br><br>
+            • <strong>Tabellskatt (Tabell 7101):</strong><br>
+            Skatteetaten benytter en trinnvis månedlig tabellformel for fastlønnet inntekt. Fradrag for fagforeningskontingent trekkes fra $100\%$ før skattegrunnlaget beregnes: <code>Skattegrunnlag = Brutto − Fagforeningstrekk</code>.<br><br>
+            • <strong>Timebank-regler:</strong><br>
+            Når du haker av for timebank på en vakt, avsettes den ordinære timen til timebanken (timer til gode), mens KUN overtidstillegget ($50\%$ eller $100\%$) utbetales i penger på månedens lønnsslipp.<br><br>
+            • <strong>Feriepenger (12%):</strong><br>
+            Feriepenger utgjør $12\%$ av samlet brutto arbeidsinntekt i opptjeningsåret.<br><br>
+            • <strong>Årsprognose:</strong><br>
+            Fast årslønn beregnes som: <code>Årslønn = (5 dager × timer/dag) × timelønn × 47 uker × 1.12</code>.`;
         }
 
         // OPPGAVE: G-KODER OG CNC FEILSØKING
