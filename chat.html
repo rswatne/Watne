@@ -866,18 +866,6 @@ Svar presist, vennlig og hjelpsomt på norsk med HTML-formatering (f.eks <strong
         }
         return null;
     }
-                const data = await res.json();
-                if (res.ok && data && data.candidates && data.candidates[0] && data.candidates[0].content) {
-                    localStorage.setItem('working_gemini_model', model);
-                    let replyText = data.candidates[0].content.parts[0].text;
-                    return replyText.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-                }
-            } catch(e) {
-                console.error("Gemini API error for model " + model, e);
-            }
-        }
-        return null;
-    }
 
     function appendMessage(text, isUser) {
         const box = document.getElementById('chat-box');
