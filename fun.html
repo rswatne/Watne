@@ -3,37 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Sigrids Cyber-Lab 🚀 - Watne Pro</title>
+    <title>AI Quantum Arcade & Space Odyssey 🚀</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Orbitron:wght@700;900&family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --neon-blue: #00f0ff;
-            --neon-pink: #ff007f;
-            --neon-green: #39ff14;
-            --neon-amber: #ffaa00;
-            --bg-cyber: #050811;
-            --card-cyber: #0d1322;
-            --line-cyber: #1e293b;
-            --text-cyber: #f0f6fc;
+            --neon-cyan: #00f3ff;
+            --neon-pink: #ff0055;
+            --neon-yellow: #ffea00;
+            --neon-green: #00ff66;
+            --bg-dark: #03050b;
         }
 
         * { box-sizing: border-box; }
 
         body {
-            font-family: 'Inter', -apple-system, sans-serif;
-            background: var(--bg-cyber);
-            color: var(--text-cyber);
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
+            color: #ffffff;
             margin: 0;
             padding: 0;
             min-height: 100vh;
             overflow-x: hidden;
-            background-image:
-                radial-gradient(circle at 10% 20%, rgba(0, 240, 255, 0.08) 0%, transparent 40%),
-                radial-gradient(circle at 90% 80%, rgba(255, 0, 127, 0.08) 0%, transparent 40%);
         }
 
-        .main-layout {
+        /* BAKGRUNNS CANVAS FOR STJERNER */
+        #space-canvas {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .layout {
+            position: relative;
+            z-index: 10;
             max-width: 52rem;
             margin: 0 auto;
             padding: 1.5rem 1rem 4rem 1rem;
@@ -41,298 +45,336 @@
 
         header {
             display: flex;
-            align-items: center;
             justify-content: space-between;
-            margin-bottom: 1.5rem;
+            align-items: center;
             border-bottom: 2px solid #1e293b;
             padding-bottom: 1rem;
+            margin-bottom: 1.5rem;
         }
 
-        .cyber-title {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.75rem;
-            font-weight: 900;
-            background: linear-gradient(135deg, var(--neon-blue), var(--neon-pink));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .title-arcade {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 1.15rem;
+            color: var(--neon-yellow);
+            text-shadow: 0 0 10px var(--neon-yellow), 0 0 20px var(--neon-pink);
+            line-height: 1.5;
             margin: 0;
-            letter-spacing: 0.05em;
         }
 
-        .btn-cyber {
+        .card-arcade {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(12px);
+            border: 2px solid #1e293b;
+            border-radius: 1.25rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            position: relative;
+            overflow: hidden;
+        }
+        .card-arcade::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 3px;
+            background: linear-gradient(90deg, var(--neon-cyan), var(--neon-pink), var(--neon-yellow));
+        }
+
+        .btn-arcade {
             display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 0.5rem;
-            background: linear-gradient(135deg, #00f0ff, #0077ff);
-            color: #000;
-            font-family: 'Orbitron', sans-serif;
-            font-weight: 800;
-            font-size: 0.8125rem;
-            padding: 0.75rem 1.25rem;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.7rem;
+            padding: 0.875rem 1.25rem;
             border-radius: 0.625rem;
             border: none;
             cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
-            text-decoration: none;
-            transition: all 0.2s ease;
-        }
-        .btn-cyber:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 0 25px rgba(0, 240, 255, 0.6);
-        }
-
-        .btn-pink {
-            background: linear-gradient(135deg, #ff007f, #7c3aed);
+            background: var(--neon-pink);
             color: white;
-            box-shadow: 0 0 15px rgba(255, 0, 127, 0.3);
+            text-shadow: 0 2px 0 #000;
+            box-shadow: 0 5px 0 #990033, 0 0 15px var(--neon-pink);
+            transition: all 0.1s ease;
+            text-decoration: none;
         }
-        .btn-pink:hover {
-            box-shadow: 0 0 25px rgba(255, 0, 127, 0.6);
-        }
-
-        .cyber-card {
-            background: var(--card-cyber);
-            border: 1px solid var(--line-cyber);
-            border-radius: 1.25rem;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-        }
-        .cyber-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; height: 3px;
-            background: linear-gradient(90deg, var(--neon-blue), var(--neon-pink), var(--neon-green));
+        .btn-arcade:active {
+            transform: translateY(3px);
+            box-shadow: 0 2px 0 #990033;
         }
 
-        /* CNC SIMULATOR SKJERM */
-        .cnc-screen {
-            background: #000000;
-            border: 2px solid var(--neon-blue);
-            border-radius: 1rem;
-            padding: 1.5rem;
-            text-align: center;
-            position: relative;
-            box-shadow: inset 0 0 20px rgba(0, 240, 255, 0.2);
-            margin-top: 1rem;
+        .btn-cyan {
+            background: var(--neon-cyan);
+            color: #000;
+            text-shadow: none;
+            box-shadow: 0 5px 0 #0099aa, 0 0 15px var(--neon-cyan);
         }
 
-        .spindle-wheel {
-            width: 8rem;
-            height: 8rem;
+        /* SPILLE-SKJERM FOR SPACE DODGER */
+        #game-canvas {
+            background: #000;
+            border: 3px solid var(--neon-cyan);
+            border-radius: 0.875rem;
+            width: 100%;
+            height: 18rem;
+            display: block;
+            margin: 1rem 0;
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.4);
+            cursor: crosshair;
+        }
+
+        .game-controls {
+            display: flex;
+            justify-content: space-between;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        /* KRYSTALLKULE ORAKEL */
+        .orb-container {
+            width: 7rem;
+            height: 7rem;
             border-radius: 50%;
-            border: 6px dashed var(--neon-blue);
+            background: radial-gradient(circle at 30% 30%, #ffffff, var(--neon-pink), #20002c);
             margin: 1rem auto;
+            box-shadow: 0 0 40px var(--neon-pink);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2.5rem;
-            transition: transform 0.1s linear;
+            font-size: 3rem;
+            cursor: pointer;
+            animation: orbFloat 3s infinite ease-in-out;
         }
-        .spindle-active {
-            animation: spinSpindle 0.3s linear infinite;
-            border-color: var(--neon-pink);
-            box-shadow: 0 0 30px var(--neon-pink);
-        }
-        @keyframes spinSpindle {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        @keyframes orbFloat {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-8px) scale(1.05); }
         }
 
-        .gcode-stream {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.8125rem;
-            color: var(--neon-green);
-            height: 3.5rem;
-            overflow: hidden;
-            background: rgba(0,0,0,0.8);
-            border-radius: 0.5rem;
-            padding: 0.5rem;
-            text-align: left;
+        .oracle-box {
+            background: #000;
+            border: 1px solid var(--neon-pink);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9375rem;
+            color: var(--neon-cyan);
+            text-align: center;
+            min-height: 4rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             margin-top: 1rem;
-            border: 1px solid #1e293b;
-        }
-
-        /* HOLOGRAM SIGRID */
-        .hologram-avatar {
-            width: 5rem;
-            height: 5rem;
-            border-radius: 50%;
-            background: radial-gradient(circle, var(--neon-blue), transparent);
-            border: 2px solid var(--neon-blue);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2.5rem;
-            animation: pulseHolo 2s infinite ease-in-out;
-            margin: 0 auto 1rem auto;
-            box-shadow: 0 0 20px var(--neon-blue);
-        }
-        @keyframes pulseHolo {
-            0%, 100% { transform: scale(1); opacity: 0.8; }
-            50% { transform: scale(1.08); opacity: 1; box-shadow: 0 0 35px var(--neon-pink); }
-        }
-
-        .meter-bar {
-            height: 0.875rem;
-            background: #1e293b;
-            border-radius: 9999px;
-            overflow: hidden;
-            margin-top: 0.375rem;
-        }
-        .meter-fill {
-            height: 100%;
-            width: 75%;
-            background: linear-gradient(90deg, var(--neon-blue), var(--neon-green));
-            border-radius: 9999px;
-            transition: width 0.5s ease;
         }
     </style>
 </head>
 <body>
 
-<div class="main-layout">
+<canvas id="space-canvas"></canvas>
+
+<div class="layout">
     <header>
         <div>
-            <h1 class="cyber-title">🚀 SIGRIDS CYBER-LAB</h1>
-            <p style="margin: 0.25rem 0 0 0; font-size: 0.8125rem; color: #8b9bb4;">Framtidens interaktive verkstedssimulator & AI-kommando</p>
+            <h1 class="title-arcade">🎮 AI QUANTUM ARCADE</h1>
+            <p style="font-size: 0.75rem; color: #8b9bb4; margin: 0.375rem 0 0 0;">Fri AI-fantasi · Space Dodger · Krystallkule · Neon Synth</p>
         </div>
-        <a href="index.html" class="btn-cyber" style="background: transparent; border: 1px solid var(--neon-blue); color: var(--neon-blue);">🏠 Hovedmeny</a>
+        <a href="index.html" class="btn-arcade btn-cyan" style="font-size: 0.6rem;">🏠 MENY</a>
     </header>
 
-    <!-- KORT 1: CNC MASKINERINGS-SIMULATOR -->
-    <div class="cyber-card">
-        <h2 style="font-family:'Orbitron',sans-serif; font-size: 1.125rem; color: var(--neon-blue); margin: 0 0 0.5rem 0;">⚙️ HIGH-SPEED CNC SPINDEL-SIMULATOR</h2>
-        <p style="font-size: 0.875rem; color: #8b9bb4; margin: 0;">Start spindelen for å simulere high-speed utfresing, G-kodeskjæring og sponkasting!</p>
-
-        <div class="cnc-screen">
-            <div id="spindle-element" class="spindle-wheel">⚙️</div>
-
-            <div style="display: flex; justify-content: space-around; margin-top: 0.75rem; font-family:'JetBrains Mono',monospace; font-size:0.875rem;">
-                <div>SPINDEL: <span id="txt-rpm" style="color:var(--neon-blue); font-weight:800;">0 RPM</span></div>
-                <div>MATING: <span id="txt-feed" style="color:var(--neon-green); font-weight:800;">0 mm/min</span></div>
-                <div>TEMPERATUR: <span id="txt-temp" style="color:var(--neon-amber); font-weight:800;">22°C</span></div>
-            </div>
-
-            <div class="gcode-stream" id="gcode-box">
-                > N010 G90 G21 G17 G40 G80<br>
-                > N020 M03 S12000 M08<br>
-                > MASKIN KLAR... TRYKK PÅ START KNAPPEN UNDER!
-            </div>
+    <!-- SPILLET: RETRO SPACE DODGER -->
+    <div class="card-arcade">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-family:'Press Start 2P',cursive; font-size:0.8rem; color:var(--neon-yellow);">🚀 SPACE DODGER</span>
+            <span style="font-family:'Press Start 2P',cursive; font-size:0.8rem; color:var(--neon-green);" id="txt-score">SCORE: 0000</span>
         </div>
 
-        <div style="display: flex; gap: 0.75rem; margin-top: 1.25rem; flex-wrap: wrap;">
-            <button type="button" class="btn-cyber" onclick="startSpindel()" id="btn-spindle-start">▶️ START CNC SPINDEL (12.000 RPM)</button>
-            <button type="button" class="btn-cyber btn-pink" onclick="stoppSpindel()">🛑 STOPP MASKIN</button>
+        <canvas id="game-canvas"></canvas>
+
+        <div class="game-controls">
+            <button class="btn-arcade btn-cyan" onclick="moveShip(-25)">◀️ VENSTRE</button>
+            <button class="btn-arcade" onclick="shootLaser()">⚡ SKYTING!</button>
+            <button class="btn-arcade btn-cyan" onclick="moveShip(25)">HØYRE ▶️</button>
         </div>
     </div>
 
-    <!-- KORT 2: HOLOGRAM SIGRID & METER-METRIKKER -->
-    <div class="cyber-card">
-        <div class="hologram-avatar">🤖</div>
-        <h2 style="font-family:'Orbitron',sans-serif; text-align:center; font-size: 1.25rem; color: var(--neon-pink); margin: 0 0 0.25rem 0;">SIGRID AI HOLOGRAM COMMAND</h2>
-        <p style="text-align:center; font-size: 0.875rem; color: #8b9bb4; margin: 0 0 1.25rem 0;" id="sigrid-quote">«Velkommen til framtidens verksted! Trykk på knappen under for å hente verkstedsvisdom.»</p>
+    <!-- AI KRYSTALLKULE ORAKEL -->
+    <div class="card-arcade" style="text-align: center;">
+        <span style="font-family:'Press Start 2P',cursive; font-size:0.8rem; color:var(--neon-pink);">🔮 AI QUANTUM ORAKEL</span>
+        <p style="font-size: 0.8125rem; color: #8b9bb4; margin: 0.5rem 0;">Trykk på krystallkulen for å hente unike spådommer fra universet!</p>
 
-        <div style="text-align: center; margin-bottom: 1.5rem;">
-            <button type="button" class="btn-cyber btn-pink" onclick="genererVerkstedSitat()">✨ Generér Nytt Verksted-Motto</button>
+        <div class="orb-container" onclick="spaaFremtiden()">🔮</div>
+
+        <div class="oracle-box" id="oracle-text">
+            «Trykk på krystallkulen over for å åpne et kvante-vindu mot framtiden...»
         </div>
+    </div>
 
-        <!-- METER GAGES -->
-        <div style="display: flex; flex-direction: column; gap: 1rem; background: rgba(0,0,0,0.4); padding: 1.25rem; border-radius: 1rem; border: 1px solid var(--line-cyber);">
-            <div>
-                <div style="display: flex; justify-content: space-between; font-size: 0.8125rem; font-weight: 700;">
-                    <span>☕ KAFFE-TIL-KODE METER (VERKSTEDS-ENERGI)</span>
-                    <span style="color: var(--neon-blue);" id="txt-coffee-val">94%</span>
-                </div>
-                <div class="meter-bar"><div class="meter-fill" id="fill-coffee" style="width: 94%;"></div></div>
-            </div>
+    <!-- SYNTHESIZER LYDEFFEKTER -->
+    <div class="card-arcade" style="text-align: center;">
+        <span style="font-family:'Press Start 2P',cursive; font-size:0.8rem; color:var(--neon-cyan);">🎵 NEON SYNTHESIZER</span>
+        <p style="font-size: 0.8125rem; color: #8b9bb4; margin: 0.5rem 0 1rem 0;">Spill ekte retro 80-talls lydeffekter direkte via høyttaleren på mobilen!</p>
 
-            <div>
-                <div style="display: flex; justify-content: space-between; font-size: 0.8125rem; font-weight: 700;">
-                    <span>🔥 MASKINERINGS-PRECISJON (ISO FIT 6H)</span>
-                    <span style="color: var(--neon-green);" id="txt-prec-val">99.8%</span>
-                </div>
-                <div class="meter-bar"><div class="meter-fill" id="fill-prec" style="width: 99.8%; background: linear-gradient(90deg, #39ff14, #00f0ff);"></div></div>
-            </div>
-
-            <div>
-                <div style="display: flex; justify-content: space-between; font-size: 0.8125rem; font-weight: 700;">
-                    <span>⚡ OVERTIDS-TURBO NIVÅ</span>
-                    <span style="color: var(--neon-pink);" id="txt-turbo-val">100% MAXIMUM</span>
-                </div>
-                <div class="meter-bar"><div class="meter-fill" id="fill-turbo" style="width: 100%; background: linear-gradient(90deg, #ff007f, #ffaa00);"></div></div>
-            </div>
+        <div style="display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap;">
+            <button class="btn-arcade" onclick="playSynth(440, 'sawtooth')">🎹 SYNTH A</button>
+            <button class="btn-arcade btn-cyan" onclick="playSynth(880, 'square')">⚡ LASER</button>
+            <button class="btn-arcade" style="background:var(--neon-yellow); color:#000;" onclick="playSynth(220, 'sine')">🌌 COSMIC</button>
+            <button class="btn-arcade btn-cyan" onclick="playSynth(1200, 'triangle')">🔔 WARP</button>
         </div>
     </div>
 </div>
 
 <script>
-    let isSpinning = false;
-    let spinInterval = null;
-    let currentRpm = 0;
+    // ---------- 1. STJERNE-BAKGRUNN CANVAS ----------
+    const spaceCanvas = document.getElementById('space-canvas');
+    const ctxSpace = spaceCanvas.getContext('2d');
+    let stars = [];
 
-    const gcodes = [
-        "> N030 G00 X120.00 Y85.00 Z5.00",
-        "> N040 G01 Z-3.50 F450 M08",
-        "> N050 G02 X150.00 Y100.00 R25.00 F1800",
-        "> N060 G01 X200.00 Y100.00 F2400 (HIGH-SPEED STRIP)",
-        "> N070 G03 X250.00 Y150.00 R50.00",
-        "> N080 G00 Z50.00 M09 (KJØLEVÆSKE AV)",
-        "> N090 G28 U0 W0 (RETUR TIL NULLPUNKT)"
-    ];
+    function resizeSpace() {
+        spaceCanvas.width = window.innerWidth;
+        spaceCanvas.height = window.innerHeight;
+        stars = [];
+        for(let i=0; i<80; i++) {
+            stars.push({
+                x: Math.random() * spaceCanvas.width,
+                y: Math.random() * spaceCanvas.height,
+                r: Math.random() * 2 + 1,
+                speed: Math.random() * 0.8 + 0.2
+            });
+        }
+    }
+    window.addEventListener('resize', resizeSpace);
+    resizeSpace();
 
-    function startSpindel() {
-        if (isSpinning) return;
-        isSpinning = true;
-        document.getElementById('spindle-element').classList.add('spindle-active');
+    function drawSpace() {
+        ctxSpace.clearRect(0, 0, spaceCanvas.width, spaceCanvas.height);
+        ctxSpace.fillStyle = '#ffffff';
+        stars.forEach(s => {
+            ctxSpace.beginPath();
+            ctxSpace.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+            ctxSpace.fill();
+            s.y += s.speed;
+            if (s.y > spaceCanvas.height) s.y = 0;
+        });
+        requestAnimationFrame(drawSpace);
+    }
+    drawSpace();
 
-        let targetRpm = 12000;
-        let gcodeIdx = 0;
+    // ---------- 2. MINISPILL: SPACE DODGER ----------
+    const gCanvas = document.getElementById('game-canvas');
+    const gCtx = gCanvas.getContext('2d');
 
-        spinInterval = setInterval(() => {
-            if (currentRpm < targetRpm) currentRpm += 400;
-            document.getElementById('txt-rpm').innerText = currentRpm + " RPM";
-            document.getElementById('txt-feed').innerText = Math.round(currentRpm * 0.2) + " mm/min";
-            document.getElementById('txt-temp').innerText = (22 + Math.round(currentRpm / 300)) + "°C";
+    function setGameCanvasSize() {
+        gCanvas.width = gCanvas.offsetWidth;
+        gCanvas.height = gCanvas.offsetHeight;
+    }
+    setGameCanvasSize();
 
-            // Oppdater G-kode stream
-            const box = document.getElementById('gcode-box');
-            box.innerHTML = gcodes[gcodeIdx % gcodes.length] + "<br>" + gcodes[(gcodeIdx + 1) % gcodes.length];
-            gcodeIdx++;
-        }, 150);
+    let shipX = gCanvas.width / 2;
+    let score = 0;
+    let lasers = [];
+    let enemies = [];
+
+    function moveShip(dx) {
+        shipX += dx;
+        if (shipX < 20) shipX = 20;
+        if (shipX > gCanvas.width - 20) shipX = gCanvas.width - 20;
     }
 
-    function stoppSpindel() {
-        isSpinning = false;
-        clearInterval(spinInterval);
-        document.getElementById('spindle-element').classList.remove('spindle-active');
-        currentRpm = 0;
-        document.getElementById('txt-rpm').innerText = "0 RPM";
-        document.getElementById('txt-feed').innerText = "0 mm/min";
-        document.getElementById('txt-temp').innerText = "22°C";
-        document.getElementById('gcode-box').innerText = "> MASKIN STOPPET (M05). MASKIN KLAR.";
+    function shootLaser() {
+        lasers.push({ x: shipX, y: gCanvas.height - 30 });
+        playSynth(900, 'square');
     }
 
-    const quotes = [
-        "«Mål to ganger, fress én gang – og husk kaffen!» ☕",
-        "«Riktig Vc og $f_z$ gjør at stålet synger i fresen!» ⚙️",
-        "«Ingenting slår lukten av fersk skjæreolje og nyfresede stålkomponenter om morgenen!» 🔥",
-        "«Precision is not an accident – it's ISO H7 / g6 perfection!» 📐",
-        "«Når sponene flyr som gullstøv i CNC-fresen, da vet du at helgen nærmer seg!» 🚀"
+    function gameLoop() {
+        gCtx.clearRect(0, 0, gCanvas.width, gCanvas.height);
+
+        // Tegn skip (Spiller)
+        gCtx.fillStyle = '#00f3ff';
+        gCtx.beginPath();
+        gCtx.moveTo(shipX, gCanvas.height - 35);
+        gCtx.lineTo(shipX - 15, gCanvas.height - 10);
+        gCtx.lineTo(shipX + 15, gCanvas.height - 10);
+        gCtx.closePath();
+        gCtx.fill();
+
+        // Tegn lasere
+        gCtx.fillStyle = '#ff0055';
+        lasers.forEach((l, i) => {
+            gCtx.fillRect(l.x - 2, l.y, 4, 12);
+            l.y -= 8;
+            if (l.y < 0) lasers.splice(i, 1);
+        });
+
+        // Generer meteor/fiende
+        if (Math.random() < 0.04) {
+            enemies.push({ x: Math.random() * (gCanvas.width - 20) + 10, y: -20, r: 12, speed: Math.random() * 2 + 1.5 });
+        }
+
+        // Tegn meteorer og kollisjon
+        gCtx.fillStyle = '#ffea00';
+        enemies.forEach((e, ei) => {
+            gCtx.beginPath();
+            gCtx.arc(e.x, e.y, e.r, 0, Math.PI * 2);
+            gCtx.fill();
+            e.y += e.speed;
+
+            // Kollisjon med laser
+            lasers.forEach((l, li) => {
+                let dist = Math.hypot(l.x - e.x, l.y - e.y);
+                if (dist < e.r + 5) {
+                    enemies.splice(ei, 1);
+                    lasers.splice(li, 1);
+                    score += 100;
+                    document.getElementById('txt-score').innerText = "SCORE: " + String(score).padStart(4, '0');
+                    playSynth(300, 'sawtooth');
+                }
+            });
+
+            if (e.y > gCanvas.height) enemies.splice(ei, 1);
+        });
+
+        requestAnimationFrame(gameLoop);
+    }
+    gameLoop();
+
+    // Touch-styring på spill-canvas
+    gCanvas.addEventListener('click', (e) => {
+        let rect = gCanvas.getBoundingClientRect();
+        let clickX = e.clientX - rect.left;
+        shipX = clickX;
+        shootLaser();
+    });
+
+    // ---------- 3. AI KRYSTALLKULE ORAKEL ----------
+    const prophecies = [
+        "🌌 Kvantefeltet lover deg flaks! Du vil finne 500 kr på jakkelomma i neste uke.",
+        "🛸 Romvesener fra Alpha Centauri har skannet koden din og gitt den 10/10 stjerner!",
+        "🔮 Skjebnen sier: Neste gang du drikker kaffe, får du din absolutte beste idé noensinne!",
+        "⚡ Et kosmisk energi-utbrudd gjør at neste lottokupong du kjøper får ekstra flaks!",
+        "🪐 Parallell-universet rapporterer: I et annet univers er du president i Romsenteret!"
     ];
 
-    function genererVerkstedSitat() {
-        const idx = Math.floor(Math.random() * quotes.length);
-        document.getElementById('sigrid-quote').innerText = quotes[idx];
+    function spaaFremtiden() {
+        playSynth(600, 'sine');
+        const idx = Math.floor(Math.random() * prophecies.length);
+        document.getElementById('oracle-text').innerText = prophecies[idx];
+    }
 
-        // Tilfeldige metrikk-hopp for moro skyld
-        document.getElementById('fill-coffee').style.width = (80 + Math.floor(Math.random() * 20)) + "%";
-        document.getElementById('fill-prec').style.width = (98 + (Math.random() * 1.9)).toFixed(1) + "%";
+    // ---------- 4. NEON WEB-AUDIO SYNTHESIZER ----------
+    let audioCtx = null;
+    function playSynth(freq, type) {
+        try {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            let osc = audioCtx.createOscillator();
+            let gain = audioCtx.createGain();
+            osc.type = type;
+            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(freq / 2, audioCtx.currentTime + 0.2);
+            gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.2);
+        } catch(e){}
     }
 </script>
 
