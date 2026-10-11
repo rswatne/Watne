@@ -1100,7 +1100,7 @@
                  .replace(/\d{2}\/\d{2}\/\d{4}/g, ' ');
 
         let brutto = 0, skatt = 0, fagforening = 0, netto = 0;
-        let overtidLinjer = [];
+        let ot50Val = 0, ot100Val = 0;
 
         let linjer = txt.split('\n');
         linjer.forEach(linje => {
@@ -1108,61 +1108,53 @@
             let matches = linje.match(/(-?[\d\s]+[\.,]\d{2})/g) || [];
             let numbersOnLine = matches.map(m => parseNorwegianAmount(m));
 
-            // AVLES OVERTIDSLINJER (Tar beløpet i siste kolonne på overtidslinjen)
-            if (l.includes('overtid')) {
-                let belopVal = numbersOnLine.length > 0 ? numbersOnLine[numbersOnLine.length - 1] : 0;
-                let beskr = linje.split(/\d/)[0].trim() || "Overtid";
-                if (belopVal > 0 && belopVal < 50000) overtidLinjer.push({ desc: beskr, val: belopVal });
+            // 1. AVLES OVERTIDSLINJER
+            if (l.includes('overtid 50%') || l.includes('overtid kun tillegg 50%')) {
+                if (numbersOnLine.length > 0) ot50Val += numbersOnLine[numbersOnLine.length - 1];
+            }
+            if (l.includes('overtid 100%')) {
+                if (numbersOnLine.length > 0) ot100Val += numbersOnLine[numbersOnLine.length - 1];
             }
 
-            // 1. AVLES BRUTTOLØNN (Finner det første gyldige beløpet >= 1000 på Bruttolønn-linjen)
+            // 2. AVLES EKSPLISITT BRUTTOLØNN (Må holde ordet 'bruttolønn' på linjen)
             if (l.includes('bruttolønn')) {
-                let val = numbersOnLine.find(n => n >= 1000 && n < 300000);
-                if (val) brutto = val;
+                let valid = numbersOnLine.filter(n => n >= 1000);
+                if (valid.length > 0) brutto = valid[0];
             }
 
-            // 2. AVLES SKATTESTREKK (Forskuddstrekk / Prosenttrekk)
+            // 3. AVLES SKATTESTREKK (Forskuddstrekk / Prosenttrekk)
             if (l.includes('forskuddstrekk') || l.includes('prosenttrekk')) {
-                let val = numbersOnLine.find(n => n >= 100 && n < 200000);
-                if (val) skatt = val;
+                let valid = numbersOnLine.filter(n => n >= 500);
+                if (valid.length > 0) skatt = valid[0];
             }
 
-            // 3. AVLES FAGFORENINGSTREKK (Trukket fagforeningskontingent / Fellesforbundet)
+            // 4. AVLES FAGFORENINGSTREKK (Trukket fagforeningskontingent / Fellesforbundet)
             if (l.includes('fagforeningstrekk') || l.includes('trukket fagforeningskontingent') || l.includes('fellesforbundet')) {
-                let val = numbersOnLine.find(n => n >= 100 && n < 20000);
-                if (val) fagforening = val;
+                let valid = numbersOnLine.filter(n => n >= 50);
+                if (valid.length > 0) fagforening = valid[0];
             }
 
-            // 4. AVLES NETTO TIL UTBETALING
-            if (l.includes('netto til utbetaling')) {
-                let val = numbersOnLine.find(n => n >= 1000 && n < 300000);
-                if (val) netto = val;
-            } else if (l.includes('nettolønn') && netto === 0) {
-                let val = numbersOnLine.find(n => n >= 1000 && n < 300000);
-                if (val) netto = val;
+            // 5. AVLES NETTO TIL UTBETALING
+            if (l.includes('netto til utbetaling') || l.includes('nettolønn')) {
+                let valid = numbersOnLine.filter(n => n >= 1000);
+                if (valid.length > 0) netto = valid[0];
             }
         });
 
-        // PERFEKT BEREGNING UT FRA UNIK FIL (INGEN LÅNING AV TALL FRA ANDRE MÅNEDER)
+        // HVIS SKATT ELLER FAGFORENING MANGLET I PDF-STRØMMEN:
         if (brutto > 0 && netto > 0 && brutto > netto) {
             let totalDeductions = brutto - netto;
             if (fagforening === 0 && totalDeductions > 0) {
                 fagforening = Math.round((brutto * 0.015) * 100) / 100; // 1.5% Fellesforbundet
             }
             if (skatt === 0 && totalDeductions > fagforening) {
-                skatt = totalDeductions - fagforening; // Resterende er Skatt
+                skatt = Math.round((totalDeductions - fagforening) * 100) / 100;
             }
         } else if (brutto > 0 && netto === 0) {
             if (fagforening === 0) fagforening = Math.round((brutto * 0.015) * 100) / 100;
             if (skatt === 0) skatt = Math.round(((brutto - fagforening) * 0.30) * 100) / 100;
             netto = Math.max(0, brutto - skatt - fagforening);
         }
-
-        let ot50Val = 0, ot100Val = 0;
-        overtidLinjer.forEach(o => {
-            if (o.desc.includes('100')) ot100Val += o.val;
-            else ot50Val += o.val;
-        });
 
         // Fyller inn de redigerbare boksene
         if (document.getElementById('v-edit-brutto')) document.getElementById('v-edit-brutto').value = brutto > 0 ? brutto.toFixed(2) : '';
@@ -1171,6 +1163,8 @@
         if (document.getElementById('v-edit-ot50')) document.getElementById('v-edit-ot50').value = ot50Val > 0 ? ot50Val.toFixed(2) : '';
         if (document.getElementById('v-edit-ot100')) document.getElementById('v-edit-ot100').value = ot100Val > 0 ? ot100Val.toFixed(2) : '';
         if (document.getElementById('v-edit-netto')) document.getElementById('v-edit-netto').value = netto > 0 ? netto.toFixed(2) : '';
+
+        oppdaterVismaFraRedigering();
 
         oppdaterVismaFraRedigering();
 
