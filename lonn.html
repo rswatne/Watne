@@ -1068,6 +1068,14 @@ Fagforeningstrekk: -1 063,86`;
         let brutto = 0, skatt = 0, fagforening = 0, netto = 0;
         let overtidLinjer = [];
 
+        // Hent alle tallmønstre med 2 desimaler fra PDF-en
+        let allAmounts = [];
+        let numberMatches = txt.match(/-?\d+[\s.]?\d*[\.,]\d{2}/g) || [];
+        numberMatches.forEach(m => {
+            let val = parseNorwegianAmount(m);
+            if (val > 100 && val < 1000000) allAmounts.push(val);
+        });
+
         let linjer = txt.split('\n');
         linjer.forEach(linje => {
             let l = linje.toLowerCase();
@@ -1079,20 +1087,20 @@ Fagforeningstrekk: -1 063,86`;
                 let belopMatch = linje.match(/([\d\s]+[\.,]\d{2})\s*$/) || linje.match(/([\d\s]+[\.,]\d{2})/);
                 let belopVal = belopMatch ? parseNorwegianAmount(belopMatch[1]) : sistebelop;
                 let beskr = linje.split(/\d/)[0].trim() || "Overtid";
-                overtidLinjer.push({ desc: beskr, val: belopVal });
+                if (belopVal > 0) overtidLinjer.push({ desc: beskr, val: belopVal });
             }
 
-            // AVLES BRUTTO (Leter etter eksakt Bruttolønn)
+            // AVLES BRUTTO
             if (l.includes('bruttolønn') || l.includes('brutto')) {
                 if (sistebelop > brutto) brutto = sistebelop;
             }
 
-            // AVLES SKATT (Forskuddstrekk / Prosenttrekk)
+            // AVLES SKATT
             if (l.includes('forskuddstrekk') || l.includes('prosenttrekk') || (l.includes('skatt') && !l.includes('skatteprosent'))) {
                 if (sistebelop > 0) skatt = sistebelop;
             }
 
-            // AVLES FAGFORENINGSTREKK (Fellesforbundet / Kontingent)
+            // AVLES FAGFORENINGSTREKK
             if (l.includes('fagforeningstrekk') || l.includes('trukket fagforeningskontingent') || l.includes('fagforening') || l.includes('fellesforbundet')) {
                 if (sistebelop > 0) fagforening = sistebelop;
             }
@@ -1102,6 +1110,38 @@ Fagforeningstrekk: -1 063,86`;
                 if (sistebelop > 0) netto = sistebelop;
             }
         });
+
+        // HVIS SKATT ELLER FAGFORENING MANGLET I TEKSTEN (PGA PDF STRØMSEPARASJON):
+        if (brutto > 0) {
+            allAmounts.forEach(amt => {
+                let pct = (amt / brutto) * 100;
+                // Fagforening er ca 1.5% av brutto
+                if (pct >= 1.0 && pct <= 2.2 && fagforening === 0) {
+                    fagforening = amt;
+                }
+                // Skatt er ca 20% til 45% av brutto
+                if (pct >= 20.0 && pct <= 45.0 && skatt === 0) {
+                    skatt = amt;
+                }
+            });
+        } else if (allAmounts.length > 0) {
+            brutto = Math.max(...allAmounts);
+            allAmounts.forEach(amt => {
+                let pct = (amt / brutto) * 100;
+                if (pct >= 1.0 && pct <= 2.2 && fagforening === 0) fagforening = amt;
+                if (pct >= 20.0 && pct <= 45.0 && skatt === 0) skatt = amt;
+                if (pct >= 60.0 && pct <= 85.0 && netto === 0) netto = amt;
+            });
+        }
+
+        // HVIS BRUTTO BLE SETT LIK NETTO, KORRIGER BRUTTO
+        if (brutto > 0 && netto > 0 && (brutto === netto || brutto < netto)) {
+            let maxAmt = Math.max(...allAmounts, 0);
+            if (maxAmt > netto) brutto = maxAmt;
+            else if (skatt > 0) brutto = netto + skatt + fagforening;
+        }
+
+        if (netto === 0 && brutto > 0) netto = Math.max(0, brutto - skatt - fagforening);
 
         // Vis overtidsoversikt om funnet
         const otBox = document.getElementById('visma-res-overtid-box');
@@ -1116,10 +1156,6 @@ Fagforeningstrekk: -1 063,86`;
         } else {
             otBox.style.display = 'none';
         }
-
-        // Visma Spesifikk fallback om noe står i sammendraget
-        if (brutto === 0 && window.sisteBrutto) brutto = window.sisteBrutto;
-        if (netto === 0 && brutto > 0) netto = Math.max(0, brutto - skatt - fagforening);
 
         document.getElementById('visma-res-brutto').innerText = brutto.toFixed(2).replace('.', ',') + " kr";
         document.getElementById('visma-res-skatt').innerText = "− " + skatt.toFixed(2).replace('.', ',') + " kr";
