@@ -267,15 +267,16 @@
             <span class="prompt-chip" onclick="sendQuickPrompt('Gi meg sjekkliste for M16 gjenging i Syrefast 316L')" id="chip4">🛠️ Sjekkliste M16 Syrefast</span>
         </div>
 
-        <!-- LIVE GEMINI AI API BAR -->
+        <!-- LIVE GEMINI AI API BAR MED TESTKNAPP -->
         <div style="padding: 0.625rem 1rem; background: var(--bg); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; font-size: 0.8125rem; flex-wrap: wrap;">
-            <div style="display: flex; align-items: center; gap: 0.5rem; flex: 1; min-width: 16rem;">
+            <div style="display: flex; align-items: center; gap: 0.5rem; flex: 1; min-width: 16rem; flex-wrap: wrap;">
                 <span style="font-weight: 700; color: var(--purple-deep);">🔑 Live Gemini AI Nøkkel:</span>
                 <label for="gemini-api-key" style="display:none;">Google Gemini API Nøkkel</label>
-                <input type="password" id="gemini-api-key" class="field-class" style="height: 2.125rem; font-size: 0.75rem; max-width: 15rem;" placeholder="Lim inn gratis Google Gemini API-nøkkel..." onchange="lagreApiKey()">
+                <input type="password" id="gemini-api-key" class="field-class" style="height: 2.125rem; font-size: 0.75rem; max-width: 14rem;" placeholder="Lim inn gratis Gemini API-nøkkel..." oninput="lagreApiKey()" onpaste="setTimeout(lagreApiKey, 100)">
+                <button type="button" class="btn btn-purple" style="height: 2.125rem; padding: 0 0.75rem; font-size: 0.75rem;" onclick="testGeminiTilkobling()">🧪 Test Live AI</button>
                 <span id="gemini-status-badge" style="font-size: 0.7rem; font-weight: 700; color: var(--muted);">⚡ Lokal modus</span>
             </div>
-            <button type="button" class="btn btn-outline" style="height: 2.125rem; padding: 0 0.625rem; font-size: 0.75rem;" onclick="visApiKeyHjelp()">ℹ️ Gratis Nøkkel (30 sek)</button>
+            <button type="button" class="btn btn-outline" style="height: 2.125rem; padding: 0 0.625rem; font-size: 0.75rem;" onclick="visApiKeyHjelp()">ℹ️ Skaff Gratis Nøkkel</button>
         </div>
 
         <!-- CHAT INPUT -->
@@ -730,11 +731,12 @@
     }
 
     function lagreApiKey() {
-        const key = document.getElementById('gemini-api-key').value.trim();
+        const input = document.getElementById('gemini-api-key');
+        if (!input) return;
+        let key = input.value.trim().replace(/["']/g, '');
         if (key) {
             localStorage.setItem('sigrid_gemini_api_key', key);
             oppdaterApiKeyUI();
-            alert("✅ Live Google Gemini API-nøkkel lagret! Sigrid AI er nå koblet til live AI!");
         } else {
             localStorage.removeItem('sigrid_gemini_api_key');
             oppdaterApiKeyUI();
@@ -742,7 +744,7 @@
     }
 
     function getActiveGeminiApiKey() {
-        return localStorage.getItem('sigrid_gemini_api_key') || "";
+        return (localStorage.getItem('sigrid_gemini_api_key') || "").trim().replace(/["']/g, '');
     }
 
     function oppdaterApiKeyUI() {
@@ -750,13 +752,12 @@
         const badge = document.getElementById('gemini-status-badge');
         const input = document.getElementById('gemini-api-key');
         if (key) {
-            if (input) input.value = key;
+            if (input && input.value !== key) input.value = key;
             if (badge) {
                 badge.innerText = "🟢 Live Gemini 1.5 Flash AI Aktiv";
                 badge.style.color = "var(--emerald)";
             }
         } else {
-            if (input) input.value = "";
             if (badge) {
                 badge.innerText = "⚡ Lokal modus";
                 badge.style.color = "var(--muted)";
@@ -765,7 +766,42 @@
     }
 
     function visApiKeyHjelp() {
-        alert("🔑 Slik får du din gratis Google Gemini API-nøkkel (30 sek):\n\n1. Gå til Google AI Studio: aistudio.google.com/app/apikey\n2. Logg inn med din Google-konto og trykk 'Create API key'.\n3. Kopier nøkkelen og lim den inn her!\n\nNøkkelen lagres trygt på din telefon og er 100% gratis for personlig bruk.");
+        alert("🔑 Slik får du din gratis Google Gemini API-nøkkel (30 sek):\n\n1. Åpne Google AI Studio: aistudio.google.com/app/apikey\n2. Logg inn med din Google-konto og trykk 'Create API key'.\n3. Kopier nøkkelen og lim den inn her!\n4. Trykk på '🧪 Test Live AI' for å verifisere tilkoblingen!");
+    }
+
+    async function testGeminiTilkobling() {
+        lagreApiKey();
+        const apiKey = getActiveGeminiApiKey();
+        if (!apiKey) {
+            alert("⚠️ Lim inn din Google Gemini API-nøkkel i feltet først!");
+            return;
+        }
+
+        const statusBadge = document.getElementById('gemini-status-badge');
+        if (statusBadge) statusBadge.innerText = "⏳ Tester tilkobling mot Google...";
+
+        try {
+            const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    contents: [{ role: 'user', parts: [{ text: "Si 'Hallo fra Live Gemini 1.5 Flash AI!' på norsk på 1 ukomplisert setning." }] }]
+                })
+            });
+            const data = await res.json();
+            if (res.ok && data.candidates && data.candidates[0]) {
+                const reply = data.candidates[0].content.parts[0].text;
+                oppdaterApiKeyUI();
+                alert(`🎉 VELLYKKET TILKOBLING!\n\nSigrid AI er nå 100% koblet til live Google Gemini AI!\n\nSvar fra Google Gemini:\n"${reply.trim()}"`);
+            } else {
+                const errMsg = (data.error && data.error.message) ? data.error.message : JSON.stringify(data);
+                oppdaterApiKeyUI();
+                alert(`🔴 TILKOBLINGSFEIL FRA GOOGLE:\n\n${errMsg}\n\nSjekk at du har kopiert hele API-nøkkelen fra aistudio.google.com/app/apikey uten ekstra tegn.`);
+            }
+        } catch(err) {
+            oppdaterApiKeyUI();
+            alert(`🔴 NETTVERKSFEIL:\n\nKunne ikke nå Google sin server: ${err.message}`);
+        }
     }
 
     async function queryGeminiApi(userPrompt) {
