@@ -405,7 +405,8 @@
 
     function beregnVinter() {
         const wltp = parseFloat(document.getElementById('winter-wltp').value) || 480;
-        const lossPct = parseFloat(document.getElementById('winter-temp').value) || 25;
+        const tempInput = document.getElementById('winter-temp').value;
+        const lossPct = (tempInput !== "" && !isNaN(parseFloat(tempInput))) ? parseFloat(tempInput) : 0;
 
         const remainingPct = Math.max(0, 100 - lossPct);
         const realRange = Math.round(wltp * (remainingPct / 100));
