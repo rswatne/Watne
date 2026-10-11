@@ -1068,79 +1068,47 @@ Fagforeningstrekk: -1 063,86`;
         let brutto = 0, skatt = 0, fagforening = 0, netto = 0;
         let overtidLinjer = [];
 
-        // Hent alle tallmønstre med 2 desimaler fra PDF-en
-        let allAmounts = [];
-        let numberMatches = txt.match(/-?\d+[\s.]?\d*[\.,]\d{2}/g) || [];
-        numberMatches.forEach(m => {
-            let val = parseNorwegianAmount(m);
-            if (val > 100 && val < 1000000) allAmounts.push(val);
-        });
-
         let linjer = txt.split('\n');
         linjer.forEach(linje => {
             let l = linje.toLowerCase();
             let matches = linje.match(/(-?[\d\s]+[\.,]\d{2})/g) || [];
-            let sistebelop = matches.length > 0 ? parseNorwegianAmount(matches[matches.length - 1]) : 0;
+            // I Visma er FØRSTE tall "Totalt for perioden" (Månedens inntekt/skatt), mens SISTE er "Akkumulert hittil i år"!
+            let forstebelop = matches.length > 0 ? parseNorwegianAmount(matches[0]) : 0;
 
             // AVLES OVERTIDSLINJER
             if (l.includes('overtid')) {
-                let belopMatch = linje.match(/([\d\s]+[\.,]\d{2})\s*$/) || linje.match(/([\d\s]+[\.,]\d{2})/);
-                let belopVal = belopMatch ? parseNorwegianAmount(belopMatch[1]) : sistebelop;
+                let belopVal = forstebelop;
+                if (matches.length > 1) {
+                    // Hvis linjen har Antall, Sats, Beløp -> ta beløp i kolonne 3
+                    belopVal = parseNorwegianAmount(matches[matches.length - 1]);
+                }
                 let beskr = linje.split(/\d/)[0].trim() || "Overtid";
-                if (belopVal > 0) overtidLinjer.push({ desc: beskr, val: belopVal });
+                if (belopVal > 0 && belopVal < 50000) overtidLinjer.push({ desc: beskr, val: belopVal });
             }
 
-            // AVLES BRUTTO
+            // AVLES BRUTTO (Ta FØRSTE tall "Totalt for perioden", IKKE "Hittil i år")
             if (l.includes('bruttolønn') || l.includes('brutto')) {
-                if (sistebelop > brutto) brutto = sistebelop;
+                if (forstebelop > 0 && forstebelop < 300000) brutto = forstebelop;
             }
 
-            // AVLES SKATT
+            // AVLES SKATT (Forskuddstrekk / Prosenttrekk)
             if (l.includes('forskuddstrekk') || l.includes('prosenttrekk') || (l.includes('skatt') && !l.includes('skatteprosent'))) {
-                if (sistebelop > 0) skatt = sistebelop;
+                if (forstebelop > 0 && forstebelop < 100000) skatt = forstebelop;
             }
 
             // AVLES FAGFORENINGSTREKK
-            if (l.includes('fagforeningstrekk') || l.includes('trukket fagforeningskontingent') || l.includes('fagforening') || l.includes('fellesforbundet')) {
-                if (sistebelop > 0) fagforening = sistebelop;
+            if (l.includes('fagforeningstrekk') || l.includes('trukket fagforeningskontingent') || l.includes('fellesforbundet')) {
+                if (forstebelop > 0 && forstebelop < 20000) fagforening = forstebelop;
             }
 
             // AVLES NETTO TIL UTBETALING
             if (l.includes('netto til utbetaling') || l.includes('nettolønn') || (l.includes('netto') && !l.includes('brutto'))) {
-                if (sistebelop > 0) netto = sistebelop;
+                if (forstebelop > 0 && forstebelop < 300000) netto = forstebelop;
             }
         });
 
-        // HVIS SKATT ELLER FAGFORENING MANGLET I TEKSTEN (PGA PDF STRØMSEPARASJON):
-        if (brutto > 0) {
-            allAmounts.forEach(amt => {
-                let pct = (amt / brutto) * 100;
-                // Fagforening er ca 1.5% av brutto
-                if (pct >= 1.0 && pct <= 2.2 && fagforening === 0) {
-                    fagforening = amt;
-                }
-                // Skatt er ca 20% til 45% av brutto
-                if (pct >= 20.0 && pct <= 45.0 && skatt === 0) {
-                    skatt = amt;
-                }
-            });
-        } else if (allAmounts.length > 0) {
-            brutto = Math.max(...allAmounts);
-            allAmounts.forEach(amt => {
-                let pct = (amt / brutto) * 100;
-                if (pct >= 1.0 && pct <= 2.2 && fagforening === 0) fagforening = amt;
-                if (pct >= 20.0 && pct <= 45.0 && skatt === 0) skatt = amt;
-                if (pct >= 60.0 && pct <= 85.0 && netto === 0) netto = amt;
-            });
-        }
-
-        // HVIS BRUTTO BLE SETT LIK NETTO, KORRIGER BRUTTO
-        if (brutto > 0 && netto > 0 && (brutto === netto || brutto < netto)) {
-            let maxAmt = Math.max(...allAmounts, 0);
-            if (maxAmt > netto) brutto = maxAmt;
-            else if (skatt > 0) brutto = netto + skatt + fagforening;
-        }
-
+        // Visma Spesifikk fallback dersom brutto eller netto var ufullstendig
+        if (brutto === 0 && window.sisteBrutto) brutto = window.sisteBrutto;
         if (netto === 0 && brutto > 0) netto = Math.max(0, brutto - skatt - fagforening);
 
         // Vis overtidsoversikt om funnet
