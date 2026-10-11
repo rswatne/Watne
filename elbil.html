@@ -300,13 +300,13 @@
             </label>
 
             <label style="display: flex; flex-direction: column; gap: 0.375rem;">
-                <span style="font-size: 0.875rem; font-weight: 600;">Utetemperatur & Forhold</span>
+                <span style="font-size: 0.875rem; font-weight: 600;">Utetemperatur & Kjøreforhold</span>
                 <select id="winter-temp" class="field-class" onchange="beregnVinter()">
-                    <option value="0">+20°C Sommer (Optimal forhold 100%)</option>
-                    <option value="12">+10°C Vår/Høst (-12% tap)</option>
-                    <option value="25" selected>0°C Norsk Vinter (-25% tap)</option>
-                    <option value="35">-15°C Kald Vinter (-35% tap)</option>
-                    <option value="42">-25°C Ekstrem Vinter (-42% tap)</option>
+                    <option value="0">+20°C Sommer (100% reell rekkevidde · 0% tap)</option>
+                    <option value="12">+10°C Vår/Høst (88% reell rekkevidde · -12% tap)</option>
+                    <option value="25" selected>0°C Norsk Vinter (75% reell rekkevidde · -25% tap)</option>
+                    <option value="35">-10°C Kald Vinter (65% reell rekkevidde · -35% tap)</option>
+                    <option value="42">-20°C Ekstrem Kulde (58% reell rekkevidde · -42% tap)</option>
                 </select>
             </label>
         </div>
@@ -407,11 +407,12 @@
         const wltp = parseFloat(document.getElementById('winter-wltp').value) || 480;
         const lossPct = parseFloat(document.getElementById('winter-temp').value) || 25;
 
-        const realRange = Math.round(wltp * (1 - lossPct / 100));
+        const remainingPct = Math.max(0, 100 - lossPct);
+        const realRange = Math.round(wltp * (remainingPct / 100));
         const lossKm = Math.round(wltp - realRange);
 
-        document.getElementById('res-winter-range').innerText = `${realRange} km`;
-        document.getElementById('res-winter-loss').innerText = `- ${lossKm} km (${lossPct}%)`;
+        document.getElementById('res-winter-range').innerText = `${realRange} km (${remainingPct}% av WLTP)`;
+        document.getElementById('res-winter-loss').innerText = `- ${lossKm} km (${lossPct}% tap pga. kulde/varme)`;
     }
 
     // Init beregninger
