@@ -244,6 +244,7 @@
             <h1 style="font-size: 1.75rem; font-weight: 800; margin: 0;" id="txt-title">🤖 Sigrid — AI Verkstedsassistent</h1>
         </div>
         <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <button type="button" class="btn btn-outline" style="height: 2.875rem; padding: 0 0.75rem; font-size: 0.8125rem; color: var(--purple-deep);" onclick="tomSamtaleMinne()">🗑️ Tøm samtalen</button>
             <button type="button" class="btn btn-outline" style="height: 2.875rem; padding: 0 0.75rem; font-size: 0.875rem;" onclick="toggleLanguage()" id="lang-toggle-btn">🇳🇴 NO</button>
             <a href="index.html" class="btn btn-outline" style="height: 2.875rem; padding: 0 0.875rem; font-size: 0.875rem;" id="txt-btn-home">🏠 Hovedmeny</a>
             <button type="button" class="btn btn-outline" style="height: 2.875rem; width: 2.875rem; padding: 0; border-radius: 50%; font-size: 1.15rem;" onclick="toggleTheme()" id="theme-toggle-btn">🌙</button>
@@ -258,13 +259,13 @@
             </div>
         </div>
 
-        <!-- HURTIGMELDINGER / LISTE-KNAPP -->
+        <!-- HURTIGMELDINGER / KATEGORISERTE KNAPPER -->
         <div class="quick-prompts">
             <span class="prompt-chip prompt-chip-highlight" onclick="sendQuickPrompt('💡 Hva kan Sigrid gjøre?')" id="chip-menu">💡 Hva kan Sigrid gjøre?</span>
-            <span class="prompt-chip" onclick="sendQuickPrompt('Lag en lønnsrapport av vaktlisten min')" id="chip1">📧 Lag Lønnsrapport</span>
-            <span class="prompt-chip" onclick="sendQuickPrompt('Hvor mye ekstra tjener jeg på 10 timer 50% overtid?')" id="chip2">📊 Lønnssimulator</span>
-            <span class="prompt-chip" onclick="sendQuickPrompt('Eksporter vaktlisten min som kalenderfil .ics')" id="chip3">📅 Eksporter ICS Kalender</span>
-            <span class="prompt-chip" onclick="sendQuickPrompt('Gi meg sjekkliste for M16 gjenging i Syrefast 316L')" id="chip4">🛠️ Sjekkliste M16 Syrefast</span>
+            <span class="prompt-chip" onclick="sendQuickPrompt('Lag en lønnsrapport av vaktlisten min')" id="chip1">💰 Lønn & Vakter</span>
+            <span class="prompt-chip" onclick="sendQuickPrompt('Regn ut Vc, n og Vf for Ø16 fres i Syrefast 316L')" id="chip2">⚙️ CNC & Skjæredata</span>
+            <span class="prompt-chip" onclick="sendQuickPrompt('Gi meg sjekkliste og kjernebor for M16 i Syrefast 316L')" id="chip3">🛠️ Verksted & Gjenger</span>
+            <span class="prompt-chip" onclick="sendQuickPrompt('Hvor lang tid tar det å lade 77 kWh batteri fra 10% til 80% på 150 kW lynlader?')" id="chip4">⚡ Elbil & Lading</span>
         </div>
 
         <!-- LIVE GEMINI AI API BAR MED TESTKNAPP -->
@@ -884,13 +885,51 @@ Svar presist, vennlig og hjelpsomt på norsk med HTML-formatering (f.eks <strong
         return null;
     }
 
-    function appendMessage(text, isUser) {
+    let samtaleHistorikk = [];
+
+    function lastSamtaleHistorikk() {
+        const saved = localStorage.getItem('sigrid_samtaale_minne_v26');
+        if (saved) {
+            try { samtaleHistorikk = JSON.parse(saved); } catch(e){ samtaleHistorikk = []; }
+        }
+        tegnSamtaleFraMinne();
+    }
+
+    function lagreSamtaleHistorikk() {
+        localStorage.setItem('sigrid_samtaale_minne_v26', JSON.stringify(samtaleHistorikk));
+    }
+
+    function tomSamtaleMinne() {
+        if (confirm("Slette samtaleminnet til Sigrid AI?")) {
+            localStorage.removeItem('sigrid_samtaale_minne_v26');
+            samtaleHistorikk = [];
+            tegnSamtaleFraMinne();
+        }
+    }
+
+    function tegnSamtaleFraMinne() {
         const box = document.getElementById('chat-box');
-        const div = document.createElement('div');
-        div.className = `msg-bubble ${isUser ? 'msg-user' : 'msg-ai'}`;
-        div.innerHTML = text;
-        box.appendChild(div);
-        box.scrollTop = box.scrollHeight;
+        box.innerHTML = "";
+        if (samtaleHistorikk.length === 0) {
+            const curLang = localStorage.getItem('seland_lang') || 'no';
+            setRandomSigridGreeting(curLang);
+        } else {
+            samtaleHistorikk.forEach(m => {
+                const div = document.createElement('div');
+                div.className = `msg-bubble ${m.isUser ? 'msg-user' : 'msg-ai'}`;
+                div.innerHTML = m.text;
+                box.appendChild(div);
+            });
+            box.scrollTop = box.scrollHeight;
+        }
+    }
+
+    function appendMessage(text, isUser, lagre = true) {
+        if (lagre) {
+            samtaleHistorikk.push({ text: text, isUser: isUser });
+            lagreSamtaleHistorikk();
+        }
+        tegnSamtaleFraMinne();
     }
 
     async function handleChatSubmit(e) {
@@ -902,12 +941,21 @@ Svar presist, vennlig og hjelpsomt på norsk med HTML-formatering (f.eks <strong
         appendMessage(text, true);
         input.value = '';
 
-        const apiKey = localStorage.getItem('sigrid_gemini_api_key');
+        const apiKey = getActiveGeminiApiKey();
         if (apiKey) {
-            appendMessage("🤖 <em>Sigrid tenker med live Gemini AI...</em>", false);
-            const geminiReply = await queryGeminiApi(text);
+            // Legg til midlertidig tenke-melding
             const box = document.getElementById('chat-box');
-            if (box.lastChild) box.removeChild(box.lastChild);
+            const div = document.createElement('div');
+            div.className = 'msg-bubble msg-ai';
+            div.id = 'temp-thinking-msg';
+            div.innerHTML = "🤖 <em>Sigrid tenker med live Gemini AI...</em>";
+            box.appendChild(div);
+            box.scrollTop = box.scrollHeight;
+
+            const geminiReply = await queryGeminiApi(text);
+
+            const tempEl = document.getElementById('temp-thinking-msg');
+            if (tempEl) tempEl.remove();
 
             if (geminiReply) {
                 appendMessage(geminiReply, false);
@@ -918,7 +966,7 @@ Svar presist, vennlig og hjelpsomt på norsk med HTML-formatering (f.eks <strong
         setTimeout(() => {
             const reply = generateSigridResponse(text);
             appendMessage(reply, false);
-        }, 350);
+        }, 300);
     }
 
     function sendQuickPrompt(promptText) {
@@ -926,9 +974,10 @@ Svar presist, vennlig og hjelpsomt på norsk med HTML-formatering (f.eks <strong
         handleChatSubmit(new Event('submit'));
     }
 
-    // Init API-nøkkel visning
+    // Init lasting
     window.addEventListener('load', function() {
         oppdaterApiKeyUI();
+        lastSamtaleHistorikk();
     });
 </script>
 
