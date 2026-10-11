@@ -1,4 +1,8 @@
 (function() {
+    // SIGRID AI STATUS TOGGLE (Set to true to activate Sigrid AI Widget on all pages)
+    const SIGRID_AI_ACTIVE = false;
+    if (!SIGRID_AI_ACTIVE) return;
+
     if (document.getElementById('sigrid-widget-container')) return;
 
     // Inject CSS for Mobile Responsiveness
