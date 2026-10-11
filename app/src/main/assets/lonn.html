@@ -1072,7 +1072,7 @@ Fagforeningstrekk: -1 063,86`;
         let txt = document.getElementById('visma-text-input').value;
         if (!txt.trim()) { alert("Lim inn teksten fra din Visma lønnsslipp først."); return; }
 
-        // FJERNER DATOER (f.eks 09.10.2026, 15.04.1987, 2026-10) slik at datoer som "09.10" aldri forstyrrer beløpene!
+        // FJERNER DATOER (f.eks 09.10.2026, 15.04.1987, 2026-10) slik at datoer aldri forstyrrer beløpene
         txt = txt.replace(/\d{2}\.\d{2}\.\d{4}/g, ' ')
                  .replace(/\d{4}-\d{2}/g, ' ')
                  .replace(/\d{2}\/\d{2}\/\d{4}/g, ' ');
@@ -1084,38 +1084,44 @@ Fagforeningstrekk: -1 063,86`;
         linjer.forEach(linje => {
             let l = linje.toLowerCase();
             let matches = linje.match(/(-?[\d\s]+[\.,]\d{2})/g) || [];
-            let reelleMaelp = matches.map(m => parseNorwegianAmount(m)).filter(v => v >= 100);
-            let forstebelop = reelleMaelp.length > 0 ? reelleMaelp[0] : 0;
+            let numbersOnLine = matches.map(m => parseNorwegianAmount(m));
 
-            // AVLES OVERTIDSLINJER
+            // AVLES OVERTIDSLINJER (Tar beløpet i siste kolonne på overtidslinjen)
             if (l.includes('overtid')) {
-                let belopVal = reelleMaelp.length > 0 ? reelleMaelp[reelleMaelp.length - 1] : 0;
+                let belopVal = numbersOnLine.length > 0 ? numbersOnLine[numbersOnLine.length - 1] : 0;
                 let beskr = linje.split(/\d/)[0].trim() || "Overtid";
                 if (belopVal > 0 && belopVal < 50000) overtidLinjer.push({ desc: beskr, val: belopVal });
             }
 
-            // AVLES BRUTTO (Månedens beløp, første tall >= 1000)
-            if (l.includes('bruttolønn') || l.includes('brutto')) {
-                if (forstebelop >= 1000 && forstebelop < 300000) brutto = forstebelop;
+            // 1. AVLES BRUTTOLØNN (Finner det første gyldige beløpet >= 1000 på Bruttolønn-linjen)
+            if (l.includes('bruttolønn')) {
+                let val = numbersOnLine.find(n => n >= 1000 && n < 300000);
+                if (val) brutto = val;
             }
 
-            // AVLES SKATT (Forskuddstrekk / Prosenttrekk)
-            if (l.includes('forskuddstrekk') || l.includes('prosenttrekk') || (l.includes('skatt') && !l.includes('skatteprosent'))) {
-                if (forstebelop >= 100 && forstebelop < 100000) skatt = forstebelop;
+            // 2. AVLES SKATTESTREKK (Forskuddstrekk / Prosenttrekk)
+            if (l.includes('forskuddstrekk') || l.includes('prosenttrekk')) {
+                let val = numbersOnLine.find(n => n >= 100 && n < 200000);
+                if (val) skatt = val;
             }
 
-            // AVLES FAGFORENINGSTREKK
+            // 3. AVLES FAGFORENINGSTREKK (Trukket fagforeningskontingent / Fellesforbundet)
             if (l.includes('fagforeningstrekk') || l.includes('trukket fagforeningskontingent') || l.includes('fellesforbundet')) {
-                if (forstebelop >= 100 && forstebelop < 20000) fagforening = forstebelop;
+                let val = numbersOnLine.find(n => n >= 100 && n < 20000);
+                if (val) fagforening = val;
             }
 
-            // AVLES NETTO TIL UTBETALING
-            if (l.includes('netto til utbetaling') || l.includes('nettolønn') || (l.includes('netto') && !l.includes('brutto'))) {
-                if (forstebelop >= 1000 && forstebelop < 300000) netto = forstebelop;
+            // 4. AVLES NETTO TIL UTBETALING
+            if (l.includes('netto til utbetaling')) {
+                let val = numbersOnLine.find(n => n >= 1000 && n < 300000);
+                if (val) netto = val;
+            } else if (l.includes('nettolønn') && netto === 0) {
+                let val = numbersOnLine.find(n => n >= 1000 && n < 300000);
+                if (val) netto = val;
             }
         });
 
-        // Visma Spesifikk fallback dersom brutto eller netto var ufullstendig
+        // Visma Spesifikk fallback dersom brutto eller netto manglet i skanningen
         if (brutto === 0 && window.sisteBrutto) brutto = window.sisteBrutto;
         if (netto === 0 && brutto > 0) netto = Math.max(0, brutto - skatt - fagforening);
         if (brutto === 0 && window.sisteBrutto) brutto = window.sisteBrutto;
