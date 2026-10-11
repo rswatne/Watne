@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Elbil-Kalkulator ⚡ - Watne Pro</title>
+
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0284c7">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Elbil">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0284c7;
+            --primary-deep: #0369a1;
+            --primary-soft: #e0f2fe;
+            --emerald: #059669;
+            --emerald-soft: #d1fae5;
+            --amber: #d97706;
+            --amber-soft: #fef3c7;
+            --purple: #7c3aed;
+            --purple-soft: #f3e8ff;
+            --card: #ffffff;
+            --bg: #f8fafc;
+            --ink: #0f172a;
+            --muted: #64748b;
+            --line: #e2e8f0;
+            --radius: 12px;
+            --shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.05);
+        }
+
+        body.dark-mode {
+            --primary: #38bdf8;
+            --primary-deep: #0284c7;
+            --primary-soft: rgba(56, 189, 248, 0.12);
+            --emerald: #10b981;
+            --emerald-soft: rgba(16, 185, 129, 0.12);
+            --amber: #f59e0b;
+            --amber-soft: rgba(245, 158, 11, 0.12);
+            --purple: #a78bfa;
+            --purple-soft: rgba(167, 139, 250, 0.12);
+            --card: #1e293b;
+            --bg: #0f172a;
+            --ink: #f8fafc;
+            --muted: #94a3b8;
+            --line: #334155;
+            --shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.35);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--ink);
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        .main-layout {
+            max-width: 52rem;
+            margin: 0 auto;
+            padding: 1.5rem 1rem 4rem 1rem;
+        }
+
+        header {
+            margin-bottom: 1.25rem;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 1rem;
+            border-bottom: 1px solid var(--line);
+            padding-bottom: 0.875rem;
+        }
+
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+
+        .field-class {
+            height: 2.875rem;
+            width: 100%;
+            border-radius: 0.625rem;
+            border: 1px solid var(--line);
+            background-color: var(--card);
+            padding: 0 0.875rem;
+            font-size: 0.9375rem;
+            color: var(--ink);
+            outline: none;
+        }
+        .field-class:focus { border-color: var(--primary); }
+
+        section {
+            border-radius: 1rem;
+            border: 1px solid var(--line);
+            background-color: var(--card);
+            padding: 1.25rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 1.25rem;
+        }
+
+        section header {
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: baseline;
+            gap: 0.75rem;
+            border-bottom: 1px solid var(--line);
+            padding-bottom: 0.75rem;
+        }
+
+        .grid-2 {
+            display: grid;
+            gap: 0.875rem;
+        }
+        @media (min-width: 640px) {
+            .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            border-radius: 0.625rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            text-decoration: none;
+        }
+        .btn-primary { height: 2.875rem; width: 100%; background: var(--emerald); color: white; font-weight: 700; }
+        .btn-outline { height: 2.75rem; border: 1px solid var(--line); background: var(--card); color: var(--ink); padding: 0 1rem; }
+
+        .line-row {
+            display: flex; align-items: baseline;
+            justify-content: space-between; gap: 0.75rem;
+            padding: 0.375rem 0;
+        }
+        .line-row.strong { font-weight: 700; }
+
+        .app-footer {
+            margin-top: 2.5rem;
+            margin-bottom: 2rem;
+            border-top: 1px solid var(--line);
+            padding-top: 1.25rem;
+            text-align: center;
+            font-size: 0.8125rem;
+            color: var(--muted);
+        }
+    </style>
+</head>
+<body>
+
+<div class="main-layout">
+    <header>
+        <div>
+            <h1 style="font-size: 1.875rem; font-weight: 800; margin: 0;" id="txt-title">⚡ Elbil-Kalkulator</h1>
+            <p style="font-size: 0.8125rem; color: var(--muted); margin: 0.25rem 0 0 0;" id="txt-sub">Ladetid, rekkevidde, besparelse & langtur</p>
+        </div>
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <a href="index.html" class="btn btn-outline" id="txt-btn-home">🏠 Hovedmeny</a>
+            <button type="button" class="btn btn-outline" style="height: 2.75rem; width: 2.75rem; padding: 0; border-radius: 50%; font-size: 1.15rem;" onclick="toggleTheme()" id="theme-toggle-btn">🌙</button>
+        </div>
+    </header>
+
+    <!-- MODUL 1: LADETID & REKKEVIDDE -->
+    <section>
+        <header>
+            <span class="font-mono" style="font-size: 0.75rem; color: var(--emerald); font-weight: 700;">01</span>
+            <h2 style="font-size: 1.125rem; font-weight: 700; margin: 0;">🔌 Ladetid & Tilført Rekkevidde</h2>
+        </header>
+
+        <div class="grid-2">
+            <label style="display: flex; flex-direction: column; gap: 0.375rem;">
+                <span style="font-size: 0.875rem; font-weight: 600;">Batterikapasitet (kWh)</span>
+                <input type="number" id="charge-battery" class="field-class" value="77" oninput="beregnLadetid()">
+            </label>
+
+            <label style="display: flex; flex-direction: column; gap: 0.375rem;">
+                <span style="font-size: 0.875rem; font-weight: 600;">Ladekilde / Ladeeffekt</span>
+                <select id="charge-type" class="field-class" onchange="beregnLadetid()">
+                    <option value="2.3">Stikkontakt (2.3 kW)</option>
+                    <option value="3.7">Hjemmelader 1-fase 16A (3.7 kW)</option>
+                    <option value="7.4" selected>Hjemmelader 1-fase 32A (7.4 kW)</option>
+                    <option value="11">Hjemmelader 3-fase 16A (11 kW)</option>
+                    <option value="22">Hjemmelader 3-fase 32A (22 kW)</option>
+                    <option value="50">Hurtiglader (50 kW)</option>
+                    <option value="150">Lynlader (150 kW)</option>
+                    <option value="250">Supercharger / Lynlader (250 kW)</option>
+                </select>
+            </label>
+
+            <label style="display: flex; flex-direction: column; gap: 0.375rem;">
+                <span style="font-size: 0.875rem; font-weight: 600;">Start Batteriprosent (%)</span>
+                <input type="number" id="charge-start" class="field-class" value="10" min="0" max="100" oninput="beregnLadetid()">
+            </label>
+
+            <label style="display: flex; flex-direction: column; gap: 0.375rem;">
+                <span style="font-size: 0.875rem; font-weight: 600;">Mål Batteriprosent (%)</span>
+                <input type="number" id="charge-target" class="field-class" value="80" min="0" max="100" oninput="beregnLadetid()">
+            </label>
+
+            <label style="display: flex; flex-direction: column; gap: 0.375rem;">
+                <span style="font-size: 0.875rem; font-weight: 600;">Strømpris (kr/kWh inkl. nettleie)</span>
+                <input type="number" step="0.1" id="charge-price" class="field-class" value="1.30" oninput="beregnLadetid()">
+            </label>
+
+            <label style="display: flex; flex-direction: column; gap: 0.375rem;">
+                <span style="font-size: 0.875rem; font-weight: 600;">Snittforbruk (kWh/100 km)</span>
+                <input type="number" step="0.5" id="charge-consumption" class="field-class" value="18" oninput="beregnLadetid()">
+            </label>
+        </div>
+
+        <div style="margin-top: 1.25rem; padding: 1.25rem; background: var(--emerald-soft); border: 1.5px solid var(--emerald); border-radius: 1rem;">
+            <div class="line-row strong" style="color: #047857; font-size: 1.1rem;">
+                <span>⏱️ Estimert Ladetid:</span>
+                <span id="res-charge-time" class="font-mono">0t 0m</span>
+            </div>
+            <div class="line-row strong" style="color: #047857; margin-top: 0.375rem;">
+                <span>🔋 Tilført Rekkevidde:</span>
+                <span id="res-charge-range" class="font-mono">+ 0 km</span>
+            </div>
+            <div class="line-row strong" style="color: #047857; margin-top: 0.375rem;">
+                <span>💰 Ladekostnad:</span>
+                <span id="res-charge-cost" class="font-mono">0,00 kr</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- MODUL 2: ELBIL VS BENSIN/DIESEL BESPARELSE -->
+    <section>
+        <header>
+            <span class="font-mono" style="font-size: 0.75rem; color: var(--emerald); font-weight: 700;">02</span>
+            <h2 style="font-size: 1.125rem; font-weight: 700; margin: 0;">💰 Elbil vs Bensin/Diesel Besparelse</h2>
+        </header>
+
+        <div class="grid-2">
+            <label style="display: flex; flex-direction: column; gap: 0.375rem;">
+                <span style="font-size: 0.875rem; font-weight: 600;">Årlig Kjørelengde (km/år)</span>
+                <input type="number" id="save-km" class="field-class" value="15000" oninput="beregnBesparelse()">
+            </label>
+
+            <label style="display: flex; flex-direction: column; gap: 0.375rem;">
+                <span style="font-size: 0.875rem; font-weight: 600;">Drivstoffpris Bensin/Diesel (kr/L)</span>
+                <input type="number" step="0.5" id="save-fuel-price" class="field-class" value="20.0" oninput="beregnBesparelse()">
+            </label>
+
+            <label style="display: flex; flex-direction: column; gap: 0.375rem;">
+                <span style="font-size: 0.875rem; font-weight: 600;">Drivstofforbruk (L/100 km)</span>
+                <input type="number" step="0.1" id="save-fuel-cons" class="field-class" value="0.65" oninput="beregnBesparelse()">
+            </label>
+
+            <label style="display: flex; flex-direction: column; gap: 0.375rem;">
+                <span style="font-size: 0.875rem; font-weight: 600;">Elbil Forbruk (kWh/100 km)</span>
+                <input type="number" step="0.5" id="save-ev-cons" class="field-class" value="18.0" oninput="beregnBesparelse()">
+            </label>
+        </div>
+
+        <div style="margin-top: 1.25rem; padding: 1.25rem; background: var(--primary-soft); border: 1.5px solid var(--primary); border-radius: 1rem;">
+            <div class="line-row strong" style="color: var(--primary-deep); font-size: 1.1rem;">
+                <span>✨ Besparelse pr. Måned:</span>
+                <span id="res-save-month" class="font-mono">0,00 kr</span>
+            </div>
+            <div class="line-row strong" style="color: var(--primary-deep); margin-top: 0.375rem;">
+                <span>📅 Besparelse pr. År:</span>
+                <span id="res-save-year" class="font-mono">0,00 kr</span>
+            </div>
+            <div class="line-row strong" style="color: var(--primary-deep); margin-top: 0.375rem;">
+                <span>🚀 Samlet Besparelse over 5 År:</span>
+                <span id="res-save-5yr" class="font-mono">0,00 kr</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- MODUL 3: VINTER-REKKEVIDDE & TEMPERATUR -->
+    <section>
+        <header>
+            <span class="font-mono" style="font-size: 0.75rem; color: var(--emerald); font-weight: 700;">03</span>
+            <h2 style="font-size: 1.125rem; font-weight: 700; margin: 0;">❄️ Vinter-Rekkevidde & Temperaturtap</h2>
+        </header>
+
+        <div class="grid-2">
+            <label style="display: flex; flex-direction: column; gap: 0.375rem;">
+                <span style="font-size: 0.875rem; font-weight: 600;">Oppgitt WLTP Sommer-rekkevidde (km)</span>
+                <input type="number" id="winter-wltp" class="field-class" value="480" oninput="beregnVinter()">
+            </label>
+
+            <label style="display: flex; flex-direction: column; gap: 0.375rem;">
+                <span style="font-size: 0.875rem; font-weight: 600;">Utetemperatur & Forhold</span>
+                <select id="winter-temp" class="field-class" onchange="beregnVinter()">
+                    <option value="0">+20°C Sommer (Optimal forhold 100%)</option>
+                    <option value="12">+10°C Vår/Høst (-12% tap)</option>
+                    <option value="25" selected>0°C Norsk Vinter (-25% tap)</option>
+                    <option value="35">-15°C Kald Vinter (-35% tap)</option>
+                    <option value="42">-25°C Ekstrem Vinter (-42% tap)</option>
+                </select>
+            </label>
+        </div>
+
+        <div style="margin-top: 1.25rem; padding: 1.25rem; background: var(--amber-soft); border: 1.5px solid var(--amber); border-radius: 1rem;">
+            <div class="line-row strong" style="color: #b45309; font-size: 1.1rem;">
+                <span>❄️ Reell Vinter-Rekkevidde:</span>
+                <span id="res-winter-range" class="font-mono">0 km</span>
+            </div>
+            <div class="line-row strong" style="color: #b45309; margin-top: 0.375rem;">
+                <span>📉 Forventet Rekkeviddetap:</span>
+                <span id="res-winter-loss" class="font-mono">- 0 km (0%)</span>
+            </div>
+        </div>
+    </section>
+
+    <footer class="app-footer">
+        <p style="margin: 0; font-weight: 500;">
+            Elbil-Kalkulator · Watne Pro Portal
+        </p>
+    </footer>
+</div>
+
+<script>
+    function toggleTheme() {
+        const isDark = document.body.classList.contains('dark-mode');
+        if (isDark) {
+            document.body.classList.remove('dark-mode');
+            localStorage.setItem('lonn_theme', 'light');
+            document.getElementById('theme-toggle-btn').innerText = '☀️';
+        } else {
+            document.body.classList.add('dark-mode');
+            localStorage.setItem('lonn_theme', 'dark');
+            document.getElementById('theme-toggle-btn').innerText = '🌙';
+        }
+    }
+
+    if (localStorage.getItem('lonn_theme') === 'dark') {
+        document.body.classList.add('dark-mode');
+        document.getElementById('theme-toggle-btn').innerText = '🌙';
+    }
+
+    function beregnLadetid() {
+        const bat = parseFloat(document.getElementById('charge-battery').value) || 77;
+        const kw = parseFloat(document.getElementById('charge-type').value) || 7.4;
+        const startPct = parseFloat(document.getElementById('charge-start').value) || 10;
+        const targetPct = parseFloat(document.getElementById('charge-target').value) || 80;
+        const price = parseFloat(document.getElementById('charge-price').value) || 1.30;
+        const cons = parseFloat(document.getElementById('charge-consumption').value) || 18;
+
+        const neededPct = Math.max(0, targetPct - startPct);
+        const neededKwh = bat * (neededPct / 100);
+
+        // Effektivitetsfaktor for hurtiglading over 80%
+        let effKw = kw;
+        if (kw > 50 && targetPct > 80) effKw = kw * 0.75;
+
+        const hours = neededKwh / effKw;
+        const totalMinutes = Math.round(hours * 60);
+        const h = Math.floor(totalMinutes / 60);
+        const m = totalMinutes % 60;
+
+        const addedRange = Math.round((neededKwh / cons) * 100);
+        const totalCost = neededKwh * price;
+
+        document.getElementById('res-charge-time').innerText = `${h}t ${m}m`;
+        document.getElementById('res-charge-range').innerText = `+ ${addedRange} km`;
+        document.getElementById('res-charge-cost').innerText = totalCost.toFixed(2).replace('.', ',') + " kr";
+    }
+
+    function beregnBesparelse() {
+        const km = parseFloat(document.getElementById('save-km').value) || 15000;
+        const fuelPrice = parseFloat(document.getElementById('save-fuel-price').value) || 20.0;
+        const fuelCons = parseFloat(document.getElementById('save-fuel-cons').value) || 0.65;
+        const evCons = parseFloat(document.getElementById('save-ev-cons').value) || 18.0;
+        const elekPrice = parseFloat(document.getElementById('charge-price').value) || 1.30;
+
+        const fuelCostYear = (km / 100) * fuelCons * 100 * fuelPrice;
+        const evCostYear = (km / 100) * evCons * elekPrice;
+
+        const saveYear = Math.max(0, fuelCostYear - evCostYear);
+        const saveMonth = saveYear / 12;
+        const save5yr = saveYear * 5;
+
+        document.getElementById('res-save-month').innerText = saveMonth.toFixed(2).replace('.', ',') + " kr";
+        document.getElementById('res-save-year').innerText = saveYear.toFixed(2).replace('.', ',') + " kr";
+        document.getElementById('res-save-5yr').innerText = save5yr.toFixed(2).replace('.', ',') + " kr";
+    }
+
+    function beregnVinter() {
+        const wltp = parseFloat(document.getElementById('winter-wltp').value) || 480;
+        const lossPct = parseFloat(document.getElementById('winter-temp').value) || 25;
+
+        const realRange = Math.round(wltp * (1 - lossPct / 100));
+        const lossKm = Math.round(wltp - realRange);
+
+        document.getElementById('res-winter-range').innerText = `${realRange} km`;
+        document.getElementById('res-winter-loss').innerText = `- ${lossKm} km (${lossPct}%)`;
+    }
+
+    // Init beregninger
+    beregnLadetid();
+    beregnBesparelse();
+    beregnVinter();
+</script>
+
+</body>
+</html>
