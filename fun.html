@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sigrids Cyber-Lab 🚀 - Watne Pro</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --neon-blue: #00f0ff;
+            --neon-pink: #ff007f;
+            --neon-green: #39ff14;
+            --neon-amber: #ffaa00;
+            --bg-cyber: #050811;
+            --card-cyber: #0d1322;
+            --line-cyber: #1e293b;
+            --text-cyber: #f0f6fc;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg-cyber);
+            color: var(--text-cyber);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image:
+                radial-gradient(circle at 10% 20%, rgba(0, 240, 255, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(255, 0, 127, 0.08) 0%, transparent 40%);
+        }
+
+        .main-layout {
+            max-width: 52rem;
+            margin: 0 auto;
+            padding: 1.5rem 1rem 4rem 1rem;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #1e293b;
+            padding-bottom: 1rem;
+        }
+
+        .cyber-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.75rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--neon-blue), var(--neon-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0;
+            letter-spacing: 0.05em;
+        }
+
+        .btn-cyber {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            background: linear-gradient(135deg, #00f0ff, #0077ff);
+            color: #000;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 800;
+            font-size: 0.8125rem;
+            padding: 0.75rem 1.25rem;
+            border-radius: 0.625rem;
+            border: none;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+        .btn-cyber:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 25px rgba(0, 240, 255, 0.6);
+        }
+
+        .btn-pink {
+            background: linear-gradient(135deg, #ff007f, #7c3aed);
+            color: white;
+            box-shadow: 0 0 15px rgba(255, 0, 127, 0.3);
+        }
+        .btn-pink:hover {
+            box-shadow: 0 0 25px rgba(255, 0, 127, 0.6);
+        }
+
+        .cyber-card {
+            background: var(--card-cyber);
+            border: 1px solid var(--line-cyber);
+            border-radius: 1.25rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+        .cyber-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 3px;
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-pink), var(--neon-green));
+        }
+
+        /* CNC SIMULATOR SKJERM */
+        .cnc-screen {
+            background: #000000;
+            border: 2px solid var(--neon-blue);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            text-align: center;
+            position: relative;
+            box-shadow: inset 0 0 20px rgba(0, 240, 255, 0.2);
+            margin-top: 1rem;
+        }
+
+        .spindle-wheel {
+            width: 8rem;
+            height: 8rem;
+            border-radius: 50%;
+            border: 6px dashed var(--neon-blue);
+            margin: 1rem auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            transition: transform 0.1s linear;
+        }
+        .spindle-active {
+            animation: spinSpindle 0.3s linear infinite;
+            border-color: var(--neon-pink);
+            box-shadow: 0 0 30px var(--neon-pink);
+        }
+        @keyframes spinSpindle {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .gcode-stream {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8125rem;
+            color: var(--neon-green);
+            height: 3.5rem;
+            overflow: hidden;
+            background: rgba(0,0,0,0.8);
+            border-radius: 0.5rem;
+            padding: 0.5rem;
+            text-align: left;
+            margin-top: 1rem;
+            border: 1px solid #1e293b;
+        }
+
+        /* HOLOGRAM SIGRID */
+        .hologram-avatar {
+            width: 5rem;
+            height: 5rem;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--neon-blue), transparent);
+            border: 2px solid var(--neon-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            animation: pulseHolo 2s infinite ease-in-out;
+            margin: 0 auto 1rem auto;
+            box-shadow: 0 0 20px var(--neon-blue);
+        }
+        @keyframes pulseHolo {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.08); opacity: 1; box-shadow: 0 0 35px var(--neon-pink); }
+        }
+
+        .meter-bar {
+            height: 0.875rem;
+            background: #1e293b;
+            border-radius: 9999px;
+            overflow: hidden;
+            margin-top: 0.375rem;
+        }
+        .meter-fill {
+            height: 100%;
+            width: 75%;
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-green));
+            border-radius: 9999px;
+            transition: width 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+
+<div class="main-layout">
+    <header>
+        <div>
+            <h1 class="cyber-title">🚀 SIGRIDS CYBER-LAB</h1>
+            <p style="margin: 0.25rem 0 0 0; font-size: 0.8125rem; color: #8b9bb4;">Framtidens interaktive verkstedssimulator & AI-kommando</p>
+        </div>
+        <a href="index.html" class="btn-cyber" style="background: transparent; border: 1px solid var(--neon-blue); color: var(--neon-blue);">🏠 Hovedmeny</a>
+    </header>
+
+    <!-- KORT 1: CNC MASKINERINGS-SIMULATOR -->
+    <div class="cyber-card">
+        <h2 style="font-family:'Orbitron',sans-serif; font-size: 1.125rem; color: var(--neon-blue); margin: 0 0 0.5rem 0;">⚙️ HIGH-SPEED CNC SPINDEL-SIMULATOR</h2>
+        <p style="font-size: 0.875rem; color: #8b9bb4; margin: 0;">Start spindelen for å simulere high-speed utfresing, G-kodeskjæring og sponkasting!</p>
+
+        <div class="cnc-screen">
+            <div id="spindle-element" class="spindle-wheel">⚙️</div>
+
+            <div style="display: flex; justify-content: space-around; margin-top: 0.75rem; font-family:'JetBrains Mono',monospace; font-size:0.875rem;">
+                <div>SPINDEL: <span id="txt-rpm" style="color:var(--neon-blue); font-weight:800;">0 RPM</span></div>
+                <div>MATING: <span id="txt-feed" style="color:var(--neon-green); font-weight:800;">0 mm/min</span></div>
+                <div>TEMPERATUR: <span id="txt-temp" style="color:var(--neon-amber); font-weight:800;">22°C</span></div>
+            </div>
+
+            <div class="gcode-stream" id="gcode-box">
+                > N010 G90 G21 G17 G40 G80<br>
+                > N020 M03 S12000 M08<br>
+                > MASKIN KLAR... TRYKK PÅ START KNAPPEN UNDER!
+            </div>
+        </div>
+
+        <div style="display: flex; gap: 0.75rem; margin-top: 1.25rem; flex-wrap: wrap;">
+            <button type="button" class="btn-cyber" onclick="startSpindel()" id="btn-spindle-start">▶️ START CNC SPINDEL (12.000 RPM)</button>
+            <button type="button" class="btn-cyber btn-pink" onclick="stoppSpindel()">🛑 STOPP MASKIN</button>
+        </div>
+    </div>
+
+    <!-- KORT 2: HOLOGRAM SIGRID & METER-METRIKKER -->
+    <div class="cyber-card">
+        <div class="hologram-avatar">🤖</div>
+        <h2 style="font-family:'Orbitron',sans-serif; text-align:center; font-size: 1.25rem; color: var(--neon-pink); margin: 0 0 0.25rem 0;">SIGRID AI HOLOGRAM COMMAND</h2>
+        <p style="text-align:center; font-size: 0.875rem; color: #8b9bb4; margin: 0 0 1.25rem 0;" id="sigrid-quote">«Velkommen til framtidens verksted! Trykk på knappen under for å hente verkstedsvisdom.»</p>
+
+        <div style="text-align: center; margin-bottom: 1.5rem;">
+            <button type="button" class="btn-cyber btn-pink" onclick="genererVerkstedSitat()">✨ Generér Nytt Verksted-Motto</button>
+        </div>
+
+        <!-- METER GAGES -->
+        <div style="display: flex; flex-direction: column; gap: 1rem; background: rgba(0,0,0,0.4); padding: 1.25rem; border-radius: 1rem; border: 1px solid var(--line-cyber);">
+            <div>
+                <div style="display: flex; justify-content: space-between; font-size: 0.8125rem; font-weight: 700;">
+                    <span>☕ KAFFE-TIL-KODE METER (VERKSTEDS-ENERGI)</span>
+                    <span style="color: var(--neon-blue);" id="txt-coffee-val">94%</span>
+                </div>
+                <div class="meter-bar"><div class="meter-fill" id="fill-coffee" style="width: 94%;"></div></div>
+            </div>
+
+            <div>
+                <div style="display: flex; justify-content: space-between; font-size: 0.8125rem; font-weight: 700;">
+                    <span>🔥 MASKINERINGS-PRECISJON (ISO FIT 6H)</span>
+                    <span style="color: var(--neon-green);" id="txt-prec-val">99.8%</span>
+                </div>
+                <div class="meter-bar"><div class="meter-fill" id="fill-prec" style="width: 99.8%; background: linear-gradient(90deg, #39ff14, #00f0ff);"></div></div>
+            </div>
+
+            <div>
+                <div style="display: flex; justify-content: space-between; font-size: 0.8125rem; font-weight: 700;">
+                    <span>⚡ OVERTIDS-TURBO NIVÅ</span>
+                    <span style="color: var(--neon-pink);" id="txt-turbo-val">100% MAXIMUM</span>
+                </div>
+                <div class="meter-bar"><div class="meter-fill" id="fill-turbo" style="width: 100%; background: linear-gradient(90deg, #ff007f, #ffaa00);"></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let isSpinning = false;
+    let spinInterval = null;
+    let currentRpm = 0;
+
+    const gcodes = [
+        "> N030 G00 X120.00 Y85.00 Z5.00",
+        "> N040 G01 Z-3.50 F450 M08",
+        "> N050 G02 X150.00 Y100.00 R25.00 F1800",
+        "> N060 G01 X200.00 Y100.00 F2400 (HIGH-SPEED STRIP)",
+        "> N070 G03 X250.00 Y150.00 R50.00",
+        "> N080 G00 Z50.00 M09 (KJØLEVÆSKE AV)",
+        "> N090 G28 U0 W0 (RETUR TIL NULLPUNKT)"
+    ];
+
+    function startSpindel() {
+        if (isSpinning) return;
+        isSpinning = true;
+        document.getElementById('spindle-element').classList.add('spindle-active');
+
+        let targetRpm = 12000;
+        let gcodeIdx = 0;
+
+        spinInterval = setInterval(() => {
+            if (currentRpm < targetRpm) currentRpm += 400;
+            document.getElementById('txt-rpm').innerText = currentRpm + " RPM";
+            document.getElementById('txt-feed').innerText = Math.round(currentRpm * 0.2) + " mm/min";
+            document.getElementById('txt-temp').innerText = (22 + Math.round(currentRpm / 300)) + "°C";
+
+            // Oppdater G-kode stream
+            const box = document.getElementById('gcode-box');
+            box.innerHTML = gcodes[gcodeIdx % gcodes.length] + "<br>" + gcodes[(gcodeIdx + 1) % gcodes.length];
+            gcodeIdx++;
+        }, 150);
+    }
+
+    function stoppSpindel() {
+        isSpinning = false;
+        clearInterval(spinInterval);
+        document.getElementById('spindle-element').classList.remove('spindle-active');
+        currentRpm = 0;
+        document.getElementById('txt-rpm').innerText = "0 RPM";
+        document.getElementById('txt-feed').innerText = "0 mm/min";
+        document.getElementById('txt-temp').innerText = "22°C";
+        document.getElementById('gcode-box').innerText = "> MASKIN STOPPET (M05). MASKIN KLAR.";
+    }
+
+    const quotes = [
+        "«Mål to ganger, fress én gang – og husk kaffen!» ☕",
+        "«Riktig Vc og $f_z$ gjør at stålet synger i fresen!» ⚙️",
+        "«Ingenting slår lukten av fersk skjæreolje og nyfresede stålkomponenter om morgenen!» 🔥",
+        "«Precision is not an accident – it's ISO H7 / g6 perfection!» 📐",
+        "«Når sponene flyr som gullstøv i CNC-fresen, da vet du at helgen nærmer seg!» 🚀"
+    ];
+
+    function genererVerkstedSitat() {
+        const idx = Math.floor(Math.random() * quotes.length);
+        document.getElementById('sigrid-quote').innerText = quotes[idx];
+
+        // Tilfeldige metrikk-hopp for moro skyld
+        document.getElementById('fill-coffee').style.width = (80 + Math.floor(Math.random() * 20)) + "%";
+        document.getElementById('fill-prec').style.width = (98 + (Math.random() * 1.9)).toFixed(1) + "%";
+    }
+</script>
+
+</body>
+</html>
