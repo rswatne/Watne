@@ -267,14 +267,15 @@
             <span class="prompt-chip" onclick="sendQuickPrompt('Gi meg sjekkliste for M16 gjenging i Syrefast 316L')" id="chip4">🛠️ Sjekkliste M16 Syrefast</span>
         </div>
 
-        <!-- 100% FEILFRI BRUKERPROFIL BAR -->
+        <!-- LIVE GEMINI AI API BAR -->
         <div style="padding: 0.625rem 1rem; background: var(--bg); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; font-size: 0.8125rem; flex-wrap: wrap;">
-            <div style="display: flex; align-items: center; gap: 0.5rem; flex: 1;">
-                <span style="font-weight: 700; color: var(--purple-deep);">👤 Din Profil:</span>
-                <span id="user-display-name" style="font-weight: 800; color: var(--ink);">Gjest</span>
-                <button type="button" class="btn btn-outline" style="height: 1.875rem; padding: 0 0.5rem; font-size: 0.75rem;" onclick="oppdaterBrukernavn()">✏️ Endre Navn</button>
+            <div style="display: flex; align-items: center; gap: 0.5rem; flex: 1; min-width: 16rem;">
+                <span style="font-weight: 700; color: var(--purple-deep);">🔑 Live Gemini AI Nøkkel:</span>
+                <label for="gemini-api-key" style="display:none;">Google Gemini API Nøkkel</label>
+                <input type="password" id="gemini-api-key" class="field-class" style="height: 2.125rem; font-size: 0.75rem; max-width: 15rem;" placeholder="Lim inn gratis Google Gemini API-nøkkel..." onchange="lagreApiKey()">
+                <span id="gemini-status-badge" style="font-size: 0.7rem; font-weight: 700; color: var(--muted);">⚡ Lokal modus</span>
             </div>
-            <span id="gemini-status-badge" style="font-size: 0.75rem; font-weight: 700; color: var(--emerald);">🟢 Live Sigrid AI Aktiv</span>
+            <button type="button" class="btn btn-outline" style="height: 2.125rem; padding: 0 0.625rem; font-size: 0.75rem;" onclick="visApiKeyHjelp()">ℹ️ Gratis Nøkkel (30 sek)</button>
         </div>
 
         <!-- CHAT INPUT -->
@@ -728,21 +729,15 @@
         return `🤖 <strong>Hei! Jeg er Sigrid.</strong><br>Trykk på knappen <strong>«💡 Hva kan Sigrid gjøre?»</strong> for å se alt jeg kan utføre for deg!`;
     }
 
-    function oppdaterBrukerUI() {
-        const userName = localStorage.getItem('user_profile_name') || 'Gjest';
-        const userLabel = document.getElementById('user-display-name');
-        if (userLabel) {
-            userLabel.innerText = userName;
-        }
-    }
-
-    function oppdaterBrukernavn() {
-        const nu = localStorage.getItem('user_profile_name') || '';
-        const nyttNavn = prompt("Skriv inn ditt navn for at Sigrid skal kjenne deg igjen:", nu);
-        if (nyttNavn && nyttNavn.trim()) {
-            localStorage.setItem('user_profile_name', nyttNavn.trim());
-            oppdaterBrukerUI();
-            appendMessage(`👋 <strong>Hyggelig å hilse på deg, ${nyttNavn.trim()}!</strong><br>Jeg har registrert navnet ditt på profilen. Jeg er klar til å hjelpe deg med alt på portalen!`, false);
+    function lagreApiKey() {
+        const key = document.getElementById('gemini-api-key').value.trim();
+        if (key) {
+            localStorage.setItem('sigrid_gemini_api_key', key);
+            oppdaterApiKeyUI();
+            alert("✅ Live Google Gemini API-nøkkel lagret! Sigrid AI er nå koblet til live AI!");
+        } else {
+            localStorage.removeItem('sigrid_gemini_api_key');
+            oppdaterApiKeyUI();
         }
     }
 
@@ -757,19 +752,20 @@
         if (key) {
             if (input) input.value = key;
             if (badge) {
-                badge.innerText = "🟢 Live Sigrid AI Aktiv (Gemini 1.5 Flash)";
+                badge.innerText = "🟢 Live Gemini 1.5 Flash AI Aktiv";
                 badge.style.color = "var(--emerald)";
             }
         } else {
+            if (input) input.value = "";
             if (badge) {
-                badge.innerText = "🟢 Live Sigrid AI Aktiv (Standard Modus)";
-                badge.style.color = "var(--purple-deep)";
+                badge.innerText = "⚡ Lokal modus";
+                badge.style.color = "var(--muted)";
             }
         }
     }
 
     function visApiKeyHjelp() {
-        alert("🔑 Valgfri egen API-Nøkkel:\n\nSigrid AI fungerer helt automatisk for alle brukere!\n\nHvis du har en egen personlig Google Gemini API-nøkkel fra aistudio.google.com/app/apikey, kan du lim inn den her for å bruke din egen private kvote.");
+        alert("🔑 Slik får du din gratis Google Gemini API-nøkkel (30 sek):\n\n1. Gå til Google AI Studio: aistudio.google.com/app/apikey\n2. Logg inn med din Google-konto og trykk 'Create API key'.\n3. Kopier nøkkelen og lim den inn her!\n\nNøkkelen lagres trygt på din telefon og er 100% gratis for personlig bruk.");
     }
 
     async function queryGeminiApi(userPrompt) {
