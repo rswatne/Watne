@@ -770,15 +770,18 @@
     }
 
     async function finnArbeidendeGeminiEndpoint(apiKey) {
-        // 1. Spør Google om hvilke modeller som er tilgjengelige for denne nøkkelen!
         try {
             const listRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`);
             const listData = await listRes.json();
             if (listData && listData.models && Array.isArray(listData.models)) {
                 let genModels = listData.models.filter(m => m.supportedGenerationMethods && m.supportedGenerationMethods.includes('generateContent'));
+                // Filter ut uaktuelle utgåtte versjoner
+                genModels = genModels.filter(m => !m.name.includes('2.5') && !m.name.includes('1.0') && !m.name.includes('001'));
                 if (genModels.length > 0) {
-                    // Foretrekk flash eller pro modeller
-                    let bestModel = genModels.find(m => m.name.includes('flash')) || genModels.find(m => m.name.includes('pro')) || genModels[0];
+                    let bestModel = genModels.find(m => m.name.endsWith('gemini-1.5-flash')) ||
+                                    genModels.find(m => m.name.includes('gemini-1.5-flash')) ||
+                                    genModels.find(m => m.name.includes('gemini-1.5-pro')) ||
+                                    genModels[0];
                     let cleanName = bestModel.name.replace(/^models\//, '');
                     return {
                         url: `https://generativelanguage.googleapis.com/v1beta/models/${cleanName}:generateContent`,
@@ -787,18 +790,13 @@
                 }
             }
         } catch(e) {
-            console.warn("ListModels feilet, prøver standard kandidater...", e);
+            console.warn("ListModels feilet, bruker standard gemini-1.5-flash...", e);
         }
 
-        // 2. Fallback til standard kandidat-adresser
-        const fallbackEndpoints = [
-            { url: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent', name: 'gemini-1.5-flash' },
-            { url: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent', name: 'gemini-2.0-flash-exp' },
-            { url: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent', name: 'gemini-1.5-pro' },
-            { url: 'https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent', name: 'gemini-1.5-flash (v1)' }
-        ];
-
-        return fallbackEndpoints[0];
+        return {
+            url: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent',
+            name: 'gemini-1.5-flash'
+        };
     }
 
     async function testGeminiTilkobling() {
