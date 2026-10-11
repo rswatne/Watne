@@ -949,54 +949,75 @@
         }
     }
 
-    // VISMA LØNNSSLIPP LESER (EKTSEKT PDF.JS + TESSERACT OCR)
+    // VISMA LØNNSSLIPP LESER (DUAL ENGINE: PDF.JS + DUAL STREAM DECODER + TESSERACT OCR)
     function lesVismaFil(e) {
         const file = e.target.files[0];
         if (!file) return;
+
+        if (document.getElementById('visma-diff-status')) {
+            document.getElementById('visma-diff-status').innerText = "⏳ Leses: " + file.name + "... Vennligst vent.";
+        }
+        if (document.getElementById('visma-result-card')) {
+            document.getElementById('visma-result-card').style.display = 'block';
+        }
 
         if (file.type.startsWith('image/')) {
             lesBildeMedOcr(file);
             return;
         }
 
-        if (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')) {
-            const fileReader = new FileReader();
-            fileReader.onload = function() {
-                const typedarray = new Uint8Array(this.result);
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            const rawContent = event.target.result;
+            let extractedText = extractPdfTextStream(rawContent);
+
+            if (typeof pdfjsLib !== 'undefined') {
                 try {
-                    if (typeof pdfjsLib !== 'undefined') {
-                        let loadingTask = pdfjsLib.getDocument({ data: typedarray });
-                        loadingTask.promise.then(pdf => {
-                            let countPromises = [];
-                            for (let i = 1; i <= pdf.numPages; i++) {
-                                countPromises.push(pdf.getPage(i).then(page => {
-                                    return page.getTextContent().then(textContent => {
-                                        return textContent.items.map(item => item.str).join(' ');
-                                    });
-                                }));
-                            }
-                            Promise.all(countPromises).then(pagesText => {
-                                let totalText = pagesText.join('\n');
-                                document.getElementById('visma-text-input').value = totalText;
+                    const arrayReader = new FileReader();
+                    arrayReader.onload = function() {
+                        const typedarray = new Uint8Array(this.result);
+                        try {
+                            pdfjsLib.getDocument(typedarray).promise.then(pdf => {
+                                let countPromises = [];
+                                for (let i = 1; i <= pdf.numPages; i++) {
+                                    countPromises.push(pdf.getPage(i).then(page => {
+                                        return page.getTextContent().then(textContent => {
+                                            return textContent.items.map(item => item.str).join(' ');
+                                        });
+                                    }));
+                                }
+                                Promise.all(countPromises).then(pagesText => {
+                                    let pdfJsText = pagesText.join('\n');
+                                    if (pdfJsText && pdfJsText.trim().length > 20) {
+                                        extractedText = pdfJsText + "\n" + extractedText;
+                                    }
+                                    document.getElementById('visma-text-input').value = extractedText;
+                                    analyserVismaTekst();
+                                }).catch(err => {
+                                    document.getElementById('visma-text-input').value = extractedText;
+                                    analyserVismaTekst();
+                                });
+                            }).catch(err => {
+                                document.getElementById('visma-text-input').value = extractedText;
                                 analyserVismaTekst();
                             });
-                        }).catch(err => {
-                            console.error("PDF.js feilet, hopper til fallback leser...", err);
-                            lesPdfStandard(file);
-                        });
-                    } else {
-                        lesPdfStandard(file);
-                    }
-                } catch (err) {
-                    console.error("PDF.js krasjet, hopper til fallback leser...", err);
-                    lesPdfStandard(file);
+                        } catch(err) {
+                            document.getElementById('visma-text-input').value = extractedText;
+                            analyserVismaTekst();
+                        }
+                    };
+                    arrayReader.readAsArrayBuffer(file);
+                    return;
+                } catch(e) {
+                    document.getElementById('visma-text-input').value = extractedText;
+                    analyserVismaTekst();
                 }
-            };
-            fileReader.readAsArrayBuffer(file);
-            return;
-        }
-
-        lesPdfStandard(file);
+            } else {
+                document.getElementById('visma-text-input').value = extractedText;
+                analyserVismaTekst();
+            }
+        };
+        reader.readAsText(file);
     }
 
     function lesPdfStandard(file) {
