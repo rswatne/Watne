@@ -769,6 +769,13 @@
         alert("🔑 Slik får du din gratis Google Gemini API-nøkkel (30 sek):\n\n1. Åpne Google AI Studio: aistudio.google.com/app/apikey\n2. Logg inn med din Google-konto og trykk 'Create API key'.\n3. Kopier nøkkelen og lim den inn her!\n4. Trykk på '🧪 Test Live AI' for å verifisere tilkoblingen!");
     }
 
+    const activeGeminiModels = [
+        'gemini-1.5-flash-latest',
+        'gemini-2.0-flash',
+        'gemini-1.5-pro-latest',
+        'gemini-pro'
+    ];
+
     async function testGeminiTilkobling() {
         lagreApiKey();
         const apiKey = getActiveGeminiApiKey();
@@ -780,28 +787,33 @@
         const statusBadge = document.getElementById('gemini-status-badge');
         if (statusBadge) statusBadge.innerText = "⏳ Tester tilkobling mot Google...";
 
-        try {
-            const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    contents: [{ role: 'user', parts: [{ text: "Si 'Hallo fra Live Gemini 1.5 Flash AI!' på norsk på 1 ukomplisert setning." }] }]
-                })
-            });
-            const data = await res.json();
-            if (res.ok && data.candidates && data.candidates[0]) {
-                const reply = data.candidates[0].content.parts[0].text;
-                oppdaterApiKeyUI();
-                alert(`🎉 VELLYKKET TILKOBLING!\n\nSigrid AI er nå 100% koblet til live Google Gemini AI!\n\nSvar fra Google Gemini:\n"${reply.trim()}"`);
-            } else {
-                const errMsg = (data.error && data.error.message) ? data.error.message : JSON.stringify(data);
-                oppdaterApiKeyUI();
-                alert(`🔴 TILKOBLINGSFEIL FRA GOOGLE:\n\n${errMsg}\n\nSjekk at du har kopiert hele API-nøkkelen fra aistudio.google.com/app/apikey uten ekstra tegn.`);
+        let lastErrorMsg = "";
+        for (let model of activeGeminiModels) {
+            try {
+                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ role: 'user', parts: [{ text: "Si 'Hallo fra Live Gemini AI!' på norsk på 1 ukomplisert setning." }] }]
+                    })
+                });
+                const data = await res.json();
+                if (res.ok && data.candidates && data.candidates[0]) {
+                    const reply = data.candidates[0].content.parts[0].text;
+                    localStorage.setItem('working_gemini_model', model);
+                    oppdaterApiKeyUI();
+                    alert(`🎉 VELLYKKET TILKOBLING!\n\nSigrid AI er nå 100% koblet til live Google Gemini AI (${model})!\n\nSvar fra Google Gemini:\n"${reply.trim()}"`);
+                    return;
+                } else {
+                    lastErrorMsg = (data.error && data.error.message) ? data.error.message : JSON.stringify(data);
+                }
+            } catch(err) {
+                lastErrorMsg = err.message;
             }
-        } catch(err) {
-            oppdaterApiKeyUI();
-            alert(`🔴 NETTVERKSFEIL:\n\nKunne ikke nå Google sin server: ${err.message}`);
         }
+
+        oppdaterApiKeyUI();
+        alert(`🔴 TILKOBLINGSFEIL FRA GOOGLE:\n\n${lastErrorMsg}\n\nSjekk at du har kopiert hele API-nøkkelen fra aistudio.google.com/app/apikey uten ekstra tegn.`);
     }
 
     async function queryGeminiApi(userPrompt) {
@@ -822,23 +834,29 @@ Brukerens innstillinger:
 
 Svar presist, vennlig og hjelpsomt på norsk med HTML-formatering (f.eks <strong>, <code>, <br>).`;
 
-        try {
-            const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    contents: [
-                        { role: 'user', parts: [{ text: systemInstruction + "\n\nSpørsmål fra bruker: " + userPrompt }] }
-                    ]
-                })
-            });
-            const data = await res.json();
-            if (data && data.candidates && data.candidates[0] && data.candidates[0].content) {
-                let replyText = data.candidates[0].content.parts[0].text;
-                return replyText.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        const preferredModel = localStorage.getItem('working_gemini_model') || 'gemini-1.5-flash-latest';
+        const modelsToTry = [preferredModel, ...activeGeminiModels.filter(m => m !== preferredModel)];
+
+        for (let model of modelsToTry) {
+            try {
+                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [
+                            { role: 'user', parts: [{ text: systemInstruction + "\n\nSpørsmål fra bruker: " + userPrompt }] }
+                        ]
+                    })
+                });
+                const data = await res.json();
+                if (res.ok && data && data.candidates && data.candidates[0] && data.candidates[0].content) {
+                    localStorage.setItem('working_gemini_model', model);
+                    let replyText = data.candidates[0].content.parts[0].text;
+                    return replyText.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                }
+            } catch(e) {
+                console.error("Gemini API error for model " + model, e);
             }
-        } catch(e) {
-            console.error("Gemini API error", e);
         }
         return null;
     }
