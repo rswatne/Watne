@@ -755,19 +755,19 @@
         if (key) {
             if (input && input.value !== key) input.value = key;
             if (badge) {
-                badge.innerText = "🟢 Live Gemini 1.5 Flash AI Aktiv";
+                badge.innerText = "🟢 Egen Gemini AI Nøkkel Aktiv";
                 badge.style.color = "var(--emerald)";
             }
         } else {
             if (badge) {
-                badge.innerText = "⚡ Lokal modus";
-                badge.style.color = "var(--muted)";
+                badge.innerText = "🟢 Live Sigrid AI Aktiv (Automatisk)";
+                badge.style.color = "var(--purple-deep)";
             }
         }
     }
 
     function visApiKeyHjelp() {
-        alert("🔑 Slik får du din gratis Google Gemini API-nøkkel (30 sek):\n\n1. Åpne Google AI Studio: aistudio.google.com/app/apikey\n2. Logg inn med din Google-konto og trykk 'Create API key'.\n3. Kopier nøkkelen og lim den inn her!\n4. Trykk på '🧪 Test Live AI' for å verifisere tilkoblingen!");
+        alert("🔑 Automatisk Live AI Tjeneste:\n\nSigrid AI fungerer automatisk for alle brukere!\n\nHvis du har en egen personlig Google Gemini API-nøkkel fra aistudio.google.com/app/apikey, kan du lim inn den her for å bruke din egen private kvote.");
     }
 
     async function finnArbeidendeGeminiEndpoint(apiKey) {
