@@ -539,7 +539,10 @@
                     <span style="font-size: 0.875rem; font-weight: 600;">Eller lim inn teksten fra Visma lønnsslippen din:</span>
                     <textarea id="visma-text-input" class="field-class" style="height: 6rem; padding: 0.625rem; font-family: 'JetBrains Mono', monospace; font-size: 0.8125rem;" placeholder="Lim inn teksten fra din Visma lønnsslipp her..."></textarea>
                 </label>
-                <button type="button" class="btn btn-soft" style="height: 2.5rem; width: 100%; justify-content: center;" onclick="analyserVismaTekst()">🔍 Analyser Visma Lønnsslipp</button>
+                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                    <button type="button" class="btn btn-soft" style="height: 2.5rem; flex: 1; justify-content: center;" onclick="analyserVismaTekst()">🔍 Analyser Visma Lønnsslipp</button>
+                    <button type="button" class="btn btn-outline" style="height: 2.5rem; font-size: 0.75rem;" onclick="fyllInnEksempelVisma()">📄 Eksempel Lønnsslipp</button>
+                </div>
             </div>
 
             <!-- RESULTAT AV VISMA ANALYSE -->
@@ -547,6 +550,11 @@
                 <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; border-bottom: 1px solid var(--emerald); padding-bottom: 0.5rem;">
                     <h3 style="margin: 0; font-size: 1rem; font-weight: 800; color: #047857;">✅ Avlest Visma Lønnsslipp</h3>
                     <span class="font-mono" style="font-size: 0.75rem; font-weight: 700; color: #047857;" id="visma-res-mnd">Måned</span>
+                </div>
+
+                <div id="visma-res-overtid-box" style="display: none; margin-bottom: 0.75rem; padding: 0.625rem; background: rgba(255,255,255,0.7); border-radius: 0.5rem; font-size: 0.8125rem; color: #047857;">
+                    <p style="margin: 0 0 0.25rem 0; font-weight: 700;">⏱️ Registrert Overtid på Lønnsslippen:</p>
+                    <div id="visma-res-overtid-list"></div>
                 </div>
 
                 <div class="line-row strong"><span style="color: #047857;">Bruttolønn (Visma):</span><span id="visma-res-brutto" class="font-mono" style="font-size: 1rem; color: #047857;">0,00 kr</span></div>
@@ -983,50 +991,96 @@
         return Math.abs(parseFloat(cleaned)) || 0;
     }
 
+    function fyllInnEksempelVisma() {
+        const sampleTxt = `Sigurd Seland Smie & Mek. Verksted AS   Lønnsslipp
+Roy Stian Watne   Lønnskjøring 2026-10 Månedslønn
+Timesats 324,00   Overtidssats 324,00
+
+Beskrivelse                  Antall    Sats        Beløp
+Rydding maskinering         132,20   324,00    42 832,80
+Fri med lønn maskinering      0,95   324,00       307,80
+Avspasering m/lønn            9,35   324,00     3 029,40
+Overtid 50% maskinering      15,54   486,00     7 552,44
+Overtid 100% maskinering      3,67   648,00     2 378,16
+Feriepenger, fjoråret                           7 979,17
+Overtid kun tillegg 50%      12,25   162,00     1 984,50
+Egenmelding                  15,00   324,00     4 860,00
+Bruttolønn                                    70 924,27
+
+Prosenttrekk                                 -18 564,00
+Nettolønn                                     52 360,27
+
+Trukket fagforeningskontingent Fellesforbundet 1 063,86
+Netto til utbetaling                          51 296,41
+
+Sammendrag:
+Bruttolønn: 70 924,27
+Forskuddstrekk: -18 564,00
+Fagforeningstrekk: -1 063,86`;
+
+        document.getElementById('visma-text-input').value = sampleTxt;
+        analyserVismaTekst();
+    }
+
     function analyserVismaTekst() {
         const txt = document.getElementById('visma-text-input').value;
         if (!txt.trim()) { alert("Lim inn teksten fra din Visma lønnsslipp først."); return; }
 
         let brutto = 0, skatt = 0, fagforening = 0, netto = 0;
+        let overtidLinjer = [];
 
-        // Spesifikke Visma Lønnsslipp RegEx mønstre
-        let bruttoMatch = txt.match(/(?:bruttolønn|brutto|bruttoinntekt)\s*:?\s*([\d\s]+[\.,]?\d*)/i);
-        let skattMatch = txt.match(/(?:forskuddstrekk|prosenttrekk|skattetrekk|tabellskatt|skatt)\s*:?\s*-?\s*([\d\s]+[\.,]?\d*)/i);
-        let unionMatch = txt.match(/(?:fagforeningstrekk|trukket fagforeningskontingent|fagforening|fellesforbundet|kontingent)\w*\s*:?\s*-?\s*([\d\s]+[\.,]?\d*)/i);
-        let nettoMatch = txt.match(/(?:netto til utbetaling|nettolønn|netto|til utbetaling)\w*\s*:?\s*([\d\s]+[\.,]?\d*)/i);
-
-        if (bruttoMatch) brutto = parseNorwegianAmount(bruttoMatch[1]);
-        if (skattMatch) skatt = parseNorwegianAmount(skattMatch[1]);
-        if (unionMatch) fagforening = parseNorwegianAmount(unionMatch[1]);
-        if (nettoMatch) netto = parseNorwegianAmount(nettoMatch[1]);
-
-        // Spesifikk sjekk for Visma sammendrag i bunnen
         let linjer = txt.split('\n');
         linjer.forEach(linje => {
             let l = linje.toLowerCase();
-            if (l.includes('forskuddstrekk') && skatt === 0) {
-                let m = linje.match(/-?([\d\s]+[\.,]\d{2})/);
-                if (m) skatt = parseNorwegianAmount(m[1]);
+            let matches = linje.match(/(-?[\d\s]+[\.,]\d{2})/g) || [];
+            let sistebelop = matches.length > 0 ? parseNorwegianAmount(matches[matches.length - 1]) : 0;
+
+            // AVLES OVERTIDSLINJER
+            if (l.includes('overtid')) {
+                let belopMatch = linje.match(/([\d\s]+[\.,]\d{2})\s*$/) || linje.match(/([\d\s]+[\.,]\d{2})/);
+                let belopVal = belopMatch ? parseNorwegianAmount(belopMatch[1]) : sistebelop;
+                let beskr = linje.split(/\d/)[0].trim() || "Overtid";
+                overtidLinjer.push({ desc: beskr, val: belopVal });
             }
-            if (l.includes('fagforeningstrekk') && fagforening === 0) {
-                let m = linje.match(/-?([\d\s]+[\.,]\d{2})/);
-                if (m) fagforening = parseNorwegianAmount(m[1]);
+
+            // AVLES BRUTTO (Leter etter eksakt Bruttolønn)
+            if (l.includes('bruttolønn') || l.includes('brutto')) {
+                if (sistebelop > brutto) brutto = sistebelop;
             }
-            if (l.includes('netto til utbetaling') && netto === 0) {
-                let m = linje.match(/([\d\s]+[\.,]\d{2})/);
-                if (m) netto = parseNorwegianAmount(m[1]);
+
+            // AVLES SKATT (Forskuddstrekk / Prosenttrekk)
+            if (l.includes('forskuddstrekk') || l.includes('prosenttrekk') || (l.includes('skatt') && !l.includes('skatteprosent'))) {
+                if (sistebelop > 0) skatt = sistebelop;
+            }
+
+            // AVLES FAGFORENINGSTREKK (Fellesforbundet / Kontingent)
+            if (l.includes('fagforeningstrekk') || l.includes('trukket fagforeningskontingent') || l.includes('fagforening') || l.includes('fellesforbundet')) {
+                if (sistebelop > 0) fagforening = sistebelop;
+            }
+
+            // AVLES NETTO TIL UTBETALING
+            if (l.includes('netto til utbetaling') || l.includes('nettolønn') || (l.includes('netto') && !l.includes('brutto'))) {
+                if (sistebelop > 0) netto = sistebelop;
             }
         });
 
-        // Fallbacks dersom skatt/fagforening var komprimert i PDF
+        // Vis overtidsoversikt om funnet
+        const otBox = document.getElementById('visma-res-overtid-box');
+        const otList = document.getElementById('visma-res-overtid-list');
+        if (overtidLinjer.length > 0) {
+            let otHtml = "";
+            overtidLinjer.forEach(o => {
+                otHtml += `<div class="line-row"><span>${o.desc}:</span><span class="font-mono" style="font-weight:700;">+ ${o.val.toFixed(2).replace('.', ',')} kr</span></div>`;
+            });
+            otList.innerHTML = otHtml;
+            otBox.style.display = 'block';
+        } else {
+            otBox.style.display = 'none';
+        }
+
+        // Visma Spesifikk fallback om noe står i sammendraget
         if (brutto === 0 && window.sisteBrutto) brutto = window.sisteBrutto;
-        if (fagforening === 0 && brutto > 0) {
-            fagforening = brutto * 0.015; // Standard 1.5%
-        }
-        if (skatt === 0 && brutto > 0) {
-            skatt = (brutto - fagforening) * 0.30; // Standard 30%
-        }
-        if (netto === 0) netto = Math.max(0, brutto - skatt - fagforening);
+        if (netto === 0 && brutto > 0) netto = Math.max(0, brutto - skatt - fagforening);
 
         document.getElementById('visma-res-brutto').innerText = brutto.toFixed(2).replace('.', ',') + " kr";
         document.getElementById('visma-res-skatt').innerText = "− " + skatt.toFixed(2).replace('.', ',') + " kr";
