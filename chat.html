@@ -10,7 +10,7 @@
     <meta http-equiv="Expires" content="0">
 
     <script>
-        const APP_BUILD_VER = "v30.0-AutomaticSigridLiveAI";
+        const APP_BUILD_VER = "v31.0-SigridChatInitFix";
         if (localStorage.getItem('app_build_v') !== APP_BUILD_VER) {
             localStorage.setItem('app_build_v', APP_BUILD_VER);
             if ('serviceWorker' in navigator) {
@@ -273,7 +273,7 @@
         <!-- CHAT MELDINGER -->
         <div class="chat-messages" id="chat-box">
             <div class="msg-bubble msg-ai" id="txt-welcome-msg">
-                👋 <strong>Laster Sigrid...</strong>
+                ⚡ <strong>Hei! Jeg er Sigrid, din smart-assistent.</strong><br>Trykk på knappen <strong>«💡 Hva kan Sigrid gjøre?»</strong> for å se en full stikkordsliste over alle mine oppgaver og funksjoner!
             </div>
         </div>
 
@@ -1001,12 +1001,6 @@ Svar presist, pedagogisk, hjelpsomt og vennlig på norsk med HTML-formatering (f
         }
 
         appendMessage(aiReply, false);
-    }
-
-        setTimeout(() => {
-            const reply = generateSigridResponse(text);
-            appendMessage(reply, false);
-        }, 300);
     }
 
     function sendQuickPrompt(promptText) {
