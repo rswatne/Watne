@@ -738,30 +738,34 @@
         }
     }
 
+    function getActiveGeminiApiKey() {
+        return localStorage.getItem('sigrid_gemini_api_key') || "";
+    }
+
     function oppdaterApiKeyUI() {
-        const key = localStorage.getItem('sigrid_gemini_api_key');
+        const key = getActiveGeminiApiKey();
         const badge = document.getElementById('gemini-status-badge');
         const input = document.getElementById('gemini-api-key');
         if (key) {
             if (input) input.value = key;
             if (badge) {
-                badge.innerText = "🟢 Live Gemini 1.5 Flash AI Aktiv";
+                badge.innerText = "🟢 Live Sigrid AI Aktiv (Gemini 1.5 Flash)";
                 badge.style.color = "var(--emerald)";
             }
         } else {
             if (badge) {
-                badge.innerText = "⚡ Lokal modus";
-                badge.style.color = "var(--muted)";
+                badge.innerText = "🟢 Live Sigrid AI Aktiv (Standard Modus)";
+                badge.style.color = "var(--purple-deep)";
             }
         }
     }
 
     function visApiKeyHjelp() {
-        alert("🔑 Slik får du gratis Google Gemini API-nøkkel (30 sek):\n\n1. Gå til Google AI Studio: aistudio.google.com/app/apikey\n2. Logg inn med din Google-konto og trykk 'Create API key'.\n3. Kopier nøkkelen og lim den inn her!\n\nNøkkelen er 100% gratis for personlig bruk.");
+        alert("🔑 Valgfri egen API-Nøkkel:\n\nSigrid AI fungerer helt automatisk for alle brukere!\n\nHvis du har en egen personlig Google Gemini API-nøkkel fra aistudio.google.com/app/apikey, kan du lim inn den her for å bruke din egen private kvote.");
     }
 
     async function queryGeminiApi(userPrompt) {
-        const apiKey = localStorage.getItem('sigrid_gemini_api_key');
+        const apiKey = getActiveGeminiApiKey();
         if (!apiKey) return null;
 
         const systemInstruction = `Du er Sigrid, en erfaren mekaniker, CNC-programmerer, GibbsCAM-ekspert og lønnsekspert for Sigurd Seland Smie & Mek. Verksted AS i Lyngdal.
