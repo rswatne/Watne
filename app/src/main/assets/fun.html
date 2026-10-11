@@ -3,39 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AI Quantum Arcade & Space Odyssey 🚀</title>
+    <title>Sigrids Multiverse Portal & Matrix 🌀 - Watne Pro</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Orbitron:wght@700;900&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=VT323&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --neon-cyan: #00f3ff;
-            --neon-pink: #ff0055;
-            --neon-yellow: #ffea00;
-            --neon-green: #00ff66;
-            --bg-dark: #03050b;
+            --neon-cyan: #00f0ff;
+            --neon-pink: #ff007f;
+            --neon-purple: #9d00ff;
+            --neon-green: #39ff14;
+            --neon-yellow: #ffee00;
+            --bg-cyber: #030308;
         }
 
         * { box-sizing: border-box; }
 
         body {
             font-family: 'Inter', sans-serif;
-            background: var(--bg-dark);
+            background: var(--bg-cyber);
             color: #ffffff;
             margin: 0;
             padding: 0;
             min-height: 100vh;
             overflow-x: hidden;
+            user-select: none;
         }
 
-        /* BAKGRUNNS CANVAS FOR STJERNER */
-        #space-canvas {
+        /* 3D PORTAL CANVAS BACKGROUND */
+        #portal-canvas {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             z-index: 1;
-            pointer-events: none;
+            background: #000;
         }
 
-        .layout {
+        .main-layout {
             position: relative;
             z-index: 10;
             max-width: 52rem;
@@ -45,335 +47,405 @@
 
         header {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            border-bottom: 2px solid #1e293b;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid rgba(0, 240, 255, 0.3);
             padding-bottom: 1rem;
-            margin-bottom: 1.5rem;
+            backdrop-filter: blur(8px);
         }
 
-        .title-arcade {
-            font-family: 'Press Start 2P', cursive;
-            font-size: 1.15rem;
-            color: var(--neon-yellow);
-            text-shadow: 0 0 10px var(--neon-yellow), 0 0 20px var(--neon-pink);
-            line-height: 1.5;
+        .title-cyber {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-pink), var(--neon-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
             margin: 0;
+            letter-spacing: 0.05em;
+            text-shadow: 0 0 20px rgba(0, 240, 255, 0.5);
         }
 
-        .card-arcade {
-            background: rgba(15, 23, 42, 0.85);
-            backdrop-filter: blur(12px);
-            border: 2px solid #1e293b;
-            border-radius: 1.25rem;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-            position: relative;
-            overflow: hidden;
-        }
-        .card-arcade::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; height: 3px;
-            background: linear-gradient(90deg, var(--neon-cyan), var(--neon-pink), var(--neon-yellow));
-        }
-
-        .btn-arcade {
+        .btn-cyber {
             display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 0.5rem;
-            font-family: 'Press Start 2P', cursive;
-            font-size: 0.7rem;
-            padding: 0.875rem 1.25rem;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 800;
+            font-size: 0.75rem;
+            padding: 0.75rem 1.25rem;
             border-radius: 0.625rem;
-            border: none;
+            border: 2px solid var(--neon-cyan);
+            background: rgba(0, 240, 255, 0.1);
+            color: var(--neon-cyan);
             cursor: pointer;
-            background: var(--neon-pink);
-            color: white;
-            text-shadow: 0 2px 0 #000;
-            box-shadow: 0 5px 0 #990033, 0 0 15px var(--neon-pink);
-            transition: all 0.1s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
             text-decoration: none;
+            transition: all 0.2s ease;
         }
-        .btn-arcade:active {
-            transform: translateY(3px);
-            box-shadow: 0 2px 0 #990033;
-        }
-
-        .btn-cyan {
+        .btn-cyber:hover {
             background: var(--neon-cyan);
             color: #000;
-            text-shadow: none;
-            box-shadow: 0 5px 0 #0099aa, 0 0 15px var(--neon-cyan);
+            box-shadow: 0 0 30px var(--neon-cyan);
+            transform: scale(1.03);
         }
 
-        /* SPILLE-SKJERM FOR SPACE DODGER */
-        #game-canvas {
+        .btn-pink {
+            border-color: var(--neon-pink);
+            color: var(--neon-pink);
+            background: rgba(255, 0, 127, 0.1);
+            box-shadow: 0 0 15px rgba(255, 0, 127, 0.3);
+        }
+        .btn-pink:hover {
+            background: var(--neon-pink);
+            color: #fff;
+            box-shadow: 0 0 30px var(--neon-pink);
+        }
+
+        .card-cyber {
+            background: rgba(10, 15, 28, 0.85);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(0, 240, 255, 0.2);
+            border-radius: 1.25rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7);
+            position: relative;
+            overflow: hidden;
+        }
+        .card-cyber::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 3px;
+            background: linear-gradient(90deg, var(--neon-cyan), var(--neon-pink), var(--neon-yellow), var(--neon-purple));
+        }
+
+        /* MATRIX TERMINAL */
+        .matrix-terminal {
             background: #000;
-            border: 3px solid var(--neon-cyan);
+            border: 2px solid var(--neon-green);
             border-radius: 0.875rem;
-            width: 100%;
-            height: 18rem;
-            display: block;
-            margin: 1rem 0;
-            box-shadow: 0 0 20px rgba(0, 243, 255, 0.4);
-            cursor: crosshair;
-        }
-
-        .game-controls {
-            display: flex;
-            justify-content: space-between;
-            gap: 0.5rem;
-            margin-top: 0.5rem;
-        }
-
-        /* KRYSTALLKULE ORAKEL */
-        .orb-container {
-            width: 7rem;
-            height: 7rem;
-            border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, #ffffff, var(--neon-pink), #20002c);
-            margin: 1rem auto;
-            box-shadow: 0 0 40px var(--neon-pink);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3rem;
-            cursor: pointer;
-            animation: orbFloat 3s infinite ease-in-out;
-        }
-        @keyframes orbFloat {
-            0%, 100% { transform: translateY(0) scale(1); }
-            50% { transform: translateY(-8px) scale(1.05); }
-        }
-
-        .oracle-box {
-            background: #000;
-            border: 1px solid var(--neon-pink);
-            border-radius: 0.75rem;
             padding: 1rem;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 0.9375rem;
-            color: var(--neon-cyan);
+            font-family: 'VT323', monospace;
+            font-size: 1.15rem;
+            color: var(--neon-green);
+            min-height: 8rem;
+            max-height: 12rem;
+            overflow-y: auto;
+            text-shadow: 0 0 8px var(--neon-green);
+            margin-bottom: 0.875rem;
+        }
+
+        .terminal-input {
+            width: 100%;
+            background: #000;
+            border: 1px solid var(--neon-green);
+            color: var(--neon-green);
+            font-family: 'VT323', monospace;
+            font-size: 1.15rem;
+            padding: 0.5rem 0.875rem;
+            border-radius: 0.5rem;
+            outline: none;
+        }
+
+        /* CYBER PET AVATAR MORPHER */
+        .pet-stage {
+            background: radial-gradient(circle, rgba(157, 0, 255, 0.2), transparent);
+            border: 2px solid var(--neon-purple);
+            border-radius: 1rem;
+            padding: 1.5rem;
             text-align: center;
-            min-height: 4rem;
+            margin-top: 1rem;
+        }
+
+        .synth-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .synth-pad {
+            height: 4rem;
+            border-radius: 0.75rem;
+            border: 2px solid var(--neon-cyan);
+            background: rgba(0, 240, 255, 0.1);
+            color: white;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 800;
+            font-size: 0.75rem;
+            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-top: 1rem;
+            text-align: center;
+            transition: all 0.1s ease;
+        }
+        .synth-pad:active {
+            background: var(--neon-cyan);
+            color: #000;
+            box-shadow: 0 0 25px var(--neon-cyan);
+            transform: scale(0.95);
         }
     </style>
 </head>
 <body>
 
-<canvas id="space-canvas"></canvas>
+<!-- 3D INTERAKTIVT PORTAL CANVAS -->
+<canvas id="portal-canvas"></canvas>
 
-<div class="layout">
+<div class="main-layout">
     <header>
         <div>
-            <h1 class="title-arcade">🎮 AI QUANTUM ARCADE</h1>
-            <p style="font-size: 0.75rem; color: #8b9bb4; margin: 0.375rem 0 0 0;">Fri AI-fantasi · Space Dodger · Krystallkule · Neon Synth</p>
+            <h1 class="title-cyber">🌀 SIGRIDS MULTIVERSE PORTAL</h1>
+            <p style="margin: 0.25rem 0 0 0; font-size: 0.8125rem; color: #8b9bb4;">Kvantepartiell-vortex · Matrix Terminal · Cyber-DJ Pad · Avatar Morpher</p>
         </div>
-        <a href="index.html" class="btn-arcade btn-cyan" style="font-size: 0.6rem;">🏠 MENY</a>
+        <a href="index.html" class="btn-cyber">🏠 Hovedmeny</a>
     </header>
 
-    <!-- SPILLET: RETRO SPACE DODGER -->
-    <div class="card-arcade">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-            <span style="font-family:'Press Start 2P',cursive; font-size:0.8rem; color:var(--neon-yellow);">🚀 SPACE DODGER</span>
-            <span style="font-family:'Press Start 2P',cursive; font-size:0.8rem; color:var(--neon-green);" id="txt-score">SCORE: 0000</span>
+    <!-- KORT 1: MATRIX KONTROLL-TERMINAL -->
+    <div class="card-cyber">
+        <h2 style="font-family:'Orbitron',sans-serif; font-size:1rem; color:var(--neon-green); margin:0 0 0.5rem 0;">💻 MATRIX CYBER-TERMINAL</h2>
+        <p style="font-size:0.8125rem; color:#8b9bb4; margin:0 0 0.75rem 0;">Skriv kommandoer som <code style="color:var(--neon-cyan)">hack</code>, <code style="color:var(--neon-pink)">warp</code>, <code style="color:var(--neon-yellow)">supernova</code>, <code style="color:var(--neon-green)">sigrid</code>, <code style="color:#fff">matrix</code> eller <code style="color:var(--neon-purple)">clear</code>!</p>
+
+        <div class="matrix-terminal" id="term-box">
+            > SIGRID MULTIVERSE KJERNE v99.0 ONLINE...<br>
+            > BEVEEG FINGEREN PÅ SKJERMEN FOR Å SKAPE KOSMISKE PARTIKKEL-EKSPLOSJONER!<br>
+            > SKRIV EN KOMMANDO UNDER:
+        </div>
+        <form onsubmit="handleTerminalCommand(event)">
+            <label for="term-input" style="display:none;">Kommando</label>
+            <input type="text" id="term-input" class="terminal-input" placeholder="Skriv kommando her (f.eks. 'supernova')..." autocomplete="off">
+        </form>
+    </div>
+
+    <!-- KORT 2: CYBER-PET MUTANT AVATAR MORPHER -->
+    <div class="card-cyber">
+        <h2 style="font-family:'Orbitron',sans-serif; font-size:1rem; color:var(--neon-purple); margin:0 0 0.5rem 0; text-align:center;">🧬 QUANTUM AVATAR MUTANT GENERATOR</h2>
+        <p style="text-align:center; font-size:0.8125rem; color:#8b9bb4; margin:0;">Generér tilfeldige kyborg-vesener fra fremtiden med unike mutasjoner og egenskaper!</p>
+
+        <div class="pet-stage">
+            <div id="avatar-svg-box">
+                <!-- LEVENDE DYNAMISK VEKTOR AVATAR -->
+            </div>
+            <h3 id="txt-avatar-name" style="font-family:'Orbitron',sans-serif; font-size:1.25rem; color:var(--neon-pink); margin:0.75rem 0 0.25rem 0;">CYBER-PANDA V1</h3>
+            <p id="txt-avatar-power" style="font-size:0.8125rem; color:var(--neon-cyan); margin:0;">Kvantekraft: 98.400 MegaWatts · Lasersyn & Warp Drive</p>
         </div>
 
-        <canvas id="game-canvas"></canvas>
-
-        <div class="game-controls">
-            <button class="btn-arcade btn-cyan" onclick="moveShip(-25)">◀️ VENSTRE</button>
-            <button class="btn-arcade" onclick="shootLaser()">⚡ SKYTING!</button>
-            <button class="btn-arcade btn-cyan" onclick="moveShip(25)">HØYRE ▶️</button>
+        <div style="text-align:center; margin-top:1.25rem;">
+            <button type="button" class="btn-cyber btn-pink" onclick="muterAvatar()">🧬 Mutér Ny Quantum Avatar!</button>
         </div>
     </div>
 
-    <!-- AI KRYSTALLKULE ORAKEL -->
-    <div class="card-arcade" style="text-align: center;">
-        <span style="font-family:'Press Start 2P',cursive; font-size:0.8rem; color:var(--neon-pink);">🔮 AI QUANTUM ORAKEL</span>
-        <p style="font-size: 0.8125rem; color: #8b9bb4; margin: 0.5rem 0;">Trykk på krystallkulen for å hente unike spådommer fra universet!</p>
+    <!-- KORT 3: CYBER-DJ SOUND BEATPAD -->
+    <div class="card-cyber">
+        <h2 style="font-family:'Orbitron',sans-serif; font-size:1rem; color:var(--neon-cyan); margin:0 0 0.5rem 0; text-align:center;">🎸 CYBER-DJ NEON BEATPAD & WAVE VISUALIZER</h2>
+        <p style="text-align:center; font-size:0.8125rem; color:#8b9bb4; margin:0;">Trykk på synth-knappene for å Mikse 80-talls kyborg-rytmer og laserbølger!</p>
 
-        <div class="orb-container" onclick="spaaFremtiden()">🔮</div>
-
-        <div class="oracle-box" id="oracle-text">
-            «Trykk på krystallkulen over for å åpne et kvante-vindu mot framtiden...»
-        </div>
-    </div>
-
-    <!-- SYNTHESIZER LYDEFFEKTER -->
-    <div class="card-arcade" style="text-align: center;">
-        <span style="font-family:'Press Start 2P',cursive; font-size:0.8rem; color:var(--neon-cyan);">🎵 NEON SYNTHESIZER</span>
-        <p style="font-size: 0.8125rem; color: #8b9bb4; margin: 0.5rem 0 1rem 0;">Spill ekte retro 80-talls lydeffekter direkte via høyttaleren på mobilen!</p>
-
-        <div style="display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap;">
-            <button class="btn-arcade" onclick="playSynth(440, 'sawtooth')">🎹 SYNTH A</button>
-            <button class="btn-arcade btn-cyan" onclick="playSynth(880, 'square')">⚡ LASER</button>
-            <button class="btn-arcade" style="background:var(--neon-yellow); color:#000;" onclick="playSynth(220, 'sine')">🌌 COSMIC</button>
-            <button class="btn-arcade btn-cyan" onclick="playSynth(1200, 'triangle')">🔔 WARP</button>
+        <div class="synth-grid">
+            <div class="synth-pad" onclick="playPadSound(150, 'sawtooth', 'BASS DROP 💥')">💥 BASS DROP</div>
+            <div class="synth-pad" style="border-color:var(--neon-pink);" onclick="playPadSound(880, 'square', 'LASER BLAST ⚡')">⚡ LASER BLAST</div>
+            <div class="synth-pad" style="border-color:var(--neon-green);" onclick="playPadSound(440, 'triangle', 'CYBER BEAT 🥁')">🥁 CYBER BEAT</div>
+            <div class="synth-pad" style="border-color:var(--neon-yellow);" onclick="playPadSound(1200, 'sine', 'COSMIC WARP 🌌')">🌌 COSMIC WARP</div>
+            <div class="synth-pad" style="border-color:var(--neon-purple);" onclick="playPadSound(320, 'sawtooth', 'SYNTHWAVE 🎹')">🎹 SYNTHWAVE</div>
+            <div class="synth-pad" style="border-color:#ff0055;" onclick="playPadSound(1800, 'square', 'QUANTUM OVERLOAD ⚡')">⚡ OVERLOAD</div>
         </div>
     </div>
 </div>
 
 <script>
-    // ---------- 1. STJERNE-BAKGRUNN CANVAS ----------
-    const spaceCanvas = document.getElementById('space-canvas');
-    const ctxSpace = spaceCanvas.getContext('2d');
-    let stars = [];
+    // ---------- 1. 3D INTERAKTIVT PORTAL PARTIKKEL-CANVAS ----------
+    const canvas = document.getElementById('portal-canvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    let mouseX = 0, mouseY = 0;
+    let vortexAngle = 0;
 
-    function resizeSpace() {
-        spaceCanvas.width = window.innerWidth;
-        spaceCanvas.height = window.innerHeight;
-        stars = [];
-        for(let i=0; i<80; i++) {
-            stars.push({
-                x: Math.random() * spaceCanvas.width,
-                y: Math.random() * spaceCanvas.height,
-                r: Math.random() * 2 + 1,
-                speed: Math.random() * 0.8 + 0.2
-            });
+    function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        mouseX = canvas.width / 2;
+        mouseY = canvas.height / 2;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    class Particle {
+        constructor() {
+            this.reset();
+        }
+        reset() {
+            this.angle = Math.random() * Math.PI * 2;
+            this.radius = Math.random() * (Math.max(canvas.width, canvas.height) * 0.6);
+            this.speed = Math.random() * 2 + 1;
+            this.size = Math.random() * 2.5 + 1;
+            this.color = ['#00f0ff', '#ff007f', '#39ff14', '#9d00ff', '#ffee00'][Math.floor(Math.random() * 5)];
+        }
+        update() {
+            this.radius -= this.speed;
+            this.angle += 0.02;
+            if (this.radius <= 5) this.reset();
+        }
+        draw() {
+            let x = mouseX + Math.cos(this.angle) * this.radius;
+            let y = mouseY + Math.sin(this.angle) * this.radius;
+            ctx.fillStyle = this.color;
+            ctx.shadowBlur = 10;
+            ctx.shadowColor = this.color;
+            ctx.beginPath();
+            ctx.arc(x, y, this.size, 0, Math.PI * 2);
+            ctx.fill();
         }
     }
-    window.addEventListener('resize', resizeSpace);
-    resizeSpace();
 
-    function drawSpace() {
-        ctxSpace.clearRect(0, 0, spaceCanvas.width, spaceCanvas.height);
-        ctxSpace.fillStyle = '#ffffff';
-        stars.forEach(s => {
-            ctxSpace.beginPath();
-            ctxSpace.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-            ctxSpace.fill();
-            s.y += s.speed;
-            if (s.y > spaceCanvas.height) s.y = 0;
-        });
-        requestAnimationFrame(drawSpace);
-    }
-    drawSpace();
+    for (let i = 0; i < 220; i++) particles.push(new Particle());
 
-    // ---------- 2. MINISPILL: SPACE DODGER ----------
-    const gCanvas = document.getElementById('game-canvas');
-    const gCtx = gCanvas.getContext('2d');
-
-    function setGameCanvasSize() {
-        gCanvas.width = gCanvas.offsetWidth;
-        gCanvas.height = gCanvas.offsetHeight;
-    }
-    setGameCanvasSize();
-
-    let shipX = gCanvas.width / 2;
-    let score = 0;
-    let lasers = [];
-    let enemies = [];
-
-    function moveShip(dx) {
-        shipX += dx;
-        if (shipX < 20) shipX = 20;
-        if (shipX > gCanvas.width - 20) shipX = gCanvas.width - 20;
-    }
-
-    function shootLaser() {
-        lasers.push({ x: shipX, y: gCanvas.height - 30 });
-        playSynth(900, 'square');
-    }
-
-    function gameLoop() {
-        gCtx.clearRect(0, 0, gCanvas.width, gCanvas.height);
-
-        // Tegn skip (Spiller)
-        gCtx.fillStyle = '#00f3ff';
-        gCtx.beginPath();
-        gCtx.moveTo(shipX, gCanvas.height - 35);
-        gCtx.lineTo(shipX - 15, gCanvas.height - 10);
-        gCtx.lineTo(shipX + 15, gCanvas.height - 10);
-        gCtx.closePath();
-        gCtx.fill();
-
-        // Tegn lasere
-        gCtx.fillStyle = '#ff0055';
-        lasers.forEach((l, i) => {
-            gCtx.fillRect(l.x - 2, l.y, 4, 12);
-            l.y -= 8;
-            if (l.y < 0) lasers.splice(i, 1);
-        });
-
-        // Generer meteor/fiende
-        if (Math.random() < 0.04) {
-            enemies.push({ x: Math.random() * (gCanvas.width - 20) + 10, y: -20, r: 12, speed: Math.random() * 2 + 1.5 });
-        }
-
-        // Tegn meteorer og kollisjon
-        gCtx.fillStyle = '#ffea00';
-        enemies.forEach((e, ei) => {
-            gCtx.beginPath();
-            gCtx.arc(e.x, e.y, e.r, 0, Math.PI * 2);
-            gCtx.fill();
-            e.y += e.speed;
-
-            // Kollisjon med laser
-            lasers.forEach((l, li) => {
-                let dist = Math.hypot(l.x - e.x, l.y - e.y);
-                if (dist < e.r + 5) {
-                    enemies.splice(ei, 1);
-                    lasers.splice(li, 1);
-                    score += 100;
-                    document.getElementById('txt-score').innerText = "SCORE: " + String(score).padStart(4, '0');
-                    playSynth(300, 'sawtooth');
+    function createParticleExplosion(x, y, count = 20) {
+        for (let i = 0; i < count; i++) {
+            particles.push({
+                angle: Math.random() * Math.PI * 2,
+                radius: Math.random() * 150 + 20,
+                speed: -(Math.random() * 5 + 2),
+                size: Math.random() * 3 + 1,
+                color: '#ff007f',
+                update: function() { this.radius += 3; this.size *= 0.95; },
+                draw: function() {
+                    let px = x + Math.cos(this.angle) * this.radius;
+                    let py = y + Math.sin(this.angle) * this.radius;
+                    ctx.fillStyle = this.color;
+                    ctx.beginPath();
+                    ctx.arc(px, py, this.size, 0, Math.PI * 2);
+                    ctx.fill();
                 }
             });
-
-            if (e.y > gCanvas.height) enemies.splice(ei, 1);
-        });
-
-        requestAnimationFrame(gameLoop);
+        }
     }
-    gameLoop();
 
-    // Touch-styring på spill-canvas
-    gCanvas.addEventListener('click', (e) => {
-        let rect = gCanvas.getBoundingClientRect();
-        let clickX = e.clientX - rect.left;
-        shipX = clickX;
-        shootLaser();
+    window.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; });
+    window.addEventListener('touchmove', (e) => {
+        if (e.touches[0]) {
+            mouseX = e.touches[0].clientX;
+            mouseY = e.touches[0].clientY;
+        }
     });
 
-    // ---------- 3. AI KRYSTALLKULE ORAKEL ----------
-    const prophecies = [
-        "🌌 Kvantefeltet lover deg flaks! Du vil finne 500 kr på jakkelomma i neste uke.",
-        "🛸 Romvesener fra Alpha Centauri har skannet koden din og gitt den 10/10 stjerner!",
-        "🔮 Skjebnen sier: Neste gang du drikker kaffe, får du din absolutte beste idé noensinne!",
-        "⚡ Et kosmisk energi-utbrudd gjør at neste lottokupong du kjøper får ekstra flaks!",
-        "🪐 Parallell-universet rapporterer: I et annet univers er du president i Romsenteret!"
-    ];
+    window.addEventListener('click', (e) => {
+        createParticleExplosion(e.clientX, e.clientY);
+    });
 
-    function spaaFremtiden() {
-        playSynth(600, 'sine');
-        const idx = Math.floor(Math.random() * prophecies.length);
-        document.getElementById('oracle-text').innerText = prophecies[idx];
+    function renderPortal() {
+        ctx.fillStyle = 'rgba(3, 3, 8, 0.2)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        particles.forEach((p, index) => {
+            p.update();
+            p.draw();
+            if (p.size && p.size < 0.2) particles.splice(index, 1);
+        });
+
+        requestAnimationFrame(renderPortal);
+    }
+    renderPortal();
+
+    // ---------- 2. MATRIX CYBER-TERMINAL KOMMANDOER ----------
+    function handleTerminalCommand(e) {
+        e.preventDefault();
+        const input = document.getElementById('term-input');
+        const cmd = input.value.trim().toLowerCase();
+        const box = document.getElementById('term-box');
+
+        if (!cmd) return;
+
+        let reply = "";
+        if (cmd === 'hack') {
+            reply = "> ⚡ KVANTENETTVERK HACKET! 100% TILGANG INNFRIDD TO SYSTEMKJERNE!";
+            createParticleExplosion(window.innerWidth / 2, window.innerHeight / 2, 80);
+        } else if (cmd === 'warp') {
+            reply = "> 🌌 WARP DRIVE AKTIVERT! HASTIGHET: 9.9 LYSFART!";
+        } else if (cmd === 'supernova') {
+            reply = "> 💥 SUPERNOVA EKSPLOSJON UTLØST!";
+            for (let i = 0; i < 5; i++) {
+                setTimeout(() => createParticleExplosion(Math.random() * window.innerWidth, Math.random() * window.innerHeight, 50), i * 150);
+            }
+        } else if (cmd === 'sigrid') {
+            reply = "> 🤖 SIGRID AI: 'Hei min venn! Kvanteverdenen er uendelig – fortsett å utforske!'";
+        } else if (cmd === 'matrix') {
+            reply = "> 🟢 TAKKE VÆRE DEGRENA, DU HAR VALGT DEN GRØNNE PILLEN!";
+        } else if (cmd === 'clear') {
+            box.innerHTML = "> TERMINAL NULLSTILT.";
+            input.value = "";
+            return;
+        } else {
+            reply = `> UKJENT KOMMANDO '${cmd}'. PRØV 'hack', 'warp', 'supernova', 'sigrid' ELLER 'matrix'!`;
+        }
+
+        box.innerHTML += `<br><span style="color:#fff;">> ${cmd}</span><br>${reply}`;
+        box.scrollTop = box.scrollHeight;
+        input.value = "";
     }
 
-    // ---------- 4. NEON WEB-AUDIO SYNTHESIZER ----------
+    // ---------- 3. DYNAMISK CYBER-PET AVATAR GENERATOR ----------
+    const avatarNames = [
+        "CYBER-PANDA X9", "QUANTUM-DRAGON V2", "LASER-CHIMP 3000",
+        "NEON-FALCON PRIME", "HOLOGRAM-TIGER Z", "PLASMA-BEAR PRO"
+    ];
+
+    const avatarPowers = [
+        "Lasersyn & Warp Drive · 980.000 MegaWatts",
+        "Kvantefelt-skjold · Overlyds-angrep",
+        "Plasma-stråle & Mørk-Materie Kanon",
+        "Cybernetisk Intellekt & Tidshopp"
+    ];
+
+    function muterAvatar() {
+        playPadSound(900, 'square');
+        createParticleExplosion(window.innerWidth / 2, window.innerHeight / 2, 40);
+
+        const nameIdx = Math.floor(Math.random() * avatarNames.length);
+        const powIdx = Math.floor(Math.random() * avatarPowers.length);
+
+        const bodyColor = ['#00f0ff', '#ff007f', '#39ff14', '#9d00ff', '#ffee00'][Math.floor(Math.random() * 5)];
+        const eyeColor = ['#ffffff', '#ff0055', '#00ff66', '#ffee00'][Math.floor(Math.random() * 4)];
+
+        const svgHtml = `<svg width="120" height="120" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0 0 15px ${bodyColor});">
+            <circle cx="20" cy="30" r="16" fill="${bodyColor}" stroke="#fff" stroke-width="2"/>
+            <circle cx="80" cy="30" r="16" fill="${bodyColor}" stroke="#fff" stroke-width="2"/>
+            <rect x="20" y="25" width="60" height="55" rx="20" fill="${bodyColor}" stroke="#fff" stroke-width="3"/>
+            <circle cx="38" cy="45" r="9" fill="#000"/>
+            <circle cx="38" cy="45" r="4" fill="${eyeColor}"/>
+            <circle cx="62" cy="45" r="9" fill="#000"/>
+            <circle cx="62" cy="45" r="4" fill="${eyeColor}"/>
+            <polygon points="50,55 42,65 58,65" fill="#000"/>
+            <path d="M 38 72 Q 50 82 62 72" fill="none" stroke="#000" stroke-width="3" stroke-linecap="round"/>
+        </svg>`;
+
+        document.getElementById('avatar-svg-box').innerHTML = svgHtml;
+        document.getElementById('txt-avatar-name').innerText = avatarNames[nameIdx];
+        document.getElementById('txt-avatar-power').innerText = "Kvantekraft: " + avatarPowers[powIdx];
+    }
+
+    muterAvatar();
+
+    // ---------- 4. WEB-AUDIO SOUND BEATPAD ----------
     let audioCtx = null;
-    function playSynth(freq, type) {
+    function playPadSound(freq, type) {
         try {
             if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             let osc = audioCtx.createOscillator();
             let gain = audioCtx.createGain();
             osc.type = type;
             osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(freq / 2, audioCtx.currentTime + 0.2);
-            gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+            osc.frequency.exponentialRampToValueAtTime(freq / 3, audioCtx.currentTime + 0.3);
+            gain.gain.setValueAtTime(0.4, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
             osc.connect(gain);
             gain.connect(audioCtx.destination);
             osc.start();
-            osc.stop(audioCtx.currentTime + 0.2);
+            osc.stop(audioCtx.currentTime + 0.3);
         } catch(e){}
     }
 </script>
