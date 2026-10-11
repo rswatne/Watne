@@ -580,6 +580,14 @@
                             <input type="number" step="0.01" id="v-edit-union" class="field-class" style="height:2.25rem; font-size:0.8125rem;" oninput="oppdaterVismaFraRedigering()">
                         </label>
                         <label style="display:flex; flex-direction:column; gap:0.2rem;">
+                            <span style="font-size:0.75rem; font-weight:600; color:#047857;">Overtid 50% (kr)</span>
+                            <input type="number" step="0.01" id="v-edit-ot50" class="field-class" style="height:2.25rem; font-size:0.8125rem;" oninput="oppdaterVismaFraRedigering()">
+                        </label>
+                        <label style="display:flex; flex-direction:column; gap:0.2rem;">
+                            <span style="font-size:0.75rem; font-weight:600; color:#047857;">Overtid 100% (kr)</span>
+                            <input type="number" step="0.01" id="v-edit-ot100" class="field-class" style="height:2.25rem; font-size:0.8125rem;" oninput="oppdaterVismaFraRedigering()">
+                        </label>
+                        <label style="display:flex; flex-direction:column; gap:0.2rem;">
                             <span style="font-size:0.75rem; font-weight:600; color:#047857;">NettoUtbetalt (kr)</span>
                             <input type="number" step="0.01" id="v-edit-netto" class="field-class" style="height:2.25rem; font-size:0.8125rem;" oninput="oppdaterVismaFraRedigering()">
                         </label>
@@ -1052,6 +1060,8 @@
         const brutto = parseFloat(document.getElementById('v-edit-brutto').value) || 0;
         const skatt = parseFloat(document.getElementById('v-edit-skatt').value) || 0;
         const union = parseFloat(document.getElementById('v-edit-union').value) || 0;
+        const ot50 = parseFloat(document.getElementById('v-edit-ot50').value) || 0;
+        const ot100 = parseFloat(document.getElementById('v-edit-ot100').value) || 0;
         const nettoVal = parseFloat(document.getElementById('v-edit-netto').value);
 
         const netto = !isNaN(nettoVal) && nettoVal > 0 ? nettoVal : Math.max(0, brutto - skatt - union);
@@ -1060,6 +1070,17 @@
         document.getElementById('visma-res-skatt').innerText = "− " + skatt.toFixed(2).replace('.', ',') + " kr";
         document.getElementById('visma-res-union').innerText = "− " + union.toFixed(2).replace('.', ',') + " kr";
         document.getElementById('visma-res-netto').innerText = netto.toFixed(2).replace('.', ',') + " kr";
+
+        // Oppdater overtidsboksen om enten ot50 eller ot100 har verdier
+        const otBox = document.getElementById('visma-res-overtid-box');
+        const otList = document.getElementById('visma-res-overtid-list');
+        if (otBox && otList && (ot50 > 0 || ot100 > 0)) {
+            let otHtml = "";
+            if (ot50 > 0) otHtml += `<div class="line-row"><span>Overtid 50%:</span><span class="font-mono" style="font-weight:700;">+ ${ot50.toFixed(2).replace('.', ',')} kr</span></div>`;
+            if (ot100 > 0) otHtml += `<div class="line-row"><span>Overtid 100%:</span><span class="font-mono" style="font-weight:700;">+ ${ot100.toFixed(2).replace('.', ',')} kr</span></div>`;
+            otList.innerHTML = otHtml;
+            otBox.style.display = 'block';
+        }
     }
 
     function parseNorwegianAmount(str) {
@@ -1137,10 +1158,18 @@
             netto = Math.max(0, brutto - skatt - fagforening);
         }
 
+        let ot50Val = 0, ot100Val = 0;
+        overtidLinjer.forEach(o => {
+            if (o.desc.includes('100')) ot100Val += o.val;
+            else ot50Val += o.val;
+        });
+
         // Fyller inn de redigerbare boksene
         if (document.getElementById('v-edit-brutto')) document.getElementById('v-edit-brutto').value = brutto > 0 ? brutto.toFixed(2) : '';
         if (document.getElementById('v-edit-skatt')) document.getElementById('v-edit-skatt').value = skatt > 0 ? skatt.toFixed(2) : '';
         if (document.getElementById('v-edit-union')) document.getElementById('v-edit-union').value = fagforening > 0 ? fagforening.toFixed(2) : '';
+        if (document.getElementById('v-edit-ot50')) document.getElementById('v-edit-ot50').value = ot50Val > 0 ? ot50Val.toFixed(2) : '';
+        if (document.getElementById('v-edit-ot100')) document.getElementById('v-edit-ot100').value = ot100Val > 0 ? ot100Val.toFixed(2) : '';
         if (document.getElementById('v-edit-netto')) document.getElementById('v-edit-netto').value = netto > 0 ? netto.toFixed(2) : '';
 
         oppdaterVismaFraRedigering();
