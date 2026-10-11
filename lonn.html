@@ -1115,63 +1115,75 @@
     }
 
     function analyserVismaTekst() {
-        const full = document.getElementById('visma-text-input').value.replace(/\u00a0/g, " ").replace(/[ \t]+/g, " ");
-        if (!full.trim()) { alert("Lim inn teksten fra din Visma lønnsslipp først."); return; }
+        let txt = document.getElementById('visma-text-input').value || "";
+        if (!txt.trim()) { alert("Lim inn teksten fra din Visma lønnsslipp først."); return; }
+
+        // FJERNER DATOER (f.eks 09.10.2026, 15.04.1987, 2026-10) slik at datoer aldri forstyrrer beløpene
+        txt = txt.replace(/\d{2}\.\d{2}\.\d{4}/g, ' ')
+                 .replace(/\d{4}-\d{2}/g, ' ')
+                 .replace(/\d{2}\/\d{2}\/\d{4}/g, ' ');
 
         let brutto = 0, skatt = 0, fagforening = 0, netto = 0;
         let ot50Val = 0, ot100Val = 0;
 
-        // 1. EKSPLISITT BRUTTOLØNN (Grok AI sin nøyaktige regex)
-        let m = full.match(/Bruttolønn\s+((-?(?:\d{1,3}(?:\s\d{3})*|\d+)(?:,\d{1,2})?))/i);
-        if (m) brutto = normalizeVismaNumber(m[1]);
-
-        // 2. SKATTESTREKK / PROSENTTREKK / FORSKUDDSTREKK
-        m = full.match(/(?:Prosenttrekk|Forskuddstrekk|Skattetrekk)\s+((-?(?:\d{1,3}(?:\s\d{3})*|\d+)(?:,\d{1,2})?))/i);
-        if (m) skatt = normalizeVismaNumber(m[1]);
-
-        // 3. FAGFORENINGSTREKK (Fellesforbundet / Kontingent)
-        m = full.match(/(?:Trukket\s*fagforeningskontingent\s*Fellesforbundet|Fagforeningstrekk|Fagforening)\s*(?:\d{11})?\s*((-?(?:\d{1,3}(?:\s\d{3})*|\d+)(?:,\d{1,2})?))/i);
-        if (m) fagforening = normalizeVismaNumber(m[1]);
-
-        // 4. NETTO TIL UTBETALING
-        m = full.match(/(?:Netto\s*til\s*utbetaling|Nettolønn)\s*(?:\D*?\d{11})?\s*((-?(?:\d{1,3}(?:\s\d{3})*|\d+)(?:,\d{1,2})?))/i);
-        if (m) netto = normalizeVismaNumber(m[1]);
-
-        // 5. AVLES OVERTIDSLINJER (Robust avlesning for alle overtidskoder)
-        let linjer = full.split('\n');
+        let linjer = txt.split('\n');
         linjer.forEach(linje => {
-            let l = linje.toLowerCase();
+            let l = linje.trim().toLowerCase();
+            let matches = linje.match(/(-?[\d\s]+[\.,]\d{2})/g) || [];
+            let numbersOnLine = matches.map(m => parseNorwegianAmount(m));
+
+            // OVERTID
             if (l.includes('overtid')) {
-                let matches = linje.match(/(-?[\d\s]+[\.,]\d{2})/g) || [];
-                if (matches.length > 0) {
-                    let lastVal = parseNorwegianAmount(matches[matches.length - 1]);
-                    if (lastVal > 0 && lastVal < 100000) {
-                        if (l.includes('100')) {
-                            ot100Val += lastVal;
-                        } else if (l.includes('50')) {
-                            ot50Val += lastVal;
-                        }
-                    }
+                let lastNum = numbersOnLine.length > 0 ? numbersOnLine[numbersOnLine.length - 1] : 0;
+                if (lastNum > 0 && lastNum < 50000) {
+                    if (l.includes('100')) ot100Val += lastNum;
+                    else ot50Val += lastNum;
                 }
+            }
+
+            // BRUTTO
+            if (l.includes('bruttolønn') || (l.includes('brutto') && !l.includes('netto'))) {
+                let valid = numbersOnLine.filter(n => n >= 1000 && n < 300000);
+                if (valid.length > 0 && brutto === 0) brutto = valid[0];
+            }
+
+            // SKATT
+            if (l.includes('forskuddstrekk') || l.includes('prosenttrekk') || l.includes('skattetrekk')) {
+                let valid = numbersOnLine.filter(n => n >= 100 && n < 200000);
+                if (valid.length > 0 && skatt === 0) skatt = valid[0];
+            }
+
+            // FAGFORENING
+            if (l.includes('fagforening') || l.includes('fellesforbundet') || l.includes('kontingent')) {
+                let valid = numbersOnLine.filter(n => n >= 10 && n < 20000);
+                if (valid.length > 0 && fagforening === 0) fagforening = valid[0];
+            }
+
+            // NETTO
+            if (l.includes('netto til utbetaling') || l.includes('nettolønn') || (l.includes('netto') && !l.includes('brutto'))) {
+                let valid = numbersOnLine.filter(n => n >= 1000 && n < 300000);
+                if (valid.length > 0 && netto === 0) netto = valid[0];
             }
         });
 
-        // REKONSTRUKSJON DERSOM NOE MANGLER
+        // GLOBAL FALLBACK OM LINJENE BLE SLÅTT SAMMEN
+        if (brutto === 0) {
+            let allNums = (txt.match(/(-?[\d\s]+[\.,]\d{2})/g) || []).map(m => parseNorwegianAmount(m)).filter(n => n >= 1000);
+            if (allNums.length > 0) brutto = Math.max(...allNums);
+        }
+
+        // MATEMATISK REKONSTRUKSJON
         if (brutto > 0 && netto > 0 && brutto > netto) {
-            let totalDeductions = brutto - netto;
-            if (fagforening === 0 && totalDeductions > 0) {
-                fagforening = Math.round((brutto * 0.015) * 100) / 100;
-            }
-            if (skatt === 0 && totalDeductions > fagforening) {
-                skatt = Math.round((totalDeductions - fagforening) * 100) / 100;
-            }
+            let diff = brutto - netto;
+            if (fagforening === 0 && diff > 0) fagforening = Math.round((brutto * 0.015) * 100) / 100;
+            if (skatt === 0 && diff > fagforening) skatt = Math.round((diff - fagforening) * 100) / 100;
         } else if (brutto > 0 && netto === 0) {
             if (fagforening === 0) fagforening = Math.round((brutto * 0.015) * 100) / 100;
             if (skatt === 0) skatt = Math.round(((brutto - fagforening) * 0.30) * 100) / 100;
             netto = Math.max(0, brutto - skatt - fagforening);
         }
 
-        // Fyller inn de redigerbare boksene
+        // FYLL BOKSENE
         if (document.getElementById('v-edit-brutto')) document.getElementById('v-edit-brutto').value = brutto > 0 ? brutto.toFixed(2) : '';
         if (document.getElementById('v-edit-skatt')) document.getElementById('v-edit-skatt').value = skatt > 0 ? skatt.toFixed(2) : '';
         if (document.getElementById('v-edit-union')) document.getElementById('v-edit-union').value = fagforening > 0 ? fagforening.toFixed(2) : '';
