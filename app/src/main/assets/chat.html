@@ -977,26 +977,31 @@ Svar presist, pedagogisk, hjelpsomt og vennlig på norsk med HTML-formatering (f
         input.value = '';
 
         const apiKey = getActiveGeminiApiKey();
+
+        // Vis midlertidig tenke-indikator
+        const box = document.getElementById('chat-box');
+        const thinkingDiv = document.createElement('div');
+        thinkingDiv.className = 'msg-bubble msg-ai';
+        thinkingDiv.innerHTML = "🤖 <em>Sigrid tenker...</em>";
+        box.appendChild(thinkingDiv);
+        box.scrollTop = box.scrollHeight;
+
+        let aiReply = null;
         if (apiKey) {
-            // Legg til midlertidig tenke-melding
-            const box = document.getElementById('chat-box');
-            const div = document.createElement('div');
-            div.className = 'msg-bubble msg-ai';
-            div.id = 'temp-thinking-msg';
-            div.innerHTML = "🤖 <em>Sigrid tenker med live Gemini AI...</em>";
-            box.appendChild(div);
-            box.scrollTop = box.scrollHeight;
-
-            const geminiReply = await queryGeminiApi(text);
-
-            const tempEl = document.getElementById('temp-thinking-msg');
-            if (tempEl) tempEl.remove();
-
-            if (geminiReply) {
-                appendMessage(geminiReply, false);
-                return;
-            }
+            aiReply = await queryGeminiApi(text);
         }
+
+        if (!aiReply) {
+            aiReply = generateSigridResponse(text);
+        }
+
+        // Fjern tenke-indikatoren fra skjermen
+        if (thinkingDiv && thinkingDiv.parentNode) {
+            thinkingDiv.parentNode.removeChild(thinkingDiv);
+        }
+
+        appendMessage(aiReply, false);
+    }
 
         setTimeout(() => {
             const reply = generateSigridResponse(text);
