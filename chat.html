@@ -769,11 +769,12 @@
         alert("🔑 Slik får du din gratis Google Gemini API-nøkkel (30 sek):\n\n1. Åpne Google AI Studio: aistudio.google.com/app/apikey\n2. Logg inn med din Google-konto og trykk 'Create API key'.\n3. Kopier nøkkelen og lim den inn her!\n4. Trykk på '🧪 Test Live AI' for å verifisere tilkoblingen!");
     }
 
-    const activeGeminiModels = [
-        'gemini-1.5-flash-latest',
-        'gemini-2.0-flash',
-        'gemini-1.5-pro-latest',
-        'gemini-pro'
+    const candidateGeminiEndpoints = [
+        { url: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent', name: 'Gemini 1.5 Flash (v1beta)' },
+        { url: 'https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent', name: 'Gemini 1.5 Flash (v1)' },
+        { url: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent', name: 'Gemini 2.0 Flash Exp' },
+        { url: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent', name: 'Gemini 1.5 Pro' },
+        { url: 'https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent', name: 'Gemini Pro' }
     ];
 
     async function testGeminiTilkobling() {
@@ -788,9 +789,9 @@
         if (statusBadge) statusBadge.innerText = "⏳ Tester tilkobling mot Google...";
 
         let lastErrorMsg = "";
-        for (let model of activeGeminiModels) {
+        for (let ep of candidateGeminiEndpoints) {
             try {
-                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
+                const res = await fetch(`${ep.url}?key=${apiKey}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -800,9 +801,10 @@
                 const data = await res.json();
                 if (res.ok && data.candidates && data.candidates[0]) {
                     const reply = data.candidates[0].content.parts[0].text;
-                    localStorage.setItem('working_gemini_model', model);
+                    localStorage.setItem('working_gemini_endpoint', ep.url);
+                    localStorage.setItem('working_gemini_name', ep.name);
                     oppdaterApiKeyUI();
-                    alert(`🎉 VELLYKKET TILKOBLING!\n\nSigrid AI er nå 100% koblet til live Google Gemini AI (${model})!\n\nSvar fra Google Gemini:\n"${reply.trim()}"`);
+                    alert(`🎉 VELLYKKET TILKOBLING!\n\nSigrid AI er nå 100% koblet til live Google Gemini AI (${ep.name})!\n\nSvar fra Google Gemini:\n"${reply.trim()}"`);
                     return;
                 } else {
                     lastErrorMsg = (data.error && data.error.message) ? data.error.message : JSON.stringify(data);
@@ -834,12 +836,15 @@ Brukerens innstillinger:
 
 Svar presist, vennlig og hjelpsomt på norsk med HTML-formatering (f.eks <strong>, <code>, <br>).`;
 
-        const preferredModel = localStorage.getItem('working_gemini_model') || 'gemini-1.5-flash-latest';
-        const modelsToTry = [preferredModel, ...activeGeminiModels.filter(m => m !== preferredModel)];
+        const preferredUrl = localStorage.getItem('working_gemini_endpoint') || candidateGeminiEndpoints[0].url;
+        const endpointsToTry = [
+            { url: preferredUrl, name: 'Lagret Modell' },
+            ...candidateGeminiEndpoints.filter(e => e.url !== preferredUrl)
+        ];
 
-        for (let model of modelsToTry) {
+        for (let ep of endpointsToTry) {
             try {
-                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
+                const res = await fetch(`${ep.url}?key=${apiKey}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -848,6 +853,18 @@ Svar presist, vennlig og hjelpsomt på norsk med HTML-formatering (f.eks <strong
                         ]
                     })
                 });
+                const data = await res.json();
+                if (res.ok && data && data.candidates && data.candidates[0] && data.candidates[0].content) {
+                    localStorage.setItem('working_gemini_endpoint', ep.url);
+                    let replyText = data.candidates[0].content.parts[0].text;
+                    return replyText.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                }
+            } catch(e) {
+                console.error("Gemini API error for endpoint " + ep.url, e);
+            }
+        }
+        return null;
+    }
                 const data = await res.json();
                 if (res.ok && data && data.candidates && data.candidates[0] && data.candidates[0].content) {
                     localStorage.setItem('working_gemini_model', model);
