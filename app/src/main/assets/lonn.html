@@ -33,13 +33,6 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Lønnskalkulator">
 
-    <!-- TESSERACT.JS OCR BILDESKANNER FOR SKJERMBILDER -->
-    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-
-    <!-- PDF.JS OGSÅ MED WORKER FOR 100% LOKAL EKSTRAKSJON AV VISMA PDF -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js"></script>
-
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -345,13 +338,12 @@
         </div>
     </header>
 
-    <!-- FANE-MENY FOR LØNN (4 FANER INKL. VISMA IMPORT) -->
+    <!-- FANE-MENY FOR LØNN (3 CLEAN FANER) -->
     <div class="no-print">
         <div class="swipe-hint" id="txt-swipe-hint">👈 SVEIP FANER 👉</div>
         <div class="tab-bar">
             <button type="button" class="tab-btn active" onclick="switchTab('oversikt')" id="btn-tab-oversikt">📊 Oversikt</button>
             <button type="button" class="tab-btn" onclick="switchTab('vakter')" id="btn-tab-vakter">⏱️ Vakter</button>
-            <button type="button" class="tab-btn" onclick="switchTab('visma')" id="btn-tab-visma">📄 Visma Lønnsslipp</button>
             <button type="button" class="tab-btn" onclick="switchTab('innstillinger')" id="btn-tab-innstillinger">⚙️ Innstillinger</button>
         </div>
     </div>
@@ -516,98 +508,11 @@
         </section>
     </div>
 
-    <!-- TAB 3: VISMA LØNNSSLIPP IMPORT -->
-    <div id="tab-visma" class="tab-content">
-        <section>
-            <header>
-                <span class="font-mono" style="font-size: 0.75rem; color: var(--primary); font-weight: 700;">03</span>
-                <h2 style="font-size: 1.125rem; font-weight: 700; margin: 0;">📄 Visma Lønnsslipp Import</h2>
-            </header>
-
-            <p style="font-size: 0.875rem; color: var(--muted); margin: 0 0 1.25rem 0; line-line-height: 1.5;">
-                Last opp eller lim inn din offisielle lønnsslipp fra Visma Employee for å hente ut tallene automatisk og sammenligne med appens beregning!
-            </p>
-
-            <div style="border: 2px dashed var(--line); border-radius: 1rem; padding: 2rem 1.25rem; text-align: center; background: var(--card); margin-bottom: 1.25rem; transition: border-color 0.2s ease;">
-                <span style="font-size: 2.5rem; display: block; margin-bottom: 0.5rem;">📄</span>
-                <p style="font-size: 0.9375rem; font-weight: 700; margin: 0 0 0.25rem 0;">Last opp Visma Lønnsslipp (PDF eller Bilde)</p>
-                <p style="font-size: 0.75rem; color: var(--muted); margin: 0 0 1rem 0;">Velg .pdf, .jpg, eller .png fra Visma Employee-appen</p>
-
-                <input type="file" id="visma-file-input" accept=".pdf,image/*" style="display: none;" onchange="lesVismaFil(event)">
-                <button type="button" class="btn btn-primary" style="height: 2.75rem; max-width: 16rem; margin: 0 auto;" onclick="document.getElementById('visma-file-input').click()">📁 Velg lønnsslipp fil</button>
-            </div>
-
-            <!-- TEKST-LIMING ALTERNATIV -->
-            <div style="background: var(--bg); padding: 1.25rem; border-radius: 0.875rem; border: 1px solid var(--line);">
-                <label style="display: flex; flex-direction: column; gap: 0.375rem; margin-bottom: 0.75rem;">
-                    <span style="font-size: 0.875rem; font-weight: 600;">Eller lim inn teksten fra Visma lønnsslippen din:</span>
-                    <textarea id="visma-text-input" class="field-class" style="height: 6rem; padding: 0.625rem; font-family: 'JetBrains Mono', monospace; font-size: 0.8125rem;" placeholder="Lim inn teksten fra din Visma lønnsslipp her..."></textarea>
-                </label>
-                <button type="button" class="btn btn-soft" style="height: 2.5rem; width: 100%; justify-content: center;" onclick="analyserVismaTekst()">🔍 Analyser Visma Lønnsslipp</button>
-            </div>
-
-            <!-- RESULTAT AV VISMA ANALYSE -->
-            <div id="visma-result-card" style="display: none; margin-top: 1.25rem; padding: 1.25rem; background: var(--emerald-soft); border: 1.5px solid var(--emerald); border-radius: 1rem;">
-                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; border-bottom: 1px solid var(--emerald); padding-bottom: 0.5rem;">
-                    <h3 style="margin: 0; font-size: 1rem; font-weight: 800; color: #047857;">✅ Avlest Visma Lønnsslipp</h3>
-                    <span class="font-mono" style="font-size: 0.75rem; font-weight: 700; color: #047857;" id="visma-res-mnd">Måned</span>
-                </div>
-
-                <div id="visma-res-overtid-box" style="display: none; margin-bottom: 0.75rem; padding: 0.625rem; background: rgba(255,255,255,0.7); border-radius: 0.5rem; font-size: 0.8125rem; color: #047857;">
-                    <p style="margin: 0 0 0.25rem 0; font-weight: 700;">⏱️ Registrert Overtid på Lønnsslippen:</p>
-                    <div id="visma-res-overtid-list"></div>
-                </div>
-
-                <div class="line-row strong"><span style="color: #047857;">Bruttolønn (Visma):</span><span id="visma-res-brutto" class="font-mono" style="font-size: 1rem; color: #047857;">0,00 kr</span></div>
-                <div class="line-row strong"><span style="color: #047857;">Skattetrekk (Visma):</span><span id="visma-res-skatt" class="font-mono" style="font-size: 1rem; color: #047857;">− 0,00 kr</span></div>
-                <div class="line-row strong"><span style="color: #047857;">Fagforeningtrekk (Visma):</span><span id="visma-res-union" class="font-mono" style="font-size: 1rem; color: #047857;">− 0,00 kr</span></div>
-                <div class="line-row strong" style="margin-top: 0.25rem; font-size: 1.1rem;"><span style="color: #047857;">Netto utbetalt på konto (Visma):</span><span id="visma-res-netto" class="font-mono" style="color: #047857;">0,00 kr</span></div>
-
-                <!-- REDIGERBARE FELTER FOR KONTROLL OG JUSTERING -->
-                <div style="margin-top: 0.875rem; padding-top: 0.75rem; border-top: 1px dashed var(--emerald);">
-                    <p style="margin: 0 0 0.5rem 0; font-size: 0.75rem; font-weight: 700; color: #047857;">⚙️ Rediger eller korriger avleste tall direkte (om nødvendig):</p>
-                    <div class="grid-2">
-                        <label style="display:flex; flex-direction:column; gap:0.2rem;">
-                            <span style="font-size:0.75rem; font-weight:600; color:#047857;">Brutto (kr)</span>
-                            <input type="number" step="0.01" id="v-edit-brutto" class="field-class" style="height:2.25rem; font-size:0.8125rem;" oninput="oppdaterVismaFraRedigering()">
-                        </label>
-                        <label style="display:flex; flex-direction:column; gap:0.2rem;">
-                            <span style="font-size:0.75rem; font-weight:600; color:#047857;">Skattetrekk (kr)</span>
-                            <input type="number" step="0.01" id="v-edit-skatt" class="field-class" style="height:2.25rem; font-size:0.8125rem;" oninput="oppdaterVismaFraRedigering()">
-                        </label>
-                        <label style="display:flex; flex-direction:column; gap:0.2rem;">
-                            <span style="font-size:0.75rem; font-weight:600; color:#047857;">Fagforening (kr)</span>
-                            <input type="number" step="0.01" id="v-edit-union" class="field-class" style="height:2.25rem; font-size:0.8125rem;" oninput="oppdaterVismaFraRedigering()">
-                        </label>
-                        <label style="display:flex; flex-direction:column; gap:0.2rem;">
-                            <span style="font-size:0.75rem; font-weight:600; color:#047857;">Overtid 50% (kr)</span>
-                            <input type="number" step="0.01" id="v-edit-ot50" class="field-class" style="height:2.25rem; font-size:0.8125rem;" oninput="oppdaterVismaFraRedigering()">
-                        </label>
-                        <label style="display:flex; flex-direction:column; gap:0.2rem;">
-                            <span style="font-size:0.75rem; font-weight:600; color:#047857;">Overtid 100% (kr)</span>
-                            <input type="number" step="0.01" id="v-edit-ot100" class="field-class" style="height:2.25rem; font-size:0.8125rem;" oninput="oppdaterVismaFraRedigering()">
-                        </label>
-                        <label style="display:flex; flex-direction:column; gap:0.2rem;">
-                            <span style="font-size:0.75rem; font-weight:600; color:#047857;">NettoUtbetalt (kr)</span>
-                            <input type="number" step="0.01" id="v-edit-netto" class="field-class" style="height:2.25rem; font-size:0.8125rem;" oninput="oppdaterVismaFraRedigering()">
-                        </label>
-                    </div>
-                </div>
-
-                <div style="margin-top: 1rem; padding-top: 0.75rem; border-top: 1px dashed var(--emerald); display: flex; flex-direction: column; gap: 0.5rem;">
-                    <p style="margin: 0; font-size: 0.8125rem; font-weight: 700; color: #047857;" id="visma-diff-status">Sammenligning mot appens estimat: 100% Match!</p>
-                    <a href="chat.html" class="btn" style="background: var(--purple-deep); color: white; height: 2.5rem; font-size: 0.8125rem; width: 100%; justify-content: center; margin-top: 0.25rem;">🤖 Spør Sigrid AI om denne lønnsslippen ➔</a>
-                    <button type="button" class="btn btn-outline" style="height: 2.5rem; width: 100%; justify-content: center; margin-top: 0.25rem; color: var(--loss); border-color: var(--line);" onclick="nullstillVismaAnalysert()">🔄 Nullstill / Slett avlest lønnsslipp</button>
-                </div>
-            </div>
-        </section>
-    </div>
-
-    <!-- TAB 4: INNSTILLINGER -->
+    <!-- TAB 3: INNSTILLINGER -->
     <div id="tab-innstillinger" class="tab-content">
         <section>
             <header>
-                <span class="font-mono" style="font-size: 0.75rem; color: var(--primary); font-weight: 700;">04</span>
+                <span class="font-mono" style="font-size: 0.75rem; color: var(--primary); font-weight: 700;">03</span>
                 <h2 style="font-size: 1.125rem; font-weight: 700; margin: 0;" id="txt-sec3-head">Lønn og satser</h2>
             </header>
 
