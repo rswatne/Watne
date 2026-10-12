@@ -10,7 +10,7 @@
     <meta http-equiv="Expires" content="0">
 
     <script>
-        const APP_BUILD_VER = "v200.0-BoltExactVisualDesign";
+        const APP_BUILD_VER = "v210.0-NavTabOverlayFix";
         if (localStorage.getItem('app_build_v') !== APP_BUILD_VER) {
             localStorage.setItem('app_build_v', APP_BUILD_VER);
             if ('serviceWorker' in navigator) {
@@ -880,20 +880,24 @@
     }
 
     function switchNav(pageId) {
-        document.querySelectorAll('.tab-content, #page-dashboard').forEach(el => el.classList.add('hidden'));
+        document.querySelectorAll('.tab-content, #page-dashboard').forEach(el => {
+            el.classList.remove('active');
+            el.classList.add('hidden');
+        });
+
         document.querySelectorAll('nav button').forEach(el => {
             el.className = "flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-medium text-xs sm:text-sm text-slate-400 hover:bg-slate-800/50 hover:text-slate-200 border border-transparent whitespace-nowrap transition-all";
         });
-
-        const activeBtn = document.getElementById(`navitem-${pageId}`);
-        if (activeBtn) {
-            activeBtn.className = "flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-xs sm:text-sm text-sky-400 bg-sky-500/10 border border-sky-500/20 whitespace-nowrap transition-all";
-        }
 
         const targetPage = document.getElementById(`page-${pageId}`);
         if (targetPage) {
             targetPage.classList.remove('hidden');
             targetPage.classList.add('active');
+        }
+
+        const activeBtn = document.getElementById(`navitem-${pageId}`);
+        if (activeBtn) {
+            activeBtn.className = "flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-xs sm:text-sm text-sky-400 bg-sky-500/10 border border-sky-500/20 whitespace-nowrap transition-all";
         }
 
         const titleMap = {
@@ -911,8 +915,10 @@
             ev: "Ladetid, ladekostnader, bensinbesparelser og temperaturtap om vinteren."
         };
 
-        document.getElementById('header-title').innerText = titleMap[pageId];
-        document.getElementById('header-sub').innerText = subMap[pageId];
+        if (document.getElementById('header-title')) document.getElementById('header-title').innerText = titleMap[pageId] || "Oversikt";
+        if (document.getElementById('header-sub')) document.getElementById('header-sub').innerText = subMap[pageId] || "";
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     function calcSalary() {
