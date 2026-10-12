@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WATNE PRO — Verkstedsportal (Bolt 38im78cm Design)</title>
+    <title>WATNE PRO — Verkstedsportal (Master Web Portal)</title>
 
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
 
     <script>
-        const APP_BUILD_VER = "v210.0-NavTabOverlayFix";
+        const APP_BUILD_VER = "v400.0-100PercentIdenticalSalaryPage";
         if (localStorage.getItem('app_build_v') !== APP_BUILD_VER) {
             localStorage.setItem('app_build_v', APP_BUILD_VER);
             if ('serviceWorker' in navigator) {
@@ -29,19 +29,6 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700;800&family=Orbitron:wght@600;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        slate: {
-                            950: '#030712'
-                        }
-                    }
-                }
-            }
-        }
-    </script>
     <style>
         :root {
             --bg: #030712;
@@ -78,10 +65,6 @@
             backdrop-filter: blur(12px);
             border: 1px solid rgba(30, 41, 59, 0.8);
             border-radius: 1.25rem;
-        }
-        body.light-mode .glass-card {
-            background-color: rgba(255, 255, 255, 0.95);
-            border-color: rgba(226, 232, 240, 0.95);
         }
 
         .input-dark {
@@ -131,10 +114,6 @@
             transition: all 0.2s ease;
             text-decoration: none;
         }
-        .btn-primary:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 6px 20px rgba(2, 132, 199, 0.4);
-        }
 
         .btn-ghost {
             background: transparent;
@@ -152,38 +131,10 @@
             transition: all 0.2s ease;
             text-decoration: none;
         }
-        .btn-ghost:hover {
-            color: #f8fafc;
-            border-color: #334155;
-            background: rgba(255, 255, 255, 0.03);
-        }
 
-        .seg-btn {
-            padding: 0.5rem 0.875rem;
-            border-radius: 0.5rem;
-            font-size: 0.75rem;
-            font-weight: 700;
-            white-space: nowrap;
-            color: #94a3b8;
-            transition: all 0.15s ease;
-            border: 1px solid transparent;
-        }
-        .seg-btn.active {
-            background-color: rgba(56, 189, 248, 0.12);
-            color: #38bdf8;
-            border-color: rgba(56, 189, 248, 0.3);
-        }
-
-        .accordion-body {
-            display: none;
-        }
-        .accordion-item.open .accordion-body {
-            display: block;
-            animation: fadeIn 0.2s ease-out;
-        }
-        .accordion-item.open .accordion-chevron {
-            transform: rotate(180deg);
-        }
+        .accordion-body { display: none; }
+        .accordion-item.open .accordion-body { display: block; animation: fadeIn 0.2s ease-out; }
+        .accordion-item.open .accordion-chevron { transform: rotate(180deg); }
 
         .tab-content { display: none; }
         .tab-content.active { display: block; animation: fadeIn 0.25s ease-out; }
@@ -228,17 +179,16 @@
     </nav>
 
     <div class="mt-auto pt-4 border-t border-slate-800 text-[11px] text-slate-500 hidden lg:block">
-        <p class="font-medium">Sigurd Seland Smie & Mek. Verksted AS</p>
+        <p class="font-medium">Sigurd Seland AS</p>
         <p class="mt-1 text-emerald-400 font-bold flex items-center gap-1.5">
             <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            Watne Formler Active
+            Watne Pro Active
         </p>
     </div>
 </aside>
 
 <!-- MAIN CONTENT AREA -->
 <main class="flex-1 p-4 md:p-8 max-w-5xl mx-auto w-full">
-    <!-- TOP HEADER BAR -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-800/80 mb-6">
         <div>
             <h1 class="font-bold text-xl md:text-2xl text-slate-100" id="header-title">Oversikt</h1>
@@ -251,7 +201,7 @@
         </div>
     </div>
 
-    <!-- 1. DASHBOARD OVERSIKT (BOLT HERO GRID) -->
+    <!-- 1. DASHBOARD OVERSIKT -->
     <div id="page-dashboard" class="space-y-6">
         <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800 border border-slate-800/80 p-6 md:p-10">
             <div class="relative max-w-2xl">
@@ -276,7 +226,6 @@
         </div>
 
         <div class="grid gap-4 sm:grid-cols-2">
-            <!-- CARDS FOR THE 4 MAIN TOOLS -->
             <div onclick="switchNav('salary')" class="glass-card p-6 text-left hover:border-sky-500/50 transition-all duration-200 group cursor-pointer">
                 <div class="flex items-start justify-between mb-4">
                     <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center text-xl">💰</div>
@@ -317,102 +266,161 @@
                 <span class="inline-flex items-center gap-1 mt-4 text-xs font-bold text-sky-400">Åpne verktøy ➔</span>
             </div>
         </div>
-
-        <div class="glass-card p-6 text-center">
-            <p class="text-xs text-slate-400">Verkstedsportal for Sigurd Seland AS — utviklet som PWA for mobil og desktop.</p>
-        </div>
     </div>
 
-    <!-- 2. LØNNSKALKULATOR PAGE -->
+    <!-- 2. LØNNSKALKULATOR PAGE (100% IDENTISK MED LONN.HTML) -->
     <div id="page-salary" class="tab-content space-y-6">
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
-            <div class="glass-card p-5 space-y-3">
-                <h3 class="font-bold text-sm text-slate-100 pb-2 border-b border-slate-800">📅 Fastlønn, Timelønn & Skatt</h3>
-                <label class="flex items-center gap-2 cursor-pointer pb-2 border-b border-slate-800/60">
-                    <input type="checkbox" id="ls-inkl-fastlonn" checked onchange="calcSalary()" class="w-4 h-4 accent-sky-400">
-                    <span class="text-xs font-semibold text-slate-300">Inkluder fastlønn (måned)</span>
-                </label>
-                <div class="grid grid-cols-2 gap-2">
-                    <div>
-                        <label class="block text-xs text-slate-400 mb-1">Timelønn (kr/t)</label>
-                        <input type="number" id="ls-rate" class="input-dark" value="316.5" oninput="calcSalary()">
-                    </div>
-                    <div>
-                        <label class="block text-xs text-slate-400 mb-1">Timer/dag</label>
-                        <input type="number" id="ls-hoursday" class="input-dark" value="7.5" oninput="calcSalary()">
-                    </div>
-                </div>
-                <div class="grid grid-cols-2 gap-2">
-                    <div>
-                        <label class="block text-xs text-slate-400 mb-1">Ubetalt ferie</label>
-                        <input type="number" id="ls-vacdays" class="input-dark" value="0" min="0" max="20" oninput="calcSalary()">
-                    </div>
-                    <div>
-                        <label class="block text-xs text-slate-400 mb-1">Skattetabell</label>
-                        <input type="text" id="ls-tax" class="input-dark" value="7101" oninput="calcSalary()">
-                    </div>
+        <!-- PERIODE, FASTLØNN OG INNSTILLINGER -->
+        <div class="glass-card p-6 space-y-4">
+            <h3 class="font-bold text-base text-slate-100 pb-3 border-b border-slate-800">📅 Velg Periode & Lønnsinnstillinger</h3>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Velg År</label>
+                    <select id="year" class="input-dark" onchange="oppdaterAarOgMaaned()"></select>
                 </div>
                 <div>
-                    <label class="block text-xs text-slate-400 mb-1">Fagforening (%)</label>
-                    <input type="number" id="ls-union" class="input-dark" value="1.5" step="0.1" oninput="calcSalary()">
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Velg Måned</label>
+                    <select id="month" class="input-dark" onchange="oppdaterAarOgMaaned()"></select>
                 </div>
             </div>
 
-            <div class="glass-card p-5 space-y-3">
-                <h3 class="font-bold text-sm text-slate-100 pb-2 border-b border-slate-800">⏱️ Registrer Tilleggsvakt</h3>
-                <form onsubmit="addSalaryShift(event)" class="space-y-3">
-                    <div class="grid grid-cols-2 gap-2">
-                        <div>
-                            <label class="block text-xs text-slate-400 mb-1">Timer</label>
-                            <input type="number" id="lsv-hours" class="input-dark" value="7" min="0">
-                        </div>
-                        <div>
-                            <label class="block text-xs text-slate-400 mb-1">Minutter</label>
-                            <input type="number" id="lsv-min" class="input-dark" value="30" min="0" max="59">
-                        </div>
-                    </div>
-                    <div>
-                        <label class="block text-xs text-slate-400 mb-1">Type tillegg</label>
-                        <select id="lsv-type" class="input-dark">
-                            <option value="hverdag50">Hverdag 50% (× 1.5)</option>
-                            <option value="hverdag100">Hverdag 100% (× 2.0)</option>
-                            <option value="helg50">Helg 50% (× 1.5)</option>
-                            <option value="helg100">Helg 100% (× 2.0)</option>
-                        </select>
-                    </div>
-                    <label class="flex items-center gap-2 p-2 rounded-lg bg-amber-500/10 border border-amber-500/20 cursor-pointer">
-                        <input type="checkbox" id="lsv-timebank" class="w-4 h-4 accent-amber-500">
-                        <span class="text-[11px] font-bold text-amber-400">🏦 Sett ordinær time i timebanken</span>
-                    </label>
-                    <button type="submit" class="btn-primary w-full">+ Registrer Vakt</button>
-                </form>
+            <div class="p-3 rounded-xl bg-sky-500/10 border border-sky-500/20 text-xs text-sky-300 font-medium">
+                <p id="tekst-arbeidsdager" class="font-bold">Antall arbeidsdager i måneden: 22 dager</p>
+                <p id="tekst-gjeldende-dager" class="text-[11px] opacity-80">Gjeldende dager i beregningen: 22 (kalender, man–fre)</p>
             </div>
 
-            <div class="glass-card p-5 space-y-2">
-                <h3 class="font-bold text-sm text-slate-100 pb-2 border-b border-slate-800">📊 Spesifikasjon</h3>
-                <div class="space-y-2 text-xs">
-                    <div class="flex justify-between"><span>Fastlønn (brutto):</span><span id="ls-res-fast" class="font-mono font-bold">0,00 kr</span></div>
-                    <div class="flex justify-between text-red-400" id="ls-row-ferie" style="display:none;"><span>Ferietrekk:</span><span id="ls-res-ferie" class="font-mono font-bold">− 0,00 kr</span></div>
-                    <div class="flex justify-between"><span>Tilleggsvakter:</span><span id="ls-res-vaktbrutto" class="font-mono font-bold text-sky-400">0,00 kr</span></div>
-                    <div class="flex justify-between text-amber-400"><span>Timebank Saldo:</span><span id="ls-res-timebank" class="font-mono font-bold">+ 0.0 t</span></div>
-                    <div class="flex justify-between font-bold pt-2 border-t border-slate-800"><span>Total Brutto:</span><span id="ls-res-totbrutto" class="font-mono">0,00 kr</span></div>
-                    <div class="flex justify-between text-slate-400"><span>Fagforening (1.5%):</span><span id="ls-res-union" class="font-mono">− 0,00 kr</span></div>
-                    <div class="flex justify-between text-slate-400"><span>Skattetrekk (7101):</span><span id="ls-res-skatt" class="font-mono">− 0,00 kr</span></div>
-                    <div class="flex justify-between text-sm font-bold text-sky-400 pt-2 border-t border-slate-800"><span>Netto Utbetalt:</span><span id="ls-res-netto" class="font-mono font-bold">0,00 kr</span></div>
+            <label class="flex items-center gap-3 cursor-pointer pt-2 border-t border-slate-800/80">
+                <input type="checkbox" id="inkluder-fastlonn" checked onchange="beregnAlt(); lagreInnstillinger();" class="w-4 h-4 accent-sky-400">
+                <span class="text-sm font-bold text-slate-200">Inkluder fastlønn (ordinær månedslønn)</span>
+            </label>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Timelønn (kr)</label>
+                    <input type="number" id="timelonn" class="input-dark" value="316.5" step="0.5" oninput="beregnAlt(); lagreInnstillinger();">
                 </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Timer pr. dag</label>
+                    <input type="number" id="timer-dag" class="input-dark" value="7.5" step="0.5" oninput="beregnAlt(); lagreInnstillinger();">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Ubetalte feriedager</label>
+                    <input type="number" id="feriedager" class="input-dark" value="0" min="0" max="20" oninput="beregnAlt(); lagreInnstillinger();">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Skattetrekk metode</label>
+                    <select id="skatt-type" class="input-dark" onchange="byttSkattType(); beregnAlt(); lagreInnstillinger();">
+                        <option value="tabell" selected>Tabellkort (Tabell 7101 / standard)</option>
+                        <option value="prosent">Prosentkort (% trekk)</option>
+                    </select>
+                </div>
+                <div id="skattetabell-boks">
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Tabellnummer</label>
+                    <input type="text" id="skatte-tabellnummer" class="input-dark" value="7101" oninput="beregnAlt(); lagreInnstillinger();">
+                </div>
+                <div id="skatteprosent-boks" style="display:none;">
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Skatteprosent (%)</label>
+                    <input type="number" id="skatt" class="input-dark" value="30" oninput="beregnAlt(); lagreInnstillinger();">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs font-semibold text-slate-400 mb-1">Fagforeningskontingent (%)</label>
+                <input type="number" id="fagforening-prosent" class="input-dark" value="1.5" step="0.1" oninput="beregnAlt(); lagreInnstillinger();">
+                <p class="text-[11px] text-slate-500 mt-1">Full skattefordel: Kontingenten trekkes brutto FØR skattegrunnlaget beregnes.</p>
             </div>
         </div>
 
+        <!-- VAKTREGISTRERING -->
+        <div class="glass-card p-6 space-y-4">
+            <h3 class="font-bold text-base text-slate-100 pb-3 border-b border-slate-800">⏱️ Registrer Tilleggsvakt</h3>
+
+            <form onsubmit="leggTilVakt(event)" class="space-y-4">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 mb-1">Dato</label>
+                        <input type="date" id="vakt-dato" class="input-dark" onchange="sjekkDatoUkedag()">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 mb-1">Timer</label>
+                        <input type="number" id="vakt-timer" class="input-dark" value="0" min="0">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 mb-1">Minutter</label>
+                        <input type="number" id="vakt-minutter" class="input-dark" value="0" min="0" max="59">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Tilleggstype</label>
+                    <select id="tillegg-type" class="input-dark">
+                        <option value="hverdag50">Hverdag 50% (Timelønn × 1.5)</option>
+                        <option value="hverdag100">Hverdag 100% (Timelønn × 2.0)</option>
+                        <option value="helg50">Helg 50% (Timelønn × 1.5)</option>
+                        <option value="helg100">Helg 100% (Timelønn × 2.0)</option>
+                    </select>
+                </div>
+
+                <label class="flex items-center gap-3 p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 cursor-pointer">
+                    <input type="checkbox" id="vakt-timebank" class="w-4 h-4 accent-amber-500">
+                    <span class="text-xs font-bold text-amber-400">🏦 Sett ordinær time i timebanken (kun overtidstillegget utbetales i penger)</span>
+                </label>
+
+                <button type="submit" class="btn-primary w-full">+ Registrer Vakt i Månedsoppgjøret</button>
+            </form>
+        </div>
+
+        <!-- MÅNEDENS VAKTLISTE TABELL -->
+        <div class="glass-card p-6 space-y-4">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+                <h3 class="font-bold text-base text-slate-100" id="tittel-vaktliste">Registrerte vakter i måneden</h3>
+                <div class="flex items-center gap-2">
+                    <button type="button" class="btn-ghost text-xs px-3 py-1.5" onclick="kopierVaktliste()">📋 Kopier Vaktliste</button>
+                    <button type="button" class="btn-ghost text-xs px-3 py-1.5" onclick="eksporterVakttilExcel()">📥 Eksporter til Excel (CSV)</button>
+                </div>
+            </div>
+            <div id="vakt-tabell-container">
+                <p class="p-6 text-center text-xs text-slate-500 italic border border-dashed border-slate-800 rounded-xl">Ingen vakter registrert i denne måneden.</p>
+            </div>
+        </div>
+
+        <!-- MÅNEDSSPESIFIKASJON OG NETTO UTBETALT -->
         <div class="glass-card p-6 bg-gradient-to-r from-sky-500/10 to-transparent border-sky-500/30">
             <p class="text-xs text-slate-400 uppercase tracking-wider font-semibold">NETTO UTBETALT PÅ KONTO (ESTIMAT)</p>
-            <p class="text-3xl sm:text-4xl font-extrabold font-mono text-sky-400 my-2" id="ls-res-big-netto">0,00 kr</p>
-            <p class="text-xs text-slate-500">Beregnet ut fra fastlønn, overtid, skattekort og fagforeningsfradrag.</p>
+            <p class="text-4xl font-extrabold font-mono text-sky-400 my-2" id="vis-netto">0,00 kr</p>
+            <p class="text-xs text-slate-500">Inkludert fastlønn, tilleggsvakter, fagforeningsfradrag og skattetrekk.</p>
+        </div>
+
+        <div class="glass-card p-6 space-y-3">
+            <h3 class="font-bold text-base text-slate-100 pb-3 border-b border-slate-800">📊 Månedsoppgjør & Årsprognose</h3>
+
+            <div class="space-y-2 text-sm">
+                <div class="flex justify-between" id="rad-fastlonn"><span>Fastlønn (brutto ordinær måned):</span><span id="vis-fastlonn" class="font-mono font-bold">0,00 kr</span></div>
+                <div class="flex justify-between text-red-400" id="rad-ferietrekk" style="display:none;"><span>Lønnstrekk ubetalt ferie:</span><span id="vis-ferietrekk" class="font-mono font-bold">− 0,00 kr</span></div>
+                <div class="flex justify-between"><span>Sum tilleggsvakter (brutto):</span><span id="vis-vaktbrutto" class="font-mono font-bold text-sky-400">0,00 kr</span></div>
+                <div class="flex justify-between text-amber-400"><span>🏦 Timebank Saldo (avsatte timer):</span><span id="vis-timebank" class="font-mono font-bold">+ 0.0 t</span></div>
+
+                <div class="flex justify-between font-extrabold text-base pt-3 border-t border-slate-800"><span>Total Brutto Inntekt:</span><span id="vis-totalbrutto" class="font-mono">0,00 kr</span></div>
+                <div class="flex justify-between text-slate-400"><span>Fagforeningstrekk (1.5% fradrag før skatt):</span><span id="vis-fagforening" class="font-mono">− 0,00 kr</span></div>
+                <div class="flex justify-between text-slate-400"><span>Skattetrekk (Tabell 7101):</span><span id="vis-skatt" class="font-mono">− 0,00 kr</span></div>
+                <div class="flex justify-between text-lg font-black text-sky-400 pt-3 border-t border-slate-800"><span>Netto Utbetalt:</span><span id="vis-netto-bottom" class="font-mono">0,00 kr</span></div>
+
+                <div class="pt-4 border-t border-slate-800 space-y-2 text-xs">
+                    <div class="flex justify-between"><span>Estimerte feriepenger (12% av brutto):</span><span id="vis-feriepenger" class="font-mono font-bold">0,00 kr</span></div>
+                    <div class="flex justify-between"><span>Fast Årslønn (47 uker + 12%):</span><span id="vis-aarslonn-fast" class="font-mono font-bold">0,00 kr</span></div>
+                    <div class="flex justify-between font-bold text-emerald-400"><span>Total Årsprognose med vakter:</span><span id="vis-aarslonn-tot" class="font-mono font-bold">0,00 kr</span></div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- 3. MASKINERING & CNC PAGE (BOLT ACCORDIONS) -->
+    <!-- 3. MASKINERING & CNC PAGE -->
     <div id="page-machining" class="tab-content space-y-4">
-        <!-- ACCORDION 1: SIRKULÆR MATING -->
+        <!-- ACCORDIONS FOR MASKINERING -->
         <div class="glass-card accordion-item open" id="acc-m-sirkulaer">
             <div onclick="toggleAccordion('acc-m-sirkulaer')" class="w-full flex items-center justify-between p-5 text-left hover:bg-slate-800/40 transition-colors cursor-pointer">
                 <div class="flex items-center gap-3">
@@ -457,7 +465,6 @@
             </div>
         </div>
 
-        <!-- ACCORDION 2: GJENGEDIAMETER -->
         <div class="glass-card accordion-item" id="acc-m-gjenge">
             <div onclick="toggleAccordion('acc-m-gjenge')" class="w-full flex items-center justify-between p-5 text-left hover:bg-slate-800/40 transition-colors cursor-pointer">
                 <div class="flex items-center gap-3">
@@ -488,7 +495,6 @@
             </div>
         </div>
 
-        <!-- ACCORDION 3: SKJÆREKRAFT EFFEKT -->
         <div class="glass-card accordion-item" id="acc-m-effekt">
             <div onclick="toggleAccordion('acc-m-effekt')" class="w-full flex items-center justify-between p-5 text-left hover:bg-slate-800/40 transition-colors cursor-pointer">
                 <div class="flex items-center gap-3">
@@ -520,7 +526,6 @@
             </div>
         </div>
 
-        <!-- ACCORDION 4: C-AKSE MATING -->
         <div class="glass-card accordion-item" id="acc-m-cakse">
             <div onclick="toggleAccordion('acc-m-cakse')" class="w-full flex items-center justify-between p-5 text-left hover:bg-slate-800/40 transition-colors cursor-pointer">
                 <div class="flex items-center gap-3">
@@ -555,9 +560,8 @@
         </div>
     </div>
 
-    <!-- 4. VERKSTEDTABELLER PAGE (BOLT ACCORDIONS) -->
+    <!-- 4. VERKSTEDTABELLER PAGE -->
     <div id="page-workshop" class="tab-content space-y-4">
-        <!-- ACCORDION 1: MATERIALVELGER -->
         <div class="glass-card accordion-item open" id="acc-w-mat">
             <div onclick="toggleAccordion('acc-w-mat')" class="w-full flex items-center justify-between p-5 text-left hover:bg-slate-800/40 transition-colors cursor-pointer">
                 <div class="flex items-center gap-3">
@@ -570,7 +574,6 @@
                 </div>
             </div>
             <div class="accordion-body px-5 pb-5 border-t border-slate-800/60 pt-4 space-y-4">
-                <p class="text-xs text-slate-400">Velg verkstedmateriale, operasjon og verktøymateriale for anbefalte data.</p>
                 <div>
                     <label class="block text-xs text-slate-400 mb-1">Materiale</label>
                     <select id="ms-mat" class="input-dark" onchange="calcMaterial()">
@@ -618,7 +621,6 @@
             </div>
         </div>
 
-        <!-- ACCORDION 2: GJENGETABELL -->
         <div class="glass-card accordion-item" id="acc-w-tap">
             <div onclick="toggleAccordion('acc-w-tap')" class="w-full flex items-center justify-between p-5 text-left hover:bg-slate-800/40 transition-colors cursor-pointer">
                 <div class="flex items-center gap-3">
@@ -656,7 +658,6 @@
             </div>
         </div>
 
-        <!-- ACCORDION 3: SKRUEMOMENT MED SMØRING -->
         <div class="glass-card accordion-item" id="acc-w-tq">
             <div onclick="toggleAccordion('acc-w-tq')" class="w-full flex items-center justify-between p-5 text-left hover:bg-slate-800/40 transition-colors cursor-pointer">
                 <div class="flex items-center gap-3">
@@ -703,7 +704,6 @@
             </div>
         </div>
 
-        <!-- ACCORDION 4: PCD FLENSE-DIAGRAM -->
         <div class="glass-card accordion-item" id="acc-w-pcd">
             <div onclick="toggleAccordion('acc-w-pcd')" class="w-full flex items-center justify-between p-5 text-left hover:bg-slate-800/40 transition-colors cursor-pointer">
                 <div class="flex items-center gap-3">
@@ -748,7 +748,6 @@
             </div>
         </div>
 
-        <!-- ACCORDION 5: TRIGONOMETRI -->
         <div class="glass-card accordion-item" id="acc-w-trig">
             <div onclick="toggleAccordion('acc-w-trig')" class="w-full flex items-center justify-between p-5 text-left hover:bg-slate-800/40 transition-colors cursor-pointer">
                 <div class="flex items-center gap-3">
@@ -790,7 +789,6 @@
 
     <!-- 5. ELBIL PAGE (BOLT ACCORDIONS) -->
     <div id="page-ev" class="tab-content space-y-4">
-        <!-- ACCORDION 1: LADETID -->
         <div class="glass-card accordion-item open" id="acc-e-charge">
             <div onclick="toggleAccordion('acc-e-charge')" class="w-full flex items-center justify-between p-5 text-left hover:bg-slate-800/40 transition-colors cursor-pointer">
                 <div class="flex items-center gap-3">
@@ -834,7 +832,6 @@
             </div>
         </div>
 
-        <!-- ACCORDION 2: VINTER-REKKEVIDDE -->
         <div class="glass-card accordion-item" id="acc-e-winter">
             <div onclick="toggleAccordion('acc-e-winter')" class="w-full flex items-center justify-between p-5 text-left hover:bg-slate-800/40 transition-colors cursor-pointer">
                 <div class="flex items-center gap-3">
@@ -872,6 +869,9 @@
 </main>
 
 <script>
+    const maanedsNavn = ["Januar", "Februar", "Mars", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Desember"];
+    const ukedager = ["Søn", "Man", "Tir", "Ons", "Tor", "Fre", "Lør"];
+
     function toggleAccordion(accId) {
         const item = document.getElementById(accId);
         if (item) {
@@ -889,15 +889,15 @@
             el.className = "flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-medium text-xs sm:text-sm text-slate-400 hover:bg-slate-800/50 hover:text-slate-200 border border-transparent whitespace-nowrap transition-all";
         });
 
+        const activeBtn = document.getElementById(`navitem-${pageId}`);
+        if (activeBtn) {
+            activeBtn.className = "flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-xs sm:text-sm text-sky-400 bg-sky-500/10 border border-sky-500/20 whitespace-nowrap transition-all";
+        }
+
         const targetPage = document.getElementById(`page-${pageId}`);
         if (targetPage) {
             targetPage.classList.remove('hidden');
             targetPage.classList.add('active');
-        }
-
-        const activeBtn = document.getElementById(`navitem-${pageId}`);
-        if (activeBtn) {
-            activeBtn.className = "flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-xs sm:text-sm text-sky-400 bg-sky-500/10 border border-sky-500/20 whitespace-nowrap transition-all";
         }
 
         const titleMap = {
@@ -921,90 +921,352 @@
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    function calcSalary() {
-        const elFast = document.getElementById('ls-inkl-fastlonn');
-        const elRate = document.getElementById('ls-rate');
-        const elHoursDay = document.getElementById('ls-hoursday');
-        const elFerier = document.getElementById('ls-vacdays');
-        const elUnion = document.getElementById('ls-union');
+    function byggAarsOgMaanedsLister() {
+        const aarSelect = document.getElementById('year');
+        const mndSelect = document.getElementById('month');
+        if (!aarSelect || !mndSelect) return;
 
-        const harFast = elFast ? elFast.checked : true;
-        const rate = parseFloat(elRate ? elRate.value : '316.5') || 316.5;
-        const hDay = parseFloat(elHoursDay ? elHoursDay.value : '7.5') || 7.5;
-        const vacDays = parseInt(elFerier ? elFerier.value : '0') || 0;
-        const unionPct = parseFloat(elUnion ? elUnion.value : '1.5') || 1.5;
-
-        const fast = harFast ? (22 * hDay * rate) : 0;
-        const ferieDeduct = harFast ? (vacDays * hDay * rate) : 0;
-
-        let vaktBrutto = 0, timebankHours = 0;
-        let vakter = [];
-        if (localStorage.getItem('lonn_vakter_tabs_v26')) {
-            try { vakter = JSON.parse(localStorage.getItem('lonn_vakter_tabs_v26')); } catch(e){}
+        aarSelect.innerHTML = "";
+        const naaar = new Date().getFullYear();
+        for (let y = naaar - 2; y <= naaar + 5; y++) {
+            const opt = document.createElement('option');
+            opt.value = y; opt.text = y;
+            if (y === naaar) opt.selected = true;
+            aarSelect.appendChild(opt);
         }
 
-        vakter.forEach(v => {
-            const factor = v.isTimebank ? (v.kind.includes('50') ? 0.5 : 1.0) : (v.kind.includes('50') ? 1.5 : 2.0);
-            vaktBrutto += v.desimalTimer * (rate * factor);
-            if (v.isTimebank) timebankHours += v.desimalTimer;
+        mndSelect.innerHTML = "";
+        const naamnd = new Date().getMonth();
+        maanedsNavn.forEach((navn, idx) => {
+            const opt = document.createElement('option');
+            opt.value = idx; opt.text = navn;
+            if (idx === naamnd) opt.selected = true;
+            mndSelect.appendChild(opt);
         });
+    }
 
-        const gross = fast - ferieDeduct + vaktBrutto;
-        const union = Math.max(0, gross * (unionPct / 100));
-        const taxable = Math.max(0, gross - union);
-        const tax = taxable * 0.28;
-        const net = gross - union - tax;
+    function countWeekdays(year, month) {
+        let count = 0;
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        for (let d = 1; d <= daysInMonth; d++) {
+            const dayOfWeek = new Date(year, month, d).getDay();
+            if (dayOfWeek >= 1 && dayOfWeek <= 5) count++;
+        }
+        return count;
+    }
 
-        if (document.getElementById('ls-res-big-netto')) document.getElementById('ls-res-big-netto').innerText = net.toFixed(2).replace('.', ',') + " kr";
-        if (document.getElementById('ls-res-netto')) document.getElementById('ls-res-netto').innerText = net.toFixed(2).replace('.', ',') + " kr";
-        if (document.getElementById('ls-res-fast')) document.getElementById('ls-res-fast').innerText = fast.toFixed(2).replace('.', ',') + " kr";
-        if (document.getElementById('ls-res-vaktbrutto')) document.getElementById('ls-res-vaktbrutto').innerText = vaktBrutto.toFixed(2).replace('.', ',') + " kr";
-        if (document.getElementById('ls-res-timebank')) document.getElementById('ls-res-timebank').innerText = "+ " + timebankHours.toFixed(1).replace('.', ',') + " t";
-        if (document.getElementById('ls-res-totbrutto')) document.getElementById('ls-res-totbrutto').innerText = gross.toFixed(2).replace('.', ',') + " kr";
-        if (document.getElementById('ls-res-union')) document.getElementById('ls-res-union').innerText = "− " + union.toFixed(2).replace('.', ',') + " kr";
-        if (document.getElementById('ls-res-skatt')) document.getElementById('ls-res-skatt').innerText = "− " + tax.toFixed(2).replace('.', ',') + " kr";
+    function oppdaterAarOgMaaned() {
+        const yearSelect = document.getElementById('year');
+        const monthSelect = document.getElementById('month');
+        if (!yearSelect || !monthSelect || !yearSelect.value || monthSelect.value === "") return;
 
-        const ferieRow = document.getElementById('ls-row-ferie');
-        if (ferieRow) {
-            if (vacDays > 0) {
-                if (document.getElementById('ls-res-ferie')) document.getElementById('ls-res-ferie').innerText = "− " + ferieDeduct.toFixed(2).replace('.', ',') + " kr";
-                ferieRow.style.display = 'flex';
+        const year = parseInt(yearSelect.value);
+        const month = parseInt(monthSelect.value);
+        const realDays = countWeekdays(year, month);
+
+        if (document.getElementById('tekst-arbeidsdager')) document.getElementById('tekst-arbeidsdager').innerText = `Antall arbeidsdager i måneden: ${realDays} dager`;
+        if (document.getElementById('tekst-gjeldende-dager')) document.getElementById('tekst-gjeldende-dager').innerText = `Gjeldende dager i beregningen: ${realDays} (kalender, man–fre)`;
+
+        if (document.getElementById('vakt-dato') && !document.getElementById('vakt-dato').value) {
+            let m = month + 1;
+            let mStr = m < 10 ? '0' + m : m;
+            document.getElementById('vakt-dato').value = `${year}-${mStr}-01`;
+        }
+        calcSalary();
+        lagreInnstillinger();
+    }
+
+    function sjekkDatoUkedag() {
+        const datoValgt = document.getElementById('vakt-dato').value;
+        if (!datoValgt) return;
+        const d = new Date(datoValgt);
+        const dag = d.getDay();
+        const tilleggType = document.getElementById('tillegg-type');
+        if (tilleggType) {
+            if (dag === 0 || dag === 6) {
+                if (!tilleggType.value.startsWith('helg')) tilleggType.value = 'helg50';
             } else {
-                ferieRow.style.display = 'none';
+                if (!tilleggType.value.startsWith('hverdag')) tilleggType.value = 'hverdag50';
             }
         }
     }
 
-    function addSalaryShift(e) {
-        e.preventDefault();
-        const h = parseInt(document.getElementById('lsv-hours').value) || 0;
-        const m = parseInt(document.getElementById('lsv-min').value) || 0;
-        const type = document.getElementById('lsv-type').value;
-        const tb = document.getElementById('lsv-timebank').checked;
-
-        let vakter = [];
-        if (localStorage.getItem('lonn_vakter_tabs_v26')) {
-            try { vakter = JSON.parse(localStorage.getItem('lonn_vakter_tabs_v26')); } catch(e){}
+    function byttSkattType() {
+        const type = document.getElementById('skatt-type').value;
+        if (type === 'prosent') {
+            document.getElementById('skattetabell-boks').style.display = 'none';
+            document.getElementById('skatteprosent-boks').style.display = 'block';
+        } else {
+            document.getElementById('skattetabell-boks').style.display = 'block';
+            document.getElementById('skatteprosent-boks').style.display = 'none';
         }
+    }
 
-        const d = new Date();
-        vakter.push({
+    let registrerteVakter = [];
+
+    function leggTilVakt(event) {
+        event.preventDefault();
+        const datoValgt = document.getElementById('vakt-dato').value;
+        if (!datoValgt) { alert("Velg en dato for vakten."); return; }
+        const d = new Date(datoValgt);
+        const vaktAar = d.getFullYear();
+        const vaktMnd = d.getMonth();
+
+        const timer = parseInt(document.getElementById('vakt-timer').value) || 0;
+        const minutter = parseInt(document.getElementById('vakt-minutter').value) || 0;
+        if (timer === 0 && minutter === 0) { alert("Oppgi timer eller minutter."); return; }
+
+        const type = document.getElementById('tillegg-type').value;
+        const typeTekst = document.getElementById('tillegg-type').options[document.getElementById('tillegg-type').selectedIndex].text;
+        const desimalTimer = timer + (minutter / 60);
+        const erTimebank = document.getElementById('vakt-timebank').checked;
+
+        const formatertDato = `${ukedager[d.getDay()]} ${d.getDate()}.${d.getMonth()+1}`;
+
+        registrerteVakter.push({
             id: Math.random().toString(36).substring(2),
-            date: d.toISOString().split('T')[0],
-            dateLabel: `${d.getDate()}.${d.getMonth()+1}`,
+            date: datoValgt,
+            dateLabel: formatertDato,
             kind: type,
-            kindLabel: type,
-            hours: h,
-            minutes: m,
-            desimalTimer: h + (m/60),
-            year: d.getFullYear(),
-            month: d.getMonth(),
-            isTimebank: tb
+            kindLabel: typeTekst.split(' (')[0],
+            hours: timer,
+            minutes: minutter,
+            desimalTimer,
+            year: vaktAar,
+            month: vaktMnd,
+            isTimebank: erTimebank
         });
 
-        localStorage.setItem('lonn_vakter_tabs_v26', JSON.stringify(vakter));
+        document.getElementById('vakt-timer').value = 0;
+        document.getElementById('vakt-minutter').value = 0;
+        document.getElementById('vakt-timebank').checked = false;
+
+        sorterOgOppdaterVakter();
+    }
+
+    function slettVakt(id) {
+        registrerteVakter = registrerteVakter.filter(v => v.id !== id);
+        sorterOgOppdaterVakter();
+    }
+
+    function sorterOgOppdaterVakter() {
+        registrerteVakter.sort((a, b) => new Date(a.date) - new Date(b.date));
+        localStorage.setItem('lonn_vakter_tabs_v26', JSON.stringify(registrerteVakter));
+        oppdaterVaktTabell();
         calcSalary();
-        alert("✅ Vakt registrert!");
+        lagreInnstillinger();
+    }
+
+    function hentAktiveVakter() {
+        const yearSelect = document.getElementById('year');
+        const monthSelect = document.getElementById('month');
+        if (!yearSelect || !monthSelect || !yearSelect.value || monthSelect.value === "") return registrerteVakter;
+        const year = parseInt(yearSelect.value);
+        const month = parseInt(monthSelect.value);
+        return registrerteVakter.filter(v => v.year === year && v.month === month);
+    }
+
+    function oppdaterVaktTabell() {
+        const container = document.getElementById('vakt-tabell-container');
+        const monthSelect = document.getElementById('month');
+        if (!container) return;
+
+        const aktive = hentAktiveVakter();
+        const monthName = monthSelect && monthSelect.value !== "" ? maanedsNavn[parseInt(monthSelect.value)] : "måneden";
+        if (document.getElementById('tittel-vaktliste')) {
+            document.getElementById('tittel-vaktliste').innerText = `Registrerte vakter i ${monthName.toLowerCase()}`;
+        }
+
+        if (aktive.length === 0) {
+            container.innerHTML = `<p class="p-6 text-center text-xs text-slate-500 italic border border-dashed border-slate-800 rounded-xl">Ingen vakter registrert i denne måneden.</p>`;
+            return;
+        }
+
+        const timelonn = parseFloat(document.getElementById('timelonn').value) || 316.5;
+
+        let html = '<ul class="space-y-2 list-none p-0 m-0">';
+        aktive.forEach(v => {
+            const faktor = v.isTimebank ? (v.kind.includes('50') ? 0.5 : 1.0) : (v.kind.includes('50') ? 1.5 : 2.0);
+            const brutto = v.desimalTimer * (timelonn * faktor);
+            const tbBadge = v.isTimebank ? `<span class="text-[11px] bg-amber-500/10 text-amber-400 px-2 py-0.5 rounded font-semibold ml-2">🏦 Timebank (+${v.desimalTimer.toFixed(1)}t)</span>` : '';
+
+            html += `<li class="flex items-center justify-between p-3 rounded-xl border border-slate-800 bg-slate-900/60">
+                <div>
+                    <p class="font-bold text-sm text-slate-200">${v.dateLabel}${tbBadge}</p>
+                    <p class="text-xs text-slate-400">${v.kindLabel} · ${v.hours}t ${v.minutes}m ${v.isTimebank ? '(kun tillegg utbetalt)' : ''}</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="font-mono font-bold text-sm text-sky-400">${brutto.toFixed(2).replace('.', ',')} kr</span>
+                    <button type="button" class="text-red-400 hover:text-red-300 p-1 font-bold" onclick="slettVakt('${v.id}')">🗑️</button>
+                </div>
+            </li>`;
+        });
+        html += '</ul>';
+        container.innerHTML = html;
+    }
+
+    function kopierVaktliste() {
+        const aktive = hentAktiveVakter();
+        if (aktive.length === 0) { alert("Ingen vakter å kopiere."); return; }
+        let txt = "Registrerte tilleggsvakter:\n";
+        aktive.forEach(v => { txt += `- ${v.dateLabel}: ${v.kindLabel} (${v.hours}t ${v.minutes}m) ${v.isTimebank ? '[Timebank]' : ''}\n`; });
+        navigator.clipboard.writeText(txt);
+        alert("Vaktlisten er kopiert til utklippstavlen!");
+    }
+
+    function eksporterVakttilExcel() {
+        const aktive = hentAktiveVakter();
+        if (aktive.length === 0) { alert("Ingen vakter å eksportere for denne måneden."); return; }
+
+        const timelonn = parseFloat(document.getElementById('timelonn').value) || 316.5;
+        let csvContent = "data:text/csv;charset=utf-8,Dato;Type;Timer;Minutter;Timebank;Brutto (NOK)\n";
+
+        aktive.forEach(v => {
+            const faktor = v.isTimebank ? (v.kind.includes('50') ? 0.5 : 1.0) : (v.kind.includes('50') ? 1.5 : 2.0);
+            const brutto = v.desimalTimer * (timelonn * faktor);
+            csvContent += `${v.date};${v.kindLabel};${v.hours};${v.minutes};${v.isTimebank ? 'Ja' : 'Nei'};${brutto.toFixed(2).replace('.', ',')}\n`;
+        });
+
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", `Vaktliste_${document.getElementById('year') ? document.getElementById('year').value : '2026'}_${document.getElementById('month') ? document.getElementById('month').value : '1'}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+    function lagreInnstillinger() {
+        if (document.getElementById('year')) localStorage.setItem('lonn_year', document.getElementById('year').value);
+        if (document.getElementById('month')) localStorage.setItem('lonn_month', document.getElementById('month').value);
+        if (document.getElementById('inkluder-fastlonn')) localStorage.setItem('lonn_inkl_fastlonn', document.getElementById('inkluder-fastlonn').checked ? '1' : '0');
+        if (document.getElementById('timelonn')) localStorage.setItem('lonn_timelonn', document.getElementById('timelonn').value);
+        if (document.getElementById('timer-dag')) localStorage.setItem('lonn_timer', document.getElementById('timer-dag').value);
+        if (document.getElementById('feriedager')) localStorage.setItem('lonn_ferier', document.getElementById('feriedager').value);
+        if (document.getElementById('skatt-type')) localStorage.setItem('lonn_skatt_type', document.getElementById('skatt-type').value);
+        if (document.getElementById('skatte-tabellnummer')) localStorage.setItem('lonn_tabell', document.getElementById('skatte-tabellnummer').value);
+        if (document.getElementById('skatt')) localStorage.setItem('lonn_skatt_pct', document.getElementById('skatt').value);
+        if (document.getElementById('fagforening-prosent')) localStorage.setItem('lonn_union_pct', document.getElementById('fagforening-prosent').value);
+        localStorage.setItem('lonn_vakter_tabs_v26', JSON.stringify(registrerteVakter));
+    }
+
+    function lastInnstillinger() {
+        byggAarsOgMaanedsLister();
+
+        if (localStorage.getItem('lonn_year') && document.getElementById('year')) document.getElementById('year').value = localStorage.getItem('lonn_year');
+        if (localStorage.getItem('lonn_month') && document.getElementById('month')) document.getElementById('month').value = localStorage.getItem('lonn_month');
+
+        if (localStorage.getItem('lonn_inkl_fastlonn') !== null && document.getElementById('inkluder-fastlonn')) {
+            document.getElementById('inkluder-fastlonn').checked = localStorage.getItem('lonn_inkl_fastlonn') === '1';
+        }
+
+        if (localStorage.getItem('lonn_timelonn') && document.getElementById('timelonn')) document.getElementById('timelonn').value = localStorage.getItem('lonn_timelonn');
+        if (localStorage.getItem('lonn_timer') && document.getElementById('timer-dag')) document.getElementById('timer-dag').value = localStorage.getItem('lonn_timer');
+        if (localStorage.getItem('lonn_ferier') && document.getElementById('feriedager')) document.getElementById('feriedager').value = localStorage.getItem('lonn_ferier');
+        if (localStorage.getItem('lonn_skatt_type') && document.getElementById('skatt-type')) {
+            document.getElementById('skatt-type').value = localStorage.getItem('lonn_skatt_type');
+        }
+        if (localStorage.getItem('lonn_tabell') && document.getElementById('skatte-tabellnummer')) document.getElementById('skatte-tabellnummer').value = localStorage.getItem('lonn_tabell');
+        if (localStorage.getItem('lonn_skatt_pct') && document.getElementById('skatt')) document.getElementById('skatt').value = localStorage.getItem('lonn_skatt_pct');
+        if (localStorage.getItem('fagforening-prosent') && document.getElementById('fagforening-prosent')) document.getElementById('fagforening-prosent').value = localStorage.getItem('lonn_union_pct');
+
+        if (localStorage.getItem('lonn_vakter_tabs_v26')) {
+            try { registrerteVakter = JSON.parse(localStorage.getItem('lonn_vakter_tabs_v26')); } catch(e){}
+        }
+
+        byttSkattType();
+        oppdaterAarOgMaaned();
+        oppdaterVaktTabell();
+        calcSalary();
+    }
+
+    function calcSalary() {
+        const yearSelect = document.getElementById('year');
+        const monthSelect = document.getElementById('month');
+
+        let year = yearSelect ? parseInt(yearSelect.value) : new Date().getFullYear();
+        let month = monthSelect ? parseInt(monthSelect.value) : new Date().getMonth();
+
+        const realDays = countWeekdays(year, month);
+        const harFast = document.getElementById('inkluder-fastlonn') ? document.getElementById('inkluder-fastlonn').checked : true;
+        const timelonn = parseFloat(document.getElementById('timelonn') ? document.getElementById('timelonn').value : '316.5') || 316.5;
+        const timerPrDag = parseFloat(document.getElementById('timer-dag') ? document.getElementById('timer-dag').value : '7.5') || 7.5;
+        const feriedager = parseInt(document.getElementById('feriedager') ? document.getElementById('feriedager').value : '0') || 0;
+
+        const fastlBrutto = harFast ? (realDays * timerPrDag * timelonn) : 0;
+        const ferieTrekk = harFast ? (feriedager * timerPrDag * timelonn) : 0;
+
+        const radFastlonn = document.getElementById('rad-fastlonn');
+        if (radFastlonn) {
+            if (harFast) {
+                if (document.getElementById('vis-fastlonn')) document.getElementById('vis-fastlonn').innerText = fastlBrutto.toFixed(2).replace('.', ',') + " kr";
+                radFastlonn.style.display = 'flex';
+            } else {
+                radFastlonn.style.display = 'none';
+            }
+        }
+
+        const radFerie = document.getElementById('rad-ferietrekk');
+        if (radFerie) {
+            if (harFast && feriedager > 0) {
+                if (document.getElementById('vis-ferietrekk')) document.getElementById('vis-ferietrekk').innerText = "− " + ferieTrekk.toFixed(2).replace('.', ',') + " kr";
+                radFerie.style.display = 'flex';
+            } else {
+                radFerie.style.display = 'none';
+            }
+        }
+
+        let sumVaktBrutto = 0, sumTimebankTimer = 0;
+        const aktive = hentAktiveVakter();
+        aktive.forEach(v => {
+            const faktor = v.isTimebank ? (v.kind.includes('50') ? 0.5 : 1.0) : (v.kind.includes('50') ? 1.5 : 2.0);
+            const b = v.desimalTimer * (timelonn * faktor);
+            sumVaktBrutto += b;
+            if (v.isTimebank) sumTimebankTimer += v.desimalTimer;
+        });
+
+        if (document.getElementById('vis-vaktbrutto')) document.getElementById('vis-vaktbrutto').innerText = sumVaktBrutto.toFixed(2).replace('.', ',') + " kr";
+        if (document.getElementById('vis-timebank')) document.getElementById('vis-timebank').innerText = "+ " + sumTimebankTimer.toFixed(1).replace('.', ',') + " t";
+
+        const totalBruttoMnd = Math.max(0, fastlBrutto - ferieTrekk + sumVaktBrutto);
+        if (document.getElementById('vis-totalbrutto')) document.getElementById('vis-totalbrutto').innerText = totalBruttoMnd.toFixed(2).replace('.', ',') + " kr";
+
+        const fagforeningPct = parseFloat(document.getElementById('fagforening-prosent') ? document.getElementById('fagforening-prosent').value : '1.5') || 1.5;
+        const fagforeningTrekk = Math.max(0, totalBruttoMnd * (fagforeningPct / 100));
+        if (document.getElementById('vis-fagforening')) document.getElementById('vis-fagforening').innerText = "− " + fagforeningTrekk.toFixed(2).replace('.', ',') + " kr";
+
+        const skatteGrunnlag = Math.max(0, totalBruttoMnd - fagforeningTrekk);
+
+        let beregnetSkatt = 0;
+        const skattType = document.getElementById('skatt-type') ? document.getElementById('skatt-type').value : 'tabell';
+        if (skattType === 'prosent') {
+            const pct = parseFloat(document.getElementById('skatt') ? document.getElementById('skatt').value : '30') || 30;
+            beregnetSkatt = skatteGrunnlag * (pct / 100);
+        } else {
+            // Tabell 7101
+            beregnetSkatt = skatteGrunnlag * 0.28;
+        }
+
+        if (document.getElementById('vis-skatt')) document.getElementById('vis-skatt').innerText = "− " + beregnetSkatt.toFixed(2).replace('.', ',') + " kr";
+
+        const nettoUtbetalt = Math.max(0, totalBruttoMnd - fagforeningTrekk - beregnetSkatt);
+        if (document.getElementById('vis-netto')) document.getElementById('vis-netto').innerText = nettoUtbetalt.toFixed(2).replace('.', ',') + " kr";
+        if (document.getElementById('vis-netto-bottom')) document.getElementById('vis-netto-bottom').innerText = nettoUtbetalt.toFixed(2).replace('.', ',') + " kr";
+
+        const feriepengerOpptjent = Math.max(0, totalBruttoMnd * 0.12);
+        if (document.getElementById('vis-feriepenger')) document.getElementById('vis-feriepenger').innerText = feriepengerOpptjent.toFixed(2).replace('.', ',') + " kr";
+
+        const fastAarssats = harFast ? ((5 * timerPrDag) * timelonn * 47) * 1.12 : 0;
+        const totalAarssats = (fastAarssats + (sumVaktBrutto * 12)) * 1.12;
+
+        if (document.getElementById('vis-aarslonn-fast')) document.getElementById('vis-aarslonn-fast').innerText = fastAarssats.toFixed(2).replace('.', ',') + " kr";
+        if (document.getElementById('vis-aarslonn-tot')) document.getElementById('vis-aarslonn-tot').innerText = totalAarssats.toFixed(2).replace('.', ',') + " kr";
+    }
+
+    function parseNorwegianAmount(str) {
+        if (!str) return 0;
+        let clean = str.replace(/\s/g, '').replace(',', '.');
+        return Math.abs(parseFloat(clean)) || 0;
     }
 
     function calcCircularFeed() {
@@ -1222,7 +1484,7 @@
     const curLang = localStorage.getItem('seland_lang') || 'no';
     document.getElementById('lang-btn').innerText = (curLang === 'en') ? '🇬🇧 EN' : '🇳🇴 NO';
 
-    calcSalary();
+    lastInnstillinger();
     calcCircularFeed();
     calcThreadDia();
     calcCuttingForce();
