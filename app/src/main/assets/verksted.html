@@ -336,6 +336,16 @@
                     <span style="font-size: 0.8125rem; font-weight: 600;" id="lbl-teeth-z">Antall skjær (z)</span>
                     <input type="number" id="mat-z" class="field-class" inputmode="numeric" value="4" oninput="oppdaterMaterialeData()">
                 </label>
+
+                <label style="display: flex; flex-direction: column; gap: 0.25rem; grid-column: span 2;">
+                    <span style="font-size: 0.8125rem; font-weight: 600;" id="lbl-tool-mat">Verktøymateriale (Skjæremateriale)</span>
+                    <select id="tool-mat-select" class="field-class" onchange="oppdaterMaterialeData()">
+                        <option value="hm_coated" selected>Belagt Hardmetall (HM / VHM / Carbide Inserts - Standard)</option>
+                        <option value="hm_uncoated">Ubelagt Hardmetall (HM / VHM - For Aluminium/Plast)</option>
+                        <option value="hss_co">Hurtigstål Kobolt (HSS-Co / HSS-E Bor & Fres)</option>
+                        <option value="hss_std">Hurtigstål Standard (HSS Bor & Fres)</option>
+                    </select>
+                </label>
             </div>
 
             <div class="result-box">
@@ -973,6 +983,7 @@
             sec1Title: "🧪 Materialvelger & Anbefalte Skjæredata (Vc & fz)",
             sec1Sub: "Velg verkstedmateriale for å få opp anbefalte skjærehastigheter for skrubb og slett.",
             selectMat: "Velg materiale",
+            toolMat: "Verktøymateriale (Skjæremateriale)",
             toolDia: "Verktøydiameter (mm)",
             teethZ: "Antall skjær (z)",
             recVc: "Anbefalt Vc (Skrubb / Slett):",
@@ -1151,15 +1162,34 @@
 
     function oppdaterMaterialeData() {
         const matKey = document.getElementById('mat-select').value;
+        const toolMat = document.getElementById('tool-mat-select').value;
         const dia = parseFloat(document.getElementById('mat-dia').value) || 10;
         const z = parseFloat(document.getElementById('mat-z').value) || 4;
 
         const data = materialData[matKey] || materialData.s355;
 
-        const rpm = (data.vcRough * 1000) / (Math.PI * dia);
-        const vf = rpm * data.fzRough * z;
+        let vcFactor = 1.0;
+        let fzFactor = 1.0;
 
-        document.getElementById('mat-res-vc').innerText = `${data.vcRough} - ${data.vcFinish} m/min`;
+        if (toolMat === 'hm_uncoated') {
+            vcFactor = 0.90;
+            fzFactor = 0.95;
+        } else if (toolMat === 'hss_co') {
+            vcFactor = 0.22;
+            fzFactor = 0.70;
+        } else if (toolMat === 'hss_std') {
+            vcFactor = 0.16;
+            fzFactor = 0.60;
+        }
+
+        const vcRough = Math.round(data.vcRough * vcFactor);
+        const vcFinish = Math.round(data.vcFinish * vcFactor);
+        const fzRough = data.fzRough * fzFactor;
+
+        const rpm = (vcRough * 1000) / (Math.PI * dia);
+        const vf = rpm * fzRough * z;
+
+        document.getElementById('mat-res-vc').innerText = `${vcRough} - ${vcFinish} m/min`;
         document.getElementById('mat-res-rpm').innerText = `${Math.round(rpm)} RPM`;
         document.getElementById('mat-res-mating').innerText = `${Math.round(vf)} mm/min`;
     }
