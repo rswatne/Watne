@@ -343,6 +343,7 @@
                         <option value="mill_rough" selected>Fresing - Skrubb / Grovfresing (Heavy Milling)</option>
                         <option value="mill_finish">Fresing - Slett / Finfresing (High Surface Finish)</option>
                         <option value="drill">Boring - Spiralbor / Kjernebor (Drilling)</option>
+                        <option value="udrill">Boring - U-Bor / Vendeskjærsbor (U-Drill / Indexable Drill)</option>
                         <option value="turn_rough">Dreiing - Skrubbdreiing (Turning Roughing)</option>
                         <option value="turn_finish">Dreiing - Slettdreiing (Turning Finishing)</option>
                         <option value="tap">Gjenging - Gjengebor / Gjengefres (Tapping)</option>
@@ -1204,6 +1205,10 @@
             baseVc = Math.round(data.vcRough * 0.85);
             feedPerRevOrTooth = Math.min(0.25, (dia * 0.015));
             feedTypeLabel = "mm/omdr";
+        } else if (opType === 'udrill') {
+            baseVc = data.vcRough;
+            feedPerRevOrTooth = Math.min(0.18, Math.max(0.06, dia * 0.005));
+            feedTypeLabel = "mm/omdr (U-bor / Kjøling)";
         } else if (opType === 'turn_rough') {
             baseVc = data.vcRough;
             feedPerRevOrTooth = 0.25;
