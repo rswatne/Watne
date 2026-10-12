@@ -382,8 +382,11 @@
         </div>
 
         <div class="result-box" style="background: var(--brass-soft); border-left-color: var(--brass);">
-            <div class="line-row strong"><span style="color: var(--brass);" id="lbl-onedeg">1 Grad tilsvarer:</span><span id="deg-res-onegrad" class="font-mono" style="font-size: 1rem; color: var(--brass);">0 mm</span></div>
-            <div class="line-row strong" style="margin-top: 0.375rem;"><span style="color: var(--brass); font-size: 1.05rem;" id="lbl-degmin">Mating i Grader/MIN (C-akse):</span><span id="deg-res-gradmin" class="font-mono" style="font-size: 1.25rem; color: var(--brass);">0 °/min</span></div>
+            <div class="line-row strong"><span style="color: var(--brass);">Omkrets på emnet:</span><span id="deg-res-omkrets" class="font-mono" style="font-size: 1rem; color: var(--brass);">0,00 mm</span></div>
+            <div class="line-row strong" style="margin-top: 0.25rem;"><span style="color: var(--brass);" id="lbl-onedeg">1 Grad tilsvarer:</span><span id="deg-res-onegrad" class="font-mono" style="font-size: 1rem; color: var(--brass);">0,00 mm/°</span></div>
+            <div class="line-row strong" style="margin-top: 0.375rem;"><span style="color: var(--brass); font-size: 1.1rem;" id="lbl-degmin">Mating i Grader/MIN (C-akse):</span><span id="deg-res-gradmin" class="font-mono" style="font-size: 1.35rem; color: var(--brass);">0 °/min</span></div>
+            <div class="line-row strong" style="margin-top: 0.25rem;"><span style="color: var(--brass);">Omdreininger pr. minutt:</span><span id="deg-res-revmin" class="font-mono" style="font-size: 1rem; color: var(--brass);">0,00 omdr/min</span></div>
+            <div class="line-row strong" style="margin-top: 0.25rem;"><span style="color: var(--brass);">Tid pr. omdreining:</span><span id="deg-res-time" class="font-mono" style="font-size: 1rem; color: var(--brass);">0,00 min</span></div>
         </div>
     </div>
 
@@ -621,11 +624,17 @@
         const mmmin = parseFloat(document.getElementById('deg-mmmin').value) || 0;
         const dia = parseFloat(document.getElementById('deg-dia').value) || 0;
 
-        const oneGrad = (dia * Math.PI) / 360;
+        const omkrets = Math.PI * dia;
+        const oneGrad = omkrets > 0 ? (omkrets / 360) : 0;
         const gradMin = oneGrad > 0 ? (mmmin / oneGrad) : 0;
+        const revMin = omkrets > 0 ? (mmmin / omkrets) : 0;
+        const timePerRev = mmmin > 0 ? (omkrets / mmmin) : 0;
 
-        document.getElementById('deg-res-onegrad').innerText = oneGrad.toFixed(4).replace('.', ',') + " mm/°";
-        document.getElementById('deg-res-gradmin').innerText = gradMin.toFixed(1).replace('.', ',') + " °/min";
+        if (document.getElementById('deg-res-omkrets')) document.getElementById('deg-res-omkrets').innerText = omkrets.toFixed(2).replace('.', ',') + " mm";
+        if (document.getElementById('deg-res-onegrad')) document.getElementById('deg-res-onegrad').innerText = oneGrad.toFixed(4).replace('.', ',') + " mm/°";
+        if (document.getElementById('deg-res-gradmin')) document.getElementById('deg-res-gradmin').innerText = gradMin.toFixed(1).replace('.', ',') + " °/min";
+        if (document.getElementById('deg-res-revmin')) document.getElementById('deg-res-revmin').innerText = revMin.toFixed(2).replace('.', ',') + " omdr/min";
+        if (document.getElementById('deg-res-time')) document.getElementById('deg-res-time').innerText = timePerRev.toFixed(3).replace('.', ',') + " min";
     }
 
     // Initialiser
