@@ -1473,9 +1473,10 @@
         const fastAarBrutto = harFastlonn ? ((5 * timerPrDag) * timelonn * 47 * (dager / realDays)) : 0;
         const ukerMnd = dager / 5;
         const tilleggAar = ukerMnd > 0 ? (sumVaktBrutto / ukerMnd) * 47 : 0;
+        const fastAarMedFeriepenger = fastAarBrutto * 1.12;
         const totalAarMedFeriepenger = (fastAarBrutto + tilleggAar) * 1.12;
 
-        document.getElementById('vis-aarslonn-fast').innerText = (fastAarBrutto * 1.12).toFixed(2).replace('.', ',') + " kr";
+        document.getElementById('vis-aarslonn-fast').innerText = fastAarMedFeriepenger.toFixed(2).replace('.', ',') + " kr";
         document.getElementById('vis-aarslonn-total').innerText = totalAarMedFeriepenger.toFixed(2).replace('.', ',') + " kr";
         document.getElementById('vis-aarslonn-aar').innerText = (totalAarMedFeriepenger * (unionPct / 100)).toFixed(2).replace('.', ',') + " kr";
     }

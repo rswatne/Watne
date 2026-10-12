@@ -10,7 +10,7 @@
     <meta http-equiv="Expires" content="0">
 
     <script>
-        const APP_BUILD_VER = "v2000.0-100PercentIdenticalToLonnHtml";
+        const APP_BUILD_VER = "v3000.0-AnnualPrognosisFormulaFix";
         if (localStorage.getItem('app_build_v') !== APP_BUILD_VER) {
             localStorage.setItem('app_build_v', APP_BUILD_VER);
             if ('serviceWorker' in navigator) {
@@ -1327,10 +1327,12 @@
         if (document.getElementById('vis-feriepenger')) document.getElementById('vis-feriepenger').innerText = Math.round(feriepengerOpptjent).toLocaleString('no-NB') + " kr";
 
         const fastAarssats = harFast ? ((5 * timerPrDag) * timelonn * 47) * 1.12 : 0;
-        const totalAarssats = (fastAarssats + (sumVaktBrutto * 12)) * 1.12;
+        const vaktAarssats = (sumVaktBrutto * 12) * 1.12;
+        const totalAarssats = fastAarssats + vaktAarssats;
 
         if (document.getElementById('vis-aarslonn-fast')) document.getElementById('vis-aarslonn-fast').innerText = Math.round(fastAarssats).toLocaleString('no-NB') + " kr";
         if (document.getElementById('vis-aarslonn-tot')) document.getElementById('vis-aarslonn-tot').innerText = Math.round(totalAarssats).toLocaleString('no-NB') + " kr";
+        if (document.getElementById('vis-aarslonn-total')) document.getElementById('vis-aarslonn-total').innerText = Math.round(totalAarssats).toLocaleString('no-NB') + " kr";
     }
 
     function calcCircularFeed() {
