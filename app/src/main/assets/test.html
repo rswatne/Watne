@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WATNE PRO — Verkstedsportal (Testområde)</title>
+    <title>WATNE PRO — Verkstedsportal (Komplett Trekkspill-Meny)</title>
 
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
 
     <script>
-        const APP_BUILD_VER = "v300.0-VerkstedsportalTsxDesign";
+        const APP_BUILD_VER = "v400.0-AccordionMasterVerkstedsportal";
         if (localStorage.getItem('app_build_v') !== APP_BUILD_VER) {
             localStorage.setItem('app_build_v', APP_BUILD_VER);
             if ('serviceWorker' in navigator) {
@@ -108,7 +108,7 @@
         .btn-primary {
             background-color: #0284c7;
             color: #ffffff;
-            font-weight: 600;
+            font-weight: 700;
             font-size: 0.875rem;
             padding: 0.75rem 1.25rem;
             border-radius: 0.75rem;
@@ -146,13 +146,29 @@
             border-color: #334155;
             background: rgba(255, 255, 255, 0.03);
         }
+
+        .accordion-body {
+            display: none;
+        }
+        .accordion-item.open .accordion-body {
+            display: block;
+            animation: fadeIn 0.2s ease-out;
+        }
+        .accordion-item.open .accordion-chevron {
+            transform: rotate(180deg);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body class="min-h-screen bg-slate-950 font-sans text-slate-100">
 
 <div id="root"></div>
 
-<!-- REACT 18 + VERKSTEDSPORTAL.TSX DESIGN SCRIPT -->
+<!-- REACT 18 + VERKSTEDSPORTAL ACCORDION ENGINE -->
 <script type="text/babel">
     const { useState, useMemo, useEffect, useCallback } = React;
 
@@ -183,7 +199,7 @@
     const YEAR_OPTIONS = Array.from({ length: 6 }, (_, i) => ({ value: String(2025 + i), label: String(2025 + i) }));
 
     const Card = ({ children, className = '' }) => (
-      <div className={`bg-slate-900/60 backdrop-blur-xl border border-slate-800 rounded-2xl overflow-hidden shadow-xl mb-6 ${className}`}>
+      <div className={`bg-slate-900/60 backdrop-blur-xl border border-slate-800 rounded-2xl overflow-hidden shadow-xl mb-4 ${className}`}>
         {children}
       </div>
     );
@@ -199,6 +215,34 @@
         </div>
       </div>
     );
+
+    // INTERAKTIVT TREKKSPILL (ACCORDION) KOMPONENT
+    const AccordionCard = ({ id, icon, title, badge, defaultOpen = false, children }) => {
+      const [open, setOpen] = useState(defaultOpen);
+      return (
+        <div className="bg-slate-900/60 backdrop-blur-xl border border-slate-800 rounded-2xl overflow-hidden shadow-xl mb-4">
+          <div onClick={() => setOpen(!open)} className="border-b border-slate-800/60 bg-slate-800/20 px-6 py-4 flex items-center justify-between cursor-pointer hover:bg-slate-800/40 transition-colors">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-sky-500/20 text-sky-400 rounded-lg text-xl">
+                {icon}
+              </div>
+              <div>
+                <h3 className="font-semibold text-slate-100 text-sm sm:text-base">{title}</h3>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              {badge && <span className="text-xs px-2.5 py-1 rounded-full bg-sky-500/15 text-sky-300 font-mono font-bold hidden sm:inline">{badge}</span>}
+              <span className={`text-slate-400 text-xs transition-transform duration-200 ${open ? 'rotate-180' : ''}`}>▼</span>
+            </div>
+          </div>
+          {open && (
+            <div className="p-6 border-t border-slate-800/40 animate-fadeIn">
+              {children}
+            </div>
+          )}
+        </div>
+      );
+    };
 
     const Field = ({ label, value, onChange, suffix, type = "text", placeholder, min, step, hint }) => (
       <div className="flex flex-col gap-1.5 w-full">
@@ -229,11 +273,11 @@
     const ResultRow = ({ label, value, unit, highlight = false }) => (
       <div className={`flex items-center justify-between p-3 rounded-xl ${highlight ? 'bg-sky-500/10 border border-sky-500/30' : 'bg-slate-800/40 border border-slate-700/40'}`}>
         <span className="text-sm text-slate-300">{label}</span>
-        <span className={`font-mono text-lg ${highlight ? 'text-sky-400 font-bold' : 'text-slate-100'}`}>{value} {unit && <span className="text-sm text-slate-400">{unit}</span>}</span>
+        <span className={`font-mono text-base ${highlight ? 'text-sky-400 font-bold' : 'text-slate-100'}`}>{value} {unit && <span className="text-sm text-slate-400">{unit}</span>}</span>
       </div>
     );
 
-    // 1. SALARY CALCULATOR
+    // 1. LØNNSKALKULATOR (KOMPLETT I TREKKSPILL)
     function SalaryCalculator() {
       const [year, setYear] = useState(String(new Date().getFullYear()));
       const [month, setMonth] = useState(String(new Date().getMonth()));
@@ -333,11 +377,24 @@
         localStorage.setItem('lonn_vakter_tabs_v26', JSON.stringify(updated));
       };
 
+      const exportCSV = () => {
+        if (activeShifts.length === 0) { alert("Ingen vakter å eksportere."); return; }
+        let csv = "data:text/csv;charset=utf-8,Dato;Type;Timer;Timebank;Brutto (NOK)\n";
+        activeShifts.forEach(s => {
+          csv += `${s.date};${s.kindLabel};${s.hours}t ${s.minutes}m;${s.isTimebank?'Ja':'Nei'};${(s.desimalTimer * num(timelonn)).toFixed(2)}\n`;
+        });
+        const link = document.createElement("a");
+        link.setAttribute("href", encodeURI(csv));
+        link.setAttribute("download", `Vaktliste_${selectedYear}_${selectedMonth+1}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      };
+
       return (
         <div className="space-y-4">
-          <Card>
-            <CardHeader icon="📅" title="Periode & Lønnsinnstillinger" subtitle="Velg år, måned og fastlønn" />
-            <div className="p-6 space-y-4">
+          <AccordionCard id="a-period" icon="📅" title="Periode & Lønnsinnstillinger" badge="Fastlønn & Skatt" defaultOpen={true}>
+            <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <SelectField label="År" value={year} onChange={setYear} options={YEAR_OPTIONS} />
                 <SelectField label="Måned" value={month} onChange={setMonth} options={MONTH_NAMES.map((m, i) => ({ value: String(i), label: m }))} />
@@ -359,59 +416,91 @@
                   <Field label="Skatteprosent" value={skattProsent} onChange={setSkattProsent} suffix="%" />
                 )}
               </div>
-              <Field label="Fagforening (%)" value={fagforeningProsent} onChange={setFagforeningProsent} suffix="%" hint="Full skattefordel: trekkes fra FØR skatt" />
+              <Field label="Fagforening (%)" value={fagforeningProsent} onChange={setFagforeningProsent} suffix="%" hint="Full skattefordel: trekkes fra FØR skattegrunnlaget" />
             </div>
-          </Card>
+          </AccordionCard>
 
-          <div className="grid md:grid-cols-2 gap-4">
-            <Card>
-              <CardHeader icon="⏱️" title="Registrer Tilleggsvakt" subtitle={`Legg til vakt i ${MONTH_NAMES[selectedMonth]} ${selectedYear}`} />
-              <form onSubmit={addShift} className="p-6 space-y-4">
-                <Field label="Dato" type="date" value={shiftDate} onChange={setShiftDate} />
-                <div className="grid grid-cols-2 gap-2">
-                  <Field label="Timer" value={shiftHours} onChange={setShiftHours} type="number" />
-                  <Field label="Minutter" value={shiftMin} onChange={setShiftMin} type="number" />
-                </div>
-                <SelectField label="Tilleggstype" value={shiftType} onChange={setShiftType} options={SHIFT_TYPES} />
-                <label className="flex items-center gap-2 p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl cursor-pointer">
-                  <input type="checkbox" checked={shiftTimebank} onChange={(e) => setShiftTimebank(e.target.checked)} className="w-4 h-4 accent-amber-500" />
-                  <span className="text-xs font-bold text-amber-400">🏦 Sett ordinær time i timebanken</span>
-                </label>
-                <button type="submit" className="w-full py-3 rounded-xl bg-sky-500 text-white font-bold hover:bg-sky-400 transition-colors">+ Registrer Vakt</button>
-              </form>
-            </Card>
-
-            <Card>
-              <CardHeader icon="📊" title="Månedsoppgjør" subtitle={`${MONTH_NAMES[selectedMonth]} ${selectedYear}`} />
-              <div className="p-6 space-y-3">
-                <ResultRow label="Fastlønn brutto" value={fmtNOK(calc.fastlonn)} />
-                {calc.ferieTrekk > 0 && <ResultRow label="Ferietrekk" value={`− ${fmtNOK(calc.ferieTrekk)}`} />}
-                <ResultRow label="Sum tilleggsvakter" value={fmtNOK(calc.vaktBrutto)} highlight />
-                <ResultRow label="Timebank Saldo" value={`+ ${calc.timebankTimer.toFixed(1)} t`} />
-                <div className="flex justify-between p-3 bg-slate-800/80 rounded-xl border border-slate-700">
-                  <span className="font-bold text-slate-200">Total Brutto</span>
-                  <span className="font-extrabold text-lg text-sky-400">{fmtNOK(calc.totalBrutto)}</span>
-                </div>
-                <ResultRow label="Fagforening (1.5%)" value={`− ${fmtNOK(calc.fagforeningMnd)}`} />
-                <ResultRow label="Skattetrekk" value={`− ${fmtNOK(calc.skatt)}`} />
-                <div className="flex justify-between p-4 bg-emerald-500/10 rounded-xl border border-emerald-500/30 mt-2">
-                  <span className="font-bold text-emerald-400">Netto Utbetalt</span>
-                  <span className="font-bold text-2xl text-emerald-400">{fmtNOK(calc.netto)}</span>
-                </div>
+          <AccordionCard id="a-shift" icon="⏱️" title="Registrer Tilleggsvakt" badge={`Vakter ${MONTH_NAMES[selectedMonth]}`}>
+            <form onSubmit={addShift} className="space-y-4">
+              <Field label="Dato" type="date" value={shiftDate} onChange={setShiftDate} />
+              <div className="grid grid-cols-2 gap-2">
+                <Field label="Timer" value={shiftHours} onChange={setShiftHours} type="number" />
+                <Field label="Minutter" value={shiftMin} onChange={setShiftMin} type="number" />
               </div>
-            </Card>
-          </div>
+              <SelectField label="Tilleggstype" value={shiftType} onChange={setShiftType} options={SHIFT_TYPES} />
+              <label className="flex items-center gap-2 p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl cursor-pointer">
+                <input type="checkbox" checked={shiftTimebank} onChange={(e) => setShiftTimebank(e.target.checked)} className="w-4 h-4 accent-amber-500" />
+                <span className="text-xs font-bold text-amber-400">🏦 Sett ordinær time i timebanken (kun tillegg utbetales i penger)</span>
+              </label>
+              <button type="submit" className="w-full py-3 rounded-xl bg-sky-500 text-white font-bold hover:bg-sky-400 transition-colors">+ Registrer Vakt i Månedsoppgjøret</button>
+            </form>
+          </AccordionCard>
+
+          <AccordionCard id="a-vaktliste" icon="📋" title={`Vaktliste (${activeShifts.length} vakter)`} badge="Excel CSV">
+            <div className="space-y-3">
+              <div className="flex justify-end gap-2 mb-2">
+                <button onClick={exportCSV} className="px-3 py-1.5 rounded-lg border border-slate-700 bg-slate-800 text-xs font-bold text-sky-400 hover:bg-slate-700">📥 Eksporter Excel CSV</button>
+              </div>
+              {activeShifts.length === 0 ? (
+                <p className="text-xs text-slate-500 text-center py-6 border border-dashed border-slate-800 rounded-xl">Ingen vakter registrert i {MONTH_NAMES[selectedMonth]}.</p>
+              ) : (
+                <div className="space-y-2 max-h-60 overflow-y-auto">
+                  {activeShifts.map(s => (
+                    <div key={s.id} className="flex items-center justify-between p-3 rounded-xl bg-slate-800/40 border border-slate-700/40">
+                      <div>
+                        <p className="font-bold text-xs text-slate-200">{s.dateLabel} {s.isTimebank && <span className="text-[10px] bg-amber-500/20 text-amber-400 px-1.5 py-0.5 rounded ml-1">🏦 Timebank</span>}</p>
+                        <p className="text-[11px] text-slate-400">{s.kindLabel} · {s.hours}t {s.minutes}m</p>
+                      </div>
+                      <button onClick={() => removeShift(s.id)} className="text-red-400 hover:text-red-300 p-1 text-xs">🗑️ Slett</button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </AccordionCard>
+
+          <AccordionCard id="a-spec" icon="📊" title="Månedsoppgjør & Årsprognose Spesifikasjon" badge="Netto & År" defaultOpen={true}>
+            <div className="space-y-3">
+              <ResultRow label="Fastlønn (brutto ordinær måned)" value={fmtNOK(calc.fastlonn)} />
+              {calc.ferieTrekk > 0 && <ResultRow label="Lønnstrekk ubetalt ferie" value={`− ${fmtNOK(calc.ferieTrekk)}`} />}
+              <ResultRow label="Sum tilleggsvakter (brutto)" value={fmtNOK(calc.vaktBrutto)} highlight />
+              <ResultRow label="Timebank Saldo" value={`+ ${calc.timebankTimer.toFixed(1)} t`} />
+              <div className="flex justify-between p-3 bg-slate-800/80 rounded-xl border border-slate-700">
+                <span className="font-bold text-slate-200">Total Brutto</span>
+                <span className="font-extrabold text-lg text-sky-400">{fmtNOK(calc.totalBrutto)}</span>
+              </div>
+              <ResultRow label="Fagforeningstrekk (1.5% før skatt)" value={`− ${fmtNOK(calc.fagforeningMnd)}`} />
+              <ResultRow label="Skattetrekk" value={`− ${fmtNOK(calc.skatt)}`} />
+              <div className="flex justify-between p-4 bg-emerald-500/10 rounded-xl border border-emerald-500/30 my-3">
+                <span className="font-bold text-emerald-400">✨ Netto Utbetalt på konto</span>
+                <span className="font-bold text-2xl text-emerald-400">{fmtNOK(calc.netto)}</span>
+              </div>
+              <div className="pt-3 border-t border-slate-800 space-y-2 text-xs">
+                <ResultRow label="Estimerte feriepenger (12% av brutto)" value={fmtNOK(calc.feriepenger)} />
+                <ResultRow label="Total Årsprognose med vakter" value={fmtNOK(calc.aarsPrognose)} highlight />
+              </div>
+            </div>
+          </AccordionCard>
         </div>
       );
     }
 
-    // 2. MACHINING CALCULATOR COMPONENT
+    // 2. MASKINERINGSVALKULATOR (KOMPLETT TREKKSPILL)
     function MachiningCalculator() {
       const [vc, setVc] = useState('120');
       const [fz, setFz] = useState('0.08');
       const [z, setZ] = useState('4');
       const [dFres, setDFres] = useState('84');
       const [dHull, setDHull] = useState('410');
+
+      const [diaThread, setDiaThread] = useState('16');
+      const [pitch, setPitch] = useState('2.0');
+
+      const [ap, setAp] = useState('5');
+      const [ae, setAe] = useState('12');
+
+      const [caVf, setCaVf] = useState('1400');
+      const [caDia, setCaDia] = useState('3.14');
 
       const rpm = useMemo(() => {
         const v = num(vc); const df = num(dFres);
@@ -424,11 +513,35 @@
         return dh > 0 ? vfTann * ((dh - df) / dh) : 0;
       }, [rpm, fz, z, dFres, dHull]);
 
+      const threadDia = useMemo(() => {
+        const d = num(diaThread); const p = num(pitch);
+        return { in: d - p, ut: d - 0.125 * p };
+      }, [diaThread, pitch]);
+
+      const cuttingEff = useMemo(() => {
+        const apVal = num(ap); const aeVal = num(ae);
+        const vf = rpm * num(fz) * num(z);
+        const q = (apVal * aeVal * vf) / 1000;
+        const fc = 1800 * apVal * Math.pow(num(fz), 0.72);
+        const pc = (fc * num(vc)) / (60000 * 0.85);
+        const mc = (pc * 9550) / Math.max(1, rpm);
+        return { q, fc, pc, mc };
+      }, [ap, ae, vc, fz, z, rpm]);
+
+      const cAxis = useMemo(() => {
+        const vf = num(caVf); const dia = num(caDia);
+        const omkrets = Math.PI * dia;
+        const oneGrad = omkrets > 0 ? (omkrets / 360) : 0;
+        const gradMin = oneGrad > 0 ? (vf / oneGrad) : 0;
+        const revMin = omkrets > 0 ? (vf / omkrets) : 0;
+        const timeRev = vf > 0 ? (omkrets / vf) : 0;
+        return { omkrets, oneGrad, gradMin, revMin, timeRev };
+      }, [caVf, caDia]);
+
       return (
         <div className="space-y-4">
-          <Card>
-            <CardHeader icon="🌀" title="Sirkulær Bordsmating (GibbsCAM)" subtitle="Fresing og gjengefresing" />
-            <div className="p-6 space-y-4">
+          <AccordionCard id="m-sirk" icon="🌀" title="Sirkulær Bordsmating (GibbsCAM)" badge="Gibbs" defaultOpen={true}>
+            <div className="space-y-4">
               <div className="grid grid-cols-2 gap-3">
                 <Field label="Skjærehastighet Vc" value={vc} onChange={setVc} suffix="m/min" />
                 <Field label="Mating fz" value={fz} onChange={setFz} suffix="mm/tann" />
@@ -441,41 +554,128 @@
               <ResultRow label="Spindel RPM (n)" value={`${Math.round(rpm)} RPM`} highlight />
               <ResultRow label="Sirkulær Bordsmating (Vf)" value={`${Math.round(vfSirk)} mm/min`} highlight />
             </div>
-          </Card>
+          </AccordionCard>
+
+          <AccordionCard id="m-gjenge" icon="📐" title="Innvendige & Utvendige Gjengediametere" badge="Diameter">
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-3">
+                <Field label="Nominell Ø" value={diaThread} onChange={setDiaThread} suffix="mm" />
+                <Field label="Pitch" value={pitch} onChange={setPitch} suffix="mm" />
+              </div>
+              <ResultRow label="Innvendig Mutter Kjernebor Ø" value={`${threadDia.in.toFixed(2)} mm`} highlight />
+              <ResultRow label="Utvendig Skrue Dreiediameter Ø" value={`${threadDia.ut.toFixed(2)} mm`} highlight />
+            </div>
+          </AccordionCard>
+
+          <AccordionCard id="m-effekt" icon="⚡" title="Skjærekraft, Spindeleffekt & Dreiemoment" badge="kW & Nm">
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-3">
+                <Field label="Aksial Dybde ap" value={ap} onChange={setAp} suffix="mm" />
+                <Field label="Radial Bredde ae" value={ae} onChange={setAe} suffix="mm" />
+              </div>
+              <ResultRow label="Sponavvirkning (Q)" value={`${cuttingEff.q.toFixed(1)} cm³/min`} />
+              <ResultRow label="Skjærekraft (Fc)" value={`${Math.round(cuttingEff.fc)} N`} />
+              <ResultRow label="Spindeleffektbehov (Pc)" value={`${cuttingEff.pc.toFixed(2)} kW`} highlight />
+              <ResultRow label="Dreiemoment (Mc)" value={`${Math.round(cuttingEff.mc)} Nm`} />
+            </div>
+          </AccordionCard>
+
+          <AccordionCard id="m-cakse" icon="🔄" title="MM/MIN til Grader/MIN (C-Akse / 4. Akse)" badge="C-akse">
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-3">
+                <Field label="Mating mm/min (Vf)" value={caVf} onChange={setCaVf} suffix="mm/min" />
+                <Field label="Emnediameter DIA" value={caDia} onChange={setCaDia} suffix="mm" />
+              </div>
+              <ResultRow label="Omkrets" value={`${cAxis.omkrets.toFixed(2)} mm`} />
+              <ResultRow label="1 Grad tilsvarer" value={`${cAxis.oneGrad.toFixed(4)} mm/°`} />
+              <ResultRow label="Mating i Grader/MIN" value={`${cAxis.gradMin.toFixed(1)} °/min`} highlight />
+              <ResultRow label="Omdreininger pr minutt" value={`${cAxis.revMin.toFixed(2)} omdr/min`} />
+              <ResultRow label="Tid pr omdreining" value={`${cAxis.timeRev.toFixed(3)} min`} />
+            </div>
+          </AccordionCard>
         </div>
       );
     }
 
-    // 3. WORKSHOP TABLES COMPONENT
+    // 3. WORKSHOP TABLES COMPONENT (KOMPLETT TREKKSPILL)
     function WorkshopTables() {
       const [mat, setMat] = useState('ss316');
       const [op, setOp] = useState('mill_rough');
       const [toolMat, setToolMat] = useState('hm_coated');
       const [dia, setDia] = useState('16');
+      const [z, setZ] = useState('4');
+
+      const [boreDia, setBoreDia] = useState('16');
+      const [boreAngle, setBoreAngle] = useState('118');
+      const [boreDepth, setBoreDepth] = useState('25');
+
+      const [tapSize, setTapSize] = useState('M10');
+
+      const [torqueSize, setTorqueSize] = useState('M10');
+      const [torqueLube, setTorqueLube] = useState('lube');
+
+      const [pcdDia, setPcdDia] = useState('200');
+      const [pcdNum, setPcdNum] = useState('8');
+
+      const [triA, setTriA] = useState('30');
+      const [triB, setTriB] = useState('40');
 
       const calcVc = useMemo(() => {
-        let baseVc = 90;
-        if (mat === 's355') baseVc = 180;
-        if (mat === 'alu') baseVc = 450;
+        let baseVc = 90; let baseFz = 0.08;
+        if (mat === 's355') { baseVc = 180; baseFz = 0.12; }
+        if (mat === 'alu') { baseVc = 450; baseFz = 0.20; }
         let factor = (toolMat === 'hss_co') ? 0.22 : 1.0;
+        if (op === 'udrill') factor *= 1.0;
         if (op === 'tap') factor *= 0.35;
         const vcVal = Math.round(baseVc * factor);
         const rpmVal = (vcVal * 1000) / (Math.PI * num(dia));
-        return { vcVal, rpmVal };
-      }, [mat, op, toolMat, dia]);
+        const vfVal = rpmVal * baseFz * num(z);
+        return { vcVal, rpmVal, vfVal };
+      }, [mat, op, toolMat, dia, z]);
+
+      const boreTip = useMemo(() => {
+        const d = num(boreDia); const a = num(boreAngle); const depth = num(boreDepth);
+        const rad = (a / 2) * (Math.PI / 180);
+        const tipExtra = (d / 2) / Math.tan(rad);
+        return { tipExtra, totalZ: depth + tipExtra };
+      }, [boreDia, boreAngle, boreDepth]);
+
+      const torqueCalc = useMemo(() => {
+        const data = { M6: 9.8, M8: 24, M10: 47, M12: 81, M16: 197, M20: 385 };
+        const baseNm = data[torqueSize] || 47;
+        const finalNm = torqueLube === 'lube' ? Math.round(baseNm * 0.75) : baseNm;
+        return { finalNm, baseNm };
+      }, [torqueSize, torqueLube]);
+
+      const pcdCalc = useMemo(() => {
+        const p = num(pcdDia); const n = Math.max(1, num(pcdNum));
+        const rad = (180 / n) * (Math.PI / 180);
+        return { chord: p * Math.sin(rad), angle: 360 / n };
+      }, [pcdDia, pcdNum]);
+
+      const trigCalc = useMemo(() => {
+        const a = num(triA); const b = num(triB);
+        if (a > 0 && b > 0) {
+          const c = Math.sqrt(a*a + b*b);
+          const degA = Math.atan(a/b) * (180/Math.PI);
+          return { c, degA, degB: 90 - degA };
+        }
+        return { c: 0, degA: 0, degB: 0 };
+      }, [triA, triB]);
 
       return (
         <div className="space-y-4">
-          <Card>
-            <CardHeader icon="🧪" title="Materialvelger & Skjæredata" subtitle="Hardmetall vs HSS & Operasjoner" />
-            <div className="p-6 space-y-4">
+          <AccordionCard id="w-mat" icon="🧪" title="Materialvelger, Operasjon & Verktøy" badge="Vc & fz" defaultOpen={true}>
+            <div className="space-y-4">
               <SelectField label="Materiale" value={mat} onChange={setMat} options={[
-                { value: 's355', label: 'Konstruksjonsstål S355' },
+                { value: 's355', label: 'Konstruksjonsstål / S355' },
                 { value: 'ss316', label: 'Syrefast 316L' },
                 { value: 'alu', label: 'Aluminium 6082' }
               ]} />
               <SelectField label="Operasjonstype" value={op} onChange={setOp} options={[
                 { value: 'mill_rough', label: 'Fresing - Skrubb' },
+                { value: 'mill_finish', label: 'Fresing - Slett' },
+                { value: 'drill', label: 'Boring - Spiralbor' },
                 { value: 'udrill', label: 'Boring - U-Bor / Vendeskjær' },
                 { value: 'tap', label: 'Gjenging' }
               ]} />
@@ -483,11 +683,108 @@
                 { value: 'hm_coated', label: 'Belagt Hardmetall (HM/VHM)' },
                 { value: 'hss_co', label: 'Hurtigstål Kobolt (HSS-Co)' }
               ]} />
-              <Field label="Verktøy DIA" value={dia} onChange={setDia} suffix="mm" />
+              <div className="grid grid-cols-2 gap-3">
+                <Field label="DIA" value={dia} onChange={setDia} suffix="mm" />
+                <Field label="Skjær (z)" value={z} onChange={setZ} />
+              </div>
               <ResultRow label="Anbefalt Vc" value={`${calcVc.vcVal} m/min`} highlight />
               <ResultRow label="Beregnet RPM" value={`${Math.round(calcVc.rpmVal)} RPM`} highlight />
+              <ResultRow label="Bordsmating (Vf)" value={`${Math.round(calcVc.vfVal)} mm/min`} highlight />
             </div>
-          </Card>
+          </AccordionCard>
+
+          <AccordionCard id="w-bore" icon="📐" title="Boredybde & Bor-spisstillegg" badge="Bor 118°">
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-3">
+                <Field label="Bordiameter" value={boreDia} onChange={setBoreDia} suffix="mm" />
+                <SelectField label="Spissvinkel" value={boreAngle} onChange={setBoreAngle} options={[
+                  { value: '118', label: '118° (HSS)' },
+                  { value: '140', label: '140° (Hardmetall)' },
+                  { value: '90', label: '90° (Spotbor)' }
+                ]} />
+              </div>
+              <Field label="Sylinderdybde" value={boreDepth} onChange={setBoreDepth} suffix="mm" />
+              <ResultRow label="Ekstra spisstillegg (h)" value={`${boreTip.tipExtra.toFixed(2)} mm`} />
+              <ResultRow label="Total Z-boredybde i CNC" value={`${boreTip.totalZ.toFixed(2)} mm`} highlight />
+            </div>
+          </AccordionCard>
+
+          <AccordionCard id="w-tap" icon="🔩" title="Gjengetabell & Kjernebor (M & BSP)" badge="Gjenger">
+            <div className="space-y-4">
+              <SelectField label="Gjengestørrelse" value={tapSize} onChange={setTapSize} options={[
+                { value: 'M6', label: 'M6 × 1.0 mm' },
+                { value: 'M8', label: 'M8 × 1.25 mm' },
+                { value: 'M10', label: 'M10 × 1.5 mm' },
+                { value: 'M12', label: 'M12 × 1.75 mm' },
+                { value: 'M16', label: 'M16 × 2.0 mm' },
+                { value: 'G1/2', label: 'BSP / G 1/2" (14 tpi)' }
+              ]} />
+              <ResultRow label="Anbefalt Kjernebor" value={tapSize==='G1/2'?'19.0 mm':'8.5 mm'} highlight />
+              <ResultRow label="Gjengestigning Pitch" value={tapSize==='G1/2'?'1.81 mm':'1.50 mm'} />
+            </div>
+          </AccordionCard>
+
+          <AccordionCard id="w-tq" icon="🔧" title="Tiltrekkingsmoment for Skruer (Nm & Smøring)" badge="Nm & Pasta">
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-3">
+                <SelectField label="Skrue" value={torqueSize} onChange={setTorqueSize} options={[
+                  { value: 'M6', label: 'M6' }, { value: 'M8', label: 'M8' }, { value: 'M10', label: 'M10' },
+                  { value: 'M12', label: 'M12' }, { value: 'M16', label: 'M16' }, { value: 'M20', label: 'M20' }
+                ]} />
+                <SelectField label="Smøring / Friksjon" value={torqueLube} onChange={setTorqueLube} options={[
+                  { value: 'dry', label: 'Tørr (μ = 0.14)' },
+                  { value: 'lube', label: 'Smurt / Pasta (μ = 0.10, -25% Nm)' }
+                ]} />
+              </div>
+              <ResultRow label="Tiltrekkingsmoment (Nm)" value={`${torqueCalc.finalNm} Nm ${torqueLube==='lube'?'(Smurt -25%)':'(Tørr)'}`} highlight />
+            </div>
+          </AccordionCard>
+
+          <AccordionCard id="w-pcd" icon="⭕" title="Delingssirkel & PCD Flense-koordinater" badge="PCD Diagram">
+            <div className="space-y-4">
+              <div className="text-center p-3 bg-slate-900/80 rounded-xl border border-slate-800">
+                <svg width="180" height="180" viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg" class="mx-auto max-w-full h-auto">
+                  <circle cx="110" cy="110" r="95" fill="rgba(16, 185, 129, 0.08)" stroke="#10b981" stroke-width="2"/>
+                  <circle cx="110" cy="110" r="30" fill="#0f172a" stroke="#10b981" stroke-width="2"/>
+                  <line x1="110" y1="10" x2="110" y2="210" stroke="#1e293b" stroke-width="1.5" stroke-dasharray="4,4"/>
+                  <line x1="10" y1="110" x2="210" y2="110" stroke="#1e293b" stroke-width="1.5" stroke-dasharray="4,4"/>
+                  <circle cx="110" cy="110" r="68" fill="none" stroke="#38bdf8" stroke-width="2" stroke-dasharray="6,4"/>
+                  <line x1="178" y1="110" x2="158" y2="62" stroke="#f43f5e" stroke-width="2.5"/>
+                  <circle cx="178" cy="110" r="7" fill="#0f172a" stroke="#10b981" stroke-width="2"/>
+                  <circle cx="158" cy="62" r="7" fill="#0f172a" stroke="#10b981" stroke-width="2"/>
+                  <circle cx="110" cy="42" r="7" fill="#0f172a" stroke="#10b981" stroke-width="2"/>
+                  <text x="182" y="85" fill="#f43f5e" font-size="11" font-weight="800">k (Korde)</text>
+                  <text x="65" y="105" fill="#38bdf8" font-size="11" font-weight="800">PCD Ø</text>
+                </svg>
+              </div>
+              <div class="grid grid-cols-2 gap-3">
+                <Field label="PCD Ø (mm)" value={pcdDia} onChange={setPcdDia} />
+                <Field label="Antall hull" value={pcdNum} onChange={setPcdNum} />
+              </div>
+              <ResultRow label="Kordeavstand (hull-til-hull)" value={`${pcdCalc.chord.toFixed(2)} mm`} highlight />
+              <ResultRow label="Vinkelstigning pr hull" value={`${pcdCalc.angle.toFixed(1)}°`} />
+            </div>
+          </AccordionCard>
+
+          <AccordionCard id="w-trig" icon="📐" title="Trigonometri & Trekant (Pythagoras)" badge="Pythagoras">
+            <div className="space-y-4">
+              <div className="text-center p-3 bg-slate-900/80 rounded-xl border border-slate-800">
+                <svg width="200" height="130" viewBox="0 0 240 150" xmlns="http://www.w3.org/2000/svg" class="mx-auto max-w-full h-auto">
+                  <path d="M 40 110 L 50 110 L 50 120" fill="none" stroke="#a78bfa" stroke-width="2"/>
+                  <polygon points="40,120 200,120 40,20" fill="rgba(167, 139, 250, 0.12)" stroke="#a78bfa" stroke-width="3"/>
+                  <text x="18" y="75" fill="#f8fafc" font-size="13" font-weight="800">a (Vert)</text>
+                  <text x="105" y="142" fill="#f8fafc" font-size="13" font-weight="800">b (Horisont)</text>
+                  <text x="120" y="60" fill="#a78bfa" font-size="13" font-weight="800">c (Hypotenus)</text>
+                </svg>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <Field label="Katet a (mm)" value={triA} onChange={setTriA} />
+                <Field label="Katet b (mm)" value={triB} onChange={setTriB} />
+              </div>
+              <ResultRow label="Hypotenus c (Skrålengde)" value={`${trigCalc.c.toFixed(2)} mm`} highlight />
+              <ResultRow label="Vinkler A° og B°" value={`A = ${trigCalc.degA.toFixed(2)}° | B = ${trigCalc.degB.toFixed(2)}°`} />
+            </div>
+          </AccordionCard>
         </div>
       );
     }
@@ -499,6 +796,9 @@
       const [start, setStart] = useState('10');
       const [target, setTarget] = useState('80');
 
+      const [wltp, setWltp] = useState('480');
+      const [tempLoss, setTempLoss] = useState('25');
+
       const charge = useMemo(() => {
         const needed = num(bat) * ((num(target) - num(start)) / 100);
         const hours = needed / num(kw);
@@ -509,13 +809,20 @@
         return { h, m, cost };
       }, [bat, kw, start, target]);
 
+      const winter = useMemo(() => {
+        const w = num(wltp); const loss = num(tempLoss);
+        const rem = Math.max(0, 100 - loss);
+        const real = Math.round(w * (rem / 100));
+        const lossKm = Math.round(w - real);
+        return { real, rem, lossKm, loss };
+      }, [wltp, tempLoss]);
+
       return (
         <div className="space-y-4">
-          <Card>
-            <CardHeader icon="⚡" title="Ladetid & Ladekostnad" subtitle="Hjemmelader og lynlader" />
-            <div className="p-6 space-y-4">
+          <AccordionCard id="e-charge" icon="🔌" title="Ladetid & Ladekostnad" badge="kW & kWh" defaultOpen={true}>
+            <div className="space-y-4">
               <div className="grid grid-cols-2 gap-3">
-                <Field label="Batteri" value={bat} onChange={setBat} suffix="kWh" />
+                <Field label="Batterikapasitet" value={bat} onChange={setBat} suffix="kWh" />
                 <SelectField label="Ladeeffekt" value={kw} onChange={setKw} options={[
                   { value: '7.4', label: 'Hjemmelader 7.4 kW' },
                   { value: '11', label: 'Hjemmelader 11 kW' },
@@ -529,35 +836,23 @@
               <ResultRow label="Estimert Ladetid" value={`${charge.h}t ${charge.m}m`} highlight />
               <ResultRow label="Ladekostnad (1.30 kr/kWh)" value={fmtNOK(charge.cost)} highlight />
             </div>
-          </Card>
-        </div>
-      );
-    }
+          </AccordionCard>
 
-    // DASHBOARD OVERSIKT
-    function Dashboard({ onSelect }) {
-      const tools = [
-        { id: 'salary', name: 'Lønnskalkulator', icon: '💰', desc: 'Beregn lønn, overtid, vakter og skatt' },
-        { id: 'machining', name: 'Maskinering', icon: '⚙️', desc: 'Gibbs sirkulær mating, C-akse og Vc' },
-        { id: 'workshop', name: 'Verkstedtabeller', icon: '🛠️', desc: 'Materialer, U-bor, smurte skruer og PCD' },
-        { id: 'ev', name: 'Elbil-Kalkulator', icon: '⚡', desc: 'Ladetid, besparelser og vinter-rekkevidde' }
-      ];
-
-      return (
-        <div className="grid sm:grid-cols-2 gap-4">
-          {tools.map((tool) => (
-            <button
-              key={tool.id}
-              onClick={() => onSelect(tool.id)}
-              className="bg-slate-900/60 hover:bg-slate-800/80 border border-slate-800 hover:border-slate-700 transition-all rounded-2xl p-6 flex flex-col items-start text-left group"
-            >
-              <div className="p-3 bg-slate-800 text-sky-400 rounded-xl text-2xl mb-4 group-hover:scale-110 transition-transform">
-                {tool.icon}
+          <AccordionCard id="e-winter" icon="❄️" title="Vinter-Rekkevidde & Temperaturtap" badge="Temperatur">
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-3">
+                <Field label="WLTP Sommer-rekkevidde" value={wltp} onChange={setWltp} suffix="km" />
+                <SelectField label="Utetemperatur" value={tempLoss} onChange={setTempLoss} options={[
+                  { value: '0', label: '+20°C Sommer (100% reell · 0% tap)' },
+                  { value: '12', label: '+10°C Vår/Høst (88% reell · -12% tap)' },
+                  { value: '25', label: '0°C Norsk Vinter (75% reell · -25% tap)' },
+                  { value: '35', label: '-10°C Kald Vinter (65% reell · -35% tap)' }
+                ]} />
               </div>
-              <h3 className="text-lg font-bold text-slate-100 mb-1">{tool.name}</h3>
-              <p className="text-sm text-slate-400">{tool.desc}</p>
-            </button>
-          ))}
+              <ResultRow label="Reell Rekkevidde" value={`${winter.real} km (${winter.rem}% av WLTP)`} highlight />
+              <ResultRow label="Forventet Rekkeviddetap" value={`− ${winter.lossKm} km (${winter.loss}% tap)`} />
+            </div>
+          </AccordionCard>
         </div>
       );
     }
