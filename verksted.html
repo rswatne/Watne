@@ -338,6 +338,18 @@
                 </label>
 
                 <label style="display: flex; flex-direction: column; gap: 0.25rem; grid-column: span 2;">
+                    <span style="font-size: 0.8125rem; font-weight: 600;" id="lbl-op-type">Operasjonstype</span>
+                    <select id="op-type-select" class="field-class" onchange="oppdaterMaterialeData()">
+                        <option value="mill_rough" selected>Fresing - Skrubb / Grovfresing (Heavy Milling)</option>
+                        <option value="mill_finish">Fresing - Slett / Finfresing (High Surface Finish)</option>
+                        <option value="drill">Boring - Spiralbor / Kjernebor (Drilling)</option>
+                        <option value="turn_rough">Dreiing - Skrubbdreiing (Turning Roughing)</option>
+                        <option value="turn_finish">Dreiing - Slettdreiing (Turning Finishing)</option>
+                        <option value="tap">Gjenging - Gjengebor / Gjengefres (Tapping)</option>
+                    </select>
+                </label>
+
+                <label style="display: flex; flex-direction: column; gap: 0.25rem; grid-column: span 2;">
                     <span style="font-size: 0.8125rem; font-weight: 600;" id="lbl-tool-mat">Verktøymateriale (Skjæremateriale)</span>
                     <select id="tool-mat-select" class="field-class" onchange="oppdaterMaterialeData()">
                         <option value="hm_coated" selected>Belagt Hardmetall (HM / VHM / Carbide Inserts - Standard)</option>
@@ -1162,6 +1174,7 @@
 
     function oppdaterMaterialeData() {
         const matKey = document.getElementById('mat-select').value;
+        const opType = document.getElementById('op-type-select').value;
         const toolMat = document.getElementById('tool-mat-select').value;
         const dia = parseFloat(document.getElementById('mat-dia').value) || 10;
         const z = parseFloat(document.getElementById('mat-z').value) || 4;
@@ -1172,26 +1185,54 @@
         let fzFactor = 1.0;
 
         if (toolMat === 'hm_uncoated') {
-            vcFactor = 0.90;
-            fzFactor = 0.95;
+            vcFactor = 0.90; fzFactor = 0.95;
         } else if (toolMat === 'hss_co') {
-            vcFactor = 0.22;
-            fzFactor = 0.70;
+            vcFactor = 0.22; fzFactor = 0.70;
         } else if (toolMat === 'hss_std') {
-            vcFactor = 0.16;
-            fzFactor = 0.60;
+            vcFactor = 0.16; fzFactor = 0.60;
         }
 
-        const vcRough = Math.round(data.vcRough * vcFactor);
-        const vcFinish = Math.round(data.vcFinish * vcFactor);
-        const fzRough = data.fzRough * fzFactor;
+        // Operasjons-justeringer
+        let baseVc = data.vcRough;
+        let feedPerRevOrTooth = data.fzRough;
+        let feedTypeLabel = "mm/tann";
+
+        if (opType === 'mill_finish') {
+            baseVc = data.vcFinish;
+            feedPerRevOrTooth = data.fzFinish;
+        } else if (opType === 'drill') {
+            baseVc = Math.round(data.vcRough * 0.85);
+            feedPerRevOrTooth = Math.min(0.25, (dia * 0.015));
+            feedTypeLabel = "mm/omdr";
+        } else if (opType === 'turn_rough') {
+            baseVc = data.vcRough;
+            feedPerRevOrTooth = 0.25;
+            feedTypeLabel = "mm/omdr";
+        } else if (opType === 'turn_finish') {
+            baseVc = data.vcFinish;
+            feedPerRevOrTooth = 0.10;
+            feedTypeLabel = "mm/omdr";
+        } else if (opType === 'tap') {
+            baseVc = Math.round(data.vcRough * 0.35);
+            feedPerRevOrTooth = 1.5;
+            feedTypeLabel = "mm/stigning";
+        }
+
+        const vcRough = Math.round(baseVc * vcFactor);
+        const fzRough = feedPerRevOrTooth * fzFactor;
 
         const rpm = (vcRough * 1000) / (Math.PI * dia);
-        const vf = rpm * fzRough * z;
+        let vf = 0;
 
-        document.getElementById('mat-res-vc').innerText = `${vcRough} - ${vcFinish} m/min`;
+        if (opType.startsWith('mill')) {
+            vf = rpm * fzRough * z;
+        } else {
+            vf = rpm * fzRough;
+        }
+
+        document.getElementById('mat-res-vc').innerText = `${vcRough} m/min (Anbefalt Vc)`;
         document.getElementById('mat-res-rpm').innerText = `${Math.round(rpm)} RPM`;
-        document.getElementById('mat-res-mating').innerText = `${Math.round(vf)} mm/min`;
+        document.getElementById('mat-res-mating').innerText = `${Math.round(vf)} mm/min (${fzRough.toFixed(2).replace('.', ',')} ${feedTypeLabel})`;
     }
 
     // DATA FOR METRISKE OG BSP / G / R GJENGER
