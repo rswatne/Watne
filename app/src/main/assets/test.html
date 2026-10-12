@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WATNE PRO — Verkstedsportal (Master Web Portal)</title>
+    <title>WATNE PRO — Verkstedsportal (Testområde)</title>
 
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
 
     <script>
-        const APP_BUILD_VER = "v400.0-100PercentIdenticalSalaryPage";
+        const APP_BUILD_VER = "v300.0-VerkstedsportalTsxDesign";
         if (localStorage.getItem('app_build_v') !== APP_BUILD_VER) {
             localStorage.setItem('app_build_v', APP_BUILD_VER);
             if ('serviceWorker' in navigator) {
@@ -29,6 +29,10 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700;800&family=Orbitron:wght@600;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
     <style>
         :root {
             --bg: #030712;
@@ -61,17 +65,21 @@
         .font-orbitron { font-family: 'Orbitron', sans-serif; }
 
         .glass-card {
-            background-color: rgba(15, 23, 42, 0.75);
+            background-color: rgba(15, 23, 42, 0.6);
             backdrop-filter: blur(12px);
             border: 1px solid rgba(30, 41, 59, 0.8);
-            border-radius: 1.25rem;
+            border-radius: 1rem;
+        }
+        body.light-mode .glass-card {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-color: rgba(226, 232, 240, 0.95);
         }
 
         .input-dark {
-            background-color: rgba(15, 23, 42, 0.9);
+            background-color: rgba(3, 7, 18, 0.5);
             border: 1px solid #1e293b;
-            border-radius: 0.625rem;
-            padding: 0.625rem 0.875rem;
+            border-radius: 0.75rem;
+            padding: 0.75rem 1rem;
             color: #f8fafc;
             font-size: 0.875rem;
             width: 100%;
@@ -98,11 +106,11 @@
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #0284c7, #0369a1);
+            background-color: #0284c7;
             color: #ffffff;
-            font-weight: 700;
+            font-weight: 600;
             font-size: 0.875rem;
-            padding: 0.625rem 1.25rem;
+            padding: 0.75rem 1.25rem;
             border-radius: 0.75rem;
             border: none;
             cursor: pointer;
@@ -110,9 +118,11 @@
             align-items: center;
             justify-content: center;
             gap: 0.5rem;
-            box-shadow: 0 4px 14px rgba(2, 132, 199, 0.3);
             transition: all 0.2s ease;
             text-decoration: none;
+        }
+        .btn-primary:hover {
+            background-color: #0369a1;
         }
 
         .btn-ghost {
@@ -121,7 +131,7 @@
             border: 1px solid #1e293b;
             font-weight: 600;
             font-size: 0.875rem;
-            padding: 0.625rem 1.25rem;
+            padding: 0.75rem 1.25rem;
             border-radius: 0.75rem;
             cursor: pointer;
             display: inline-flex;
@@ -131,1371 +141,503 @@
             transition: all 0.2s ease;
             text-decoration: none;
         }
-
-        .accordion-body { display: none; }
-        .accordion-item.open .accordion-body { display: block; animation: fadeIn 0.2s ease-out; }
-        .accordion-item.open .accordion-chevron { transform: rotate(180deg); }
-
-        .tab-content { display: none; }
-        .tab-content.active { display: block; animation: fadeIn 0.25s ease-out; }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(6px); }
-            to { opacity: 1; transform: translateY(0); }
+        .btn-ghost:hover {
+            color: #f8fafc;
+            border-color: #334155;
+            background: rgba(255, 255, 255, 0.03);
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col lg:flex-row">
+<body class="min-h-screen bg-slate-950 font-sans text-slate-100">
 
-<!-- SIDEBAR NAVIGATION -->
-<aside class="w-full lg:w-64 bg-slate-900/90 border-b lg:border-b-0 lg:border-r border-slate-800/80 p-5 flex flex-col shrink-0 sticky top-0 lg:h-screen z-40 backdrop-blur-md">
-    <div class="flex items-center gap-3 pb-4 border-b border-slate-800 mb-5">
-        <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-sky-400 to-blue-600 flex items-center justify-center text-white font-extrabold text-xl shadow-[0_0_20px_rgba(56,189,248,0.3)]">
-            🛠️
+<div id="root"></div>
+
+<!-- REACT 18 + VERKSTEDSPORTAL.TSX DESIGN SCRIPT -->
+<script type="text/babel">
+    const { useState, useMemo, useEffect, useCallback } = React;
+
+    const num = (val) => parseFloat(val?.toString().replace(',', '.') || '0');
+    const fmtNOK = (val) => Math.round(val).toLocaleString('no-NB') + ' kr';
+    const fmt = (val, decimals) => Number(val).toFixed(decimals);
+
+    const generateMonthOptions = (startYear, years) => {
+      const options = [];
+      for (let y = 0; y < years; y++) {
+        const year = startYear + y;
+        for (let m = 0; m < 12; m++) {
+          options.push({ year, month: m });
+        }
+      }
+      return options;
+    };
+
+    const ALL_MONTHS = generateMonthOptions(2025, 5);
+    const MONTH_NAMES = ['Januar', 'Februar', 'Mars', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Desember'];
+    const UKEDAGER = ['Søn', 'Man', 'Tir', 'Ons', 'Tor', 'Fre', 'Lør'];
+    const SHIFT_TYPES = [
+      { value: 'hverdag50', label: 'Hverdag 50%', factor: 1.5 },
+      { value: 'hverdag100', label: 'Hverdag 100%', factor: 2.0 },
+      { value: 'helg50', label: 'Helg 50%', factor: 1.5 },
+      { value: 'helg100', label: 'Helg 100%', factor: 2.0 },
+    ];
+    const YEAR_OPTIONS = Array.from({ length: 6 }, (_, i) => ({ value: String(2025 + i), label: String(2025 + i) }));
+
+    const Card = ({ children, className = '' }) => (
+      <div className={`bg-slate-900/60 backdrop-blur-xl border border-slate-800 rounded-2xl overflow-hidden shadow-xl mb-6 ${className}`}>
+        {children}
+      </div>
+    );
+
+    const CardHeader = ({ icon, title, subtitle }) => (
+      <div className="border-b border-slate-800/60 bg-slate-800/20 px-6 py-4 flex items-center gap-3">
+        <div className="p-2 bg-sky-500/20 text-sky-400 rounded-lg text-xl">
+          {icon}
         </div>
         <div>
-            <h2 class="font-orbitron font-black text-base text-sky-400 tracking-wider">WATNE PRO</h2>
-            <p class="text-[11px] text-slate-500 font-semibold">Verkstedsportal v16.0</p>
+          <h3 className="font-semibold text-slate-100">{title}</h3>
+          {subtitle && <p className="text-xs text-slate-400">{subtitle}</p>}
         </div>
-    </div>
+      </div>
+    );
 
-    <!-- MAIN MENU ITEMS -->
-    <nav class="flex flex-row lg:flex-col gap-1.5 overflow-x-auto pb-2 lg:pb-0 scrollbar-thin">
-        <button onclick="switchNav('dashboard')" id="navitem-dashboard" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-xs sm:text-sm text-sky-400 bg-sky-500/10 border border-sky-500/20 whitespace-nowrap transition-all">
-            <span>🏠</span> <span>Oversikt</span>
-        </button>
-        <button onclick="switchNav('salary')" id="navitem-salary" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-medium text-xs sm:text-sm text-slate-400 hover:bg-slate-800/50 hover:text-slate-200 border border-transparent whitespace-nowrap transition-all">
-            <span>💰</span> <span>1. Lønnskalkulator</span>
-        </button>
-        <button onclick="switchNav('machining')" id="navitem-machining" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-medium text-xs sm:text-sm text-slate-400 hover:bg-slate-800/50 hover:text-slate-200 border border-transparent whitespace-nowrap transition-all">
-            <span>⚙️</span> <span>2. Maskinering & CNC</span>
-        </button>
-        <button onclick="switchNav('workshop')" id="navitem-workshop" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-medium text-xs sm:text-sm text-slate-400 hover:bg-slate-800/50 hover:text-slate-200 border border-transparent whitespace-nowrap transition-all">
-            <span>🛠️</span> <span>3. Verkstedtabeller</span>
-        </button>
-        <button onclick="switchNav('ev')" id="navitem-ev" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-medium text-xs sm:text-sm text-slate-400 hover:bg-slate-800/50 hover:text-slate-200 border border-transparent whitespace-nowrap transition-all">
-            <span>⚡</span> <span>4. Elbil-Kalkulator</span>
-        </button>
-    </nav>
-
-    <div class="mt-auto pt-4 border-t border-slate-800 text-[11px] text-slate-500 hidden lg:block">
-        <p class="font-medium">Sigurd Seland AS</p>
-        <p class="mt-1 text-emerald-400 font-bold flex items-center gap-1.5">
-            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            Watne Pro Active
-        </p>
-    </div>
-</aside>
-
-<!-- MAIN CONTENT AREA -->
-<main class="flex-1 p-4 md:p-8 max-w-5xl mx-auto w-full">
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-800/80 mb-6">
-        <div>
-            <h1 class="font-bold text-xl md:text-2xl text-slate-100" id="header-title">Oversikt</h1>
-            <p class="text-xs text-slate-500 mt-1" id="header-sub">Velg et verktøy under for å starte beregningen.</p>
+    const Field = ({ label, value, onChange, suffix, type = "text", placeholder, min, step, hint }) => (
+      <div className="flex flex-col gap-1.5 w-full">
+        <label className="text-xs font-medium uppercase tracking-wider text-slate-400">{label}</label>
+        <div className="relative">
+          <input
+            type={type} value={value} onChange={(e) => onChange(e.target.value)}
+            placeholder={placeholder} min={min} step={step}
+            className="input-dark"
+          />
+          {suffix && <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 text-sm">{suffix}</span>}
         </div>
-        <div class="flex items-center gap-2.5 shrink-0">
-            <button onclick="toggleTheme()" id="theme-btn" class="btn-ghost text-xs px-3 py-1.5">🌙 Mørkt</button>
-            <button onclick="toggleLang()" id="lang-btn" class="btn-ghost text-xs px-3 py-1.5">🇳🇴 NO</button>
-            <a href="index.html" class="btn-ghost text-xs px-3 py-1.5 hidden sm:inline-flex">📱 Mobil Visning ➔</a>
-        </div>
-    </div>
-
-    <!-- 1. DASHBOARD OVERSIKT -->
-    <div id="page-dashboard" class="space-y-6">
-        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800 border border-slate-800/80 p-6 md:p-10">
-            <div class="relative max-w-2xl">
-                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-500/10 border border-sky-500/20 text-xs font-semibold text-sky-300 mb-4">
-                    ✨ Versjon 16.0 — Modernisert Verkstedsportal
-                </div>
-                <h1 class="text-2xl md:text-3xl font-extrabold text-slate-100 leading-tight mb-2">
-                    Verkstedsportal
-                </h1>
-                <p class="text-slate-400 text-sm md:text-base leading-relaxed mb-6">
-                    Digitalt verktøy for produksjon, kalkulasjoner, vakter og lønn. Alt samlet i én moderne portal.
-                </p>
-                <div class="flex flex-wrap gap-3">
-                    <button onclick="switchNav('salary')" class="btn-primary">
-                        Start med lønnskalkulator ➔
-                    </button>
-                    <button onclick="switchNav('machining')" class="btn-ghost">
-                        Maskineringskalkulator
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <div class="grid gap-4 sm:grid-cols-2">
-            <div onclick="switchNav('salary')" class="glass-card p-6 text-left hover:border-sky-500/50 transition-all duration-200 group cursor-pointer">
-                <div class="flex items-start justify-between mb-4">
-                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center text-xl">💰</div>
-                    <span class="text-xs font-mono text-slate-600">v2.0</span>
-                </div>
-                <h3 class="font-bold text-slate-100 text-base mb-1 group-hover:text-sky-400 transition-colors">Lønnskalkulator & Oppgjør</h3>
-                <p class="text-xs text-slate-400 leading-relaxed">Beregning av timelønn, overtid, helgetillegg, timebank, skattetrekk, feriepenger og årsprognose.</p>
-                <span class="inline-flex items-center gap-1 mt-4 text-xs font-bold text-sky-400">Åpne verktøy ➔</span>
-            </div>
-
-            <div onclick="switchNav('machining')" class="glass-card p-6 text-left hover:border-sky-500/50 transition-all duration-200 group cursor-pointer">
-                <div class="flex items-start justify-between mb-4">
-                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-xl">⚙️</div>
-                    <span class="text-xs font-mono text-slate-600">v8.1</span>
-                </div>
-                <h3 class="font-bold text-slate-100 text-base mb-1 group-hover:text-sky-400 transition-colors">Maskinering & CNC</h3>
-                <p class="text-xs text-slate-400 leading-relaxed">Sirkulær bordsmating (GibbsCAM), gjengediameter, skjærekraft (Fc), effekt (Pc kW) og C-akse °/min.</p>
-                <span class="inline-flex items-center gap-1 mt-4 text-xs font-bold text-sky-400">Åpne verktøy ➔</span>
-            </div>
-
-            <div onclick="switchNav('workshop')" class="glass-card p-6 text-left hover:border-sky-500/50 transition-all duration-200 group cursor-pointer">
-                <div class="flex items-start justify-between mb-4">
-                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center text-xl">🛠️</div>
-                    <span class="text-xs font-mono text-slate-600">v12.0</span>
-                </div>
-                <h3 class="font-bold text-slate-100 text-base mb-1 group-hover:text-sky-400 transition-colors">Verkstedtabeller & Bor</h3>
-                <p class="text-xs text-slate-400 leading-relaxed">Materialvelger, U-Bor, Hardmetall/HSS, M/BSP kjernebor, ISO 6H/6g, smurte skruer (-25% Nm), PCD og Pythagoras.</p>
-                <span class="inline-flex items-center gap-1 mt-4 text-xs font-bold text-sky-400">Åpne verktøy ➔</span>
-            </div>
-
-            <div onclick="switchNav('ev')" class="glass-card p-6 text-left hover:border-sky-500/50 transition-all duration-200 group cursor-pointer">
-                <div class="flex items-start justify-between mb-4">
-                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-700 flex items-center justify-center text-xl">⚡</div>
-                    <span class="text-xs font-mono text-slate-600">v4.0</span>
-                </div>
-                <h3 class="font-bold text-slate-100 text-base mb-1 group-hover:text-sky-400 transition-colors">Elbil-Kalkulator</h3>
-                <p class="text-xs text-slate-400 leading-relaxed">Ladetid (kW, kWh), ladekostnad, månedlig bensinbesparelse og vinter-rekkevidde med temperaturtap.</p>
-                <span class="inline-flex items-center gap-1 mt-4 text-xs font-bold text-sky-400">Åpne verktøy ➔</span>
-            </div>
-        </div>
-    </div>
-
-    <!-- 2. LØNNSKALKULATOR PAGE (100% IDENTISK MED LONN.HTML) -->
-    <div id="page-salary" class="tab-content space-y-6">
-        <!-- PERIODE, FASTLØNN OG INNSTILLINGER -->
-        <div class="glass-card p-6 space-y-4">
-            <h3 class="font-bold text-base text-slate-100 pb-3 border-b border-slate-800">📅 Velg Periode & Lønnsinnstillinger</h3>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-xs font-semibold text-slate-400 mb-1">Velg År</label>
-                    <select id="year" class="input-dark" onchange="oppdaterAarOgMaaned()"></select>
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-400 mb-1">Velg Måned</label>
-                    <select id="month" class="input-dark" onchange="oppdaterAarOgMaaned()"></select>
-                </div>
-            </div>
-
-            <div class="p-3 rounded-xl bg-sky-500/10 border border-sky-500/20 text-xs text-sky-300 font-medium">
-                <p id="tekst-arbeidsdager" class="font-bold">Antall arbeidsdager i måneden: 22 dager</p>
-                <p id="tekst-gjeldende-dager" class="text-[11px] opacity-80">Gjeldende dager i beregningen: 22 (kalender, man–fre)</p>
-            </div>
-
-            <label class="flex items-center gap-3 cursor-pointer pt-2 border-t border-slate-800/80">
-                <input type="checkbox" id="inkluder-fastlonn" checked onchange="beregnAlt(); lagreInnstillinger();" class="w-4 h-4 accent-sky-400">
-                <span class="text-sm font-bold text-slate-200">Inkluder fastlønn (ordinær månedslønn)</span>
-            </label>
-
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
-                <div>
-                    <label class="block text-xs font-semibold text-slate-400 mb-1">Timelønn (kr)</label>
-                    <input type="number" id="timelonn" class="input-dark" value="316.5" step="0.5" oninput="beregnAlt(); lagreInnstillinger();">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-400 mb-1">Timer pr. dag</label>
-                    <input type="number" id="timer-dag" class="input-dark" value="7.5" step="0.5" oninput="beregnAlt(); lagreInnstillinger();">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-400 mb-1">Ubetalte feriedager</label>
-                    <input type="number" id="feriedager" class="input-dark" value="0" min="0" max="20" oninput="beregnAlt(); lagreInnstillinger();">
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-                <div>
-                    <label class="block text-xs font-semibold text-slate-400 mb-1">Skattetrekk metode</label>
-                    <select id="skatt-type" class="input-dark" onchange="byttSkattType(); beregnAlt(); lagreInnstillinger();">
-                        <option value="tabell" selected>Tabellkort (Tabell 7101 / standard)</option>
-                        <option value="prosent">Prosentkort (% trekk)</option>
-                    </select>
-                </div>
-                <div id="skattetabell-boks">
-                    <label class="block text-xs font-semibold text-slate-400 mb-1">Tabellnummer</label>
-                    <input type="text" id="skatte-tabellnummer" class="input-dark" value="7101" oninput="beregnAlt(); lagreInnstillinger();">
-                </div>
-                <div id="skatteprosent-boks" style="display:none;">
-                    <label class="block text-xs font-semibold text-slate-400 mb-1">Skatteprosent (%)</label>
-                    <input type="number" id="skatt" class="input-dark" value="30" oninput="beregnAlt(); lagreInnstillinger();">
-                </div>
-            </div>
-
-            <div>
-                <label class="block text-xs font-semibold text-slate-400 mb-1">Fagforeningskontingent (%)</label>
-                <input type="number" id="fagforening-prosent" class="input-dark" value="1.5" step="0.1" oninput="beregnAlt(); lagreInnstillinger();">
-                <p class="text-[11px] text-slate-500 mt-1">Full skattefordel: Kontingenten trekkes brutto FØR skattegrunnlaget beregnes.</p>
-            </div>
-        </div>
-
-        <!-- VAKTREGISTRERING -->
-        <div class="glass-card p-6 space-y-4">
-            <h3 class="font-bold text-base text-slate-100 pb-3 border-b border-slate-800">⏱️ Registrer Tilleggsvakt</h3>
-
-            <form onsubmit="leggTilVakt(event)" class="space-y-4">
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-400 mb-1">Dato</label>
-                        <input type="date" id="vakt-dato" class="input-dark" onchange="sjekkDatoUkedag()">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-400 mb-1">Timer</label>
-                        <input type="number" id="vakt-timer" class="input-dark" value="0" min="0">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-400 mb-1">Minutter</label>
-                        <input type="number" id="vakt-minutter" class="input-dark" value="0" min="0" max="59">
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-semibold text-slate-400 mb-1">Tilleggstype</label>
-                    <select id="tillegg-type" class="input-dark">
-                        <option value="hverdag50">Hverdag 50% (Timelønn × 1.5)</option>
-                        <option value="hverdag100">Hverdag 100% (Timelønn × 2.0)</option>
-                        <option value="helg50">Helg 50% (Timelønn × 1.5)</option>
-                        <option value="helg100">Helg 100% (Timelønn × 2.0)</option>
-                    </select>
-                </div>
-
-                <label class="flex items-center gap-3 p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 cursor-pointer">
-                    <input type="checkbox" id="vakt-timebank" class="w-4 h-4 accent-amber-500">
-                    <span class="text-xs font-bold text-amber-400">🏦 Sett ordinær time i timebanken (kun overtidstillegget utbetales i penger)</span>
-                </label>
-
-                <button type="submit" class="btn-primary w-full">+ Registrer Vakt i Månedsoppgjøret</button>
-            </form>
-        </div>
-
-        <!-- MÅNEDENS VAKTLISTE TABELL -->
-        <div class="glass-card p-6 space-y-4">
-            <div class="flex items-center justify-between pb-3 border-b border-slate-800">
-                <h3 class="font-bold text-base text-slate-100" id="tittel-vaktliste">Registrerte vakter i måneden</h3>
-                <div class="flex items-center gap-2">
-                    <button type="button" class="btn-ghost text-xs px-3 py-1.5" onclick="kopierVaktliste()">📋 Kopier Vaktliste</button>
-                    <button type="button" class="btn-ghost text-xs px-3 py-1.5" onclick="eksporterVakttilExcel()">📥 Eksporter til Excel (CSV)</button>
-                </div>
-            </div>
-            <div id="vakt-tabell-container">
-                <p class="p-6 text-center text-xs text-slate-500 italic border border-dashed border-slate-800 rounded-xl">Ingen vakter registrert i denne måneden.</p>
-            </div>
-        </div>
-
-        <!-- MÅNEDSSPESIFIKASJON OG NETTO UTBETALT -->
-        <div class="glass-card p-6 bg-gradient-to-r from-sky-500/10 to-transparent border-sky-500/30">
-            <p class="text-xs text-slate-400 uppercase tracking-wider font-semibold">NETTO UTBETALT PÅ KONTO (ESTIMAT)</p>
-            <p class="text-4xl font-extrabold font-mono text-sky-400 my-2" id="vis-netto">0,00 kr</p>
-            <p class="text-xs text-slate-500">Inkludert fastlønn, tilleggsvakter, fagforeningsfradrag og skattetrekk.</p>
-        </div>
-
-        <div class="glass-card p-6 space-y-3">
-            <h3 class="font-bold text-base text-slate-100 pb-3 border-b border-slate-800">📊 Månedsoppgjør & Årsprognose</h3>
-
-            <div class="space-y-2 text-sm">
-                <div class="flex justify-between" id="rad-fastlonn"><span>Fastlønn (brutto ordinær måned):</span><span id="vis-fastlonn" class="font-mono font-bold">0,00 kr</span></div>
-                <div class="flex justify-between text-red-400" id="rad-ferietrekk" style="display:none;"><span>Lønnstrekk ubetalt ferie:</span><span id="vis-ferietrekk" class="font-mono font-bold">− 0,00 kr</span></div>
-                <div class="flex justify-between"><span>Sum tilleggsvakter (brutto):</span><span id="vis-vaktbrutto" class="font-mono font-bold text-sky-400">0,00 kr</span></div>
-                <div class="flex justify-between text-amber-400"><span>🏦 Timebank Saldo (avsatte timer):</span><span id="vis-timebank" class="font-mono font-bold">+ 0.0 t</span></div>
-
-                <div class="flex justify-between font-extrabold text-base pt-3 border-t border-slate-800"><span>Total Brutto Inntekt:</span><span id="vis-totalbrutto" class="font-mono">0,00 kr</span></div>
-                <div class="flex justify-between text-slate-400"><span>Fagforeningstrekk (1.5% fradrag før skatt):</span><span id="vis-fagforening" class="font-mono">− 0,00 kr</span></div>
-                <div class="flex justify-between text-slate-400"><span>Skattetrekk (Tabell 7101):</span><span id="vis-skatt" class="font-mono">− 0,00 kr</span></div>
-                <div class="flex justify-between text-lg font-black text-sky-400 pt-3 border-t border-slate-800"><span>Netto Utbetalt:</span><span id="vis-netto-bottom" class="font-mono">0,00 kr</span></div>
-
-                <div class="pt-4 border-t border-slate-800 space-y-2 text-xs">
-                    <div class="flex justify-between"><span>Estimerte feriepenger (12% av brutto):</span><span id="vis-feriepenger" class="font-mono font-bold">0,00 kr</span></div>
-                    <div class="flex justify-between"><span>Fast Årslønn (47 uker + 12%):</span><span id="vis-aarslonn-fast" class="font-mono font-bold">0,00 kr</span></div>
-                    <div class="flex justify-between font-bold text-emerald-400"><span>Total Årsprognose med vakter:</span><span id="vis-aarslonn-tot" class="font-mono font-bold">0,00 kr</span></div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 3. MASKINERING & CNC PAGE -->
-    <div id="page-machining" class="tab-content space-y-4">
-        <!-- ACCORDIONS FOR MASKINERING -->
-        <div class="glass-card accordion-item open" id="acc-m-sirkulaer">
-            <div onclick="toggleAccordion('acc-m-sirkulaer')" class="w-full flex items-center justify-between p-5 text-left hover:bg-slate-800/40 transition-colors cursor-pointer">
-                <div class="flex items-center gap-3">
-                    <span class="text-sky-400 text-lg">🌀</span>
-                    <span class="font-bold text-slate-100 text-sm">Regne om til Sirkulær Mating (Aksling / Gjengefresing)</span>
-                </div>
-                <div class="flex items-center gap-2">
-                    <span class="text-xs px-2.5 py-0.5 rounded-full bg-sky-500/15 text-sky-300 font-mono font-bold">Gibbs</span>
-                    <span class="accordion-chevron text-slate-400 transition-transform">▼</span>
-                </div>
-            </div>
-            <div class="accordion-body px-5 pb-5 border-t border-slate-800/60 pt-4">
-                <p class="text-xs text-slate-400 mb-4">Regn om bordmating til effektiv sirkulær mating for aksling/fresing og gjengefresing i Gibbs.</p>
-                <div class="grid grid-cols-2 gap-3 mb-4">
-                    <div>
-                        <label class="block text-xs text-slate-400 mb-1">Skjærehastighet Vc (m/min)</label>
-                        <input type="number" id="cf-vc" class="input-dark" value="120" oninput="calcCircularFeed()">
-                    </div>
-                    <div>
-                        <label class="block text-xs text-slate-400 mb-1">Mating fz (mm/tann)</label>
-                        <input type="number" step="0.01" id="cf-fz" class="input-dark" value="0.08" oninput="calcCircularFeed()">
-                    </div>
-                </div>
-                <div class="grid grid-cols-3 gap-3 mb-4">
-                    <div>
-                        <label class="block text-xs text-slate-400 mb-1">Skjær (z)</label>
-                        <input type="number" id="cf-z" class="input-dark" value="4" oninput="calcCircularFeed()">
-                    </div>
-                    <div>
-                        <label class="block text-xs text-slate-400 mb-1">Fres Ø (mm)</label>
-                        <input type="number" id="cf-dfres" class="input-dark" value="84" oninput="calcCircularFeed()">
-                    </div>
-                    <div>
-                        <label class="block text-xs text-slate-400 mb-1">Hull Ø (mm)</label>
-                        <input type="number" id="cf-dhull" class="input-dark" value="410" oninput="calcCircularFeed()">
-                    </div>
-                </div>
-                <div class="p-4 rounded-xl border border-sky-500/30 bg-sky-500/5 space-y-2 text-xs font-bold text-slate-300">
-                    <div class="flex justify-between"><span>Spindel RPM (n):</span><span id="cf-res-rpm" class="font-mono text-sky-400 font-bold text-sm">0 RPM</span></div>
-                    <div class="flex justify-between text-sm font-extrabold text-slate-100"><span>Sirkulær Bordsmating (Vf):</span><span id="cf-res-vf" class="font-mono text-sky-400 text-lg">0 mm/min</span></div>
-                </div>
-            </div>
-        </div>
-
-        <div class="glass-card accordion-item" id="acc-m-gjenge">
-            <div onclick="toggleAccordion('acc-m-gjenge')" class="w-full flex items-center justify-between p-5 text-left hover:bg-slate-800/40 transition-colors cursor-pointer">
-                <div class="flex items-center gap-3">
-                    <span class="text-sky-400 text-lg">📐</span>
-                    <span class="font-bold text-slate-100 text-sm">Innvendige & Utvendige Gjenger</span>
-                </div>
-                <div class="flex items-center gap-2">
-                    <span class="text-xs px-2.5 py-0.5 rounded-full bg-sky-500/15 text-sky-300 font-mono font-bold">Diameter</span>
-                    <span class="accordion-chevron text-slate-400 transition-transform">▼</span>
-                </div>
-            </div>
-            <div class="accordion-body px-5 pb-5 border-t border-slate-800/60 pt-4">
-                <p class="text-xs text-slate-400 mb-4">Beregning av lille diameter / diameter du legger inn i Gibbs eller dreiebenk.</p>
-                <div class="grid grid-cols-2 gap-3 mb-4">
-                    <div>
-                        <label class="block text-xs text-slate-400 mb-1">Nominell Ø (mm)</label>
-                        <input type="number" id="td-dia" class="input-dark" value="16" oninput="calcThreadDia()">
-                    </div>
-                    <div>
-                        <label class="block text-xs text-slate-400 mb-1">Pitch (mm)</label>
-                        <input type="number" step="0.1" id="td-pitch" class="input-dark" value="2.0" oninput="calcThreadDia()">
-                    </div>
-                </div>
-                <div class="p-4 rounded-xl border border-sky-500/30 bg-sky-500/5 space-y-2 text-xs font-bold text-slate-300">
-                    <div class="flex justify-between"><span>Innvendig Mutter Kjernebor Ø:</span><span id="td-res-in" class="font-mono text-sky-400">14.00 mm</span></div>
-                    <div class="flex justify-between"><span>Utvendig Skrue Dreiediameter Ø:</span><span id="td-res-ut" class="font-mono text-sky-400">15.75 mm</span></div>
-                </div>
-            </div>
-        </div>
-
-        <div class="glass-card accordion-item" id="acc-m-effekt">
-            <div onclick="toggleAccordion('acc-m-effekt')" class="w-full flex items-center justify-between p-5 text-left hover:bg-slate-800/40 transition-colors cursor-pointer">
-                <div class="flex items-center gap-3">
-                    <span class="text-emerald-400 text-lg">⚡</span>
-                    <span class="font-bold text-slate-100 text-sm">Skjærekraft, Spindeleffekt & Dreiemoment</span>
-                </div>
-                <div class="flex items-center gap-2">
-                    <span class="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 font-mono font-bold">kW & Nm</span>
-                    <span class="accordion-chevron text-slate-400 transition-transform">▼</span>
-                </div>
-            </div>
-            <div class="accordion-body px-5 pb-5 border-t border-slate-800/60 pt-4">
-                <div class="grid grid-cols-2 gap-3 mb-4">
-                    <div>
-                        <label class="block text-xs text-slate-400 mb-1">Aksial Dybde ap (mm)</label>
-                        <input type="number" id="cf-ap" class="input-dark" value="5" oninput="calcCuttingForce()">
-                    </div>
-                    <div>
-                        <label class="block text-xs text-slate-400 mb-1">Radial Bredde ae (mm)</label>
-                        <input type="number" id="cf-ae" class="input-dark" value="12" oninput="calcCuttingForce()">
-                    </div>
-                </div>
-                <div class="p-4 rounded-xl border border-emerald-500/30 bg-emerald-500/5 space-y-2 text-emerald-400 text-xs font-bold">
-                    <div class="flex justify-between"><span>Sponavvirkning (Q):</span><span id="cf-res-q" class="font-mono">0 cm³/min</span></div>
-                    <div class="flex justify-between"><span>Skjærekraft (Fc):</span><span id="cf-res-fc" class="font-mono">0 N</span></div>
-                    <div class="flex justify-between text-sm font-black"><span>Spindeleffektbehov (Pc):</span><span id="cf-res-pc" class="font-mono text-base">0.0 kW</span></div>
-                    <div class="flex justify-between"><span>Dreiemoment (Mc):</span><span id="cf-res-mc" class="font-mono">0 Nm</span></div>
-                </div>
-            </div>
-        </div>
-
-        <div class="glass-card accordion-item" id="acc-m-cakse">
-            <div onclick="toggleAccordion('acc-m-cakse')" class="w-full flex items-center justify-between p-5 text-left hover:bg-slate-800/40 transition-colors cursor-pointer">
-                <div class="flex items-center gap-3">
-                    <span class="text-amber-400 text-lg">🔄</span>
-                    <span class="font-bold text-slate-100 text-sm">MM/MIN til Grader/MIN (C-Akse / 4. Akse)</span>
-                </div>
-                <div class="flex items-center gap-2">
-                    <span class="text-xs px-2.5 py-0.5 rounded-full bg-amber-500/15 text-amber-300 font-mono font-bold">C-akse</span>
-                    <span class="accordion-chevron text-slate-400 transition-transform">▼</span>
-                </div>
-            </div>
-            <div class="accordion-body px-5 pb-5 border-t border-slate-800/60 pt-4">
-                <p class="text-xs text-slate-400 mb-4">Omregning fra lineær mating mm/min til roterende grader/min basert på emnediameter.</p>
-                <div class="grid grid-cols-2 gap-3 mb-4">
-                    <div>
-                        <label class="block text-xs text-slate-400 mb-1">Mating mm/min (Vf)</label>
-                        <input type="number" id="ca-vf" class="input-dark" value="1400" oninput="calcCAxis()">
-                    </div>
-                    <div>
-                        <label class="block text-xs text-slate-400 mb-1">Emnediameter DIA (mm)</label>
-                        <input type="number" step="0.01" id="ca-dia" class="input-dark" value="3.14" oninput="calcCAxis()">
-                    </div>
-                </div>
-                <div class="p-4 rounded-xl border border-amber-500/30 bg-amber-500/5 space-y-2 text-amber-400 text-xs font-bold">
-                    <div class="flex justify-between"><span>Omkrets:</span><span id="ca-res-omkrets" class="font-mono">0 mm</span></div>
-                    <div class="flex justify-between"><span>1 Grad tilsvarer:</span><span id="ca-res-onegrad" class="font-mono">0 mm/°</span></div>
-                    <div class="flex justify-between text-sm font-black"><span>Mating i Grader/MIN (°/min):</span><span id="ca-res-gradmin" class="font-mono text-base">0 °/min</span></div>
-                    <div class="flex justify-between"><span>Omdreininger pr. minutt:</span><span id="ca-res-revmin" class="font-mono">0 omdr/min</span></div>
-                    <div class="flex justify-between"><span>Tid pr. omdreining:</span><span id="ca-res-time" class="font-mono">0 min</span></div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 4. VERKSTEDTABELLER PAGE -->
-    <div id="page-workshop" class="tab-content space-y-4">
-        <div class="glass-card accordion-item open" id="acc-w-mat">
-            <div onclick="toggleAccordion('acc-w-mat')" class="w-full flex items-center justify-between p-5 text-left hover:bg-slate-800/40 transition-colors cursor-pointer">
-                <div class="flex items-center gap-3">
-                    <span class="text-sky-400 text-lg">🧪</span>
-                    <span class="font-bold text-slate-100 text-sm">Materialvelger & Anbefalte Skjæredata</span>
-                </div>
-                <div class="flex items-center gap-2">
-                    <span class="text-xs px-2.5 py-0.5 rounded-full bg-sky-500/15 text-sky-300 font-mono font-bold">Vc & fz</span>
-                    <span class="accordion-chevron text-slate-400 transition-transform">▼</span>
-                </div>
-            </div>
-            <div class="accordion-body px-5 pb-5 border-t border-slate-800/60 pt-4 space-y-4">
-                <div>
-                    <label class="block text-xs text-slate-400 mb-1">Materiale</label>
-                    <select id="ms-mat" class="input-dark" onchange="calcMaterial()">
-                        <option value="s355">Konstruksjonsstål / S355 / St52 (P1)</option>
-                        <option value="c45">Seigherdingsstål / C45 / 42CrMo4 (P2)</option>
-                        <option value="ss316" selected>Syrefast 316L / A4 (M1)</option>
-                        <option value="alu">Aluminium 6082-T6 (N1)</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-xs text-slate-400 mb-1">Operasjonstype</label>
-                    <select id="ms-op" class="input-dark" onchange="calcMaterial()">
-                        <option value="mill_rough" selected>Fresing - Skrubb / Grovfresing</option>
-                        <option value="mill_finish">Fresing - Slett / Finfresing</option>
-                        <option value="drill">Boring - Spiralbor / Kjernebor</option>
-                        <option value="udrill">Boring - U-Bor / Vendeskjærsbor</option>
-                        <option value="turn_rough">Dreiing - Skrubbdreiing</option>
-                        <option value="tap">Gjenging - Gjengebor / Gjengefres</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-xs text-slate-400 mb-1">Verktøymateriale</label>
-                    <select id="ms-toolmat" class="input-dark" onchange="calcMaterial()">
-                        <option value="hm_coated" selected>Belagt Hardmetall (HM / VHM Carbide)</option>
-                        <option value="hm_uncoated">Ubelagt Hardmetall (HM / VHM - Alu/Plast)</option>
-                        <option value="hss_co">Hurtigstål Kobolt (HSS-Co / HSS-E)</option>
-                        <option value="hss_std">Hurtigstål Standard (HSS)</option>
-                    </select>
-                </div>
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs text-slate-400 mb-1">DIA (mm)</label>
-                        <input type="number" id="ms-dia" class="input-dark" value="16" oninput="calcMaterial()">
-                    </div>
-                    <div>
-                        <label class="block text-xs text-slate-400 mb-1">Skjær (z)</label>
-                        <input type="number" id="ms-z" class="input-dark" value="4" oninput="calcMaterial()">
-                    </div>
-                </div>
-                <div class="p-4 rounded-xl border border-sky-500/30 bg-sky-500/5 space-y-2 text-xs font-bold text-slate-300">
-                    <div class="flex justify-between"><span>Anbefalt Vc:</span><span id="ms-res-vc" class="font-mono text-sky-400">90 m/min</span></div>
-                    <div class="flex justify-between"><span>Beregnet RPM:</span><span id="ms-res-rpm" class="font-mono text-sky-400">1790 RPM</span></div>
-                    <div class="flex justify-between text-sm font-black"><span>Bordsmating (Vf):</span><span id="ms-res-vf" class="font-mono text-sky-400 text-base">572 mm/min</span></div>
-                </div>
-            </div>
-        </div>
-
-        <div class="glass-card accordion-item" id="acc-w-tap">
-            <div onclick="toggleAccordion('acc-w-tap')" class="w-full flex items-center justify-between p-5 text-left hover:bg-slate-800/40 transition-colors cursor-pointer">
-                <div class="flex items-center gap-3">
-                    <span class="text-amber-400 text-lg">🔩</span>
-                    <span class="font-bold text-slate-100 text-sm">Gjengetabell & Kjernebor (M & BSP / Rørgjenger)</span>
-                </div>
-                <div class="flex items-center gap-2">
-                    <span class="text-xs px-2.5 py-0.5 rounded-full bg-amber-500/15 text-amber-300 font-mono font-bold">Gjenger</span>
-                    <span class="accordion-chevron text-slate-400 transition-transform">▼</span>
-                </div>
-            </div>
-            <div class="accordion-body px-5 pb-5 border-t border-slate-800/60 pt-4 space-y-4">
-                <div>
-                    <label class="block text-xs text-slate-400 mb-1">Velg Gjengestørrelse</label>
-                    <select id="tt-select" class="input-dark" onchange="calcThreadTable()">
-                        <optgroup label="Metriske M-gjenger">
-                            <option value="M6">M6 × 1.0 mm</option>
-                            <option value="M8">M8 × 1.25 mm</option>
-                            <option value="M10" selected>M10 × 1.5 mm</option>
-                            <option value="M12">M12 × 1.75 mm</option>
-                            <option value="M16">M16 × 2.0 mm</option>
-                        </optgroup>
-                        <optgroup label="BSP / G Rørgjenger">
-                            <option value="G1/8">BSP / G 1/8" (28 tpi - Kjernebor 8.8 mm)</option>
-                            <option value="G1/4">BSP / G 1/4" (19 tpi - Kjernebor 11.8 mm)</option>
-                            <option value="G1/2">BSP / G 1/2" (14 tpi - Kjernebor 19.0 mm)</option>
-                        </optgroup>
-                    </select>
-                </div>
-                <div class="p-4 rounded-xl border border-amber-500/30 bg-amber-500/5 space-y-2 text-amber-400 text-xs font-bold">
-                    <div class="flex justify-between text-sm font-black"><span>Anbefalt Kjernebor:</span><span id="tt-res-drill" class="font-mono text-base">8.5 mm</span></div>
-                    <div class="flex justify-between"><span>Gjengestigning Pitch:</span><span id="tt-res-pitch" class="font-mono">1.50 mm</span></div>
-                    <div class="flex justify-between"><span>Frigangshull Passbor:</span><span id="tt-res-clear" class="font-mono">11.0 mm</span></div>
-                </div>
-            </div>
-        </div>
-
-        <div class="glass-card accordion-item" id="acc-w-tq">
-            <div onclick="toggleAccordion('acc-w-tq')" class="w-full flex items-center justify-between p-5 text-left hover:bg-slate-800/40 transition-colors cursor-pointer">
-                <div class="flex items-center gap-3">
-                    <span class="text-emerald-400 text-lg">🔧</span>
-                    <span class="font-bold text-slate-100 text-sm">Tiltrekkingsmoment for Skruer (Nm & Smøring)</span>
-                </div>
-                <div class="flex items-center gap-2">
-                    <span class="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 font-mono font-bold">Nm & Pasta</span>
-                    <span class="accordion-chevron text-slate-400 transition-transform">▼</span>
-                </div>
-            </div>
-            <div class="accordion-body px-5 pb-5 border-t border-slate-800/60 pt-4 space-y-4">
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs text-slate-400 mb-1">Skrue</label>
-                        <select id="tq-size" class="input-dark" onchange="calcTorque()">
-                            <option value="M6">M6</option>
-                            <option value="M8">M8</option>
-                            <option value="M10" selected>M10</option>
-                            <option value="M12">M12</option>
-                            <option value="M16">M16</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs text-slate-400 mb-1">Klasse</label>
-                        <select id="tq-class" class="input-dark" onchange="calcTorque()">
-                            <option value="8.8" selected>Stål 8.8</option>
-                            <option value="10.9">Stål 10.9</option>
-                            <option value="12.9">Stål 12.9</option>
-                        </select>
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-xs text-slate-400 mb-1">Gjengeforhold & Smøring</label>
-                    <select id="tq-lube" class="input-dark" onchange="calcTorque()">
-                        <option value="dry">Tørre / Usmurte gjenger (μ = 0.14)</option>
-                        <option value="lube" selected>Smurte gjenger / Pasta / Fett (μ = 0.10, -25% Nm)</option>
-                    </select>
-                </div>
-                <div class="p-4 rounded-xl border border-emerald-500/30 bg-emerald-500/5 space-y-2 text-emerald-400 text-xs font-bold">
-                    <div class="flex justify-between text-sm font-black"><span>Tiltrekkingsmoment (Nm):</span><span id="tq-res-nm" class="font-mono text-base">35 Nm</span></div>
-                    <div class="flex justify-between"><span>Tiltrekkingskraft (kN):</span><span id="tq-res-kn" class="font-mono">26 kN</span></div>
-                </div>
-            </div>
-        </div>
-
-        <div class="glass-card accordion-item" id="acc-w-pcd">
-            <div onclick="toggleAccordion('acc-w-pcd')" class="w-full flex items-center justify-between p-5 text-left hover:bg-slate-800/40 transition-colors cursor-pointer">
-                <div class="flex items-center gap-3">
-                    <span class="text-sky-400 text-lg">⭕</span>
-                    <span class="font-bold text-slate-100 text-sm">Delingssirkel & Flense-koordinater (PCD)</span>
-                </div>
-                <div class="flex items-center gap-2">
-                    <span class="text-xs px-2.5 py-0.5 rounded-full bg-sky-500/15 text-sky-300 font-mono font-bold">PCD Diagram</span>
-                    <span class="accordion-chevron text-slate-400 transition-transform">▼</span>
-                </div>
-            </div>
-            <div class="accordion-body px-5 pb-5 border-t border-slate-800/60 pt-4 space-y-4">
-                <div class="text-center p-3 bg-slate-900/80 rounded-xl border border-slate-800">
-                    <svg width="180" height="180" viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg" class="mx-auto max-w-full h-auto">
-                        <circle cx="110" cy="110" r="95" fill="rgba(16, 185, 129, 0.08)" stroke="#10b981" stroke-width="2"/>
-                        <circle cx="110" cy="110" r="30" fill="#0f172a" stroke="#10b981" stroke-width="2"/>
-                        <line x1="110" y1="10" x2="110" y2="210" stroke="#1e293b" stroke-width="1.5" stroke-dasharray="4,4"/>
-                        <line x1="10" y1="110" x2="210" y2="110" stroke="#1e293b" stroke-width="1.5" stroke-dasharray="4,4"/>
-                        <circle cx="110" cy="110" r="68" fill="none" stroke="#38bdf8" stroke-width="2" stroke-dasharray="6,4"/>
-                        <line x1="178" y1="110" x2="158" y2="62" stroke="#f43f5e" stroke-width="2.5"/>
-                        <circle cx="178" cy="110" r="7" fill="#0f172a" stroke="#10b981" stroke-width="2"/>
-                        <circle cx="158" cy="62" r="7" fill="#0f172a" stroke="#10b981" stroke-width="2"/>
-                        <circle cx="110" cy="42" r="7" fill="#0f172a" stroke="#10b981" stroke-width="2"/>
-                        <text x="182" y="85" fill="#f43f5e" font-size="11" font-weight="800">k (Korde)</text>
-                        <text x="65" y="105" fill="#38bdf8" font-size="11" font-weight="800">PCD Ø</text>
-                    </svg>
-                </div>
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs text-slate-400 mb-1">PCD Ø (mm)</label>
-                        <input type="number" id="pcd-dia" class="input-dark" value="200" oninput="calcPCD()">
-                    </div>
-                    <div>
-                        <label class="block text-xs text-slate-400 mb-1">Antall hull</label>
-                        <input type="number" id="pcd-num" class="input-dark" value="8" oninput="calcPCD()">
-                    </div>
-                </div>
-                <div class="p-4 rounded-xl border border-emerald-500/30 bg-emerald-500/5 space-y-2 text-emerald-400 text-xs font-bold">
-                    <div class="flex justify-between text-sm font-black"><span>Kordeavstand (måles direkte):</span><span id="pcd-res-chord" class="font-mono text-base">76.54 mm</span></div>
-                    <div class="flex justify-between"><span>Vinkelstigning pr. hull:</span><span id="pcd-res-angle" class="font-mono">45.0°</span></div>
-                </div>
-            </div>
-        </div>
-
-        <div class="glass-card accordion-item" id="acc-w-trig">
-            <div onclick="toggleAccordion('acc-w-trig')" class="w-full flex items-center justify-between p-5 text-left hover:bg-slate-800/40 transition-colors cursor-pointer">
-                <div class="flex items-center gap-3">
-                    <span class="text-purple-400 text-lg">📐</span>
-                    <span class="font-bold text-slate-100 text-sm">Trigonometri & Trekant (Pythagoras med SVG Diagram)</span>
-                </div>
-                <div class="flex items-center gap-2">
-                    <span class="text-xs px-2.5 py-0.5 rounded-full bg-purple-500/15 text-purple-300 font-mono font-bold">Pythagoras</span>
-                    <span class="accordion-chevron text-slate-400 transition-transform">▼</span>
-                </div>
-            </div>
-            <div class="accordion-body px-5 pb-5 border-t border-slate-800/60 pt-4 space-y-4">
-                <div class="text-center p-3 bg-slate-900/80 rounded-xl border border-slate-800">
-                    <svg width="200" height="130" viewBox="0 0 240 150" xmlns="http://www.w3.org/2000/svg" class="mx-auto max-w-full h-auto">
-                        <path d="M 40 110 L 50 110 L 50 120" fill="none" stroke="#a78bfa" stroke-width="2"/>
-                        <polygon points="40,120 200,120 40,20" fill="rgba(167, 139, 250, 0.12)" stroke="#a78bfa" stroke-width="3"/>
-                        <text x="18" y="75" fill="#f8fafc" font-size="13" font-weight="800">a (Vert)</text>
-                        <text x="105" y="142" fill="#f8fafc" font-size="13" font-weight="800">b (Horisont)</text>
-                        <text x="120" y="60" fill="#a78bfa" font-size="13" font-weight="800">c (Hypotenus)</text>
-                    </svg>
-                </div>
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs text-slate-400 mb-1">Katet a (mm)</label>
-                        <input type="number" id="tri-a" class="input-dark" placeholder="f.eks 30" oninput="calcTrig()">
-                    </div>
-                    <div>
-                        <label class="block text-xs text-slate-400 mb-1">Katet b (mm)</label>
-                        <input type="number" id="tri-b" class="input-dark" placeholder="f.eks 40" oninput="calcTrig()">
-                    </div>
-                </div>
-                <div class="p-4 rounded-xl border border-purple-500/30 bg-purple-500/5 space-y-2 text-purple-300 text-xs font-bold">
-                    <div class="flex justify-between text-sm font-black"><span>Hypotenus c:</span><span id="tri-res-c" class="font-mono text-base">50.00 mm</span></div>
-                    <div class="flex justify-between"><span>Vinkler A° og B°:</span><span id="tri-res-angles" class="font-mono">A = 36.87° | B = 53.13°</span></div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 5. ELBIL PAGE (BOLT ACCORDIONS) -->
-    <div id="page-ev" class="tab-content space-y-4">
-        <div class="glass-card accordion-item open" id="acc-e-charge">
-            <div onclick="toggleAccordion('acc-e-charge')" class="w-full flex items-center justify-between p-5 text-left hover:bg-slate-800/40 transition-colors cursor-pointer">
-                <div class="flex items-center gap-3">
-                    <span class="text-sky-400 text-lg">🔌</span>
-                    <span class="font-bold text-slate-100 text-sm">Ladetid & Ladekostnad</span>
-                </div>
-                <div class="flex items-center gap-2">
-                    <span class="text-xs px-2.5 py-0.5 rounded-full bg-sky-500/15 text-sky-300 font-mono font-bold">kW & kWh</span>
-                    <span class="accordion-chevron text-slate-400 transition-transform">▼</span>
-                </div>
-            </div>
-            <div class="accordion-body px-5 pb-5 border-t border-slate-800/60 pt-4 space-y-4">
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs text-slate-400 mb-1">Batteri (kWh)</label>
-                        <input type="number" id="ev-bat" class="input-dark" value="77" oninput="calcEVCharge()">
-                    </div>
-                    <div>
-                        <label class="block text-xs text-slate-400 mb-1">Ladeeffekt</label>
-                        <select id="ev-kw" class="input-dark" onchange="calcEVCharge()">
-                            <option value="7.4" selected>Hjemmelader 7.4 kW</option>
-                            <option value="11">Hjemmelader 11 kW</option>
-                            <option value="150">Lynlader 150 kW</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs text-slate-400 mb-1">Start %</label>
-                        <input type="number" id="ev-start" class="input-dark" value="10" oninput="calcEVCharge()">
-                    </div>
-                    <div>
-                        <label class="block text-xs text-slate-400 mb-1">Mål %</label>
-                        <input type="number" id="ev-target" class="input-dark" value="80" oninput="calcEVCharge()">
-                    </div>
-                </div>
-                <div class="p-4 rounded-xl border border-sky-500/30 bg-sky-500/5 space-y-2 text-xs font-bold text-slate-300">
-                    <div class="flex justify-between text-sm font-black"><span>Estimert Ladetid:</span><span id="ev-res-time" class="font-mono text-sky-400 text-base">7t 18m</span></div>
-                    <div class="flex justify-between"><span>Ladekostnad (1.30 kr/kWh):</span><span id="ev-res-cost" class="font-mono text-sky-400">70,07 kr</span></div>
-                </div>
-            </div>
-        </div>
-
-        <div class="glass-card accordion-item" id="acc-e-winter">
-            <div onclick="toggleAccordion('acc-e-winter')" class="w-full flex items-center justify-between p-5 text-left hover:bg-slate-800/40 transition-colors cursor-pointer">
-                <div class="flex items-center gap-3">
-                    <span class="text-amber-400 text-lg">❄️</span>
-                    <span class="font-bold text-slate-100 text-sm">Vinter-Rekkevidde & Temperaturtap</span>
-                </div>
-                <div class="flex items-center gap-2">
-                    <span class="text-xs px-2.5 py-0.5 rounded-full bg-amber-500/15 text-amber-300 font-mono font-bold">Temperatur</span>
-                    <span class="accordion-chevron text-slate-400 transition-transform">▼</span>
-                </div>
-            </div>
-            <div class="accordion-body px-5 pb-5 border-t border-slate-800/60 pt-4 space-y-4">
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs text-slate-400 mb-1">WLTP Sommer-rekkevidde (km)</label>
-                        <input type="number" id="ew-wltp" class="input-dark" value="480" oninput="calcWinter()">
-                    </div>
-                    <div>
-                        <label class="block text-xs text-slate-400 mb-1">Utetemperatur</label>
-                        <select id="ew-temp" class="input-dark" onchange="calcWinter()">
-                            <option value="0" selected>+20°C Sommer (100% reell · 0% tap)</option>
-                            <option value="12">+10°C Vår/Høst (88% reell · -12% tap)</option>
-                            <option value="25">0°C Norsk Vinter (75% reell · -25% tap)</option>
-                            <option value="35">-10°C Kald Vinter (65% reell · -35% tap)</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="p-4 rounded-xl border border-amber-500/30 bg-amber-500/5 space-y-2 text-amber-400 text-xs font-bold">
-                    <div class="flex justify-between text-sm font-black"><span>Reell Rekkevidde:</span><span id="ew-res-range" class="font-mono text-base">360 km (75% av WLTP)</span></div>
-                    <div class="flex justify-between"><span>Forventet Tap:</span><span id="ew-res-loss" class="font-mono">- 120 km (25% tap)</span></div>
-                </div>
-            </div>
-        </div>
-    </div>
-</main>
-
-<script>
-    const maanedsNavn = ["Januar", "Februar", "Mars", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Desember"];
-    const ukedager = ["Søn", "Man", "Tir", "Ons", "Tor", "Fre", "Lør"];
-
-    function toggleAccordion(accId) {
-        const item = document.getElementById(accId);
-        if (item) {
-            item.classList.toggle('open');
-        }
-    }
-
-    function switchNav(pageId) {
-        document.querySelectorAll('.tab-content, #page-dashboard').forEach(el => {
-            el.classList.remove('active');
-            el.classList.add('hidden');
-        });
-
-        document.querySelectorAll('nav button').forEach(el => {
-            el.className = "flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-medium text-xs sm:text-sm text-slate-400 hover:bg-slate-800/50 hover:text-slate-200 border border-transparent whitespace-nowrap transition-all";
-        });
-
-        const activeBtn = document.getElementById(`navitem-${pageId}`);
-        if (activeBtn) {
-            activeBtn.className = "flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-xs sm:text-sm text-sky-400 bg-sky-500/10 border border-sky-500/20 whitespace-nowrap transition-all";
-        }
-
-        const targetPage = document.getElementById(`page-${pageId}`);
-        if (targetPage) {
-            targetPage.classList.remove('hidden');
-            targetPage.classList.add('active');
-        }
-
-        const titleMap = {
-            dashboard: "Oversikt",
-            salary: "💰 Lønnskalkulator & Oppgjør",
-            machining: "⚙️ Maskineringskalkulator & CNC",
-            workshop: "🛠️ Verkstedtabeller & Bor",
-            ev: "⚡ Elbil-Kalkulator & Ladetid"
-        };
-        const subMap = {
-            dashboard: "Velg et verktøy under for å starte beregningen.",
-            salary: "Samlet web-dashbord for fastlønn, overtid, timebank, skattetrekk og årsprognose.",
-            machining: "Sirkulær bordsmating, C-akse mm/min til °/min, skjærekrefter og spindeleffekt.",
-            workshop: "Materialer, operasjonstyper, kjernebor, ISO-toleranser, PCD, trekant og skruemoment.",
-            ev: "Ladetid, ladekostnader, bensinbesparelser og temperaturtap om vinteren."
-        };
-
-        if (document.getElementById('header-title')) document.getElementById('header-title').innerText = titleMap[pageId] || "Oversikt";
-        if (document.getElementById('header-sub')) document.getElementById('header-sub').innerText = subMap[pageId] || "";
-
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function byggAarsOgMaanedsLister() {
-        const aarSelect = document.getElementById('year');
-        const mndSelect = document.getElementById('month');
-        if (!aarSelect || !mndSelect) return;
-
-        aarSelect.innerHTML = "";
-        const naaar = new Date().getFullYear();
-        for (let y = naaar - 2; y <= naaar + 5; y++) {
-            const opt = document.createElement('option');
-            opt.value = y; opt.text = y;
-            if (y === naaar) opt.selected = true;
-            aarSelect.appendChild(opt);
-        }
-
-        mndSelect.innerHTML = "";
-        const naamnd = new Date().getMonth();
-        maanedsNavn.forEach((navn, idx) => {
-            const opt = document.createElement('option');
-            opt.value = idx; opt.text = navn;
-            if (idx === naamnd) opt.selected = true;
-            mndSelect.appendChild(opt);
-        });
-    }
-
-    function countWeekdays(year, month) {
-        let count = 0;
-        const daysInMonth = new Date(year, month + 1, 0).getDate();
-        for (let d = 1; d <= daysInMonth; d++) {
-            const dayOfWeek = new Date(year, month, d).getDay();
-            if (dayOfWeek >= 1 && dayOfWeek <= 5) count++;
-        }
-        return count;
-    }
-
-    function oppdaterAarOgMaaned() {
-        const yearSelect = document.getElementById('year');
-        const monthSelect = document.getElementById('month');
-        if (!yearSelect || !monthSelect || !yearSelect.value || monthSelect.value === "") return;
-
-        const year = parseInt(yearSelect.value);
-        const month = parseInt(monthSelect.value);
-        const realDays = countWeekdays(year, month);
-
-        if (document.getElementById('tekst-arbeidsdager')) document.getElementById('tekst-arbeidsdager').innerText = `Antall arbeidsdager i måneden: ${realDays} dager`;
-        if (document.getElementById('tekst-gjeldende-dager')) document.getElementById('tekst-gjeldende-dager').innerText = `Gjeldende dager i beregningen: ${realDays} (kalender, man–fre)`;
-
-        if (document.getElementById('vakt-dato') && !document.getElementById('vakt-dato').value) {
-            let m = month + 1;
-            let mStr = m < 10 ? '0' + m : m;
-            document.getElementById('vakt-dato').value = `${year}-${mStr}-01`;
-        }
-        calcSalary();
-        lagreInnstillinger();
-    }
-
-    function sjekkDatoUkedag() {
-        const datoValgt = document.getElementById('vakt-dato').value;
-        if (!datoValgt) return;
-        const d = new Date(datoValgt);
-        const dag = d.getDay();
-        const tilleggType = document.getElementById('tillegg-type');
-        if (tilleggType) {
-            if (dag === 0 || dag === 6) {
-                if (!tilleggType.value.startsWith('helg')) tilleggType.value = 'helg50';
-            } else {
-                if (!tilleggType.value.startsWith('hverdag')) tilleggType.value = 'hverdag50';
-            }
-        }
-    }
-
-    function byttSkattType() {
-        const type = document.getElementById('skatt-type').value;
-        if (type === 'prosent') {
-            document.getElementById('skattetabell-boks').style.display = 'none';
-            document.getElementById('skatteprosent-boks').style.display = 'block';
-        } else {
-            document.getElementById('skattetabell-boks').style.display = 'block';
-            document.getElementById('skatteprosent-boks').style.display = 'none';
-        }
-    }
-
-    let registrerteVakter = [];
-
-    function leggTilVakt(event) {
-        event.preventDefault();
-        const datoValgt = document.getElementById('vakt-dato').value;
-        if (!datoValgt) { alert("Velg en dato for vakten."); return; }
-        const d = new Date(datoValgt);
-        const vaktAar = d.getFullYear();
-        const vaktMnd = d.getMonth();
-
-        const timer = parseInt(document.getElementById('vakt-timer').value) || 0;
-        const minutter = parseInt(document.getElementById('vakt-minutter').value) || 0;
-        if (timer === 0 && minutter === 0) { alert("Oppgi timer eller minutter."); return; }
-
-        const type = document.getElementById('tillegg-type').value;
-        const typeTekst = document.getElementById('tillegg-type').options[document.getElementById('tillegg-type').selectedIndex].text;
-        const desimalTimer = timer + (minutter / 60);
-        const erTimebank = document.getElementById('vakt-timebank').checked;
-
-        const formatertDato = `${ukedager[d.getDay()]} ${d.getDate()}.${d.getMonth()+1}`;
-
-        registrerteVakter.push({
-            id: Math.random().toString(36).substring(2),
-            date: datoValgt,
-            dateLabel: formatertDato,
-            kind: type,
-            kindLabel: typeTekst.split(' (')[0],
-            hours: timer,
-            minutes: minutter,
-            desimalTimer,
-            year: vaktAar,
-            month: vaktMnd,
-            isTimebank: erTimebank
-        });
-
-        document.getElementById('vakt-timer').value = 0;
-        document.getElementById('vakt-minutter').value = 0;
-        document.getElementById('vakt-timebank').checked = false;
-
-        sorterOgOppdaterVakter();
-    }
-
-    function slettVakt(id) {
-        registrerteVakter = registrerteVakter.filter(v => v.id !== id);
-        sorterOgOppdaterVakter();
-    }
-
-    function sorterOgOppdaterVakter() {
-        registrerteVakter.sort((a, b) => new Date(a.date) - new Date(b.date));
-        localStorage.setItem('lonn_vakter_tabs_v26', JSON.stringify(registrerteVakter));
-        oppdaterVaktTabell();
-        calcSalary();
-        lagreInnstillinger();
-    }
-
-    function hentAktiveVakter() {
-        const yearSelect = document.getElementById('year');
-        const monthSelect = document.getElementById('month');
-        if (!yearSelect || !monthSelect || !yearSelect.value || monthSelect.value === "") return registrerteVakter;
-        const year = parseInt(yearSelect.value);
-        const month = parseInt(monthSelect.value);
-        return registrerteVakter.filter(v => v.year === year && v.month === month);
-    }
-
-    function oppdaterVaktTabell() {
-        const container = document.getElementById('vakt-tabell-container');
-        const monthSelect = document.getElementById('month');
-        if (!container) return;
-
-        const aktive = hentAktiveVakter();
-        const monthName = monthSelect && monthSelect.value !== "" ? maanedsNavn[parseInt(monthSelect.value)] : "måneden";
-        if (document.getElementById('tittel-vaktliste')) {
-            document.getElementById('tittel-vaktliste').innerText = `Registrerte vakter i ${monthName.toLowerCase()}`;
-        }
-
-        if (aktive.length === 0) {
-            container.innerHTML = `<p class="p-6 text-center text-xs text-slate-500 italic border border-dashed border-slate-800 rounded-xl">Ingen vakter registrert i denne måneden.</p>`;
-            return;
-        }
-
-        const timelonn = parseFloat(document.getElementById('timelonn').value) || 316.5;
-
-        let html = '<ul class="space-y-2 list-none p-0 m-0">';
-        aktive.forEach(v => {
-            const faktor = v.isTimebank ? (v.kind.includes('50') ? 0.5 : 1.0) : (v.kind.includes('50') ? 1.5 : 2.0);
-            const brutto = v.desimalTimer * (timelonn * faktor);
-            const tbBadge = v.isTimebank ? `<span class="text-[11px] bg-amber-500/10 text-amber-400 px-2 py-0.5 rounded font-semibold ml-2">🏦 Timebank (+${v.desimalTimer.toFixed(1)}t)</span>` : '';
-
-            html += `<li class="flex items-center justify-between p-3 rounded-xl border border-slate-800 bg-slate-900/60">
-                <div>
-                    <p class="font-bold text-sm text-slate-200">${v.dateLabel}${tbBadge}</p>
-                    <p class="text-xs text-slate-400">${v.kindLabel} · ${v.hours}t ${v.minutes}m ${v.isTimebank ? '(kun tillegg utbetalt)' : ''}</p>
-                </div>
-                <div class="flex items-center gap-3">
-                    <span class="font-mono font-bold text-sm text-sky-400">${brutto.toFixed(2).replace('.', ',')} kr</span>
-                    <button type="button" class="text-red-400 hover:text-red-300 p-1 font-bold" onclick="slettVakt('${v.id}')">🗑️</button>
-                </div>
-            </li>`;
-        });
-        html += '</ul>';
-        container.innerHTML = html;
-    }
-
-    function kopierVaktliste() {
-        const aktive = hentAktiveVakter();
-        if (aktive.length === 0) { alert("Ingen vakter å kopiere."); return; }
-        let txt = "Registrerte tilleggsvakter:\n";
-        aktive.forEach(v => { txt += `- ${v.dateLabel}: ${v.kindLabel} (${v.hours}t ${v.minutes}m) ${v.isTimebank ? '[Timebank]' : ''}\n`; });
-        navigator.clipboard.writeText(txt);
-        alert("Vaktlisten er kopiert til utklippstavlen!");
-    }
-
-    function eksporterVakttilExcel() {
-        const aktive = hentAktiveVakter();
-        if (aktive.length === 0) { alert("Ingen vakter å eksportere for denne måneden."); return; }
-
-        const timelonn = parseFloat(document.getElementById('timelonn').value) || 316.5;
-        let csvContent = "data:text/csv;charset=utf-8,Dato;Type;Timer;Minutter;Timebank;Brutto (NOK)\n";
-
-        aktive.forEach(v => {
-            const faktor = v.isTimebank ? (v.kind.includes('50') ? 0.5 : 1.0) : (v.kind.includes('50') ? 1.5 : 2.0);
-            const brutto = v.desimalTimer * (timelonn * faktor);
-            csvContent += `${v.date};${v.kindLabel};${v.hours};${v.minutes};${v.isTimebank ? 'Ja' : 'Nei'};${brutto.toFixed(2).replace('.', ',')}\n`;
-        });
-
-        const encodedUri = encodeURI(csvContent);
-        const link = document.createElement("a");
-        link.setAttribute("href", encodedUri);
-        link.setAttribute("download", `Vaktliste_${document.getElementById('year') ? document.getElementById('year').value : '2026'}_${document.getElementById('month') ? document.getElementById('month').value : '1'}.csv`);
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    }
-
-    function lagreInnstillinger() {
-        if (document.getElementById('year')) localStorage.setItem('lonn_year', document.getElementById('year').value);
-        if (document.getElementById('month')) localStorage.setItem('lonn_month', document.getElementById('month').value);
-        if (document.getElementById('inkluder-fastlonn')) localStorage.setItem('lonn_inkl_fastlonn', document.getElementById('inkluder-fastlonn').checked ? '1' : '0');
-        if (document.getElementById('timelonn')) localStorage.setItem('lonn_timelonn', document.getElementById('timelonn').value);
-        if (document.getElementById('timer-dag')) localStorage.setItem('lonn_timer', document.getElementById('timer-dag').value);
-        if (document.getElementById('feriedager')) localStorage.setItem('lonn_ferier', document.getElementById('feriedager').value);
-        if (document.getElementById('skatt-type')) localStorage.setItem('lonn_skatt_type', document.getElementById('skatt-type').value);
-        if (document.getElementById('skatte-tabellnummer')) localStorage.setItem('lonn_tabell', document.getElementById('skatte-tabellnummer').value);
-        if (document.getElementById('skatt')) localStorage.setItem('lonn_skatt_pct', document.getElementById('skatt').value);
-        if (document.getElementById('fagforening-prosent')) localStorage.setItem('lonn_union_pct', document.getElementById('fagforening-prosent').value);
-        localStorage.setItem('lonn_vakter_tabs_v26', JSON.stringify(registrerteVakter));
-    }
-
-    function lastInnstillinger() {
-        byggAarsOgMaanedsLister();
-
-        if (localStorage.getItem('lonn_year') && document.getElementById('year')) document.getElementById('year').value = localStorage.getItem('lonn_year');
-        if (localStorage.getItem('lonn_month') && document.getElementById('month')) document.getElementById('month').value = localStorage.getItem('lonn_month');
-
-        if (localStorage.getItem('lonn_inkl_fastlonn') !== null && document.getElementById('inkluder-fastlonn')) {
-            document.getElementById('inkluder-fastlonn').checked = localStorage.getItem('lonn_inkl_fastlonn') === '1';
-        }
-
-        if (localStorage.getItem('lonn_timelonn') && document.getElementById('timelonn')) document.getElementById('timelonn').value = localStorage.getItem('lonn_timelonn');
-        if (localStorage.getItem('lonn_timer') && document.getElementById('timer-dag')) document.getElementById('timer-dag').value = localStorage.getItem('lonn_timer');
-        if (localStorage.getItem('lonn_ferier') && document.getElementById('feriedager')) document.getElementById('feriedager').value = localStorage.getItem('lonn_ferier');
-        if (localStorage.getItem('lonn_skatt_type') && document.getElementById('skatt-type')) {
-            document.getElementById('skatt-type').value = localStorage.getItem('lonn_skatt_type');
-        }
-        if (localStorage.getItem('lonn_tabell') && document.getElementById('skatte-tabellnummer')) document.getElementById('skatte-tabellnummer').value = localStorage.getItem('lonn_tabell');
-        if (localStorage.getItem('lonn_skatt_pct') && document.getElementById('skatt')) document.getElementById('skatt').value = localStorage.getItem('lonn_skatt_pct');
-        if (localStorage.getItem('fagforening-prosent') && document.getElementById('fagforening-prosent')) document.getElementById('fagforening-prosent').value = localStorage.getItem('lonn_union_pct');
-
+        {hint && <p className="text-xs text-slate-500 mt-1">{hint}</p>}
+      </div>
+    );
+
+    const SelectField = ({ label, value, onChange, options }) => (
+      <div className="flex flex-col gap-1.5 w-full">
+        <label className="text-xs font-medium uppercase tracking-wider text-slate-400">{label}</label>
+        <select value={value} onChange={(e) => onChange(e.target.value)} className="input-dark">
+          {options.map((opt) => (
+            <option key={opt.value} value={opt.value}>{opt.label}</option>
+          ))}
+        </select>
+      </div>
+    );
+
+    const ResultRow = ({ label, value, unit, highlight = false }) => (
+      <div className={`flex items-center justify-between p-3 rounded-xl ${highlight ? 'bg-sky-500/10 border border-sky-500/30' : 'bg-slate-800/40 border border-slate-700/40'}`}>
+        <span className="text-sm text-slate-300">{label}</span>
+        <span className={`font-mono text-lg ${highlight ? 'text-sky-400 font-bold' : 'text-slate-100'}`}>{value} {unit && <span className="text-sm text-slate-400">{unit}</span>}</span>
+      </div>
+    );
+
+    // 1. SALARY CALCULATOR
+    function SalaryCalculator() {
+      const [year, setYear] = useState(String(new Date().getFullYear()));
+      const [month, setMonth] = useState(String(new Date().getMonth()));
+      const [timelonn, setTimelonn] = useState('316.5');
+      const [timerDag, setTimerDag] = useState('7.5');
+      const [feriedager, setFeriedager] = useState('0');
+      const [skattType, setSkattType] = useState('tabell');
+      const [tabellNr, setTabellNr] = useState('7101');
+      const [skattProsent, setSkattProsent] = useState('30');
+      const [fagforeningProsent, setFagforeningProsent] = useState('1.5');
+      const [harFastlonn, setHarFastlonn] = useState(true);
+
+      const [shiftDate, setShiftDate] = useState('');
+      const [shiftHours, setShiftHours] = useState('7');
+      const [shiftMin, setShiftMin] = useState('30');
+      const [shiftType, setShiftType] = useState('hverdag50');
+      const [shiftTimebank, setShiftTimebank] = useState(false);
+
+      const [shifts, setShifts] = useState(() => {
         if (localStorage.getItem('lonn_vakter_tabs_v26')) {
-            try { registrerteVakter = JSON.parse(localStorage.getItem('lonn_vakter_tabs_v26')); } catch(e){}
+          try { return JSON.parse(localStorage.getItem('lonn_vakter_tabs_v26')); } catch(e){}
         }
+        return [];
+      });
 
-        byttSkattType();
-        oppdaterAarOgMaaned();
-        oppdaterVaktTabell();
-        calcSalary();
-    }
+      const selectedYear = parseInt(year);
+      const selectedMonth = parseInt(month);
+      const activeShifts = shifts.filter((s) => s.year === selectedYear && s.month === selectedMonth);
 
-    function calcSalary() {
-        const yearSelect = document.getElementById('year');
-        const monthSelect = document.getElementById('month');
+      const calc = useMemo(() => {
+        const rate = num(timelonn);
+        const hpd = num(timerDag);
+        const vacDays = parseInt(feriedager) || 0;
+        const unionFaktor = num(fagforeningProsent) / 100;
 
-        let year = yearSelect ? parseInt(yearSelect.value) : new Date().getFullYear();
-        let month = monthSelect ? parseInt(monthSelect.value) : new Date().getMonth();
+        const fastlonn = harFastlonn ? (22 * hpd * rate) : 0;
+        const ferieTrekk = harFastlonn ? (vacDays * hpd * rate) : 0;
 
-        const realDays = countWeekdays(year, month);
-        const harFast = document.getElementById('inkluder-fastlonn') ? document.getElementById('inkluder-fastlonn').checked : true;
-        const timelonn = parseFloat(document.getElementById('timelonn') ? document.getElementById('timelonn').value : '316.5') || 316.5;
-        const timerPrDag = parseFloat(document.getElementById('timer-dag') ? document.getElementById('timer-dag').value : '7.5') || 7.5;
-        const feriedager = parseInt(document.getElementById('feriedager') ? document.getElementById('feriedager').value : '0') || 0;
-
-        const fastlBrutto = harFast ? (realDays * timerPrDag * timelonn) : 0;
-        const ferieTrekk = harFast ? (feriedager * timerPrDag * timelonn) : 0;
-
-        const radFastlonn = document.getElementById('rad-fastlonn');
-        if (radFastlonn) {
-            if (harFast) {
-                if (document.getElementById('vis-fastlonn')) document.getElementById('vis-fastlonn').innerText = fastlBrutto.toFixed(2).replace('.', ',') + " kr";
-                radFastlonn.style.display = 'flex';
-            } else {
-                radFastlonn.style.display = 'none';
-            }
-        }
-
-        const radFerie = document.getElementById('rad-ferietrekk');
-        if (radFerie) {
-            if (harFast && feriedager > 0) {
-                if (document.getElementById('vis-ferietrekk')) document.getElementById('vis-ferietrekk').innerText = "− " + ferieTrekk.toFixed(2).replace('.', ',') + " kr";
-                radFerie.style.display = 'flex';
-            } else {
-                radFerie.style.display = 'none';
-            }
-        }
-
-        let sumVaktBrutto = 0, sumTimebankTimer = 0;
-        const aktive = hentAktiveVakter();
-        aktive.forEach(v => {
-            const faktor = v.isTimebank ? (v.kind.includes('50') ? 0.5 : 1.0) : (v.kind.includes('50') ? 1.5 : 2.0);
-            const b = v.desimalTimer * (timelonn * faktor);
-            sumVaktBrutto += b;
-            if (v.isTimebank) sumTimebankTimer += v.desimalTimer;
+        let vaktBrutto = 0, timebankTimer = 0;
+        activeShifts.forEach((v) => {
+          const type = SHIFT_TYPES.find((t) => t.value === v.kind) || SHIFT_TYPES[0];
+          const factor = v.isTimebank ? (type.factor - 1.0) : type.factor;
+          vaktBrutto += v.desimalTimer * (rate * factor);
+          if (v.isTimebank) timebankTimer += v.desimalTimer;
         });
 
-        if (document.getElementById('vis-vaktbrutto')) document.getElementById('vis-vaktbrutto').innerText = sumVaktBrutto.toFixed(2).replace('.', ',') + " kr";
-        if (document.getElementById('vis-timebank')) document.getElementById('vis-timebank').innerText = "+ " + sumTimebankTimer.toFixed(1).replace('.', ',') + " t";
+        const totalBrutto = fastlonn - ferieTrekk + vaktBrutto;
+        const fagforeningMnd = Math.max(0, totalBrutto * unionFaktor);
+        const skattegrunnlag = Math.max(0, totalBrutto - fagforeningMnd);
 
-        const totalBruttoMnd = Math.max(0, fastlBrutto - ferieTrekk + sumVaktBrutto);
-        if (document.getElementById('vis-totalbrutto')) document.getElementById('vis-totalbrutto').innerText = totalBruttoMnd.toFixed(2).replace('.', ',') + " kr";
-
-        const fagforeningPct = parseFloat(document.getElementById('fagforening-prosent') ? document.getElementById('fagforening-prosent').value : '1.5') || 1.5;
-        const fagforeningTrekk = Math.max(0, totalBruttoMnd * (fagforeningPct / 100));
-        if (document.getElementById('vis-fagforening')) document.getElementById('vis-fagforening').innerText = "− " + fagforeningTrekk.toFixed(2).replace('.', ',') + " kr";
-
-        const skatteGrunnlag = Math.max(0, totalBruttoMnd - fagforeningTrekk);
-
-        let beregnetSkatt = 0;
-        const skattType = document.getElementById('skatt-type') ? document.getElementById('skatt-type').value : 'tabell';
+        let skatt = 0;
         if (skattType === 'prosent') {
-            const pct = parseFloat(document.getElementById('skatt') ? document.getElementById('skatt').value : '30') || 30;
-            beregnetSkatt = skatteGrunnlag * (pct / 100);
+          skatt = skattegrunnlag * (num(skattProsent) / 100);
         } else {
-            // Tabell 7101
-            beregnetSkatt = skatteGrunnlag * 0.28;
+          skatt = skattegrunnlag * 0.28;
         }
 
-        if (document.getElementById('vis-skatt')) document.getElementById('vis-skatt').innerText = "− " + beregnetSkatt.toFixed(2).replace('.', ',') + " kr";
+        const netto = totalBrutto - fagforeningMnd - skatt;
+        const feriepenger = Math.max(0, totalBrutto * 0.12);
+        const aarslonnFast = harFastlonn ? ((5 * hpd) * rate * 47) * 1.12 : 0;
+        const aarsPrognose = (aarslonnFast + (vaktBrutto * 12)) * 1.12;
 
-        const nettoUtbetalt = Math.max(0, totalBruttoMnd - fagforeningTrekk - beregnetSkatt);
-        if (document.getElementById('vis-netto')) document.getElementById('vis-netto').innerText = nettoUtbetalt.toFixed(2).replace('.', ',') + " kr";
-        if (document.getElementById('vis-netto-bottom')) document.getElementById('vis-netto-bottom').innerText = nettoUtbetalt.toFixed(2).replace('.', ',') + " kr";
+        return { fastlonn, ferieTrekk, vaktBrutto, timebankTimer, totalBrutto, fagforeningMnd, skatt, netto, feriepenger, aarsPrognose };
+      }, [harFastlonn, timelonn, timerDag, feriedager, fagforeningProsent, skattType, tabellNr, skattProsent, activeShifts]);
 
-        const feriepengerOpptjent = Math.max(0, totalBruttoMnd * 0.12);
-        if (document.getElementById('vis-feriepenger')) document.getElementById('vis-feriepenger').innerText = feriepengerOpptjent.toFixed(2).replace('.', ',') + " kr";
+      const addShift = (e) => {
+        e.preventDefault();
+        const d = new Date(shiftDate || Date.now());
+        const h = parseInt(shiftHours) || 0;
+        const m = parseInt(shiftMin) || 0;
+        const desimal = h + (m/60);
+        if (desimal <= 0) return;
 
-        const fastAarssats = harFast ? ((5 * timerPrDag) * timelonn * 47) * 1.12 : 0;
-        const totalAarssats = (fastAarssats + (sumVaktBrutto * 12)) * 1.12;
+        const newShift = {
+          id: Math.random().toString(36).substring(2),
+          date: shiftDate || d.toISOString().split('T')[0],
+          dateLabel: `${UKEDAGER[d.getDay()]} ${d.getDate()}.${d.getMonth()+1}`,
+          kind: shiftType,
+          kindLabel: SHIFT_TYPES.find(t=>t.value===shiftType)?.label || shiftType,
+          hours: h,
+          minutes: m,
+          desimalTimer: desimal,
+          year: d.getFullYear(),
+          month: d.getMonth(),
+          isTimebank: shiftTimebank
+        };
 
-        if (document.getElementById('vis-aarslonn-fast')) document.getElementById('vis-aarslonn-fast').innerText = fastAarssats.toFixed(2).replace('.', ',') + " kr";
-        if (document.getElementById('vis-aarslonn-tot')) document.getElementById('vis-aarslonn-tot').innerText = totalAarssats.toFixed(2).replace('.', ',') + " kr";
+        const updated = [...shifts, newShift];
+        setShifts(updated);
+        localStorage.setItem('lonn_vakter_tabs_v26', JSON.stringify(updated));
+        alert("✅ Vakt registrert i månedsoppgjøret!");
+      };
+
+      const removeShift = (id) => {
+        const updated = shifts.filter(s => s.id !== id);
+        setShifts(updated);
+        localStorage.setItem('lonn_vakter_tabs_v26', JSON.stringify(updated));
+      };
+
+      return (
+        <div className="space-y-4">
+          <Card>
+            <CardHeader icon="📅" title="Periode & Lønnsinnstillinger" subtitle="Velg år, måned og fastlønn" />
+            <div className="p-6 space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <SelectField label="År" value={year} onChange={setYear} options={YEAR_OPTIONS} />
+                <SelectField label="Måned" value={month} onChange={setMonth} options={MONTH_NAMES.map((m, i) => ({ value: String(i), label: m }))} />
+              </div>
+              <label className="flex items-center gap-3 cursor-pointer pt-2 border-t border-slate-800">
+                <input type="checkbox" checked={harFastlonn} onChange={(e) => setHarFastlonn(e.target.checked)} className="w-4 h-4 accent-sky-400" />
+                <span className="text-sm font-semibold text-slate-200">Inkluder fastlønn (ordinær månedslønn)</span>
+              </label>
+              <div className="grid grid-cols-3 gap-3">
+                <Field label="Timelønn" value={timelonn} onChange={setTimelonn} suffix="kr/t" />
+                <Field label="Timer/dag" value={timerDag} onChange={setTimerDag} suffix="t" />
+                <Field label="Ubetalt ferie" value={feriedager} onChange={setFeriedager} suffix="dager" />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <SelectField label="Skattetype" value={skattType} onChange={setSkattType} options={[{ value: 'tabell', label: 'Tabellkort (7101)' }, { value: 'prosent', label: 'Prosentkort' }]} />
+                {skattType === 'tabell' ? (
+                  <Field label="Tabellnummer" value={tabellNr} onChange={setTabellNr} />
+                ) : (
+                  <Field label="Skatteprosent" value={skattProsent} onChange={setSkattProsent} suffix="%" />
+                )}
+              </div>
+              <Field label="Fagforening (%)" value={fagforeningProsent} onChange={setFagforeningProsent} suffix="%" hint="Full skattefordel: trekkes fra FØR skatt" />
+            </div>
+          </Card>
+
+          <div className="grid md:grid-cols-2 gap-4">
+            <Card>
+              <CardHeader icon="⏱️" title="Registrer Tilleggsvakt" subtitle={`Legg til vakt i ${MONTH_NAMES[selectedMonth]} ${selectedYear}`} />
+              <form onSubmit={addShift} className="p-6 space-y-4">
+                <Field label="Dato" type="date" value={shiftDate} onChange={setShiftDate} />
+                <div className="grid grid-cols-2 gap-2">
+                  <Field label="Timer" value={shiftHours} onChange={setShiftHours} type="number" />
+                  <Field label="Minutter" value={shiftMin} onChange={setShiftMin} type="number" />
+                </div>
+                <SelectField label="Tilleggstype" value={shiftType} onChange={setShiftType} options={SHIFT_TYPES} />
+                <label className="flex items-center gap-2 p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl cursor-pointer">
+                  <input type="checkbox" checked={shiftTimebank} onChange={(e) => setShiftTimebank(e.target.checked)} className="w-4 h-4 accent-amber-500" />
+                  <span className="text-xs font-bold text-amber-400">🏦 Sett ordinær time i timebanken</span>
+                </label>
+                <button type="submit" className="w-full py-3 rounded-xl bg-sky-500 text-white font-bold hover:bg-sky-400 transition-colors">+ Registrer Vakt</button>
+              </form>
+            </Card>
+
+            <Card>
+              <CardHeader icon="📊" title="Månedsoppgjør" subtitle={`${MONTH_NAMES[selectedMonth]} ${selectedYear}`} />
+              <div className="p-6 space-y-3">
+                <ResultRow label="Fastlønn brutto" value={fmtNOK(calc.fastlonn)} />
+                {calc.ferieTrekk > 0 && <ResultRow label="Ferietrekk" value={`− ${fmtNOK(calc.ferieTrekk)}`} />}
+                <ResultRow label="Sum tilleggsvakter" value={fmtNOK(calc.vaktBrutto)} highlight />
+                <ResultRow label="Timebank Saldo" value={`+ ${calc.timebankTimer.toFixed(1)} t`} />
+                <div className="flex justify-between p-3 bg-slate-800/80 rounded-xl border border-slate-700">
+                  <span className="font-bold text-slate-200">Total Brutto</span>
+                  <span className="font-extrabold text-lg text-sky-400">{fmtNOK(calc.totalBrutto)}</span>
+                </div>
+                <ResultRow label="Fagforening (1.5%)" value={`− ${fmtNOK(calc.fagforeningMnd)}`} />
+                <ResultRow label="Skattetrekk" value={`− ${fmtNOK(calc.skatt)}`} />
+                <div className="flex justify-between p-4 bg-emerald-500/10 rounded-xl border border-emerald-500/30 mt-2">
+                  <span className="font-bold text-emerald-400">Netto Utbetalt</span>
+                  <span className="font-bold text-2xl text-emerald-400">{fmtNOK(calc.netto)}</span>
+                </div>
+              </div>
+            </Card>
+          </div>
+        </div>
+      );
     }
 
-    function parseNorwegianAmount(str) {
-        if (!str) return 0;
-        let clean = str.replace(/\s/g, '').replace(',', '.');
-        return Math.abs(parseFloat(clean)) || 0;
+    // 2. MACHINING CALCULATOR COMPONENT
+    function MachiningCalculator() {
+      const [vc, setVc] = useState('120');
+      const [fz, setFz] = useState('0.08');
+      const [z, setZ] = useState('4');
+      const [dFres, setDFres] = useState('84');
+      const [dHull, setDHull] = useState('410');
+
+      const rpm = useMemo(() => {
+        const v = num(vc); const df = num(dFres);
+        return df > 0 ? (v * 1000) / (Math.PI * df) : 0;
+      }, [vc, dFres]);
+
+      const vfSirk = useMemo(() => {
+        const f = num(fz); const zVal = num(z); const df = num(dFres); const dh = num(dHull);
+        const vfTann = rpm * f * zVal;
+        return dh > 0 ? vfTann * ((dh - df) / dh) : 0;
+      }, [rpm, fz, z, dFres, dHull]);
+
+      return (
+        <div className="space-y-4">
+          <Card>
+            <CardHeader icon="🌀" title="Sirkulær Bordsmating (GibbsCAM)" subtitle="Fresing og gjengefresing" />
+            <div className="p-6 space-y-4">
+              <div className="grid grid-cols-2 gap-3">
+                <Field label="Skjærehastighet Vc" value={vc} onChange={setVc} suffix="m/min" />
+                <Field label="Mating fz" value={fz} onChange={setFz} suffix="mm/tann" />
+              </div>
+              <div className="grid grid-cols-3 gap-3">
+                <Field label="Skjær z" value={z} onChange={setZ} />
+                <Field label="Fres Ø" value={dFres} onChange={setDFres} suffix="mm" />
+                <Field label="Hull Ø" value={dHull} onChange={setDHull} suffix="mm" />
+              </div>
+              <ResultRow label="Spindel RPM (n)" value={`${Math.round(rpm)} RPM`} highlight />
+              <ResultRow label="Sirkulær Bordsmating (Vf)" value={`${Math.round(vfSirk)} mm/min`} highlight />
+            </div>
+          </Card>
+        </div>
+      );
     }
 
-    function calcCircularFeed() {
-        const vc = parseFloat(document.getElementById('cf-vc').value) || 120;
-        const fz = parseFloat(document.getElementById('cf-fz').value) || 0.08;
-        const z = parseFloat(document.getElementById('cf-z').value) || 4;
-        const dFres = parseFloat(document.getElementById('cf-dfres').value) || 84;
-        const dHull = parseFloat(document.getElementById('cf-dhull').value) || 410;
+    // 3. WORKSHOP TABLES COMPONENT
+    function WorkshopTables() {
+      const [mat, setMat] = useState('ss316');
+      const [op, setOp] = useState('mill_rough');
+      const [toolMat, setToolMat] = useState('hm_coated');
+      const [dia, setDia] = useState('16');
 
-        const rpm = (vc * 1000) / (Math.PI * dFres);
-        const vfTann = rpm * fz * z;
-        const vfSirk = vfTann * ((dHull - dFres) / dHull);
-
-        document.getElementById('cf-res-rpm').innerText = Math.round(rpm) + " RPM";
-        document.getElementById('cf-res-vf').innerText = Math.round(vfSirk) + " mm/min";
-    }
-
-    function calcThreadDia() {
-        const dia = parseFloat(document.getElementById('td-dia').value) || 16;
-        const pitch = parseFloat(document.getElementById('td-pitch').value) || 2.0;
-
-        const inner = dia - pitch;
-        const outer = dia - (0.125 * pitch);
-
-        document.getElementById('td-res-in').innerText = `${inner.toFixed(2).replace('.', ',')} mm`;
-        document.getElementById('td-res-ut').innerText = `${outer.toFixed(2).replace('.', ',')} mm`;
-    }
-
-    function calcCuttingForce() {
-        const ap = parseFloat(document.getElementById('cf-ap').value) || 5;
-        const ae = parseFloat(document.getElementById('cf-ae').value) || 12;
-        const vc = parseFloat(document.getElementById('cf-vc').value) || 120;
-        const fz = parseFloat(document.getElementById('cf-fz').value) || 0.08;
-        const z = parseFloat(document.getElementById('cf-z').value) || 4;
-        const dFres = parseFloat(document.getElementById('cf-dfres').value) || 84;
-
-        const rpm = (vc * 1000) / (Math.PI * dFres);
-        const vf = rpm * fz * z;
-        const q = (ap * ae * vf) / 1000;
-        const fc = 1800 * ap * Math.pow(fz, 0.72);
-        const pc = (fc * vc) / (60000 * 0.85);
-        const mc = (pc * 9550) / Math.max(1, rpm);
-
-        document.getElementById('cf-res-q').innerText = q.toFixed(1).replace('.', ',') + " cm³/min";
-        document.getElementById('cf-res-fc').innerText = Math.round(fc) + " N";
-        document.getElementById('cf-res-pc').innerText = pc.toFixed(2).replace('.', ',') + " kW";
-        document.getElementById('cf-res-mc').innerText = Math.round(mc) + " Nm";
-    }
-
-    function calcCAxis() {
-        const vf = parseFloat(document.getElementById('ca-vf').value) || 1400;
-        const dia = parseFloat(document.getElementById('ca-dia').value) || 3.14;
-
-        const omkrets = Math.PI * dia;
-        const oneGrad = omkrets > 0 ? (omkrets / 360) : 0;
-        const gradMin = oneGrad > 0 ? (vf / oneGrad) : 0;
-        const revMin = omkrets > 0 ? (vf / omkrets) : 0;
-        const timePerRev = vf > 0 ? (omkrets / vf) : 0;
-
-        if (document.getElementById('ca-res-omkrets')) document.getElementById('ca-res-omkrets').innerText = omkrets.toFixed(2).replace('.', ',') + " mm";
-        if (document.getElementById('ca-res-onegrad')) document.getElementById('ca-res-onegrad').innerText = oneGrad.toFixed(4).replace('.', ',') + " mm/°";
-        if (document.getElementById('ca-res-gradmin')) document.getElementById('ca-res-gradmin').innerText = gradMin.toFixed(1).replace('.', ',') + " °/min";
-        if (document.getElementById('ca-res-revmin')) document.getElementById('ca-res-revmin').innerText = revMin.toFixed(2).replace('.', ',') + " omdr/min";
-        if (document.getElementById('ca-res-time')) document.getElementById('ca-res-time').innerText = timePerRev.toFixed(3).replace('.', ',') + " min";
-    }
-
-    function calcMaterial() {
-        const mat = document.getElementById('ms-mat').value;
-        const op = document.getElementById('ms-op').value;
-        const toolMat = document.getElementById('ms-toolmat').value;
-        const dia = parseFloat(document.getElementById('ms-dia').value) || 16;
-        const z = parseFloat(document.getElementById('ms-z').value) || 4;
-
+      const calcVc = useMemo(() => {
         let baseVc = 90;
-        let baseFz = 0.08;
-
-        if (mat === 's355') { baseVc = 180; baseFz = 0.12; }
-        if (mat === 'alu') { baseVc = 450; baseFz = 0.20; }
-
+        if (mat === 's355') baseVc = 180;
+        if (mat === 'alu') baseVc = 450;
         let factor = (toolMat === 'hss_co') ? 0.22 : 1.0;
-        if (op === 'udrill') factor *= 1.0;
         if (op === 'tap') factor *= 0.35;
+        const vcVal = Math.round(baseVc * factor);
+        const rpmVal = (vcVal * 1000) / (Math.PI * num(dia));
+        return { vcVal, rpmVal };
+      }, [mat, op, toolMat, dia]);
 
-        const vc = Math.round(baseVc * factor);
-        const rpm = (vc * 1000) / (Math.PI * dia);
-        const vf = rpm * baseFz * z;
-
-        document.getElementById('ms-res-vc').innerText = vc + " m/min";
-        document.getElementById('ms-res-rpm').innerText = Math.round(rpm) + " RPM";
-        document.getElementById('ms-res-vf').innerText = Math.round(vf) + " mm/min";
+      return (
+        <div className="space-y-4">
+          <Card>
+            <CardHeader icon="🧪" title="Materialvelger & Skjæredata" subtitle="Hardmetall vs HSS & Operasjoner" />
+            <div className="p-6 space-y-4">
+              <SelectField label="Materiale" value={mat} onChange={setMat} options={[
+                { value: 's355', label: 'Konstruksjonsstål S355' },
+                { value: 'ss316', label: 'Syrefast 316L' },
+                { value: 'alu', label: 'Aluminium 6082' }
+              ]} />
+              <SelectField label="Operasjonstype" value={op} onChange={setOp} options={[
+                { value: 'mill_rough', label: 'Fresing - Skrubb' },
+                { value: 'udrill', label: 'Boring - U-Bor / Vendeskjær' },
+                { value: 'tap', label: 'Gjenging' }
+              ]} />
+              <SelectField label="Verktøymateriale" value={toolMat} onChange={setToolMat} options={[
+                { value: 'hm_coated', label: 'Belagt Hardmetall (HM/VHM)' },
+                { value: 'hss_co', label: 'Hurtigstål Kobolt (HSS-Co)' }
+              ]} />
+              <Field label="Verktøy DIA" value={dia} onChange={setDia} suffix="mm" />
+              <ResultRow label="Anbefalt Vc" value={`${calcVc.vcVal} m/min`} highlight />
+              <ResultRow label="Beregnet RPM" value={`${Math.round(calcVc.rpmVal)} RPM`} highlight />
+            </div>
+          </Card>
+        </div>
+      );
     }
 
-    const tapData = {
-        M6: "5.0 mm | Pitch 1.0 mm | Passbor 6.6 mm",
-        M8: "6.8 mm | Pitch 1.25 mm | Passbor 9.0 mm",
-        M10: "8.5 mm | Pitch 1.5 mm | Passbor 11.0 mm",
-        M12: "10.2 mm | Pitch 1.75 mm | Passbor 13.5 mm",
-        M16: "14.0 mm | Pitch 2.0 mm | Passbor 17.5 mm",
-        "G1/2": "19.0 mm | Pitch 1.81 mm (14 tpi) | Passbor 21.3 mm"
-    };
+    // 4. EV CALCULATOR COMPONENT
+    function EVCalculator() {
+      const [bat, setBat] = useState('77');
+      const [kw, setKw] = useState('7.4');
+      const [start, setStart] = useState('10');
+      const [target, setTarget] = useState('80');
 
-    function calcThreadTable() {
-        const size = document.getElementById('tt-select').value;
-        const str = tapData[size] || tapData.M10;
-        const parts = str.split(' | ');
-
-        document.getElementById('tt-res-drill').innerText = parts[0];
-        document.getElementById('tt-res-pitch').innerText = parts[1] ? parts[1].replace('Pitch ', '') : '1.5 mm';
-        document.getElementById('tt-res-clear').innerText = parts[2] ? parts[2].replace('Passbor ', '') : '11.0 mm';
-    }
-
-    const torqueData = {
-        M6: "9.8 Nm (3.6 kN)", M8: "24 Nm (6.5 kN)", M10: "47 Nm (10.4 kN)",
-        M12: "81 Nm (15.1 kN)", M16: "197 Nm (28.2 kN)", M20: "385 Nm (44.0 kN)"
-    };
-
-    function calcTorque() {
-        const size = document.getElementById('tq-size').value;
-        const isLube = document.getElementById('tq-lube').value === 'lube';
-
-        const valStr = torqueData[size] || "47 Nm (10.4 kN)";
-        const parts = valStr.split(' (');
-        const baseNm = parseFloat(parts[0]) || 47;
-        const kn = parts[1] ? parts[1].replace(')', '') : '';
-
-        const finalNm = isLube ? Math.round(baseNm * 0.75) : baseNm;
-
-        document.getElementById('tq-res-nm').innerText = `${finalNm} Nm ${isLube ? '(Smurt -25%)' : '(Tørr)'}`;
-        document.getElementById('tq-res-kn').innerText = kn;
-    }
-
-    function calcPCD() {
-        const pcd = parseFloat(document.getElementById('pcd-dia').value) || 200;
-        const num = parseInt(document.getElementById('pcd-num').value) || 8;
-
-        const rad = (180 / Math.max(1, num)) * (Math.PI / 180);
-        const chord = pcd * Math.sin(rad);
-        const angle = 360 / Math.max(1, num);
-
-        document.getElementById('pcd-res-chord').innerText = `${chord.toFixed(2).replace('.', ',')} mm`;
-        document.getElementById('pcd-res-angle').innerText = `${angle.toFixed(1).replace('.', ',')}°`;
-    }
-
-    function calcTrig() {
-        let a = parseFloat(document.getElementById('tri-a').value);
-        let b = parseFloat(document.getElementById('tri-b').value);
-
-        if (!isNaN(a) && !isNaN(b)) {
-            const c = Math.sqrt(a*a + b*b);
-            const degA = Math.atan(a/b) * (180/Math.PI);
-            const degB = 90 - degA;
-            document.getElementById('tri-res-c').innerText = `${c.toFixed(2).replace('.', ',')} mm`;
-            document.getElementById('tri-res-angles').innerText = `A = ${degA.toFixed(2)}° | B = ${degB.toFixed(2)}°`;
-        } else {
-            document.getElementById('tri-res-c').innerText = "Fyll inn Katet a og b";
-            document.getElementById('tri-res-angles').innerText = "A° og B° beregnes";
-        }
-    }
-
-    function calcEVCharge() {
-        const bat = parseFloat(document.getElementById('ev-bat').value) || 77;
-        const kw = parseFloat(document.getElementById('ev-kw').value) || 7.4;
-        const start = parseFloat(document.getElementById('ev-start').value) || 10;
-        const target = parseFloat(document.getElementById('ev-target').value) || 80;
-
-        const neededKwh = bat * ((target - start) / 100);
-        const hours = neededKwh / kw;
+      const charge = useMemo(() => {
+        const needed = num(bat) * ((num(target) - num(start)) / 100);
+        const hours = needed / num(kw);
         const totMin = Math.round(hours * 60);
         const h = Math.floor(totMin / 60);
         const m = totMin % 60;
-        const cost = neededKwh * 1.30;
+        const cost = needed * 1.30;
+        return { h, m, cost };
+      }, [bat, kw, start, target]);
 
-        document.getElementById('ev-res-time').innerText = `${h}t ${m}m`;
-        document.getElementById('ev-res-cost').innerText = cost.toFixed(2).replace('.', ',') + " kr";
+      return (
+        <div className="space-y-4">
+          <Card>
+            <CardHeader icon="⚡" title="Ladetid & Ladekostnad" subtitle="Hjemmelader og lynlader" />
+            <div className="p-6 space-y-4">
+              <div className="grid grid-cols-2 gap-3">
+                <Field label="Batteri" value={bat} onChange={setBat} suffix="kWh" />
+                <SelectField label="Ladeeffekt" value={kw} onChange={setKw} options={[
+                  { value: '7.4', label: 'Hjemmelader 7.4 kW' },
+                  { value: '11', label: 'Hjemmelader 11 kW' },
+                  { value: '150', label: 'Lynlader 150 kW' }
+                ]} />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <Field label="Start %" value={start} onChange={setStart} />
+                <Field label="Mål %" value={target} onChange={setTarget} />
+              </div>
+              <ResultRow label="Estimert Ladetid" value={`${charge.h}t ${charge.m}m`} highlight />
+              <ResultRow label="Ladekostnad (1.30 kr/kWh)" value={fmtNOK(charge.cost)} highlight />
+            </div>
+          </Card>
+        </div>
+      );
     }
 
-    function calcWinter() {
-        const wltp = parseFloat(document.getElementById('ew-wltp').value) || 480;
-        const tempInput = document.getElementById('ew-temp').value;
-        const loss = (tempInput !== "" && !isNaN(parseFloat(tempInput))) ? parseFloat(tempInput) : 0;
+    // DASHBOARD OVERSIKT
+    function Dashboard({ onSelect }) {
+      const tools = [
+        { id: 'salary', name: 'Lønnskalkulator', icon: '💰', desc: 'Beregn lønn, overtid, vakter og skatt' },
+        { id: 'machining', name: 'Maskinering', icon: '⚙️', desc: 'Gibbs sirkulær mating, C-akse og Vc' },
+        { id: 'workshop', name: 'Verkstedtabeller', icon: '🛠️', desc: 'Materialer, U-bor, smurte skruer og PCD' },
+        { id: 'ev', name: 'Elbil-Kalkulator', icon: '⚡', desc: 'Ladetid, besparelser og vinter-rekkevidde' }
+      ];
 
-        const rem = Math.max(0, 100 - loss);
-        const real = Math.round(wltp * (rem / 100));
-        const lossKm = Math.round(wltp - real);
-
-        document.getElementById('ew-res-range').innerText = `${real} km (${rem}% av WLTP)`;
-        document.getElementById('ew-res-loss').innerText = `- ${lossKm} km (${loss}% tap)`;
+      return (
+        <div className="grid sm:grid-cols-2 gap-4">
+          {tools.map((tool) => (
+            <button
+              key={tool.id}
+              onClick={() => onSelect(tool.id)}
+              className="bg-slate-900/60 hover:bg-slate-800/80 border border-slate-800 hover:border-slate-700 transition-all rounded-2xl p-6 flex flex-col items-start text-left group"
+            >
+              <div className="p-3 bg-slate-800 text-sky-400 rounded-xl text-2xl mb-4 group-hover:scale-110 transition-transform">
+                {tool.icon}
+              </div>
+              <h3 className="text-lg font-bold text-slate-100 mb-1">{tool.name}</h3>
+              <p className="text-sm text-slate-400">{tool.desc}</p>
+            </button>
+          ))}
+        </div>
+      );
     }
 
-    function toggleTheme() {
-        const isLight = document.body.classList.contains('light-mode');
-        if (isLight) {
-            document.body.classList.remove('light-mode');
-            localStorage.setItem('lonn_theme', 'dark');
-            document.getElementById('theme-btn').innerText = '🌙 Mørkt';
-        } else {
-            document.body.classList.add('light-mode');
-            localStorage.setItem('lonn_theme', 'light');
-            document.getElementById('theme-btn').innerText = '☀️ Lyst';
-        }
+    // MAIN APP COMPONENT (MATCHING YOUR VERKSTEDSPORTAL.TSX EXACTLY!)
+    function App() {
+      const [active, setActive] = useState('dashboard');
+      const [mobileSidebar, setMobileSidebar] = useState(false);
+
+      const toolNames = {
+        dashboard: 'Oversikt',
+        salary: 'Lønnskalkulator',
+        machining: 'Maskineringskalkulator',
+        workshop: 'Verkstedtabeller',
+        ev: 'Elbil-kalkulator'
+      };
+
+      return (
+        <div className="min-h-screen flex bg-slate-950 font-sans text-slate-100">
+          {/* Desktop Sidebar */}
+          <div className="hidden lg:flex">
+            <div className="w-64 h-full bg-slate-900/80 backdrop-blur-xl border-r border-slate-800/60 flex flex-col">
+              <div className="p-6">
+                <h1 className="text-xl font-bold bg-gradient-to-r from-sky-400 to-blue-500 bg-clip-text text-transparent">
+                  Verkstedsportal
+                </h1>
+              </div>
+              <nav className="flex-1 px-4 space-y-1">
+                {[
+                  { id: 'dashboard', name: 'Oversikt', icon: '🏠' },
+                  { id: 'salary', name: 'Lønnskalkulator', icon: '💰' },
+                  { id: 'machining', name: 'Maskinering', icon: '⚙️' },
+                  { id: 'workshop', name: 'Tabeller', icon: '🛠️' },
+                  { id: 'ev', name: 'Elbil', icon: '⚡' },
+                ].map((tool) => (
+                  <button
+                    key={tool.id}
+                    onClick={() => setActive(tool.id)}
+                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
+                      active === tool.id
+                        ? 'bg-sky-500/10 text-sky-400 font-medium'
+                        : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+                    }`}
+                  >
+                    <span>{tool.icon}</span>
+                    <span>{tool.name}</span>
+                  </button>
+                ))}
+              </nav>
+            </div>
+          </div>
+
+          {/* Main Content Area */}
+          <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
+            <header className="flex-none sticky top-0 z-30 bg-slate-900/80 backdrop-blur-md border-b border-slate-800/60 px-4 md:px-8 py-4">
+              <div className="flex items-center gap-4">
+                <div className="min-w-0">
+                  <h2 className="text-lg font-semibold text-slate-100 truncate">{toolNames[active]}</h2>
+                  <p className="text-xs text-slate-500 hidden sm:block">
+                    {active === 'dashboard' ? 'Velg et verktøy for å starte' : 'Beregninger og verktøy'}
+                  </p>
+                </div>
+              </div>
+            </header>
+
+            <main className="flex-1 overflow-y-auto px-4 md:px-8 py-6 pb-24 lg:pb-8">
+              <div className="max-w-5xl mx-auto">
+                {active === 'dashboard' && <Dashboard onSelect={setActive} />}
+                {active === 'salary' && <SalaryCalculator />}
+                {active === 'machining' && <MachiningCalculator />}
+                {active === 'workshop' && <WorkshopTables />}
+                {active === 'ev' && <EVCalculator />}
+              </div>
+            </main>
+          </div>
+        </div>
+      );
     }
 
-    function toggleLang() {
-        let cur = localStorage.getItem('seland_lang') || 'no';
-        let newLang = (cur === 'no') ? 'en' : 'no';
-        localStorage.setItem('seland_lang', newLang);
-        document.getElementById('lang-btn').innerText = (newLang === 'en') ? '🇬🇧 EN' : '🇳🇴 NO';
-    }
-
-    // Init
-    if (localStorage.getItem('lonn_theme') === 'light') {
-        document.body.classList.add('light-mode');
-        if (document.getElementById('theme-btn')) document.getElementById('theme-btn').innerText = '☀️ Lyst';
-    }
-    const curLang = localStorage.getItem('seland_lang') || 'no';
-    document.getElementById('lang-btn').innerText = (curLang === 'en') ? '🇬🇧 EN' : '🇳🇴 NO';
-
-    lastInnstillinger();
-    calcCircularFeed();
-    calcThreadDia();
-    calcCuttingForce();
-    calcCAxis();
-    calcMaterial();
-    calcThreadTable();
-    calcTorque();
-    calcPCD();
-    calcTrig();
-    calcEVCharge();
-    calcWinter();
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
 </script>
 
 </body>
