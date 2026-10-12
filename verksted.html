@@ -670,10 +670,18 @@
                         <option value="A4-80">Syrefast A4-80</option>
                     </select>
                 </label>
+
+                <label style="display: flex; flex-direction: column; gap: 0.25rem; grid-column: span 2;">
+                    <span style="font-size: 0.8125rem; font-weight: 600;">Gjengeforhold & Smøring (Friksjon μ)</span>
+                    <select id="torq-lube" class="field-class" onchange="beregnMoment()">
+                        <option value="dry">Tørre / Usmurte gjenger (Standard friksjon μ = 0.14)</option>
+                        <option value="lube">Smurte gjenger / Olje / Fett / Anti-Seize pasta (Redusert friksjon μ = 0.10, -25% Nm)</option>
+                    </select>
+                </label>
             </div>
 
             <div class="result-box" style="background: rgba(16, 185, 129, 0.12); border-left-color: #059669;">
-                <div class="line-row strong"><span style="color: #059669;">Anbefalt Tiltrekkingsmoment (Nm):</span><span id="torq-res-nm" class="font-mono" style="font-size: 1.35rem; color: #059669;">49 Nm</span></div>
+                <div class="line-row strong"><span style="color: #059669;">Anbefalt Tiltrekkingsmoment:</span><span id="torq-res-nm" class="font-mono" style="font-size: 1.35rem; color: #059669;">47 Nm</span></div>
                 <div class="line-row strong" style="margin-top: 0.25rem;"><span style="color: #059669;">Tiltrekkingskraft (kilonewton):</span><span id="torq-res-kn" class="font-mono" style="font-size: 1.125rem; color: #059669;">26 kN</span></div>
             </div>
         </div>
@@ -1331,15 +1339,21 @@
     function beregnMoment() {
         const size = document.getElementById('torq-size').value;
         const cls = document.getElementById('torq-class').value;
+        const isLube = document.getElementById('torq-lube').value === 'lube';
 
         const sizeObj = torqueData[size] || torqueData.M10;
         const valStr = sizeObj[cls] || "47 Nm (10.4 kN)";
 
         const parts = valStr.split(' (');
-        const nm = parts[0];
+        const baseNm = parseFloat(parts[0]) || 47;
         const kn = parts[1] ? parts[1].replace(')', '') : '';
 
-        document.getElementById('torq-res-nm').innerText = nm;
+        if (isLube) {
+            const lubeNm = Math.round(baseNm * 0.75);
+            document.getElementById('torq-res-nm').innerText = `${lubeNm} Nm (Smurt -25% vs Tørr ${baseNm} Nm)`;
+        } else {
+            document.getElementById('torq-res-nm').innerText = `${baseNm} Nm (Tørre gjenger)`;
+        }
         document.getElementById('torq-res-kn').innerText = kn;
     }
 
