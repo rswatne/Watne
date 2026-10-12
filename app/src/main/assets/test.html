@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WATNE PRO — Verkstedsportal (New Dashboard)</title>
+    <title>WATNE PRO — Verkstedsportal (Bolt 38im78cm Design)</title>
 
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
 
     <script>
-        const APP_BUILD_VER = "v80.0-Bolt38im78cmDashboard";
+        const APP_BUILD_VER = "v90.0-BoltAccordionDesign38im78cm";
         if (localStorage.getItem('app_build_v') !== APP_BUILD_VER) {
             localStorage.setItem('app_build_v', APP_BUILD_VER);
             if ('serviceWorker' in navigator) {
@@ -29,19 +29,6 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700;800&family=Orbitron:wght@600;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        slate: {
-                            950: '#030712'
-                        }
-                    }
-                }
-            }
-        }
-    </script>
     <style>
         :root {
             --bg: #030712;
@@ -74,14 +61,14 @@
         .font-orbitron { font-family: 'Orbitron', sans-serif; }
 
         .glass-card {
-            background-color: rgba(15, 23, 42, 0.7);
+            background-color: rgba(15, 23, 42, 0.75);
             backdrop-filter: blur(12px);
             border: 1px solid rgba(30, 41, 59, 0.8);
             border-radius: 1.25rem;
         }
         body.light-mode .glass-card {
-            background-color: rgba(255, 255, 255, 0.9);
-            border-color: rgba(226, 232, 240, 0.9);
+            background-color: rgba(255, 255, 255, 0.95);
+            border-color: rgba(226, 232, 240, 0.95);
         }
 
         .input-dark {
@@ -158,24 +145,19 @@
             background: rgba(255, 255, 255, 0.03);
         }
 
-        .seg-btn {
-            padding: 0.5rem 0.875rem;
-            border-radius: 0.5rem;
-            font-size: 0.75rem;
-            font-weight: 700;
-            white-space: nowrap;
-            color: #94a3b8;
-            transition: all 0.15s ease;
-            border: 1px solid transparent;
+        .accordion-body {
+            display: none;
         }
-        .seg-btn.active {
-            background-color: rgba(56, 189, 248, 0.12);
-            color: #38bdf8;
-            border-color: rgba(56, 189, 248, 0.3);
+        .accordion-item.open .accordion-body {
+            display: block;
+            animation: fadeIn 0.2s ease-out;
+        }
+        .accordion-item.open .accordion-chevron {
+            transform: rotate(180deg);
         }
 
         .tab-content { display: none; }
-        .tab-content.active { display: block; animation: fadeIn 0.2s ease-out; }
+        .tab-content.active { display: block; animation: fadeIn 0.25s ease-out; }
 
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(6px); }
@@ -226,7 +208,7 @@
 </aside>
 
 <!-- MAIN CONTENT AREA -->
-<main class="flex-1 p-4 md:p-8 max-w-6xl mx-auto w-full">
+<main class="flex-1 p-4 md:p-8 max-w-5xl mx-auto w-full">
     <!-- TOP HEADER BAR -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-800/80 mb-6">
         <div>
@@ -383,292 +365,399 @@
         </div>
     </div>
 
-    <!-- 3. MASKINERING & CNC PAGE -->
-    <div id="page-machining" class="tab-content space-y-6">
-        <div class="flex items-center gap-1.5 overflow-x-auto scrollbar-thin pb-1">
-            <button onclick="switchSub('machining', 'cf')" id="subnav-machining-cf" class="seg-btn active">🌀 Sirkulær Mating (Gibbs)</button>
-            <button onclick="switchSub('machining', 'td')" id="subnav-machining-td" class="seg-btn">📐 Gjengediameter</button>
-            <button onclick="switchSub('machining', 'ef')" id="subnav-machining-ef" class="seg-btn">⚡ Skjærekraft & Effekt</button>
-            <button onclick="switchSub('machining', 'ca')" id="subnav-machining-ca" class="seg-btn">🔄 C-Akse (°/min)</button>
-        </div>
-
-        <div id="subcontent-machining-cf" class="glass-card p-6 max-w-2xl space-y-4">
-            <h3 class="font-bold text-base text-slate-100 pb-3 border-b border-slate-800">🌀 Sirkulær Bordsmating (GibbsCAM)</h3>
-            <div class="grid grid-cols-2 gap-3">
-                <div>
-                    <label class="block text-xs text-slate-400 mb-1">Skjærehastighet Vc (m/min)</label>
-                    <input type="number" id="cf-vc" class="input-dark" value="120" oninput="calcCircularFeed()">
+    <!-- 3. MASKINERING & CNC PAGE (BOLT ACCORDIONS) -->
+    <div id="page-machining" class="tab-content space-y-4">
+        <!-- ACCORDION 1: SIRKULÆR MATING -->
+        <div class="glass-card accordion-item open" id="acc-m-sirkulaer">
+            <div onclick="toggleAccordion('acc-m-sirkulaer')" class="w-full flex items-center justify-between p-5 text-left hover:bg-slate-800/40 transition-colors cursor-pointer">
+                <div class="flex items-center gap-3">
+                    <span class="text-sky-400 text-lg">🌀</span>
+                    <span class="font-bold text-slate-100 text-sm">Regne om til Sirkulær Mating (Aksling / Gjengefresing)</span>
                 </div>
-                <div>
-                    <label class="block text-xs text-slate-400 mb-1">Mating fz (mm/tann)</label>
-                    <input type="number" step="0.01" id="cf-fz" class="input-dark" value="0.08" oninput="calcCircularFeed()">
+                <div class="flex items-center gap-2">
+                    <span class="text-xs px-2.5 py-0.5 rounded-full bg-sky-500/15 text-sky-300 font-mono font-bold">Gibbs</span>
+                    <span class="accordion-chevron text-slate-400 transition-transform">▼</span>
                 </div>
             </div>
-            <div class="grid grid-cols-3 gap-3">
-                <div>
-                    <label class="block text-xs text-slate-400 mb-1">Skjær (z)</label>
-                    <input type="number" id="cf-z" class="input-dark" value="4" oninput="calcCircularFeed()">
+            <div class="accordion-body px-5 pb-5 border-t border-slate-800/60 pt-4">
+                <p class="text-xs text-slate-400 mb-4">Regn om bordmating til effektiv sirkulær mating for aksling/fresing og gjengefresing i Gibbs.</p>
+                <div class="grid grid-cols-2 gap-3 mb-4">
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Skjærehastighet Vc (m/min)</label>
+                        <input type="number" id="cf-vc" class="input-dark" value="120" oninput="calcCircularFeed()">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Mating fz (mm/tann)</label>
+                        <input type="number" step="0.01" id="cf-fz" class="input-dark" value="0.08" oninput="calcCircularFeed()">
+                    </div>
                 </div>
-                <div>
-                    <label class="block text-xs text-slate-400 mb-1">Fres Ø (mm)</label>
-                    <input type="number" id="cf-dfres" class="input-dark" value="84" oninput="calcCircularFeed()">
+                <div class="grid grid-cols-3 gap-3 mb-4">
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Skjær (z)</label>
+                        <input type="number" id="cf-z" class="input-dark" value="4" oninput="calcCircularFeed()">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Fres Ø (mm)</label>
+                        <input type="number" id="cf-dfres" class="input-dark" value="84" oninput="calcCircularFeed()">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Hull Ø (mm)</label>
+                        <input type="number" id="cf-dhull" class="input-dark" value="410" oninput="calcCircularFeed()">
+                    </div>
                 </div>
-                <div>
-                    <label class="block text-xs text-slate-400 mb-1">Hull Ø (mm)</label>
-                    <input type="number" id="cf-dhull" class="input-dark" value="410" oninput="calcCircularFeed()">
+                <div class="p-4 rounded-xl border border-sky-500/30 bg-sky-500/5 space-y-2 text-xs font-bold text-slate-300">
+                    <div class="flex justify-between"><span>Spindel RPM (n):</span><span id="cf-res-rpm" class="font-mono text-sky-400 font-bold text-sm">0 RPM</span></div>
+                    <div class="flex justify-between text-sm font-extrabold text-slate-100"><span>Sirkulær Bordsmating (Vf):</span><span id="cf-res-vf" class="font-mono text-sky-400 text-lg">0 mm/min</span></div>
                 </div>
-            </div>
-            <div class="p-4 rounded-xl border border-sky-500/30 bg-sky-500/5 space-y-2">
-                <div class="flex justify-between text-xs text-slate-400"><span>Spindel RPM (n):</span><span id="cf-res-rpm" class="font-mono text-sky-400 font-bold text-sm">0 RPM</span></div>
-                <div class="flex justify-between text-sm font-extrabold text-slate-100"><span>Sirkulær Bordsmating (Vf):</span><span id="cf-res-vf" class="font-mono text-sky-400 text-lg">0 mm/min</span></div>
-            </div>
-        </div>
-
-        <div id="subcontent-machining-td" class="glass-card p-6 max-w-2xl space-y-4 hidden">
-            <h3 class="font-bold text-base text-slate-100 pb-3 border-b border-slate-800">📐 Inner/Ytter Gjengediameter (Gibbs & Dreiebenk)</h3>
-            <div class="grid grid-cols-2 gap-3">
-                <div>
-                    <label class="block text-xs text-slate-400 mb-1">Nominell Ø (mm)</label>
-                    <input type="number" id="td-dia" class="input-dark" value="16" oninput="calcThreadDia()">
-                </div>
-                <div>
-                    <label class="block text-xs text-slate-400 mb-1">Pitch (mm)</label>
-                    <input type="number" step="0.1" id="td-pitch" class="input-dark" value="2.0" oninput="calcThreadDia()">
-                </div>
-            </div>
-            <div class="p-4 rounded-xl border border-sky-500/30 bg-sky-500/5 space-y-2">
-                <div class="flex justify-between text-xs font-bold text-slate-300"><span>Innvendig Mutter Kjernebor Ø:</span><span id="td-res-in" class="font-mono text-sky-400">14.00 mm</span></div>
-                <div class="flex justify-between text-xs font-bold text-slate-300"><span>Utvendig Skrue Dreiediameter Ø:</span><span id="td-res-ut" class="font-mono text-sky-400">15.75 mm</span></div>
             </div>
         </div>
 
-        <div id="subcontent-machining-ef" class="glass-card p-6 max-w-2xl space-y-4 hidden">
-            <h3 class="font-bold text-base text-slate-100 pb-3 border-b border-slate-800">⚡ Skjærekraft, Spindeleffekt & Dreiemoment</h3>
-            <div class="grid grid-cols-2 gap-3">
-                <div>
-                    <label class="block text-xs text-slate-400 mb-1">Aksial Dybde ap (mm)</label>
-                    <input type="number" id="cf-ap" class="input-dark" value="5" oninput="calcCuttingForce()">
+        <!-- ACCORDION 2: GJENGEDIAMETER -->
+        <div class="glass-card accordion-item" id="acc-m-gjenge">
+            <div onclick="toggleAccordion('acc-m-gjenge')" class="w-full flex items-center justify-between p-5 text-left hover:bg-slate-800/40 transition-colors cursor-pointer">
+                <div class="flex items-center gap-3">
+                    <span class="text-sky-400 text-lg">📐</span>
+                    <span class="font-bold text-slate-100 text-sm">Innvendige & Utvendige Gjenger</span>
                 </div>
-                <div>
-                    <label class="block text-xs text-slate-400 mb-1">Radial Bredde ae (mm)</label>
-                    <input type="number" id="cf-ae" class="input-dark" value="12" oninput="calcCuttingForce()">
+                <div class="flex items-center gap-2">
+                    <span class="text-xs px-2.5 py-0.5 rounded-full bg-sky-500/15 text-sky-300 font-mono font-bold">Diameter</span>
+                    <span class="accordion-chevron text-slate-400 transition-transform">▼</span>
                 </div>
             </div>
-            <div class="p-4 rounded-xl border border-emerald-500/30 bg-emerald-500/5 space-y-2 text-emerald-400 text-xs font-bold">
-                <div class="flex justify-between"><span>Sponavvirkning (Q):</span><span id="cf-res-q" class="font-mono">0 cm³/min</span></div>
-                <div class="flex justify-between"><span>Skjærekraft (Fc):</span><span id="cf-res-fc" class="font-mono">0 N</span></div>
-                <div class="flex justify-between text-sm font-black"><span>Spindeleffektbehov (Pc):</span><span id="cf-res-pc" class="font-mono text-base">0.0 kW</span></div>
-                <div class="flex justify-between"><span>Dreiemoment (Mc):</span><span id="cf-res-mc" class="font-mono">0 Nm</span></div>
+            <div class="accordion-body px-5 pb-5 border-t border-slate-800/60 pt-4">
+                <p class="text-xs text-slate-400 mb-4">Beregning av lille diameter / diameter du legger inn i Gibbs eller dreiebenk.</p>
+                <div class="grid grid-cols-2 gap-3 mb-4">
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Nominell Ø (mm)</label>
+                        <input type="number" id="td-dia" class="input-dark" value="16" oninput="calcThreadDia()">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Pitch (mm)</label>
+                        <input type="number" step="0.1" id="td-pitch" class="input-dark" value="2.0" oninput="calcThreadDia()">
+                    </div>
+                </div>
+                <div class="p-4 rounded-xl border border-sky-500/30 bg-sky-500/5 space-y-2 text-xs font-bold text-slate-300">
+                    <div class="flex justify-between"><span>Innvendig Mutter Kjernebor Ø:</span><span id="td-res-in" class="font-mono text-sky-400">14.00 mm</span></div>
+                    <div class="flex justify-between"><span>Utvendig Skrue Dreiediameter Ø:</span><span id="td-res-ut" class="font-mono text-sky-400">15.75 mm</span></div>
+                </div>
             </div>
         </div>
 
-        <div id="subcontent-machining-ca" class="glass-card p-6 max-w-2xl space-y-4 hidden">
-            <h3 class="font-bold text-base text-slate-100 pb-3 border-b border-slate-800">🔄 MM/MIN til Grader/MIN (C-Akse / 4. Akse)</h3>
-            <div class="grid grid-cols-2 gap-3">
-                <div>
-                    <label class="block text-xs text-slate-400 mb-1">Mating mm/min (Vf)</label>
-                    <input type="number" id="ca-vf" class="input-dark" value="1400" oninput="calcCAxis()">
+        <!-- ACCORDION 3: SKJÆREKRAFT EFFEKT -->
+        <div class="glass-card accordion-item" id="acc-m-effekt">
+            <div onclick="toggleAccordion('acc-m-effekt')" class="w-full flex items-center justify-between p-5 text-left hover:bg-slate-800/40 transition-colors cursor-pointer">
+                <div class="flex items-center gap-3">
+                    <span class="text-emerald-400 text-lg">⚡</span>
+                    <span class="font-bold text-slate-100 text-sm">Skjærekraft, Spindeleffekt & Dreiemoment</span>
                 </div>
-                <div>
-                    <label class="block text-xs text-slate-400 mb-1">Emnediameter DIA (mm)</label>
-                    <input type="number" step="0.01" id="ca-dia" class="input-dark" value="3.14" oninput="calcCAxis()">
-                </div>
-            </div>
-            <div class="p-4 rounded-xl border border-amber-500/30 bg-amber-500/5 space-y-2 text-amber-400 text-xs font-bold">
-                <div class="flex justify-between"><span>Omkrets:</span><span id="ca-res-omkrets" class="font-mono">0 mm</span></div>
-                <div class="flex justify-between"><span>1 Grad tilsvarer:</span><span id="ca-res-onegrad" class="font-mono">0 mm/°</span></div>
-                <div class="flex justify-between text-sm font-black"><span>Mating i Grader/MIN (°/min):</span><span id="ca-res-gradmin" class="font-mono text-base">0 °/min</span></div>
-                <div class="flex justify-between"><span>Omdreininger pr. minutt:</span><span id="ca-res-revmin" class="font-mono">0 omdr/min</span></div>
-                <div class="flex justify-between"><span>Tid pr. omdreining:</span><span id="ca-res-time" class="font-mono">0 min</span></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 4. VERKSTEDTABELLER PAGE -->
-    <div id="page-workshop" class="tab-content space-y-6">
-        <div class="flex items-center gap-1.5 overflow-x-auto scrollbar-thin pb-1">
-            <button onclick="switchSub('workshop', 'ms')" id="subnav-workshop-ms" class="seg-btn active">🧪 Materialvelger & Operasjoner</button>
-            <button onclick="switchSub('workshop', 'tt')" id="subnav-workshop-tt" class="seg-btn">🔩 Gjengetabell & Kjernebor</button>
-            <button onclick="switchSub('workshop', 'tq')" id="subnav-workshop-tq" class="seg-btn">🔧 Moment (-25% Smurt)</button>
-            <button onclick="switchSub('workshop', 'pcd')" id="subnav-workshop-pcd" class="seg-btn">⭕ PCD Flensediagram</button>
-            <button onclick="switchSub('workshop', 'trig')" id="subnav-workshop-trig" class="seg-btn">📐 Trekant & Pythagoras</button>
-        </div>
-
-        <div id="subcontent-workshop-ms" class="glass-card p-6 max-w-2xl space-y-4">
-            <h3 class="font-bold text-base text-slate-100 pb-3 border-b border-slate-800">🧪 Materialvelger, Operasjoner & Verktøy</h3>
-            <div>
-                <label class="block text-xs text-slate-400 mb-1">Materiale</label>
-                <select id="ms-mat" class="input-dark" onchange="calcMaterial()">
-                    <option value="s355">Konstruksjonsstål / S355 / St52 (P1)</option>
-                    <option value="c45">Seigherdingsstål / C45 / 42CrMo4 (P2)</option>
-                    <option value="ss316" selected>Syrefast 316L / A4 (M1)</option>
-                    <option value="alu">Aluminium 6082-T6 (N1)</option>
-                </select>
-            </div>
-            <div>
-                <label class="block text-xs text-slate-400 mb-1">Operasjonstype</label>
-                <select id="ms-op" class="input-dark" onchange="calcMaterial()">
-                    <option value="mill_rough" selected>Fresing - Skrubb / Grovfresing</option>
-                    <option value="mill_finish">Fresing - Slett / Finfresing</option>
-                    <option value="drill">Boring - Spiralbor / Kjernebor</option>
-                    <option value="udrill">Boring - U-Bor / Vendeskjærsbor</option>
-                    <option value="turn_rough">Dreiing - Skrubbdreiing</option>
-                    <option value="tap">Gjenging - Gjengebor / Gjengefres</option>
-                </select>
-            </div>
-            <div>
-                <label class="block text-xs text-slate-400 mb-1">Verktøymateriale</label>
-                <select id="ms-toolmat" class="input-dark" onchange="calcMaterial()">
-                    <option value="hm_coated" selected>Belagt Hardmetall (HM / VHM Carbide)</option>
-                    <option value="hm_uncoated">Ubelagt Hardmetall (HM / VHM - Alu/Plast)</option>
-                    <option value="hss_co">Hurtigstål Kobolt (HSS-Co / HSS-E)</option>
-                    <option value="hss_std">Hurtigstål Standard (HSS)</option>
-                </select>
-            </div>
-            <div class="grid grid-cols-2 gap-3">
-                <div>
-                    <label class="block text-xs text-slate-400 mb-1">DIA (mm)</label>
-                    <input type="number" id="ms-dia" class="input-dark" value="16" oninput="calcMaterial()">
-                </div>
-                <div>
-                    <label class="block text-xs text-slate-400 mb-1">Skjær (z)</label>
-                    <input type="number" id="ms-z" class="input-dark" value="4" oninput="calcMaterial()">
+                <div class="flex items-center gap-2">
+                    <span class="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 font-mono font-bold">kW & Nm</span>
+                    <span class="accordion-chevron text-slate-400 transition-transform">▼</span>
                 </div>
             </div>
-            <div class="p-4 rounded-xl border border-sky-500/30 bg-sky-500/5 space-y-2 text-xs font-bold text-slate-300">
-                <div class="flex justify-between"><span>Anbefalt Vc:</span><span id="ms-res-vc" class="font-mono text-sky-400">90 m/min</span></div>
-                <div class="flex justify-between"><span>Beregnet RPM:</span><span id="ms-res-rpm" class="font-mono text-sky-400">1790 RPM</span></div>
-                <div class="flex justify-between text-sm font-black"><span>Bordsmating (Vf):</span><span id="ms-res-vf" class="font-mono text-sky-400 text-base">572 mm/min</span></div>
+            <div class="accordion-body px-5 pb-5 border-t border-slate-800/60 pt-4">
+                <div class="grid grid-cols-2 gap-3 mb-4">
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Aksial Dybde ap (mm)</label>
+                        <input type="number" id="cf-ap" class="input-dark" value="5" oninput="calcCuttingForce()">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Radial Bredde ae (mm)</label>
+                        <input type="number" id="cf-ae" class="input-dark" value="12" oninput="calcCuttingForce()">
+                    </div>
+                </div>
+                <div class="p-4 rounded-xl border border-emerald-500/30 bg-emerald-500/5 space-y-2 text-emerald-400 text-xs font-bold">
+                    <div class="flex justify-between"><span>Sponavvirkning (Q):</span><span id="cf-res-q" class="font-mono">0 cm³/min</span></div>
+                    <div class="flex justify-between"><span>Skjærekraft (Fc):</span><span id="cf-res-fc" class="font-mono">0 N</span></div>
+                    <div class="flex justify-between text-sm font-black"><span>Spindeleffektbehov (Pc):</span><span id="cf-res-pc" class="font-mono text-base">0.0 kW</span></div>
+                    <div class="flex justify-between"><span>Dreiemoment (Mc):</span><span id="cf-res-mc" class="font-mono">0 Nm</span></div>
+                </div>
             </div>
         </div>
 
-        <div id="subcontent-workshop-tt" class="glass-card p-6 max-w-2xl space-y-4 hidden">
-            <h3 class="font-bold text-base text-slate-100 pb-3 border-b border-slate-800">🔩 Gjengetabell & Kjernebor (M & BSP)</h3>
-            <div>
-                <label class="block text-xs text-slate-400 mb-1">Gjengestørrelse</label>
-                <select id="tt-select" class="input-dark" onchange="calcThreadTable()">
-                    <optgroup label="Metriske M-gjenger">
-                        <option value="M6">M6 × 1.0 mm</option>
-                        <option value="M8">M8 × 1.25 mm</option>
-                        <option value="M10" selected>M10 × 1.5 mm</option>
-                        <option value="M12">M12 × 1.75 mm</option>
-                        <option value="M16">M16 × 2.0 mm</option>
-                    </optgroup>
-                    <optgroup label="BSP / G Rørgjenger">
-                        <option value="G1/8">BSP / G 1/8" (28 tpi - Kjernebor 8.8 mm)</option>
-                        <option value="G1/4">BSP / G 1/4" (19 tpi - Kjernebor 11.8 mm)</option>
-                        <option value="G1/2">BSP / G 1/2" (14 tpi - Kjernebor 19.0 mm)</option>
-                    </optgroup>
-                </select>
-            </div>
-            <div class="p-4 rounded-xl border border-amber-500/30 bg-amber-500/5 space-y-2 text-amber-400 text-xs font-bold">
-                <div class="flex justify-between text-sm font-black"><span>Anbefalt Kjernebor:</span><span id="tt-res-drill" class="font-mono text-base">8.5 mm</span></div>
-                <div class="flex justify-between"><span>Gjengestigning Pitch:</span><span id="tt-res-pitch" class="font-mono">1.50 mm</span></div>
-                <div class="flex justify-between"><span>Frigangshull Passbor:</span><span id="tt-res-clear" class="font-mono">11.0 mm</span></div>
-            </div>
-        </div>
-
-        <div id="subcontent-workshop-tq" class="glass-card p-6 max-w-2xl space-y-4 hidden">
-            <h3 class="font-bold text-base text-slate-100 pb-3 border-b border-slate-800">🔧 Tiltrekkingsmoment & Smøring (-25% Nm)</h3>
-            <div class="grid grid-cols-2 gap-3">
-                <div>
-                    <label class="block text-xs text-slate-400 mb-1">Skrue</label>
-                    <select id="tq-size" class="input-dark" onchange="calcTorque()">
-                        <option value="M6">M6</option>
-                        <option value="M8">M8</option>
-                        <option value="M10" selected>M10</option>
-                        <option value="M12">M12</option>
-                        <option value="M16">M16</option>
-                    </select>
+        <!-- ACCORDION 4: C-AKSE MATING -->
+        <div class="glass-card accordion-item" id="acc-m-cakse">
+            <div onclick="toggleAccordion('acc-m-cakse')" class="w-full flex items-center justify-between p-5 text-left hover:bg-slate-800/40 transition-colors cursor-pointer">
+                <div class="flex items-center gap-3">
+                    <span class="text-amber-400 text-lg">🔄</span>
+                    <span class="font-bold text-slate-100 text-sm">MM/MIN til Grader/MIN (C-Akse / 4. Akse)</span>
                 </div>
-                <div>
-                    <label class="block text-xs text-slate-400 mb-1">Klasse</label>
-                    <select id="tq-class" class="input-dark" onchange="calcTorque()">
-                        <option value="8.8" selected>Stål 8.8</option>
-                        <option value="10.9">Stål 10.9</option>
-                        <option value="12.9">Stål 12.9</option>
-                    </select>
+                <div class="flex items-center gap-2">
+                    <span class="text-xs px-2.5 py-0.5 rounded-full bg-amber-500/15 text-amber-300 font-mono font-bold">C-akse</span>
+                    <span class="accordion-chevron text-slate-400 transition-transform">▼</span>
                 </div>
             </div>
-            <div>
-                <label class="block text-xs text-slate-400 mb-1">Gjengeforhold & Smøring</label>
-                <select id="tq-lube" class="input-dark" onchange="calcTorque()">
-                    <option value="dry">Tørre / Usmurte gjenger (μ = 0.14)</option>
-                    <option value="lube" selected>Smurte gjenger / Pasta / Fett (μ = 0.10, -25% Nm)</option>
-                </select>
-            </div>
-            <div class="p-4 rounded-xl border border-emerald-500/30 bg-emerald-500/5 space-y-2 text-emerald-400 text-xs font-bold">
-                <div class="flex justify-between text-sm font-black"><span>Tiltrekkingsmoment (Nm):</span><span id="tq-res-nm" class="font-mono text-base">35 Nm</span></div>
-                <div class="flex justify-between"><span>Tiltrekkingskraft (kN):</span><span id="tq-res-kn" class="font-mono">26 kN</span></div>
-            </div>
-        </div>
-
-        <div id="subcontent-workshop-pcd" class="glass-card p-6 max-w-2xl space-y-4 hidden">
-            <h3 class="font-bold text-base text-slate-100 pb-3 border-b border-slate-800">⭕ Delingssirkel PCD (med SVG Flensediagram)</h3>
-            <div class="text-center p-3 bg-slate-900/80 rounded-xl border border-slate-800">
-                <svg width="180" height="180" viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg" class="mx-auto max-w-full h-auto">
-                    <circle cx="110" cy="110" r="95" fill="rgba(16, 185, 129, 0.08)" stroke="#10b981" stroke-width="2"/>
-                    <circle cx="110" cy="110" r="30" fill="#0f172a" stroke="#10b981" stroke-width="2"/>
-                    <line x1="110" y1="10" x2="110" y2="210" stroke="#1e293b" stroke-width="1.5" stroke-dasharray="4,4"/>
-                    <line x1="10" y1="110" x2="210" y2="110" stroke="#1e293b" stroke-width="1.5" stroke-dasharray="4,4"/>
-                    <circle cx="110" cy="110" r="68" fill="none" stroke="#38bdf8" stroke-width="2" stroke-dasharray="6,4"/>
-                    <line x1="178" y1="110" x2="158" y2="62" stroke="#f43f5e" stroke-width="2.5"/>
-                    <circle cx="178" cy="110" r="7" fill="#0f172a" stroke="#10b981" stroke-width="2"/>
-                    <circle cx="158" cy="62" r="7" fill="#0f172a" stroke="#10b981" stroke-width="2"/>
-                    <circle cx="110" cy="42" r="7" fill="#0f172a" stroke="#10b981" stroke-width="2"/>
-                    <text x="182" y="85" fill="#f43f5e" font-size="11" font-weight="800">k (Korde)</text>
-                    <text x="65" y="105" fill="#38bdf8" font-size="11" font-weight="800">PCD Ø</text>
-                </svg>
-            </div>
-            <div class="grid grid-cols-2 gap-3">
-                <div>
-                    <label class="block text-xs text-slate-400 mb-1">PCD Ø (mm)</label>
-                    <input type="number" id="pcd-dia" class="input-dark" value="200" oninput="calcPCD()">
+            <div class="accordion-body px-5 pb-5 border-t border-slate-800/60 pt-4">
+                <p class="text-xs text-slate-400 mb-4">Omregning fra lineær mating mm/min til roterende grader/min basert på emnediameter.</p>
+                <div class="grid grid-cols-2 gap-3 mb-4">
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Mating mm/min (Vf)</label>
+                        <input type="number" id="ca-vf" class="input-dark" value="1400" oninput="calcCAxis()">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Emnediameter DIA (mm)</label>
+                        <input type="number" step="0.01" id="ca-dia" class="input-dark" value="3.14" oninput="calcCAxis()">
+                    </div>
                 </div>
-                <div>
-                    <label class="block text-xs text-slate-400 mb-1">Antall hull</label>
-                    <input type="number" id="pcd-num" class="input-dark" value="8" oninput="calcPCD()">
+                <div class="p-4 rounded-xl border border-amber-500/30 bg-amber-500/5 space-y-2 text-amber-400 text-xs font-bold">
+                    <div class="flex justify-between"><span>Omkrets:</span><span id="ca-res-omkrets" class="font-mono">0 mm</span></div>
+                    <div class="flex justify-between"><span>1 Grad tilsvarer:</span><span id="ca-res-onegrad" class="font-mono">0 mm/°</span></div>
+                    <div class="flex justify-between text-sm font-black"><span>Mating i Grader/MIN (°/min):</span><span id="ca-res-gradmin" class="font-mono text-base">0 °/min</span></div>
+                    <div class="flex justify-between"><span>Omdreininger pr. minutt:</span><span id="ca-res-revmin" class="font-mono">0 omdr/min</span></div>
+                    <div class="flex justify-between"><span>Tid pr. omdreining:</span><span id="ca-res-time" class="font-mono">0 min</span></div>
                 </div>
-            </div>
-            <div class="p-4 rounded-xl border border-emerald-500/30 bg-emerald-500/5 space-y-2 text-emerald-400 text-xs font-bold">
-                <div class="flex justify-between text-sm font-black"><span>Kordeavstand (måles direkte):</span><span id="pcd-res-chord" class="font-mono text-base">76.54 mm</span></div>
-                <div class="flex justify-between"><span>Vinkelstigning pr. hull:</span><span id="pcd-res-angle" class="font-mono">45.0°</span></div>
-            </div>
-        </div>
-
-        <div id="subcontent-workshop-trig" class="glass-card p-6 max-w-2xl space-y-4 hidden">
-            <h3 class="font-bold text-base text-slate-100 pb-3 border-b border-slate-800">📐 Trigonometri & Trekant (Pythagoras med SVG)</h3>
-            <div class="text-center p-3 bg-slate-900/80 rounded-xl border border-slate-800">
-                <svg width="200" height="130" viewBox="0 0 240 150" xmlns="http://www.w3.org/2000/svg" class="mx-auto max-w-full h-auto">
-                    <path d="M 40 110 L 50 110 L 50 120" fill="none" stroke="#a78bfa" stroke-width="2"/>
-                    <polygon points="40,120 200,120 40,20" fill="rgba(167, 139, 250, 0.12)" stroke="#a78bfa" stroke-width="3"/>
-                    <text x="18" y="75" fill="#f8fafc" font-size="13" font-weight="800">a (Vert)</text>
-                    <text x="105" y="142" fill="#f8fafc" font-size="13" font-weight="800">b (Horisont)</text>
-                    <text x="120" y="60" fill="#a78bfa" font-size="13" font-weight="800">c (Hypotenus)</text>
-                </svg>
-            </div>
-            <div class="grid grid-cols-2 gap-3">
-                <div>
-                    <label class="block text-xs text-slate-400 mb-1">Katet a (mm)</label>
-                    <input type="number" id="tri-a" class="input-dark" placeholder="f.eks 30" oninput="calcTrig()">
-                </div>
-                <div>
-                    <label class="block text-xs text-slate-400 mb-1">Katet b (mm)</label>
-                    <input type="number" id="tri-b" class="input-dark" placeholder="f.eks 40" oninput="calcTrig()">
-                </div>
-            </div>
-            <div class="p-4 rounded-xl border border-purple-500/30 bg-purple-500/5 space-y-2 text-purple-300 text-xs font-bold">
-                <div class="flex justify-between text-sm font-black"><span>Hypotenus c:</span><span id="tri-res-c" class="font-mono text-base">50.00 mm</span></div>
-                <div class="flex justify-between"><span>Vinkler A° og B°:</span><span id="tri-res-angles" class="font-mono">A = 36.87° | B = 53.13°</span></div>
             </div>
         </div>
     </div>
 
-    <!-- 5. ELBIL PAGE -->
-    <div id="page-ev" class="tab-content space-y-6">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div class="glass-card p-6 space-y-4">
-                <h3 class="font-bold text-base text-slate-100 pb-3 border-b border-slate-800">🔌 Ladetid & Ladekostnad</h3>
+    <!-- 4. VERKSTEDTABELLER PAGE (BOLT ACCORDIONS) -->
+    <div id="page-workshop" class="tab-content space-y-4">
+        <!-- ACCORDION 1: MATERIALVELGER -->
+        <div class="glass-card accordion-item open" id="acc-w-mat">
+            <div onclick="toggleAccordion('acc-w-mat')" class="w-full flex items-center justify-between p-5 text-left hover:bg-slate-800/40 transition-colors cursor-pointer">
+                <div class="flex items-center gap-3">
+                    <span class="text-sky-400 text-lg">🧪</span>
+                    <span class="font-bold text-slate-100 text-sm">Materialvelger & Anbefalte Skjæredata</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-xs px-2.5 py-0.5 rounded-full bg-sky-500/15 text-sky-300 font-mono font-bold">Vc & fz</span>
+                    <span class="accordion-chevron text-slate-400 transition-transform">▼</span>
+                </div>
+            </div>
+            <div class="accordion-body px-5 pb-5 border-t border-slate-800/60 pt-4 space-y-4">
+                <p class="text-xs text-slate-400">Velg verkstedmateriale, operasjon og verktøymateriale for anbefalte data.</p>
+                <div>
+                    <label class="block text-xs text-slate-400 mb-1">Materiale</label>
+                    <select id="ms-mat" class="input-dark" onchange="calcMaterial()">
+                        <option value="s355">Konstruksjonsstål / S355 / St52 (P1)</option>
+                        <option value="c45">Seigherdingsstål / C45 / 42CrMo4 (P2)</option>
+                        <option value="ss316" selected>Syrefast 316L / A4 (M1)</option>
+                        <option value="alu">Aluminium 6082-T6 (N1)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs text-slate-400 mb-1">Operasjonstype</label>
+                    <select id="ms-op" class="input-dark" onchange="calcMaterial()">
+                        <option value="mill_rough" selected>Fresing - Skrubb / Grovfresing</option>
+                        <option value="mill_finish">Fresing - Slett / Finfresing</option>
+                        <option value="drill">Boring - Spiralbor / Kjernebor</option>
+                        <option value="udrill">Boring - U-Bor / Vendeskjærsbor</option>
+                        <option value="turn_rough">Dreiing - Skrubbdreiing</option>
+                        <option value="tap">Gjenging - Gjengebor / Gjengefres</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs text-slate-400 mb-1">Verktøymateriale</label>
+                    <select id="ms-toolmat" class="input-dark" onchange="calcMaterial()">
+                        <option value="hm_coated" selected>Belagt Hardmetall (HM / VHM Carbide)</option>
+                        <option value="hm_uncoated">Ubelagt Hardmetall (HM / VHM - Alu/Plast)</option>
+                        <option value="hss_co">Hurtigstål Kobolt (HSS-Co / HSS-E)</option>
+                        <option value="hss_std">Hurtigstål Standard (HSS)</option>
+                    </select>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">DIA (mm)</label>
+                        <input type="number" id="ms-dia" class="input-dark" value="16" oninput="calcMaterial()">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Skjær (z)</label>
+                        <input type="number" id="ms-z" class="input-dark" value="4" oninput="calcMaterial()">
+                    </div>
+                </div>
+                <div class="p-4 rounded-xl border border-sky-500/30 bg-sky-500/5 space-y-2 text-xs font-bold text-slate-300">
+                    <div class="flex justify-between"><span>Anbefalt Vc:</span><span id="ms-res-vc" class="font-mono text-sky-400">90 m/min</span></div>
+                    <div class="flex justify-between"><span>Beregnet RPM:</span><span id="ms-res-rpm" class="font-mono text-sky-400">1790 RPM</span></div>
+                    <div class="flex justify-between text-sm font-black"><span>Bordsmating (Vf):</span><span id="ms-res-vf" class="font-mono text-sky-400 text-base">572 mm/min</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ACCORDION 2: GJENGETABELL -->
+        <div class="glass-card accordion-item" id="acc-w-tap">
+            <div onclick="toggleAccordion('acc-w-tap')" class="w-full flex items-center justify-between p-5 text-left hover:bg-slate-800/40 transition-colors cursor-pointer">
+                <div class="flex items-center gap-3">
+                    <span class="text-amber-400 text-lg">🔩</span>
+                    <span class="font-bold text-slate-100 text-sm">Gjengetabell & Kjernebor (M & BSP / Rørgjenger)</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-xs px-2.5 py-0.5 rounded-full bg-amber-500/15 text-amber-300 font-mono font-bold">Gjenger</span>
+                    <span class="accordion-chevron text-slate-400 transition-transform">▼</span>
+                </div>
+            </div>
+            <div class="accordion-body px-5 pb-5 border-t border-slate-800/60 pt-4 space-y-4">
+                <div>
+                    <label class="block text-xs text-slate-400 mb-1">Velg Gjengestørrelse</label>
+                    <select id="tt-select" class="input-dark" onchange="calcThreadTable()">
+                        <optgroup label="Metriske M-gjenger">
+                            <option value="M6">M6 × 1.0 mm</option>
+                            <option value="M8">M8 × 1.25 mm</option>
+                            <option value="M10" selected>M10 × 1.5 mm</option>
+                            <option value="M12">M12 × 1.75 mm</option>
+                            <option value="M16">M16 × 2.0 mm</option>
+                        </optgroup>
+                        <optgroup label="BSP / G Rørgjenger">
+                            <option value="G1/8">BSP / G 1/8" (28 tpi - Kjernebor 8.8 mm)</option>
+                            <option value="G1/4">BSP / G 1/4" (19 tpi - Kjernebor 11.8 mm)</option>
+                            <option value="G1/2">BSP / G 1/2" (14 tpi - Kjernebor 19.0 mm)</option>
+                        </optgroup>
+                    </select>
+                </div>
+                <div class="p-4 rounded-xl border border-amber-500/30 bg-amber-500/5 space-y-2 text-amber-400 text-xs font-bold">
+                    <div class="flex justify-between text-sm font-black"><span>Anbefalt Kjernebor:</span><span id="tt-res-drill" class="font-mono text-base">8.5 mm</span></div>
+                    <div class="flex justify-between"><span>Gjengestigning Pitch:</span><span id="tt-res-pitch" class="font-mono">1.50 mm</span></div>
+                    <div class="flex justify-between"><span>Frigangshull Passbor:</span><span id="tt-res-clear" class="font-mono">11.0 mm</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ACCORDION 3: SKRUEMOMENT MED SMØRING -->
+        <div class="glass-card accordion-item" id="acc-w-tq">
+            <div onclick="toggleAccordion('acc-w-tq')" class="w-full flex items-center justify-between p-5 text-left hover:bg-slate-800/40 transition-colors cursor-pointer">
+                <div class="flex items-center gap-3">
+                    <span class="text-emerald-400 text-lg">🔧</span>
+                    <span class="font-bold text-slate-100 text-sm">Tiltrekkingsmoment for Skruer (Nm & Smøring)</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 font-mono font-bold">Nm & Pasta</span>
+                    <span class="accordion-chevron text-slate-400 transition-transform">▼</span>
+                </div>
+            </div>
+            <div class="accordion-body px-5 pb-5 border-t border-slate-800/60 pt-4 space-y-4">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Skrue</label>
+                        <select id="tq-size" class="input-dark" onchange="calcTorque()">
+                            <option value="M6">M6</option>
+                            <option value="M8">M8</option>
+                            <option value="M10" selected>M10</option>
+                            <option value="M12">M12</option>
+                            <option value="M16">M16</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Klasse</label>
+                        <select id="tq-class" class="input-dark" onchange="calcTorque()">
+                            <option value="8.8" selected>Stål 8.8</option>
+                            <option value="10.9">Stål 10.9</option>
+                            <option value="12.9">Stål 12.9</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs text-slate-400 mb-1">Gjengeforhold & Smøring</label>
+                    <select id="tq-lube" class="input-dark" onchange="calcTorque()">
+                        <option value="dry">Tørre / Usmurte gjenger (μ = 0.14)</option>
+                        <option value="lube" selected>Smurte gjenger / Pasta / Fett (μ = 0.10, -25% Nm)</option>
+                    </select>
+                </div>
+                <div class="p-4 rounded-xl border border-emerald-500/30 bg-emerald-500/5 space-y-2 text-emerald-400 text-xs font-bold">
+                    <div class="flex justify-between text-sm font-black"><span>Tiltrekkingsmoment (Nm):</span><span id="tq-res-nm" class="font-mono text-base">35 Nm</span></div>
+                    <div class="flex justify-between"><span>Tiltrekkingskraft (kN):</span><span id="tq-res-kn" class="font-mono">26 kN</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ACCORDION 4: PCD FLENSE-DIAGRAM -->
+        <div class="glass-card accordion-item" id="acc-w-pcd">
+            <div onclick="toggleAccordion('acc-w-pcd')" class="w-full flex items-center justify-between p-5 text-left hover:bg-slate-800/40 transition-colors cursor-pointer">
+                <div class="flex items-center gap-3">
+                    <span class="text-sky-400 text-lg">⭕</span>
+                    <span class="font-bold text-slate-100 text-sm">Delingssirkel & Flense-koordinater (PCD)</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-xs px-2.5 py-0.5 rounded-full bg-sky-500/15 text-sky-300 font-mono font-bold">PCD Diagram</span>
+                    <span class="accordion-chevron text-slate-400 transition-transform">▼</span>
+                </div>
+            </div>
+            <div class="accordion-body px-5 pb-5 border-t border-slate-800/60 pt-4 space-y-4">
+                <div class="text-center p-3 bg-slate-900/80 rounded-xl border border-slate-800">
+                    <svg width="180" height="180" viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg" class="mx-auto max-w-full h-auto">
+                        <circle cx="110" cy="110" r="95" fill="rgba(16, 185, 129, 0.08)" stroke="#10b981" stroke-width="2"/>
+                        <circle cx="110" cy="110" r="30" fill="#0f172a" stroke="#10b981" stroke-width="2"/>
+                        <line x1="110" y1="10" x2="110" y2="210" stroke="#1e293b" stroke-width="1.5" stroke-dasharray="4,4"/>
+                        <line x1="10" y1="110" x2="210" y2="110" stroke="#1e293b" stroke-width="1.5" stroke-dasharray="4,4"/>
+                        <circle cx="110" cy="110" r="68" fill="none" stroke="#38bdf8" stroke-width="2" stroke-dasharray="6,4"/>
+                        <line x1="178" y1="110" x2="158" y2="62" stroke="#f43f5e" stroke-width="2.5"/>
+                        <circle cx="178" cy="110" r="7" fill="#0f172a" stroke="#10b981" stroke-width="2"/>
+                        <circle cx="158" cy="62" r="7" fill="#0f172a" stroke="#10b981" stroke-width="2"/>
+                        <circle cx="110" cy="42" r="7" fill="#0f172a" stroke="#10b981" stroke-width="2"/>
+                        <text x="182" y="85" fill="#f43f5e" font-size="11" font-weight="800">k (Korde)</text>
+                        <text x="65" y="105" fill="#38bdf8" font-size="11" font-weight="800">PCD Ø</text>
+                    </svg>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">PCD Ø (mm)</label>
+                        <input type="number" id="pcd-dia" class="input-dark" value="200" oninput="calcPCD()">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Antall hull</label>
+                        <input type="number" id="pcd-num" class="input-dark" value="8" oninput="calcPCD()">
+                    </div>
+                </div>
+                <div class="p-4 rounded-xl border border-emerald-500/30 bg-emerald-500/5 space-y-2 text-emerald-400 text-xs font-bold">
+                    <div class="flex justify-between text-sm font-black"><span>Kordeavstand (måles direkte):</span><span id="pcd-res-chord" class="font-mono text-base">76.54 mm</span></div>
+                    <div class="flex justify-between"><span>Vinkelstigning pr. hull:</span><span id="pcd-res-angle" class="font-mono">45.0°</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ACCORDION 5: TRIGONOMETRI -->
+        <div class="glass-card accordion-item" id="acc-w-trig">
+            <div onclick="toggleAccordion('acc-w-trig')" class="w-full flex items-center justify-between p-5 text-left hover:bg-slate-800/40 transition-colors cursor-pointer">
+                <div class="flex items-center gap-3">
+                    <span class="text-purple-400 text-lg">📐</span>
+                    <span class="font-bold text-slate-100 text-sm">Trigonometri & Trekant (Pythagoras med SVG Diagram)</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-xs px-2.5 py-0.5 rounded-full bg-purple-500/15 text-purple-300 font-mono font-bold">Pythagoras</span>
+                    <span class="accordion-chevron text-slate-400 transition-transform">▼</span>
+                </div>
+            </div>
+            <div class="accordion-body px-5 pb-5 border-t border-slate-800/60 pt-4 space-y-4">
+                <div class="text-center p-3 bg-slate-900/80 rounded-xl border border-slate-800">
+                    <svg width="200" height="130" viewBox="0 0 240 150" xmlns="http://www.w3.org/2000/svg" class="mx-auto max-w-full h-auto">
+                        <path d="M 40 110 L 50 110 L 50 120" fill="none" stroke="#a78bfa" stroke-width="2"/>
+                        <polygon points="40,120 200,120 40,20" fill="rgba(167, 139, 250, 0.12)" stroke="#a78bfa" stroke-width="3"/>
+                        <text x="18" y="75" fill="#f8fafc" font-size="13" font-weight="800">a (Vert)</text>
+                        <text x="105" y="142" fill="#f8fafc" font-size="13" font-weight="800">b (Horisont)</text>
+                        <text x="120" y="60" fill="#a78bfa" font-size="13" font-weight="800">c (Hypotenus)</text>
+                    </svg>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Katet a (mm)</label>
+                        <input type="number" id="tri-a" class="input-dark" placeholder="f.eks 30" oninput="calcTrig()">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Katet b (mm)</label>
+                        <input type="number" id="tri-b" class="input-dark" placeholder="f.eks 40" oninput="calcTrig()">
+                    </div>
+                </div>
+                <div class="p-4 rounded-xl border border-purple-500/30 bg-purple-500/5 space-y-2 text-purple-300 text-xs font-bold">
+                    <div class="flex justify-between text-sm font-black"><span>Hypotenus c:</span><span id="tri-res-c" class="font-mono text-base">50.00 mm</span></div>
+                    <div class="flex justify-between"><span>Vinkler A° og B°:</span><span id="tri-res-angles" class="font-mono">A = 36.87° | B = 53.13°</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. ELBIL PAGE (BOLT ACCORDIONS) -->
+    <div id="page-ev" class="tab-content space-y-4">
+        <!-- ACCORDION 1: LADETID -->
+        <div class="glass-card accordion-item open" id="acc-e-charge">
+            <div onclick="toggleAccordion('acc-e-charge')" class="w-full flex items-center justify-between p-5 text-left hover:bg-slate-800/40 transition-colors cursor-pointer">
+                <div class="flex items-center gap-3">
+                    <span class="text-sky-400 text-lg">🔌</span>
+                    <span class="font-bold text-slate-100 text-sm">Ladetid & Ladekostnad</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-xs px-2.5 py-0.5 rounded-full bg-sky-500/15 text-sky-300 font-mono font-bold">kW & kWh</span>
+                    <span class="accordion-chevron text-slate-400 transition-transform">▼</span>
+                </div>
+            </div>
+            <div class="accordion-body px-5 pb-5 border-t border-slate-800/60 pt-4 space-y-4">
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="block text-xs text-slate-400 mb-1">Batteri (kWh)</label>
@@ -698,9 +787,21 @@
                     <div class="flex justify-between"><span>Ladekostnad (1.30 kr/kWh):</span><span id="ev-res-cost" class="font-mono text-sky-400">70,07 kr</span></div>
                 </div>
             </div>
+        </div>
 
-            <div class="glass-card p-6 space-y-4">
-                <h3 class="font-bold text-base text-slate-100 pb-3 border-b border-slate-800">❄️ Vinter-Rekkevidde & Temperaturtap</h3>
+        <!-- ACCORDION 2: VINTER-REKKEVIDDE -->
+        <div class="glass-card accordion-item" id="acc-e-winter">
+            <div onclick="toggleAccordion('acc-e-winter')" class="w-full flex items-center justify-between p-5 text-left hover:bg-slate-800/40 transition-colors cursor-pointer">
+                <div class="flex items-center gap-3">
+                    <span class="text-amber-400 text-lg">❄️</span>
+                    <span class="font-bold text-slate-100 text-sm">Vinter-Rekkevidde & Temperaturtap</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-xs px-2.5 py-0.5 rounded-full bg-amber-500/15 text-amber-300 font-mono font-bold">Temperatur</span>
+                    <span class="accordion-chevron text-slate-400 transition-transform">▼</span>
+                </div>
+            </div>
+            <div class="accordion-body px-5 pb-5 border-t border-slate-800/60 pt-4 space-y-4">
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="block text-xs text-slate-400 mb-1">WLTP Sommer-rekkevidde (km)</label>
@@ -726,6 +827,13 @@
 </main>
 
 <script>
+    function toggleAccordion(accId) {
+        const item = document.getElementById(accId);
+        if (item) {
+            item.classList.toggle('open');
+        }
+    }
+
     function switchNav(pageId) {
         document.querySelectorAll('.tab-content, #page-dashboard').forEach(el => el.classList.add('hidden'));
         document.querySelectorAll('nav button').forEach(el => {
@@ -760,20 +868,6 @@
 
         document.getElementById('header-title').innerText = titleMap[pageId];
         document.getElementById('header-sub').innerText = subMap[pageId];
-    }
-
-    function switchSub(parentPage, subId) {
-        const parent = document.getElementById(`page-${parentPage}`);
-        if (!parent) return;
-
-        parent.querySelectorAll('[id^="subcontent-"]').forEach(el => el.classList.add('hidden'));
-        parent.querySelectorAll('.seg-btn').forEach(el => el.classList.remove('active'));
-
-        const targetSub = document.getElementById(`subcontent-${parentPage}-${subId}`);
-        const targetBtn = document.getElementById(`subnav-${parentPage}-${subId}`);
-
-        if (targetSub) targetSub.classList.remove('hidden');
-        if (targetBtn) targetBtn.classList.add('active');
     }
 
     function calcSalary() {
@@ -952,19 +1046,6 @@
         document.getElementById('ms-res-vf').innerText = Math.round(vf) + " mm/min";
     }
 
-    function calcBoreDepth() {
-        const dia = parseFloat(document.getElementById('bd-dia').value) || 16;
-        const angle = parseFloat(document.getElementById('bd-angle').value) || 118;
-        const depth = parseFloat(document.getElementById('bd-depth').value) || 25;
-
-        const rad = (angle / 2) * (Math.PI / 180);
-        const tipExtra = (dia / 2) / Math.tan(rad);
-        const totalZ = depth + tipExtra;
-
-        document.getElementById('bd-res-tip').innerText = `${tipExtra.toFixed(2).replace('.', ',')} mm`;
-        document.getElementById('bd-res-tot').innerText = `${totalZ.toFixed(2).replace('.', ',')} mm`;
-    }
-
     const tapData = {
         M6: "5.0 mm | Pitch 1.0 mm | Passbor 6.6 mm",
         M8: "6.8 mm | Pitch 1.25 mm | Passbor 9.0 mm",
@@ -982,33 +1063,6 @@
         document.getElementById('tt-res-drill').innerText = parts[0];
         document.getElementById('tt-res-pitch').innerText = parts[1] ? parts[1].replace('Pitch ', '') : '1.5 mm';
         document.getElementById('tt-res-clear').innerText = parts[2] ? parts[2].replace('Passbor ', '') : '11.0 mm';
-    }
-
-    const ttolData = {
-        M10: { maj: "10.000 – 10.420", pitch: "9.026 – 9.206", min: "8.376 – 8.676" },
-        M12: { maj: "12.000 – 12.450", pitch: "10.863 – 11.063", min: "10.106 – 10.441" },
-        "G1/2": { maj: "20.955 – 21.350", pitch: "19.793 – 19.935", min: "18.631 – 19.000" }
-    };
-
-    function calcThreadTol() {
-        const size = document.getElementById('tto-size').value;
-        const info = ttolData[size] || ttolData.M10;
-
-        document.getElementById('tto-res-maj').innerText = `${info.maj} mm`;
-        document.getElementById('tto-res-pitch').innerText = `${info.pitch} mm`;
-        document.getElementById('tto-res-min').innerText = `${info.min} mm`;
-    }
-
-    function calcWeight() {
-        const l = parseFloat(document.getElementById('mw-l').value) || 1000;
-        const b = parseFloat(document.getElementById('mw-b').value) || 500;
-        const t = parseFloat(document.getElementById('mw-t').value) || 10;
-        const den = parseFloat(document.getElementById('mw-mat').value) || 7.85;
-
-        const volCm3 = (l / 10) * (b / 10) * (t / 10);
-        const kg = (volCm3 * den) / 1000;
-
-        document.getElementById('mw-res-kg').innerText = `${kg.toFixed(2).replace('.', ',')} kg`;
     }
 
     const torqueData = {
@@ -1123,9 +1177,7 @@
     calcCuttingForce();
     calcCAxis();
     calcMaterial();
-    calcBoreDepth();
     calcThreadTable();
-    calcThreadTol();
     calcTorque();
     calcPCD();
     calcTrig();
