@@ -10,7 +10,7 @@
     <meta http-equiv="Expires" content="0">
 
     <script>
-        const APP_BUILD_VER = "v600.0-AllEVCardsComplete";
+        const APP_BUILD_VER = "v700.0-EV2point3kWAdded";
         if (localStorage.getItem('app_build_v') !== APP_BUILD_VER) {
             localStorage.setItem('app_build_v', APP_BUILD_VER);
             if ('serviceWorker' in navigator) {
@@ -728,9 +728,14 @@
                             <div>
                                 <label class="text-xs font-medium uppercase tracking-wider text-slate-400 block mb-1">Ladeeffekt</label>
                                 <select id="ev-kw" class="input-dark" onchange="calcEVCharge()">
+                                    <option value="2.3">Hjemmelader / Stikkontakt 2.3 kW</option>
+                                    <option value="3.7">Hjemmelader 3.7 kW</option>
                                     <option value="7.4" selected>Hjemmelader 7.4 kW</option>
                                     <option value="11">Hjemmelader 11 kW</option>
+                                    <option value="22">Hjemmelader / Offentlig 22 kW</option>
+                                    <option value="50">Hurtiglader 50 kW</option>
                                     <option value="150">Lynlader 150 kW</option>
+                                    <option value="250">Supercharger 250 kW</option>
                                 </select>
                             </div>
                         </div>
