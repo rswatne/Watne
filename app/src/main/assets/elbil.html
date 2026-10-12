@@ -167,6 +167,7 @@
             <p style="font-size: 0.8125rem; color: var(--muted); margin: 0.25rem 0 0 0;" id="txt-sub">Ladetid, rekkevidde, besparelse & langtur</p>
         </div>
         <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <button type="button" class="btn btn-outline" style="height: 2.75rem; padding: 0 0.75rem; font-size: 0.875rem;" onclick="toggleLanguage()" id="lang-toggle-btn">🇳🇴 NO</button>
             <a href="index.html" class="btn btn-outline" id="txt-btn-home">🏠 Hovedmeny</a>
             <button type="button" class="btn btn-outline" style="height: 2.75rem; width: 2.75rem; padding: 0; border-radius: 50%; font-size: 1.15rem;" onclick="toggleTheme()" id="theme-toggle-btn">🌙</button>
         </div>
@@ -176,17 +177,17 @@
     <section>
         <header>
             <span class="font-mono" style="font-size: 0.75rem; color: var(--emerald); font-weight: 700;">01</span>
-            <h2 style="font-size: 1.125rem; font-weight: 700; margin: 0;">🔌 Ladetid & Tilført Rekkevidde</h2>
+            <h2 style="font-size: 1.125rem; font-weight: 700; margin: 0;" id="txt-sec1-title">🔌 Ladetid & Tilført Rekkevidde</h2>
         </header>
 
         <div class="grid-2">
             <label style="display: flex; flex-direction: column; gap: 0.375rem;">
-                <span style="font-size: 0.875rem; font-weight: 600;">Batterikapasitet (kWh)</span>
+                <span style="font-size: 0.875rem; font-weight: 600;" id="lbl-bat">Batterikapasitet (kWh)</span>
                 <input type="number" id="charge-battery" class="field-class" value="77" oninput="beregnLadetid()">
             </label>
 
             <label style="display: flex; flex-direction: column; gap: 0.375rem;">
-                <span style="font-size: 0.875rem; font-weight: 600;">Ladekilde / Ladeeffekt</span>
+                <span style="font-size: 0.875rem; font-weight: 600;" id="lbl-charge-type">Ladekilde / Ladeeffekt</span>
                 <select id="charge-type" class="field-class" onchange="beregnLadetid()">
                     <option value="2.3">Stikkontakt (2.3 kW)</option>
                     <option value="3.7">Hjemmelader 1-fase 16A (3.7 kW)</option>
@@ -200,37 +201,37 @@
             </label>
 
             <label style="display: flex; flex-direction: column; gap: 0.375rem;">
-                <span style="font-size: 0.875rem; font-weight: 600;">Start Batteriprosent (%)</span>
+                <span style="font-size: 0.875rem; font-weight: 600;" id="lbl-start-pct">Start Batteriprosent (%)</span>
                 <input type="number" id="charge-start" class="field-class" value="10" min="0" max="100" oninput="beregnLadetid()">
             </label>
 
             <label style="display: flex; flex-direction: column; gap: 0.375rem;">
-                <span style="font-size: 0.875rem; font-weight: 600;">Mål Batteriprosent (%)</span>
+                <span style="font-size: 0.875rem; font-weight: 600;" id="lbl-target-pct">Mål Batteriprosent (%)</span>
                 <input type="number" id="charge-target" class="field-class" value="80" min="0" max="100" oninput="beregnLadetid()">
             </label>
 
             <label style="display: flex; flex-direction: column; gap: 0.375rem;">
-                <span style="font-size: 0.875rem; font-weight: 600;">Strømpris (kr/kWh inkl. nettleie)</span>
+                <span style="font-size: 0.875rem; font-weight: 600;" id="lbl-price">Strømpris (kr/kWh inkl. nettleie)</span>
                 <input type="number" step="0.1" id="charge-price" class="field-class" value="1.30" oninput="beregnLadetid()">
             </label>
 
             <label style="display: flex; flex-direction: column; gap: 0.375rem;">
-                <span style="font-size: 0.875rem; font-weight: 600;">Snittforbruk (kWh/100 km)</span>
+                <span style="font-size: 0.875rem; font-weight: 600;" id="lbl-cons">Snittforbruk (kWh/100 km)</span>
                 <input type="number" step="0.5" id="charge-consumption" class="field-class" value="18" oninput="beregnLadetid()">
             </label>
         </div>
 
         <div style="margin-top: 1.25rem; padding: 1.25rem; background: var(--emerald-soft); border: 1.5px solid var(--emerald); border-radius: 1rem;">
             <div class="line-row strong" style="color: #047857; font-size: 1.1rem;">
-                <span>⏱️ Estimert Ladetid:</span>
+                <span id="lbl-res-time">⏱️ Estimert Ladetid:</span>
                 <span id="res-charge-time" class="font-mono">0t 0m</span>
             </div>
             <div class="line-row strong" style="color: #047857; margin-top: 0.375rem;">
-                <span>🔋 Tilført Rekkevidde:</span>
+                <span id="lbl-res-range">🔋 Tilført Rekkevidde:</span>
                 <span id="res-charge-range" class="font-mono">+ 0 km</span>
             </div>
             <div class="line-row strong" style="color: #047857; margin-top: 0.375rem;">
-                <span>💰 Ladekostnad:</span>
+                <span id="lbl-res-cost">💰 Ladekostnad:</span>
                 <span id="res-charge-cost" class="font-mono">0,00 kr</span>
             </div>
         </div>
@@ -240,47 +241,47 @@
     <section>
         <header>
             <span class="font-mono" style="font-size: 0.75rem; color: var(--emerald); font-weight: 700;">02</span>
-            <h2 style="font-size: 1.125rem; font-weight: 700; margin: 0;">💰 Elbil vs Bensin/Diesel Besparelse</h2>
+            <h2 style="font-size: 1.125rem; font-weight: 700; margin: 0;" id="txt-sec2-title">💰 Elbil vs Bensin/Diesel Besparelse</h2>
         </header>
 
         <div class="grid-2">
             <label style="display: flex; flex-direction: column; gap: 0.375rem;">
-                <span style="font-size: 0.875rem; font-weight: 600;">Årlig Kjørelengde (km/år)</span>
+                <span style="font-size: 0.875rem; font-weight: 600;" id="lbl-km">Årlig Kjørelengde (km/år)</span>
                 <input type="number" id="save-km" class="field-class" value="15000" oninput="beregnBesparelse()">
             </label>
 
             <label style="display: flex; flex-direction: column; gap: 0.375rem;">
-                <span style="font-size: 0.875rem; font-weight: 600;">Drivstoffpris Bensin/Diesel (kr/Liter)</span>
+                <span style="font-size: 0.875rem; font-weight: 600;" id="lbl-fuel-price">Drivstoffpris Bensin/Diesel (kr/Liter)</span>
                 <input type="number" step="0.5" id="save-fuel-price" class="field-class" value="20.0" oninput="beregnBesparelse()">
             </label>
 
             <label style="display: flex; flex-direction: column; gap: 0.375rem;">
-                <span style="font-size: 0.875rem; font-weight: 600;">Drivstofforbruk Bensin/Diesel (Liter pr. mil / pr. 10 km)</span>
+                <span style="font-size: 0.875rem; font-weight: 600;" id="lbl-fuel-cons">Drivstofforbruk Bensin/Diesel (Liter pr. mil / pr. 10 km)</span>
                 <input type="number" step="0.05" id="save-fuel-cons" class="field-class" value="0.65" oninput="beregnBesparelse()">
             </label>
 
             <label style="display: flex; flex-direction: column; gap: 0.375rem;">
-                <span style="font-size: 0.875rem; font-weight: 600;">Elbil Forbruk (kWh pr. mil / pr. 10 km)</span>
+                <span style="font-size: 0.875rem; font-weight: 600;" id="lbl-ev-cons">Elbil Forbruk (kWh pr. mil / pr. 10 km)</span>
                 <input type="number" step="0.1" id="save-ev-cons" class="field-class" value="1.80" oninput="beregnBesparelse()">
             </label>
 
             <label style="display: flex; flex-direction: column; gap: 0.375rem; grid-column: span 2;">
-                <span style="font-size: 0.875rem; font-weight: 600;">Strømpris Elbil (kr/kWh inkl. nettleie)</span>
+                <span style="font-size: 0.875rem; font-weight: 600;" id="lbl-elek-price">Strømpris Elbil (kr/kWh inkl. nettleie)</span>
                 <input type="number" step="0.1" id="save-elek-price" class="field-class" value="1.30" oninput="beregnBesparelse()">
             </label>
         </div>
 
         <div style="margin-top: 1.25rem; padding: 1.25rem; background: var(--primary-soft); border: 1.5px solid var(--primary); border-radius: 1rem;">
             <div class="line-row strong" style="color: var(--primary-deep); font-size: 1.1rem;">
-                <span>✨ Besparelse pr. Måned:</span>
+                <span id="lbl-res-month">✨ Besparelse pr. Måned:</span>
                 <span id="res-save-month" class="font-mono">0,00 kr</span>
             </div>
             <div class="line-row strong" style="color: var(--primary-deep); margin-top: 0.375rem;">
-                <span>📅 Besparelse pr. År:</span>
+                <span id="lbl-res-year">📅 Besparelse pr. År:</span>
                 <span id="res-save-year" class="font-mono">0,00 kr</span>
             </div>
             <div class="line-row strong" style="color: var(--primary-deep); margin-top: 0.375rem;">
-                <span>🚀 Samlet Besparelse over 5 År:</span>
+                <span id="lbl-res-5yr">🚀 Samlet Besparelse over 5 År:</span>
                 <span id="res-save-5yr" class="font-mono">0,00 kr</span>
             </div>
         </div>
@@ -290,17 +291,17 @@
     <section>
         <header>
             <span class="font-mono" style="font-size: 0.75rem; color: var(--emerald); font-weight: 700;">03</span>
-            <h2 style="font-size: 1.125rem; font-weight: 700; margin: 0;">❄️ Vinter-Rekkevidde & Temperaturtap</h2>
+            <h2 style="font-size: 1.125rem; font-weight: 700; margin: 0;" id="txt-sec3-title">❄️ Vinter-Rekkevidde & Temperaturtap</h2>
         </header>
 
         <div class="grid-2">
             <label style="display: flex; flex-direction: column; gap: 0.375rem;">
-                <span style="font-size: 0.875rem; font-weight: 600;">Oppgitt WLTP Sommer-rekkevidde (km)</span>
+                <span style="font-size: 0.875rem; font-weight: 600;" id="lbl-wltp">Oppgitt WLTP Sommer-rekkevidde (km)</span>
                 <input type="number" id="winter-wltp" class="field-class" value="480" oninput="beregnVinter()">
             </label>
 
             <label style="display: flex; flex-direction: column; gap: 0.375rem;">
-                <span style="font-size: 0.875rem; font-weight: 600;">Utetemperatur & Kjøreforhold</span>
+                <span style="font-size: 0.875rem; font-weight: 600;" id="lbl-temp">Utetemperatur & Kjøreforhold</span>
                 <select id="winter-temp" class="field-class" onchange="beregnVinter()">
                     <option value="0" selected>+20°C Sommer (100% reell rekkevidde · 0% tap)</option>
                     <option value="12">+10°C Vår/Høst (88% reell rekkevidde · -12% tap)</option>
@@ -313,11 +314,11 @@
 
         <div style="margin-top: 1.25rem; padding: 1.25rem; background: var(--amber-soft); border: 1.5px solid var(--amber); border-radius: 1rem;">
             <div class="line-row strong" style="color: #b45309; font-size: 1.1rem;">
-                <span>❄️ Reell Vinter-Rekkevidde:</span>
+                <span id="lbl-res-winter-range">❄️ Reell Vinter-Rekkevidde:</span>
                 <span id="res-winter-range" class="font-mono">0 km</span>
             </div>
             <div class="line-row strong" style="color: #b45309; margin-top: 0.375rem;">
-                <span>📉 Forventet Rekkeviddetap:</span>
+                <span id="lbl-res-winter-loss">📉 Forventet Rekkeviddetap:</span>
                 <span id="res-winter-loss" class="font-mono">- 0 km (0%)</span>
             </div>
         </div>
@@ -348,6 +349,111 @@
         document.body.classList.add('dark-mode');
         document.getElementById('theme-toggle-btn').innerText = '🌙';
     }
+
+    const i18n = {
+        no: {
+            title: "⚡ Elbil-Kalkulator",
+            sub: "Ladetid, rekkevidde, besparelse & langtur",
+            btnHome: "🏠 Hovedmeny",
+            sec1Title: "🔌 Ladetid & Tilført Rekkevidde",
+            lblBat: "Batterikapasitet (kWh)",
+            lblChargeType: "Ladekilde / Ladeeffekt",
+            lblStartPct: "Start Batteriprosent (%)",
+            lblTargetPct: "Mål Batteriprosent (%)",
+            lblPrice: "Strømpris (kr/kWh inkl. nettleie)",
+            lblCons: "Snittforbruk (kWh/100 km)",
+            resTime: "⏱️ Estimert Ladetid:",
+            resRange: "🔋 Tilført Rekkevidde:",
+            resCost: "💰 Ladekostnad:",
+            sec2Title: "💰 Elbil vs Bensin/Diesel Besparelse",
+            lblKm: "Årlig Kjørelengde (km/år)",
+            lblFuelPrice: "Drivstoffpris Bensin/Diesel (kr/Liter)",
+            lblFuelCons: "Drivstofforbruk Bensin/Diesel (Liter pr. mil / pr. 10 km)",
+            lblEvCons: "Elbil Forbruk (kWh pr. mil / pr. 10 km)",
+            lblElekPrice: "Strømpris Elbil (kr/kWh inkl. nettleie)",
+            resMonth: "✨ Besparelse pr. Måned:",
+            resYear: "📅 Besparelse pr. År:",
+            res5yr: "🚀 Samlet Besparelse over 5 År:",
+            sec3Title: "❄️ Vinter-Rekkevidde & Temperaturtap",
+            lblWltp: "Oppgitt WLTP Sommer-rekkevidde (km)",
+            lblTemp: "Utetemperatur & Kjøreforhold",
+            resWinterRange: "❄️ Reell Vinter-Rekkevidde:",
+            resWinterLoss: "📉 Forventet Rekkeviddetap:"
+        },
+        en: {
+            title: "⚡ EV Calculator",
+            sub: "Charging time, range, savings & winter loss",
+            btnHome: "🏠 Main Menu",
+            sec1Title: "🔌 Charging Time & Added Range",
+            lblBat: "Battery capacity (kWh)",
+            lblChargeType: "Charger type / power",
+            lblStartPct: "Start battery percentage (%)",
+            lblTargetPct: "Target battery percentage (%)",
+            lblPrice: "Electricity price (NOK/kWh incl. grid fee)",
+            lblCons: "Average consumption (kWh/100 km)",
+            resTime: "⏱️ Estimated Charging Time:",
+            resRange: "🔋 Added Range:",
+            resCost: "💰 Charging Cost:",
+            sec2Title: "💰 EV vs Petrol/Diesel Savings",
+            lblKm: "Annual distance (km/year)",
+            lblFuelPrice: "Fuel price Petrol/Diesel (NOK/L)",
+            lblFuelCons: "Fuel consumption Petrol/Diesel (L/10 km)",
+            lblEvCons: "EV consumption (kWh/10 km)",
+            lblElekPrice: "EV electricity price (NOK/kWh incl. grid fee)",
+            resMonth: "✨ Savings per Month:",
+            resYear: "📅 Savings per Year:",
+            res5yr: "🚀 Total Savings over 5 Years:",
+            sec3Title: "❄️ Winter Range & Cold Loss",
+            lblWltp: "Rated WLTP Summer range (km)",
+            lblTemp: "Outdoor temperature & conditions",
+            resWinterRange: "❄️ Actual Winter Range:",
+            resWinterLoss: "📉 Expected Range Loss:"
+        }
+    };
+
+    function updateLanguageUI(lang) {
+        const t = i18n[lang] || i18n.no;
+        document.getElementById('txt-title').innerText = t.title;
+        document.getElementById('txt-sub').innerText = t.sub;
+        document.getElementById('txt-btn-home').innerText = t.btnHome;
+        document.getElementById('txt-sec1-title').innerText = t.sec1Title;
+        document.getElementById('lbl-bat').innerText = t.lblBat;
+        document.getElementById('lbl-charge-type').innerText = t.lblChargeType;
+        document.getElementById('lbl-start-pct').innerText = t.lblStartPct;
+        document.getElementById('lbl-target-pct').innerText = t.lblTargetPct;
+        document.getElementById('lbl-price').innerText = t.lblPrice;
+        document.getElementById('lbl-cons').innerText = t.lblCons;
+        document.getElementById('lbl-res-time').innerText = t.resTime;
+        document.getElementById('lbl-res-range').innerText = t.resRange;
+        document.getElementById('lbl-res-cost').innerText = t.resCost;
+        document.getElementById('txt-sec2-title').innerText = t.sec2Title;
+        document.getElementById('lbl-km').innerText = t.lblKm;
+        document.getElementById('lbl-fuel-price').innerText = t.lblFuelPrice;
+        document.getElementById('lbl-fuel-cons').innerText = t.lblFuelCons;
+        document.getElementById('lbl-ev-cons').innerText = t.lblEvCons;
+        document.getElementById('lbl-elek-price').innerText = t.lblElekPrice;
+        document.getElementById('lbl-res-month').innerText = t.resMonth;
+        document.getElementById('lbl-res-year').innerText = t.resYear;
+        document.getElementById('lbl-res-5yr').innerText = t.res5yr;
+        document.getElementById('txt-sec3-title').innerText = t.sec3Title;
+        document.getElementById('lbl-wltp').innerText = t.lblWltp;
+        document.getElementById('lbl-temp').innerText = t.lblTemp;
+        document.getElementById('lbl-res-winter-range').innerText = t.resWinterRange;
+        document.getElementById('lbl-res-winter-loss').innerText = t.resWinterLoss;
+        document.getElementById('lang-toggle-btn').innerText = (lang === 'en') ? '🇬🇧 EN' : '🇳🇴 NO';
+    }
+
+    function toggleLanguage() {
+        let cur = localStorage.getItem('seland_lang') || 'no';
+        let newLang = (cur === 'no') ? 'en' : 'no';
+        localStorage.setItem('seland_lang', newLang);
+        updateLanguageUI(newLang);
+    }
+
+    window.addEventListener('load', function() {
+        const curLang = localStorage.getItem('seland_lang') || 'no';
+        updateLanguageUI(curLang);
+    });
 
     function beregnLadetid() {
         const bat = parseFloat(document.getElementById('charge-battery').value) || 77;
