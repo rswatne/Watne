@@ -713,24 +713,55 @@
                 <p style="font-size: 0.8125rem; color: var(--muted); margin: 0.25rem 0 0 0;">Regn ut ukjente sider, vinkler og skråfaser for rettvinklede trekanter.</p>
             </header>
 
+            <!-- VISUELL TREKANT-ILLUSTRASJON (SVG) -->
+            <div style="text-align: center; margin-bottom: 1.25rem; padding: 1rem; background: var(--bg); border-radius: 0.875rem; border: 1px solid var(--line);">
+                <svg width="240" height="150" viewBox="0 0 240 150" xmlns="http://www.w3.org/2000/svg" style="max-width: 100%; height: auto;">
+                    <!-- Rett vinkel tegn ved (40,120) -->
+                    <path d="M 40 110 L 50 110 L 50 120" fill="none" stroke="#7c3aed" stroke-width="2"/>
+
+                    <!-- Selve trekanten -->
+                    <polygon points="40,120 200,120 40,20" fill="rgba(124, 58, 237, 0.12)" stroke="#7c3aed" stroke-width="3" stroke-linejoin="round"/>
+
+                    <!-- Katete a (Vertikal) -->
+                    <text x="18" y="75" fill="var(--ink)" font-size="13" font-weight="800" font-family="'JetBrains Mono', monospace">a (Vertikal)</text>
+
+                    <!-- Katete b (Horisontal) -->
+                    <text x="105" y="142" fill="var(--ink)" font-size="13" font-weight="800" font-family="'JetBrains Mono', monospace">b (Horisontal)</text>
+
+                    <!-- Hypotenus c (Skråside) -->
+                    <text x="120" y="60" fill="#6d28d9" font-size="13" font-weight="800" font-family="'JetBrains Mono', monospace">c (Hypotenus)</text>
+
+                    <!-- Vinkel A° ved (200,120) -->
+                    <path d="M 170 120 A 30 30 0 0 0 179 108" fill="none" stroke="#0284c7" stroke-width="2.5"/>
+                    <text x="152" y="112" fill="#0284c7" font-size="12" font-weight="800" font-family="'JetBrains Mono', monospace">A°</text>
+
+                    <!-- Vinkel B° ved (40,20) -->
+                    <path d="M 40 50 A 30 30 0 0 0 58 35" fill="none" stroke="#059669" stroke-width="2.5"/>
+                    <text x="48" y="62" fill="#059669" font-size="12" font-weight="800" font-family="'JetBrains Mono', monospace">B°</text>
+
+                    <!-- 90 grader vinkel merke -->
+                    <text x="55" y="115" fill="var(--muted)" font-size="10" font-weight="700">90°</text>
+                </svg>
+            </div>
+
             <div class="grid-2">
                 <label style="display: flex; flex-direction: column; gap: 0.25rem;">
-                    <span style="font-size: 0.8125rem; font-weight: 600;">Katet a (mm)</span>
+                    <span style="font-size: 0.8125rem; font-weight: 600;">Katet a (mm - Vertikal)</span>
                     <input type="number" id="tri-a" class="field-class" inputmode="decimal" placeholder="f.eks. 30" oninput="beregnTrekant()">
                 </label>
 
                 <label style="display: flex; flex-direction: column; gap: 0.25rem;">
-                    <span style="font-size: 0.8125rem; font-weight: 600;">Katet b (mm)</span>
+                    <span style="font-size: 0.8125rem; font-weight: 600;">Katet b (mm - Horisontal)</span>
                     <input type="number" id="tri-b" class="field-class" inputmode="decimal" placeholder="f.eks. 40" oninput="beregnTrekant()">
                 </label>
 
                 <label style="display: flex; flex-direction: column; gap: 0.25rem;">
-                    <span style="font-size: 0.8125rem; font-weight: 600;">Hypotenus c (mm)</span>
+                    <span style="font-size: 0.8125rem; font-weight: 600;">Hypotenus c (mm - Skråside)</span>
                     <input type="number" id="tri-c" class="field-class" inputmode="decimal" placeholder="Valgfritt (c)" oninput="beregnTrekant()">
                 </label>
 
                 <label style="display: flex; flex-direction: column; gap: 0.25rem;">
-                    <span style="font-size: 0.8125rem; font-weight: 600;">Vinkel A (grader °)</span>
+                    <span style="font-size: 0.8125rem; font-weight: 600;">Vinkel A (grader ° - Grunnvinkel)</span>
                     <input type="number" id="tri-deg" class="field-class" inputmode="decimal" placeholder="Valgfritt (A°)" oninput="beregnTrekant()">
                 </label>
             </div>
