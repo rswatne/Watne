@@ -20,7 +20,25 @@
             --purple-neon: #a78bfa;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
+            --input-bg: #0b1222;
             --shadow-glow: 0 10px 30px -5px rgba(0, 240, 255, 0.15);
+        }
+
+        body.light-mode {
+            --bg-body: #f1f5f9;
+            --bg-sidebar: #ffffff;
+            --bg-card: #ffffff;
+            --bg-card-hover: #f8fafc;
+            --border-card: #cbd5e1;
+            --primary-blue: #0284c7;
+            --primary-cyan: #0284c7;
+            --emerald-green: #059669;
+            --amber-gold: #d97706;
+            --purple-neon: #7c3aed;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --input-bg: #f8fafc;
+            --shadow-glow: 0 10px 30px -5px rgba(0, 0, 0, 0.08);
         }
 
         * { box-sizing: border-box; }
@@ -288,6 +306,7 @@
             <p style="font-size: 0.875rem; color: var(--text-muted); margin: 0.25rem 0 0 0;" id="web-page-sub">Samlet web-dashbord for fastlønn, overtid, timebank, skattetrekk og årsprognose.</p>
         </div>
         <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <button type="button" class="btn-action btn-outline" onclick="toggleWebTheme()" id="web-theme-btn">🌙 Mørkt</button>
             <button type="button" class="btn-action btn-outline" onclick="toggleWebLang()" id="web-lang-btn">🇳🇴 NO</button>
             <a href="index.html" class="btn-action btn-outline">📱 Mobil-App Visning ➔</a>
         </div>
@@ -1448,6 +1467,26 @@
     }
 
     // Init
+    if (localStorage.getItem('lonn_theme') === 'light') {
+        document.body.classList.add('light-mode');
+        if (document.getElementById('web-theme-btn')) {
+            document.getElementById('web-theme-btn').innerText = '☀️ Lyst';
+        }
+    }
+
+    function toggleWebTheme() {
+        const isLight = document.body.classList.contains('light-mode');
+        if (isLight) {
+            document.body.classList.remove('light-mode');
+            localStorage.setItem('lonn_theme', 'dark');
+            document.getElementById('web-theme-btn').innerText = '🌙 Mørkt';
+        } else {
+            document.body.classList.add('light-mode');
+            localStorage.setItem('lonn_theme', 'light');
+            document.getElementById('web-theme-btn').innerText = '☀️ Lyst';
+        }
+    }
+
     beregnWebLonn();
     beregnWebMaskinering();
     beregnWebGjengediameter();
