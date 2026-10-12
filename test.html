@@ -10,7 +10,7 @@
     <meta http-equiv="Expires" content="0">
 
     <script>
-        const APP_BUILD_VER = "v50.0-PixelPerfectBoltDesign";
+        const APP_BUILD_VER = "v60.0-SalaryIdsMappedFix";
         if (localStorage.getItem('app_build_v') !== APP_BUILD_VER) {
             localStorage.setItem('app_build_v', APP_BUILD_VER);
             if ('serviceWorker' in navigator) {
@@ -885,11 +885,17 @@
 
     // FORMULAS & MATHS
     function calcSalary() {
-        const harFast = document.getElementById('ls-inkl-fastlonn').checked;
-        const rate = parseFloat(document.getElementById('ls-rate').value) || 316.5;
-        const hDay = parseFloat(document.getElementById('ls-hoursday').value) || 7.5;
-        const vacDays = parseInt(document.getElementById('ls-vacdays').value) || 0;
-        const unionPct = parseFloat(document.getElementById('ls-union').value) || 1.5;
+        const elFast = document.getElementById('w-inkl-fastlonn') || document.getElementById('l-inkl-fastlonn');
+        const elRate = document.getElementById('w-timelonn') || document.getElementById('l-timelonn');
+        const elHoursDay = document.getElementById('w-timer-dag') || document.getElementById('l-timer-dag');
+        const elFerier = document.getElementById('w-ferier') || document.getElementById('l-feriedager');
+        const elUnion = document.getElementById('w-union-pct') || document.getElementById('l-union');
+
+        const harFast = elFast ? elFast.checked : true;
+        const rate = parseFloat(elRate ? elRate.value : '316.5') || 316.5;
+        const hDay = parseFloat(elHoursDay ? elHoursDay.value : '7.5') || 7.5;
+        const vacDays = parseInt(elFerier ? elFerier.value : '0') || 0;
+        const unionPct = parseFloat(elUnion ? elUnion.value : '1.5') || 1.5;
 
         const fast = harFast ? (22 * hDay * rate) : 0;
         const ferieDeduct = harFast ? (vacDays * hDay * rate) : 0;
@@ -916,21 +922,49 @@
         const fastYear = harFast ? ((5 * hDay) * rate * 47) : 0;
         const totalYear = (fastYear + (vaktBrutto * 12)) * 1.12;
 
-        document.getElementById('ls-res-big-netto').innerText = net.toFixed(2).replace('.', ',') + " kr";
-        document.getElementById('ls-res-netto').innerText = net.toFixed(2).replace('.', ',') + " kr";
-        document.getElementById('ls-res-fast').innerText = fast.toFixed(2).replace('.', ',') + " kr";
-        document.getElementById('ls-res-vaktbrutto').innerText = vaktBrutto.toFixed(2).replace('.', ',') + " kr";
-        document.getElementById('ls-res-timebank').innerText = "+ " + timebankHours.toFixed(1).replace('.', ',') + " t";
-        document.getElementById('ls-res-totbrutto').innerText = gross.toFixed(2).replace('.', ',') + " kr";
-        document.getElementById('ls-res-union').innerText = "− " + union.toFixed(2).replace('.', ',') + " kr";
-        document.getElementById('ls-res-skatt').innerText = "− " + tax.toFixed(2).replace('.', ',') + " kr";
+        if (document.getElementById('res-netto')) document.getElementById('res-netto').innerText = net.toFixed(2).replace('.', ',') + " kr";
+        if (document.getElementById('ls-res-big-netto')) document.getElementById('ls-res-big-netto').innerText = net.toFixed(2).replace('.', ',') + " kr";
+        if (document.getElementById('vis-web-netto')) document.getElementById('vis-web-netto').innerText = net.toFixed(2).replace('.', ',') + " kr";
 
-        const ferieRow = document.getElementById('ls-row-ferie');
-        if (vacDays > 0) {
-            document.getElementById('ls-res-ferie').innerText = "− " + ferieDeduct.toFixed(2).replace('.', ',') + " kr";
-            ferieRow.style.display = 'flex';
-        } else {
-            ferieRow.style.display = 'none';
+        if (document.getElementById('res-fastlonn')) document.getElementById('res-fastlonn').innerText = fast.toFixed(2).replace('.', ',') + " kr";
+        if (document.getElementById('vis-w-fastlonn')) document.getElementById('vis-w-fastlonn').innerText = fast.toFixed(2).replace('.', ',') + " kr";
+
+        if (document.getElementById('res-vaktbrutto')) document.getElementById('res-vaktbrutto').innerText = vaktBrutto.toFixed(2).replace('.', ',') + " kr";
+        if (document.getElementById('vis-w-vaktbrutto')) document.getElementById('vis-w-vaktbrutto').innerText = vaktBrutto.toFixed(2).replace('.', ',') + " kr";
+
+        if (document.getElementById('res-timebank')) document.getElementById('res-timebank').innerText = "+ " + timebankHours.toFixed(1).replace('.', ',') + " t";
+        if (document.getElementById('vis-w-timebank')) document.getElementById('vis-w-timebank').innerText = "+ " + timebankHours.toFixed(1).replace('.', ',') + " t";
+
+        if (document.getElementById('res-totalbrutto')) document.getElementById('res-totalbrutto').innerText = gross.toFixed(2).replace('.', ',') + " kr";
+        if (document.getElementById('vis-w-totalbrutto')) document.getElementById('vis-w-totalbrutto').innerText = gross.toFixed(2).replace('.', ',') + " kr";
+
+        if (document.getElementById('res-union')) document.getElementById('res-union').innerText = "− " + union.toFixed(2).replace('.', ',') + " kr";
+        if (document.getElementById('vis-w-union')) document.getElementById('vis-w-union').innerText = "− " + union.toFixed(2).replace('.', ',') + " kr";
+
+        if (document.getElementById('res-skatt')) document.getElementById('res-skatt').innerText = "− " + tax.toFixed(2).replace('.', ',') + " kr";
+        if (document.getElementById('vis-w-skatt')) document.getElementById('vis-w-skatt').innerText = "− " + tax.toFixed(2).replace('.', ',') + " kr";
+
+        if (document.getElementById('res-netto-bottom')) document.getElementById('res-netto-bottom').innerText = net.toFixed(2).replace('.', ',') + " kr";
+        if (document.getElementById('vis-w-netto-bottom')) document.getElementById('vis-w-netto-bottom').innerText = net.toFixed(2).replace('.', ',') + " kr";
+
+        if (document.getElementById('res-feriepenger')) document.getElementById('res-feriepenger').innerText = vacationPay.toFixed(2).replace('.', ',') + " kr";
+        if (document.getElementById('vis-w-feriepenger')) document.getElementById('vis-w-feriepenger').innerText = vacationPay.toFixed(2).replace('.', ',') + " kr";
+
+        if (document.getElementById('res-aars-fast')) document.getElementById('res-aars-fast').innerText = (fastYear * 1.12).toFixed(2).replace('.', ',') + " kr";
+        if (document.getElementById('vis-w-aarslonn-fast')) document.getElementById('vis-w-aarslonn-fast').innerText = (fastYear * 1.12).toFixed(2).replace('.', ',') + " kr";
+
+        if (document.getElementById('res-aars-tot')) document.getElementById('res-aars-tot').innerText = totalYear.toFixed(2).replace('.', ',') + " kr";
+        if (document.getElementById('vis-w-aarslonn-tot')) document.getElementById('vis-w-aarslonn-tot').innerText = totalYear.toFixed(2).replace('.', ',') + " kr";
+
+        const ferieRow = document.getElementById('row-ferietrekk') || document.getElementById('row-w-ferie');
+        if (ferieRow) {
+            if (vacDays > 0) {
+                if (document.getElementById('res-ferietrekk')) document.getElementById('res-ferietrekk').innerText = "− " + ferieDeduct.toFixed(2).replace('.', ',') + " kr";
+                if (document.getElementById('vis-w-ferietrekk')) document.getElementById('vis-w-ferietrekk').innerText = "− " + ferieDeduct.toFixed(2).replace('.', ',') + " kr";
+                ferieRow.style.display = 'flex';
+            } else {
+                ferieRow.style.display = 'none';
+            }
         }
     }
 
