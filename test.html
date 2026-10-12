@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Watne Pro - Master Web Portal (Design Test) 🛠️⚡</title>
+    <title>Watne Pro - Master Web Portal (Design Test med Undermenyer) 🛠️⚡</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700;800&family=Orbitron:wght@600;800;900&display=swap" rel="stylesheet">
     <style>
@@ -105,6 +105,42 @@
             box-shadow: 0 0 15px rgba(0, 240, 255, 0.15);
         }
 
+        /* UNDERMENY / SUB-TAB BAR */
+        .sub-tab-bar {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            background: #0f172a;
+            padding: 0.375rem;
+            border-radius: 0.875rem;
+            border: 1px solid var(--border-card);
+            overflow-x: auto;
+        }
+
+        .sub-tab-btn {
+            background: transparent;
+            color: var(--text-muted);
+            border: none;
+            border-radius: 0.625rem;
+            font-weight: 700;
+            font-size: 0.8125rem;
+            padding: 0.625rem 1rem;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+        }
+        .sub-tab-btn:hover {
+            color: var(--text-main);
+        }
+        .sub-tab-btn.active {
+            background: var(--primary-cyan);
+            color: #000;
+            box-shadow: 0 4px 12px rgba(0, 240, 255, 0.25);
+        }
+
+        .sub-tab-content { display: none; }
+        .sub-tab-content.active { display: block; animation: fadeIn 0.2s ease; }
+
         /* MASTER INNHOLDSOMRÅDE */
         main.web-content {
             flex: 1;
@@ -117,7 +153,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
             padding-bottom: 1.25rem;
             border-bottom: 1px solid var(--border-card);
         }
@@ -373,262 +409,545 @@
         </div>
     </div>
 
-    <!-- TAB 2: MASKINERING & CNC -->
+    <!-- TAB 2: MASKINERING & CNC (MED UNDERMENYER) -->
     <div id="webtab-maskinering" class="page-tab-content">
-        <div class="portal-grid-2">
-            <!-- SKJÆREDATA & GIBBS -->
-            <div class="web-card">
-                <div class="web-card-header">
-                    <h3 style="margin: 0; font-size: 1.125rem; font-weight: 700;">🌀 Sirkulær Bordsmating (GibbsCAM)</h3>
-                </div>
+        <div class="sub-tab-bar">
+            <button type="button" class="sub-tab-btn active" onclick="switchSubTab('maskinering', 'sirkulaer')" id="subnav-m-sirkulaer">🌀 Sirkulær Mating</button>
+            <button type="button" class="sub-tab-btn" onclick="switchSubTab('maskinering', 'gjenge')" id="subnav-m-gjenge">📐 Gjengediameter (Gibbs)</button>
+            <button type="button" class="sub-tab-btn" onclick="switchSubTab('maskinering', 'effekt')" id="subnav-m-effekt">⚡ Skjærekraft & Effekt</button>
+            <button type="button" class="sub-tab-btn" onclick="switchSubTab('maskinering', 'cakse')" id="subnav-m-cakse">🔄 C-Akse Mating</button>
+        </div>
 
-                <div style="display: flex; flex-direction: column; gap: 0.875rem;">
-                    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.875rem;">
-                        <label style="display: flex; flex-direction: column; gap: 0.25rem;">
-                            <span style="font-size: 0.8125rem; font-weight: 600;">Skjærehastighet Vc (m/min)</span>
-                            <input type="number" id="wm-vc" class="field-class" value="120" oninput="beregnWebMaskinering()">
-                        </label>
-                        <label style="display: flex; flex-direction: column; gap: 0.25rem;">
-                            <span style="font-size: 0.8125rem; font-weight: 600;">Mating pr. tann fz (mm)</span>
-                            <input type="number" step="0.01" id="wm-fz" class="field-class" value="0.08" oninput="beregnWebMaskinering()">
-                        </label>
+        <!-- SUB-TAB 1: SIRKULÆR MATING -->
+        <div id="subtab-maskinering-sirkulaer" class="sub-tab-content active">
+            <div class="portal-grid-2">
+                <div class="web-card">
+                    <div class="web-card-header">
+                        <h3 style="margin: 0; font-size: 1.125rem; font-weight: 700;">🌀 Sirkulær Bordsmating (GibbsCAM)</h3>
                     </div>
 
-                    <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.875rem;">
-                        <label style="display: flex; flex-direction: column; gap: 0.25rem;">
-                            <span style="font-size: 0.8125rem; font-weight: 600;">Skjær (z)</span>
-                            <input type="number" id="wm-z" class="field-class" value="4" oninput="beregnWebMaskinering()">
-                        </label>
-                        <label style="display: flex; flex-direction: column; gap: 0.25rem;">
-                            <span style="font-size: 0.8125rem; font-weight: 600;">Fres Ø (mm)</span>
-                            <input type="number" id="wm-dfres" class="field-class" value="84" oninput="beregnWebMaskinering()">
-                        </label>
-                        <label style="display: flex; flex-direction: column; gap: 0.25rem;">
-                            <span style="font-size: 0.8125rem; font-weight: 600;">Hull Ø (mm)</span>
-                            <input type="number" id="wm-dhull" class="field-class" value="410" oninput="beregnWebMaskinering()">
-                        </label>
-                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 0.875rem;">
+                        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.875rem;">
+                            <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                                <span style="font-size: 0.8125rem; font-weight: 600;">Skjærehastighet Vc (m/min)</span>
+                                <input type="number" id="wm-vc" class="field-class" value="120" oninput="beregnWebMaskinering()">
+                            </label>
+                            <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                                <span style="font-size: 0.8125rem; font-weight: 600;">Mating pr. tann fz (mm)</span>
+                                <input type="number" step="0.01" id="wm-fz" class="field-class" value="0.08" oninput="beregnWebMaskinering()">
+                            </label>
+                        </div>
 
-                    <div class="result-panel">
-                        <div class="line-row strong"><span>Spindel RPM (n):</span><span id="wm-res-rpm" class="font-mono" style="font-size: 1.15rem; color: var(--primary-cyan);">0 RPM</span></div>
-                        <div class="line-row strong" style="margin-top: 0.375rem;"><span>Sirkulær Bordsmating (Vf):</span><span id="wm-res-vf" class="font-mono" style="font-size: 1.35rem; color: var(--primary-cyan);">0 mm/min</span></div>
+                        <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.875rem;">
+                            <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                                <span style="font-size: 0.8125rem; font-weight: 600;">Skjær (z)</span>
+                                <input type="number" id="wm-z" class="field-class" value="4" oninput="beregnWebMaskinering()">
+                            </label>
+                            <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                                <span style="font-size: 0.8125rem; font-weight: 600;">Fres Ø (mm)</span>
+                                <input type="number" id="wm-dfres" class="field-class" value="84" oninput="beregnWebMaskinering()">
+                            </label>
+                            <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                                <span style="font-size: 0.8125rem; font-weight: 600;">Hull Ø (mm)</span>
+                                <input type="number" id="wm-dhull" class="field-class" value="410" oninput="beregnWebMaskinering()">
+                            </label>
+                        </div>
+
+                        <div class="result-panel">
+                            <div class="line-row strong"><span>Spindel RPM (n):</span><span id="wm-res-rpm" class="font-mono" style="font-size: 1.15rem; color: var(--primary-cyan);">0 RPM</span></div>
+                            <div class="line-row strong" style="margin-top: 0.375rem;"><span>Sirkulær Bordsmating (Vf):</span><span id="wm-res-vf" class="font-mono" style="font-size: 1.35rem; color: var(--primary-cyan);">0 mm/min</span></div>
+                        </div>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <!-- SKJÆREKRAFT, EFFEKT & DREIEMOMENT -->
-            <div class="web-card">
-                <div class="web-card-header">
-                    <h3 style="margin: 0; font-size: 1.125rem; font-weight: 700;">⚡ Skjærekraft, Spindeleffekt & Dreiemoment</h3>
-                </div>
-
-                <div style="display: flex; flex-direction: column; gap: 0.875rem;">
-                    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.875rem;">
-                        <label style="display: flex; flex-direction: column; gap: 0.25rem;">
-                            <span style="font-size: 0.8125rem; font-weight: 600;">Aksial Dybde ap (mm)</span>
-                            <input type="number" id="wm-ap" class="field-class" value="5" oninput="beregnWebEffekt()">
-                        </label>
-                        <label style="display: flex; flex-direction: column; gap: 0.25rem;">
-                            <span style="font-size: 0.8125rem; font-weight: 600;">Radial Bredde ae (mm)</span>
-                            <input type="number" id="wm-ae" class="field-class" value="12" oninput="beregnWebEffekt()">
-                        </label>
+        <!-- SUB-TAB 2: GJENGEDIAMETER GIBBS -->
+        <div id="subtab-maskinering-gjenge" class="sub-tab-content">
+            <div class="portal-grid-2">
+                <div class="web-card">
+                    <div class="web-card-header">
+                        <h3 style="margin: 0; font-size: 1.125rem; font-weight: 700;">📐 Inner/Ytter Gjengediameter (Gibbs & Dreiebenk)</h3>
                     </div>
 
-                    <div class="result-panel" style="background: rgba(16, 185, 129, 0.08); border-color: var(--emerald-green);">
-                        <div class="line-row strong"><span style="color: var(--emerald-green);">Sponavvirkning (Q):</span><span id="wm-res-q" class="font-mono" style="color: var(--emerald-green);">0 cm³/min</span></div>
-                        <div class="line-row strong" style="margin-top: 0.25rem;"><span style="color: var(--emerald-green);">Skjærekraft (Fc):</span><span id="wm-res-fc" class="font-mono" style="color: var(--emerald-green);">0 N</span></div>
-                        <div class="line-row strong" style="margin-top: 0.25rem;"><span style="color: var(--emerald-green); font-size: 1.1rem;">Spindeleffektbehov (Pc):</span><span id="wm-res-pc" class="font-mono" style="font-size: 1.25rem; color: var(--emerald-green);">0.0 kW</span></div>
-                        <div class="line-row strong" style="margin-top: 0.25rem;"><span style="color: var(--emerald-green);">Dreiemoment (Mc):</span><span id="wm-res-mc" class="font-mono" style="color: var(--emerald-green);">0 Nm</span></div>
+                    <div style="display: flex; flex-direction: column; gap: 0.875rem;">
+                        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.875rem;">
+                            <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                                <span style="font-size: 0.8125rem; font-weight: 600;">Nominell Gjengediameter (mm)</span>
+                                <input type="number" id="wm-g-dia" class="field-class" value="16" oninput="beregnWebGjengediameter()">
+                            </label>
+                            <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                                <span style="font-size: 0.8125rem; font-weight: 600;">Gjengestigning Pitch (mm)</span>
+                                <input type="number" step="0.1" id="wm-g-pitch" class="field-class" value="2.0" oninput="beregnWebGjengediameter()">
+                            </label>
+                        </div>
+
+                        <div class="result-panel">
+                            <div class="line-row strong"><span>Innvendig Gjenge (Mutter - Kjernebor):</span><span id="wm-g-res-in" class="font-mono" style="color: var(--primary-cyan);">14.00 mm</span></div>
+                            <div class="line-row strong" style="margin-top: 0.375rem;"><span>Utvendig Gjenge (Skrue - Dreiediameter):</span><span id="wm-g-res-ut" class="font-mono" style="color: var(--primary-cyan);">15.75 mm</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SUB-TAB 3: EFFEKT & DREIEMOMENT -->
+        <div id="subtab-maskinering-effekt" class="sub-tab-content">
+            <div class="portal-grid-2">
+                <div class="web-card">
+                    <div class="web-card-header">
+                        <h3 style="margin: 0; font-size: 1.125rem; font-weight: 700;">⚡ Skjærekraft, Spindeleffekt & Dreiemoment</h3>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 0.875rem;">
+                        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.875rem;">
+                            <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                                <span style="font-size: 0.8125rem; font-weight: 600;">Aksial Dybde ap (mm)</span>
+                                <input type="number" id="wm-ap" class="field-class" value="5" oninput="beregnWebEffekt()">
+                            </label>
+                            <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                                <span style="font-size: 0.8125rem; font-weight: 600;">Radial Bredde ae (mm)</span>
+                                <input type="number" id="wm-ae" class="field-class" value="12" oninput="beregnWebEffekt()">
+                            </label>
+                        </div>
+
+                        <div class="result-panel" style="background: rgba(16, 185, 129, 0.08); border-color: var(--emerald-green);">
+                            <div class="line-row strong"><span style="color: var(--emerald-green);">Sponavvirkning (Q):</span><span id="wm-res-q" class="font-mono" style="color: var(--emerald-green);">0 cm³/min</span></div>
+                            <div class="line-row strong" style="margin-top: 0.25rem;"><span style="color: var(--emerald-green);">Skjærekraft (Fc):</span><span id="wm-res-fc" class="font-mono" style="color: var(--emerald-green);">0 N</span></div>
+                            <div class="line-row strong" style="margin-top: 0.25rem;"><span style="color: var(--emerald-green); font-size: 1.1rem;">Spindeleffektbehov (Pc):</span><span id="wm-res-pc" class="font-mono" style="font-size: 1.25rem; color: var(--emerald-green);">0.0 kW</span></div>
+                            <div class="line-row strong" style="margin-top: 0.25rem;"><span style="color: var(--emerald-green);">Dreiemoment (Mc):</span><span id="wm-res-mc" class="font-mono" style="color: var(--emerald-green);">0 Nm</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SUB-TAB 4: C-AKSE MATING -->
+        <div id="subtab-maskinering-cakse" class="sub-tab-content">
+            <div class="portal-grid-2">
+                <div class="web-card">
+                    <div class="web-card-header">
+                        <h3 style="margin: 0; font-size: 1.125rem; font-weight: 700;">🔄 MM/MIN til Grader/MIN (C-Akse)</h3>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 0.875rem;">
+                        <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                            <span style="font-size: 0.8125rem; font-weight: 600;">Mating mm/min (Vf)</span>
+                            <input type="number" id="wm-c-vf" class="field-class" value="1400" oninput="beregnWebCaxis()">
+                        </label>
+                        <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                            <span style="font-size: 0.8125rem; font-weight: 600;">Emnediameter DIA (mm)</span>
+                            <input type="number" step="0.01" id="wm-c-dia" class="field-class" value="3.14" oninput="beregnWebCaxis()">
+                        </label>
+
+                        <div class="result-panel" style="background: rgba(245, 158, 11, 0.08); border-color: var(--amber-gold);">
+                            <div class="line-row strong"><span style="color: var(--amber-gold);">1 Grad tilsvarer:</span><span id="wm-c-onegrad" class="font-mono" style="color: var(--amber-gold);">0 mm</span></div>
+                            <div class="line-row strong" style="margin-top: 0.375rem;"><span style="color: var(--amber-gold); font-size: 1.1rem;">Roterende Mating (°/min):</span><span id="wm-c-res" class="font-mono" style="font-size: 1.35rem; color: var(--amber-gold);">0 °/min</span></div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- TAB 3: VERKSTEDTABELLER, MATERIALER, GJENGER, PCD & TREKANT -->
+    <!-- TAB 3: VERKSTEDTABELLER, MATERIALER, GJENGER, PCD & TREKANT (MED UNDERMENYER) -->
     <div id="webtab-verksted" class="page-tab-content">
-        <div class="portal-grid-2">
-            <!-- MATERIALER, OPERASJONER OG VERKTØY -->
-            <div class="web-card">
-                <div class="web-card-header">
-                    <h3 style="margin: 0; font-size: 1.125rem; font-weight: 700;">🧪 Materialvelger, Operasjon & Verktøy</h3>
+        <!-- SUB-TAB BAR FOR VERKSTED -->
+        <div class="sub-tab-bar">
+            <button type="button" class="sub-tab-btn active" onclick="switchSubTab('verksted', 'skjaeredata')" id="subnav-v-skjaeredata">🧪 Skjæredata & Bor</button>
+            <button type="button" class="sub-tab-btn" onclick="switchSubTab('verksted', 'gjenger')" id="subnav-v-gjenger">🔩 Gjenger & Toleranser</button>
+            <button type="button" class="sub-tab-btn" onclick="switchSubTab('verksted', 'vekt')" id="subnav-v-vekt">⚖️ Vekt, Skruer & PCD</button>
+            <button type="button" class="sub-tab-btn" onclick="switchSubTab('verksted', 'matte')" id="subnav-v-matte">📐 Matte & Konverterer</button>
+        </div>
+
+        <!-- SUB-TAB 1: SKJÆREDATA & BOR -->
+        <div id="subtab-verksted-skjaeredata" class="sub-tab-content active">
+            <div class="portal-grid-2">
+                <div class="web-card">
+                    <div class="web-card-header">
+                        <h3 style="margin: 0; font-size: 1.125rem; font-weight: 700;">🧪 Materialvelger, Operasjon & Verktøy</h3>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 0.875rem;">
+                        <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                            <span style="font-size: 0.8125rem; font-weight: 600;">Velg Materiale</span>
+                            <select id="wv-mat" class="field-class" onchange="beregnWebVerksted()">
+                                <option value="s355">Konstruksjonsstål / S355 / St52 (P1)</option>
+                                <option value="c45">Seigherdingsstål / C45 / 42CrMo4 (P2)</option>
+                                <option value="ss316" selected>Syrefast 316L / A4 (M1)</option>
+                                <option value="alu">Aluminium 6082-T6 (N1)</option>
+                                <option value="brass">Messing / Kobber (N2)</option>
+                                <option value="pom">Plast / POM / PEHD</option>
+                            </select>
+                        </label>
+
+                        <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                            <span style="font-size: 0.8125rem; font-weight: 600;">Operasjonstype</span>
+                            <select id="wv-op" class="field-class" onchange="beregnWebVerksted()">
+                                <option value="mill_rough" selected>Fresing - Skrubb / Grovfresing</option>
+                                <option value="mill_finish">Fresing - Slett / Finfresing</option>
+                                <option value="drill">Boring - Spiralbor / Kjernebor</option>
+                                <option value="udrill">Boring - U-Bor / Vendeskjærsbor</option>
+                                <option value="turn_rough">Dreiing - Skrubbdreiing</option>
+                                <option value="turn_finish">Dreiing - Slettdreiing</option>
+                                <option value="tap">Gjenging - Gjengebor / Gjengefres</option>
+                            </select>
+                        </label>
+
+                        <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                            <span style="font-size: 0.8125rem; font-weight: 600;">Verktøymateriale</span>
+                            <select id="wv-toolmat" class="field-class" onchange="beregnWebVerksted()">
+                                <option value="hm_coated" selected>Belagt Hardmetall (HM / VHM Carbide)</option>
+                                <option value="hm_uncoated">Ubelagt Hardmetall (HM / VHM - Alu/Plast)</option>
+                                <option value="hss_co">Hurtigstål Kobolt (HSS-Co / HSS-E)</option>
+                                <option value="hss_std">Hurtigstål Standard (HSS)</option>
+                            </select>
+                        </label>
+
+                        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.875rem;">
+                            <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                                <span style="font-size: 0.8125rem; font-weight: 600;">Verktøy DIA (mm)</span>
+                                <input type="number" id="wv-dia" class="field-class" value="16" oninput="beregnWebVerksted()">
+                            </label>
+                            <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                                <span style="font-size: 0.8125rem; font-weight: 600;">Antall skjær (z)</span>
+                                <input type="number" id="wv-z" class="field-class" value="4" oninput="beregnWebVerksted()">
+                            </label>
+                        </div>
+
+                        <div class="result-panel">
+                            <div class="line-row strong"><span>Anbefalt Vc:</span><span id="wv-res-vc" class="font-mono" style="color: var(--primary-cyan);">90 m/min</span></div>
+                            <div class="line-row strong" style="margin-top: 0.25rem;"><span>Beregnet RPM:</span><span id="wv-res-rpm" class="font-mono" style="color: var(--primary-cyan);">1790 RPM</span></div>
+                            <div class="line-row strong" style="margin-top: 0.25rem;"><span>Bordsmating (Vf):</span><span id="wv-res-vf" class="font-mono" style="font-size: 1.25rem; color: var(--primary-cyan);">572 mm/min</span></div>
+                        </div>
+                    </div>
                 </div>
 
-                <div style="display: flex; flex-direction: column; gap: 0.875rem;">
-                    <label style="display: flex; flex-direction: column; gap: 0.25rem;">
-                        <span style="font-size: 0.8125rem; font-weight: 600;">Velg Materiale</span>
-                        <select id="wv-mat" class="field-class" onchange="beregnWebVerksted()">
-                            <option value="s355">Konstruksjonsstål / S355 / St52 (P1)</option>
-                            <option value="c45">Seigherdingsstål / C45 / 42CrMo4 (P2)</option>
-                            <option value="ss316" selected>Syrefast 316L / A4 (M1)</option>
-                            <option value="alu">Aluminium 6082-T6 (N1)</option>
-                            <option value="brass">Messing / Kobber (N2)</option>
-                            <option value="pom">Plast / POM / PEHD</option>
-                        </select>
-                    </label>
+                <!-- BOREDYBDE & SPISSTILLEGG -->
+                <div class="web-card">
+                    <div class="web-card-header">
+                        <h3 style="margin: 0; font-size: 1.125rem; font-weight: 700;">📐 Boredybde & Bor-spisstillegg</h3>
+                    </div>
 
-                    <label style="display: flex; flex-direction: column; gap: 0.25rem;">
-                        <span style="font-size: 0.8125rem; font-weight: 600;">Operasjonstype</span>
-                        <select id="wv-op" class="field-class" onchange="beregnWebVerksted()">
-                            <option value="mill_rough" selected>Fresing - Skrubb / Grovfresing</option>
-                            <option value="mill_finish">Fresing - Slett / Finfresing</option>
-                            <option value="drill">Boring - Spiralbor / Kjernebor</option>
-                            <option value="udrill">Boring - U-Bor / Vendeskjærsbor</option>
-                            <option value="turn_rough">Dreiing - Skrubbdreiing</option>
-                            <option value="turn_finish">Dreiing - Slettdreiing</option>
-                            <option value="tap">Gjenging - Gjengebor / Gjengefres</option>
-                        </select>
-                    </label>
+                    <div style="display: flex; flex-direction: column; gap: 0.875rem;">
+                        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.875rem;">
+                            <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                                <span style="font-size: 0.8125rem; font-weight: 600;">Bordiameter (mm)</span>
+                                <input type="number" id="wb-dia" class="field-class" value="16" oninput="beregnWebBoredybde()">
+                            </label>
+                            <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                                <span style="font-size: 0.8125rem; font-weight: 600;">Spissvinkel</span>
+                                <select id="wb-angle" class="field-class" onchange="beregnWebBoredybde()">
+                                    <option value="118" selected>118° (HSS bor)</option>
+                                    <option value="140">140° (Hardmetall bor)</option>
+                                    <option value="90">90° (Spotbor)</option>
+                                </select>
+                            </label>
+                        </div>
 
-                    <label style="display: flex; flex-direction: column; gap: 0.25rem;">
-                        <span style="font-size: 0.8125rem; font-weight: 600;">Verktøymateriale</span>
-                        <select id="wv-toolmat" class="field-class" onchange="beregnWebVerksted()">
-                            <option value="hm_coated" selected>Belagt Hardmetall (HM / VHM Carbide)</option>
-                            <option value="hm_uncoated">Ubelagt Hardmetall (HM / VHM - Alu/Plast)</option>
-                            <option value="hss_co">Hurtigstål Kobolt (HSS-Co / HSS-E)</option>
-                            <option value="hss_std">Hurtigstål Standard (HSS)</option>
-                        </select>
-                    </label>
+                        <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                            <span style="font-size: 0.8125rem; font-weight: 600;">Ønsket sylindrisk dybde (mm)</span>
+                            <input type="number" id="wb-depth" class="field-class" value="25" oninput="beregnWebBoredybde()">
+                        </label>
+
+                        <div class="result-panel">
+                            <div class="line-row strong"><span>Ekstra spisstillegg (h):</span><span id="wb-res-tip" class="font-mono" style="color: var(--primary-cyan);">4.80 mm</span></div>
+                            <div class="line-row strong" style="margin-top: 0.25rem;"><span>Total Z-boredybde i CNC:</span><span id="wb-res-tot" class="font-mono" style="font-size: 1.25rem; color: var(--primary-cyan);">29.80 mm</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SUB-TAB 2: GJENGER & TOLERANSER -->
+        <div id="subtab-verksted-gjenger" class="sub-tab-content">
+            <div class="portal-grid-2">
+                <!-- GJENGETABELL M & BSP -->
+                <div class="web-card">
+                    <div class="web-card-header">
+                        <h3 style="margin: 0; font-size: 1.125rem; font-weight: 700;">🔩 Gjengetabell & Kjernebor (M & BSP Rørgjenger)</h3>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 0.875rem;">
+                        <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                            <span style="font-size: 0.8125rem; font-weight: 600;">Velg Gjengestørrelse</span>
+                            <select id="wtap-select" class="field-class" onchange="beregnWebGjengetabell()">
+                                <optgroup label="Metriske Gjenger (ISO Metric)">
+                                    <option value="M6">M6 × 1.0 mm</option>
+                                    <option value="M8">M8 × 1.25 mm</option>
+                                    <option value="M10" selected>M10 × 1.5 mm</option>
+                                    <option value="M12">M12 × 1.75 mm</option>
+                                    <option value="M16">M16 × 2.0 mm</option>
+                                    <option value="M20">M20 × 2.5 mm</option>
+                                </optgroup>
+                                <optgroup label="BSP / G Rørgjenger (ISO 228-1)">
+                                    <option value="G1/8">BSP / G 1/8" (28 tpi - Kjernebor 8.8 mm)</option>
+                                    <option value="G1/4">BSP / G 1/4" (19 tpi - Kjernebor 11.8 mm)</option>
+                                    <option value="G3/8">BSP / G 3/8" (19 tpi - Kjernebor 15.25 mm)</option>
+                                    <option value="G1/2">BSP / G 1/2" (14 tpi - Kjernebor 19.0 mm)</option>
+                                    <option value="G3/4">BSP / G 3/4" (14 tpi - Kjernebor 24.5 mm)</option>
+                                    <option value="G1">BSP / G 1" (11 tpi - Kjernebor 30.75 mm)</option>
+                                </optgroup>
+                            </select>
+                        </label>
+
+                        <div class="result-panel" style="background: rgba(245, 158, 11, 0.08); border-color: var(--amber-gold);">
+                            <div class="line-row strong"><span style="color: var(--amber-gold);">Anbefalt Kjernebor:</span><span id="wtap-res-drill" class="font-mono" style="font-size: 1.25rem; color: var(--amber-gold);">8.5 mm</span></div>
+                            <div class="line-row strong" style="margin-top: 0.25rem;"><span style="color: var(--amber-gold);">Gjengestigning Pitch:</span><span id="wtap-res-pitch" class="font-mono" style="color: var(--amber-gold);">1.50 mm</span></div>
+                            <div class="line-row strong" style="margin-top: 0.25rem;"><span style="color: var(--amber-gold);">Frigangshull (Passbor):</span><span id="wtap-res-clear" class="font-mono" style="color: var(--amber-gold);">10.5 mm</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- GJENGE-TOLERANSER ISO 6H/6g & BSP -->
+                <div class="web-card">
+                    <div class="web-card-header">
+                        <h3 style="margin: 0; font-size: 1.125rem; font-weight: 700;">📐 Gjenge-Toleranser & Målegrenser</h3>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 0.875rem;">
+                        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.875rem;">
+                            <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                                <span style="font-size: 0.8125rem; font-weight: 600;">Størrelse</span>
+                                <select id="wttol-size" class="field-class" onchange="beregnWebGjengetoleranse()">
+                                    <option value="M6">M6 × 1.0</option>
+                                    <option value="M8">M8 × 1.25</option>
+                                    <option value="M10" selected>M10 × 1.5</option>
+                                    <option value="M12">M12 × 1.75</option>
+                                    <option value="M16">M16 × 2.0</option>
+                                    <option value="G1/2">BSP / G 1/2"</option>
+                                    <option value="G3/4">BSP / G 3/4"</option>
+                                </select>
+                            </label>
+                            <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                                <span style="font-size: 0.8125rem; font-weight: 600;">Klasse</span>
+                                <select id="wttol-fit" class="field-class" onchange="beregnWebGjengetoleranse()">
+                                    <option value="6H" selected>Mutter 6H / Innvendig BSP Klasse A</option>
+                                    <option value="6g">Skrue 6g / Utvendig BSP Klasse A</option>
+                                    <option value="ClassB">Utvendig BSP Klasse B</option>
+                                </select>
+                            </label>
+                        </div>
+
+                        <div class="result-panel" style="background: rgba(245, 158, 11, 0.08); border-color: var(--amber-gold);">
+                            <div class="line-row strong"><span style="color: var(--amber-gold);">Store diameter (Major):</span><span id="wttol-res-maj" class="font-mono" style="color: var(--amber-gold);">10.000 – 10.420 mm</span></div>
+                            <div class="line-row strong" style="margin-top: 0.25rem;"><span style="color: var(--amber-gold);">Flangedia (Pitch):</span><span id="wttol-res-pitch" class="font-mono" style="color: var(--amber-gold);">9.026 – 9.206 mm</span></div>
+                            <div class="line-row strong" style="margin-top: 0.25rem;"><span style="color: var(--amber-gold);">Lille dia (Minor):</span><span id="wttol-res-min" class="font-mono" style="color: var(--amber-gold);">8.376 – 8.676 mm</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SUB-TAB 3: VEKT, SKRUER & PCD -->
+        <div id="subtab-verksted-vekt" class="sub-tab-content">
+            <div class="portal-grid-2">
+                <!-- MATERIALVEKT -->
+                <div class="web-card">
+                    <div class="web-card-header">
+                        <h3 style="margin: 0; font-size: 1.125rem; font-weight: 700;">⚖️ Materialvekt (Plate, Aksling, Rør)</h3>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 0.875rem;">
+                        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.875rem;">
+                            <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                                <span style="font-size: 0.8125rem; font-weight: 600;">Form</span>
+                                <select id="ww-type" class="field-class" onchange="beregnWebVekt()">
+                                    <option value="plate" selected>Plate / Flattstål (B × L × T)</option>
+                                    <option value="shaft">Rund Aksling (Ø × L)</option>
+                                </select>
+                            </label>
+                            <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                                <span style="font-size: 0.8125rem; font-weight: 600;">Materiale</span>
+                                <select id="ww-mat" class="field-class" onchange="beregnWebVekt()">
+                                    <option value="7.85" selected>Stål / S355 (7.85 g/cm³)</option>
+                                    <option value="8.0">Syrefast 316L (8.0 g/cm³)</option>
+                                    <option value="2.7">Aluminium (2.7 g/cm³)</option>
+                                </select>
+                            </label>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.875rem;">
+                            <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                                <span style="font-size: 0.8125rem; font-weight: 600;">Lengde (mm)</span>
+                                <input type="number" id="ww-l" class="field-class" value="1000" oninput="beregnWebVekt()">
+                            </label>
+                            <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                                <span style="font-size: 0.8125rem; font-weight: 600;">Bredde/Ø (mm)</span>
+                                <input type="number" id="ww-b" class="field-class" value="500" oninput="beregnWebVekt()">
+                            </label>
+                            <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                                <span style="font-size: 0.8125rem; font-weight: 600;">Tykkelse (mm)</span>
+                                <input type="number" id="ww-t" class="field-class" value="10" oninput="beregnWebVekt()">
+                            </label>
+                        </div>
+
+                        <div class="result-panel" style="background: rgba(16, 185, 129, 0.08); border-color: var(--emerald-green);">
+                            <div class="line-row strong"><span style="color: var(--emerald-green);">Beregnet Vekt (kg):</span><span id="ww-res-kg" class="font-mono" style="font-size: 1.35rem; color: var(--emerald-green);">39.25 kg</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SKRUEMOMENT MED SMØRING (-25% Nm) -->
+                <div class="web-card">
+                    <div class="web-card-header">
+                        <h3 style="margin: 0; font-size: 1.125rem; font-weight: 700;">🔧 Tiltrekkingsmoment & Friksjon</h3>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 0.875rem;">
+                        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.875rem;">
+                            <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                                <span style="font-size: 0.8125rem; font-weight: 600;">Skruestørrelse</span>
+                                <select id="wt-size" class="field-class" onchange="beregnWebTorque()">
+                                    <option value="M6">M6</option>
+                                    <option value="M8">M8</option>
+                                    <option value="M10" selected>M10</option>
+                                    <option value="M12">M12</option>
+                                    <option value="M16">M16</option>
+                                    <option value="M20">M20</option>
+                                </select>
+                            </label>
+                            <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                                <span style="font-size: 0.8125rem; font-weight: 600;">Klasse</span>
+                                <select id="wt-class" class="field-class" onchange="beregnWebTorque()">
+                                    <option value="8.8" selected>Stål 8.8</option>
+                                    <option value="10.9">Stål 10.9</option>
+                                    <option value="12.9">Stål 12.9</option>
+                                    <option value="A4-80">Syrefast A4-80</option>
+                                </select>
+                            </label>
+                        </div>
+
+                        <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                            <span style="font-size: 0.8125rem; font-weight: 600;">Smøring / Friksjon</span>
+                            <select id="wt-lube" class="field-class" onchange="beregnWebTorque()">
+                                <option value="dry">Tørre / Usmurte gjenger (μ = 0.14)</option>
+                                <option value="lube" selected>Smurte gjenger / Pasta / Fett (μ = 0.10, -25% Nm)</option>
+                            </select>
+                        </label>
+
+                        <div class="result-panel" style="background: rgba(16, 185, 129, 0.08); border-color: var(--emerald-green);">
+                            <div class="line-row strong"><span style="color: var(--emerald-green);">Tiltrekkingsmoment (Nm):</span><span id="wt-res-nm" class="font-mono" style="font-size: 1.35rem; color: var(--emerald-green);">35 Nm</span></div>
+                            <div class="line-row strong" style="margin-top: 0.25rem;"><span style="color: var(--emerald-green);">Tiltrekkingskraft (kN):</span><span id="wt-res-kn" class="font-mono" style="color: var(--emerald-green);">26 kN</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PCD FLENSE-DIAGRAM -->
+                <div class="web-card" style="grid-column: span 2;">
+                    <div class="web-card-header">
+                        <h3 style="margin: 0; font-size: 1.125rem; font-weight: 700;">⭕ Delingssirkel & Flense-koordinater (PCD)</h3>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem; align-items: center;">
+                        <div style="text-align: center; padding: 0.75rem; background: #0b1222; border-radius: 0.75rem; border: 1px solid var(--border-card);">
+                            <svg width="200" height="200" viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg" style="max-width: 100%; height: auto;">
+                                <circle cx="110" cy="110" r="95" fill="rgba(16, 185, 129, 0.08)" stroke="#10b981" stroke-width="2"/>
+                                <circle cx="110" cy="110" r="30" fill="#141e33" stroke="#10b981" stroke-width="2"/>
+                                <line x1="110" y1="10" x2="110" y2="210" stroke="#1f2d4d" stroke-width="1.5" stroke-dasharray="4,4"/>
+                                <line x1="10" y1="110" x2="210" y2="110" stroke="#1f2d4d" stroke-width="1.5" stroke-dasharray="4,4"/>
+                                <circle cx="110" cy="110" r="68" fill="none" stroke="#00f0ff" stroke-width="2" stroke-dasharray="6,4"/>
+                                <line x1="178" y1="110" x2="158" y2="62" stroke="#ff0055" stroke-width="2.5"/>
+                                <circle cx="178" cy="110" r="7" fill="#141e33" stroke="#10b981" stroke-width="2"/>
+                                <circle cx="158" cy="62" r="7" fill="#141e33" stroke="#10b981" stroke-width="2"/>
+                                <circle cx="110" cy="42" r="7" fill="#141e33" stroke="#10b981" stroke-width="2"/>
+                                <circle cx="62" cy="62" r="7" fill="#141e33" stroke="#10b981" stroke-width="2"/>
+                                <circle cx="42" cy="110" r="7" fill="#141e33" stroke="#10b981" stroke-width="2"/>
+                                <text x="182" y="85" fill="#ff0055" font-size="11" font-weight="800">k (Korde)</text>
+                                <text x="65" y="105" fill="#00f0ff" font-size="11" font-weight="800">PCD Ø</text>
+                            </svg>
+                        </div>
+
+                        <div style="display: flex; flex-direction: column; gap: 0.875rem;">
+                            <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                                <span style="font-size: 0.8125rem; font-weight: 600;">Delingssirkel Ø (PCD mm)</span>
+                                <input type="number" id="wpcd-dia" class="field-class" value="200" oninput="beregnWebPcd()">
+                            </label>
+                            <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                                <span style="font-size: 0.8125rem; font-weight: 600;">Antall hull (N)</span>
+                                <input type="number" id="wpcd-num" class="field-class" value="8" oninput="beregnWebPcd()">
+                            </label>
+
+                            <div class="result-panel" style="background: rgba(16, 185, 129, 0.08); border-color: var(--emerald-green);">
+                                <div class="line-row strong"><span style="color: var(--emerald-green);">Kordeavstand (Måles direkte):</span><span id="wpcd-res-chord" class="font-mono" style="font-size: 1.25rem; color: var(--emerald-green);">76.54 mm</span></div>
+                                <div class="line-row strong" style="margin-top: 0.25rem;"><span style="color: var(--emerald-green);">Vinkelstigning pr. hull:</span><span id="wpcd-res-angle" class="font-mono" style="color: var(--emerald-green);">45.0°</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SUB-TAB 4: MATTE, TREKANT & BØYING -->
+        <div id="subtab-verksted-matte" class="sub-tab-content">
+            <div class="portal-grid-2">
+                <!-- TRIGONOMETRI TREKANT DIAGRAM -->
+                <div class="web-card">
+                    <div class="web-card-header">
+                        <h3 style="margin: 0; font-size: 1.125rem; font-weight: 700;">📐 Trigonometri & Trekant (Pythagoras)</h3>
+                    </div>
+
+                    <div style="text-align: center; margin-bottom: 1rem; padding: 0.75rem; background: #0b1222; border-radius: 0.75rem; border: 1px solid var(--border-card);">
+                        <svg width="200" height="130" viewBox="0 0 240 150" xmlns="http://www.w3.org/2000/svg" style="max-width: 100%; height: auto;">
+                            <path d="M 40 110 L 50 110 L 50 120" fill="none" stroke="#a78bfa" stroke-width="2"/>
+                            <polygon points="40,120 200,120 40,20" fill="rgba(167, 139, 250, 0.12)" stroke="#a78bfa" stroke-width="3"/>
+                            <text x="18" y="75" fill="#f8fafc" font-size="13" font-weight="800">a (Vert)</text>
+                            <text x="105" y="142" fill="#f8fafc" font-size="13" font-weight="800">b (Horisont)</text>
+                            <text x="120" y="60" fill="#a78bfa" font-size="13" font-weight="800">c (Hypotenus)</text>
+                        </svg>
+                    </div>
 
                     <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.875rem;">
                         <label style="display: flex; flex-direction: column; gap: 0.25rem;">
-                            <span style="font-size: 0.8125rem; font-weight: 600;">Verktøy DIA (mm)</span>
-                            <input type="number" id="wv-dia" class="field-class" value="16" oninput="beregnWebVerksted()">
+                            <span style="font-size: 0.8125rem; font-weight: 600;">Katet a (mm)</span>
+                            <input type="number" id="wtri-a" class="field-class" placeholder="f.eks 30" oninput="beregnWebTrekant()">
                         </label>
                         <label style="display: flex; flex-direction: column; gap: 0.25rem;">
-                            <span style="font-size: 0.8125rem; font-weight: 600;">Antall skjær (z)</span>
-                            <input type="number" id="wv-z" class="field-class" value="4" oninput="beregnWebVerksted()">
+                            <span style="font-size: 0.8125rem; font-weight: 600;">Katet b (mm)</span>
+                            <input type="number" id="wtri-b" class="field-class" placeholder="f.eks 40" oninput="beregnWebTrekant()">
                         </label>
                     </div>
 
-                    <div class="result-panel">
-                        <div class="line-row strong"><span>Anbefalt Vc:</span><span id="wv-res-vc" class="font-mono" style="color: var(--primary-cyan);">90 m/min</span></div>
-                        <div class="line-row strong" style="margin-top: 0.25rem;"><span>Beregnet RPM:</span><span id="wv-res-rpm" class="font-mono" style="color: var(--primary-cyan);">1790 RPM</span></div>
-                        <div class="line-row strong" style="margin-top: 0.25rem;"><span>Bordsmating (Vf):</span><span id="wv-res-vf" class="font-mono" style="font-size: 1.25rem; color: var(--primary-cyan);">572 mm/min</span></div>
+                    <div class="result-panel" style="background: rgba(167, 139, 250, 0.08); border-color: var(--purple-neon);">
+                        <div class="line-row strong"><span style="color: var(--purple-neon);">Hypotenus c (Skrålengde):</span><span id="wtri-res-c" class="font-mono" style="font-size: 1.25rem; color: var(--purple-neon);">50.00 mm</span></div>
+                        <div class="line-row strong" style="margin-top: 0.25rem;"><span style="color: var(--purple-neon);">Vinkler A° og B°:</span><span id="wtri-res-angles" class="font-mono" style="color: var(--purple-neon);">A = 36.87° | B = 53.13°</span></div>
                     </div>
                 </div>
-            </div>
 
-            <!-- SKRUEMOMENT MED SMØRING (-25% Nm) -->
-            <div class="web-card">
-                <div class="web-card-header">
-                    <h3 style="margin: 0; font-size: 1.125rem; font-weight: 700;">🔧 Tiltrekkingsmoment & Friksjon</h3>
-                </div>
-
-                <div style="display: flex; flex-direction: column; gap: 0.875rem;">
-                    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.875rem;">
-                        <label style="display: flex; flex-direction: column; gap: 0.25rem;">
-                            <span style="font-size: 0.8125rem; font-weight: 600;">Skruestørrelse</span>
-                            <select id="wt-size" class="field-class" onchange="beregnWebTorque()">
-                                <option value="M4">M4</option>
-                                <option value="M5">M5</option>
-                                <option value="M6">M6</option>
-                                <option value="M8">M8</option>
-                                <option value="M10" selected>M10</option>
-                                <option value="M12">M12</option>
-                                <option value="M16">M16</option>
-                                <option value="M20">M20</option>
-                                <option value="M24">M24</option>
-                                <option value="M30">M30</option>
-                            </select>
-                        </label>
-                        <label style="display: flex; flex-direction: column; gap: 0.25rem;">
-                            <span style="font-size: 0.8125rem; font-weight: 600;">Klasse</span>
-                            <select id="wt-class" class="field-class" onchange="beregnWebTorque()">
-                                <option value="8.8" selected>Stål 8.8</option>
-                                <option value="10.9">Stål 10.9</option>
-                                <option value="12.9">Stål 12.9</option>
-                                <option value="A4-80">Syrefast A4-80</option>
-                            </select>
-                        </label>
+                <!-- BØYEFRADRAG KANTPRESSE -->
+                <div class="web-card">
+                    <div class="web-card-header">
+                        <h3 style="margin: 0; font-size: 1.125rem; font-weight: 700;">🎯 Plateutbretting & Bøyefradrag</h3>
                     </div>
 
-                    <label style="display: flex; flex-direction: column; gap: 0.25rem;">
-                        <span style="font-size: 0.8125rem; font-weight: 600;">Smøring / Friksjon</span>
-                        <select id="wt-lube" class="field-class" onchange="beregnWebTorque()">
-                            <option value="dry">Tørre / Usmurte gjenger (μ = 0.14)</option>
-                            <option value="lube" selected>Smurte gjenger / Pasta / Fett (μ = 0.10, -25% Nm)</option>
-                        </select>
-                    </label>
+                    <div style="display: flex; flex-direction: column; gap: 0.875rem;">
+                        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.875rem;">
+                            <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                                <span style="font-size: 0.8125rem; font-weight: 600;">Flens A (mm)</span>
+                                <input type="number" id="wbend-a" class="field-class" value="100" oninput="beregnWebBoy()">
+                            </label>
+                            <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                                <span style="font-size: 0.8125rem; font-weight: 600;">Flens B (mm)</span>
+                                <input type="number" id="wbend-b" class="field-class" value="150" oninput="beregnWebBoy()">
+                            </label>
+                        </div>
 
-                    <div class="result-panel" style="background: rgba(16, 185, 129, 0.08); border-color: var(--emerald-green);">
-                        <div class="line-row strong"><span style="color: var(--emerald-green);">Tiltrekkingsmoment (Nm):</span><span id="wt-res-nm" class="font-mono" style="font-size: 1.35rem; color: var(--emerald-green);">35 Nm</span></div>
-                        <div class="line-row strong" style="margin-top: 0.25rem;"><span style="color: var(--emerald-green);">Tiltrekkingskraft (kN):</span><span id="wt-res-kn" class="font-mono" style="color: var(--emerald-green);">26 kN</span></div>
+                        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.875rem;">
+                            <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                                <span style="font-size: 0.8125rem; font-weight: 600;">Tykkelse t (mm)</span>
+                                <input type="number" id="wbend-t" class="field-class" value="3" oninput="beregnWebBoy()">
+                            </label>
+                            <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                                <span style="font-size: 0.8125rem; font-weight: 600;">Radius R (mm)</span>
+                                <input type="number" id="wbend-r" class="field-class" value="3" oninput="beregnWebBoy()">
+                            </label>
+                        </div>
+
+                        <div class="result-panel" style="background: rgba(167, 139, 250, 0.08); border-color: var(--purple-neon);">
+                            <div class="line-row strong"><span style="color: var(--purple-neon);">Bøyefradrag (BD):</span><span id="wbend-res-bd" class="font-mono" style="color: var(--purple-neon);">5.43 mm</span></div>
+                            <div class="line-row strong" style="margin-top: 0.25rem;"><span style="color: var(--purple-neon); font-size: 1.1rem;">Kappelengde før bøy:</span><span id="wbend-res-len" class="font-mono" style="font-size: 1.25rem; color: var(--purple-neon);">244.57 mm</span></div>
+                        </div>
                     </div>
-                </div>
-            </div>
-
-            <!-- PCD FLENSE-DIAGRAM -->
-            <div class="web-card">
-                <div class="web-card-header">
-                    <h3 style="margin: 0; font-size: 1.125rem; font-weight: 700;">⭕ Delingssirkel & Flense-koordinater (PCD)</h3>
-                </div>
-
-                <div style="text-align: center; margin-bottom: 1rem; padding: 0.75rem; background: #0b1222; border-radius: 0.75rem; border: 1px solid var(--border-card);">
-                    <svg width="180" height="180" viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg" style="max-width: 100%; height: auto;">
-                        <circle cx="110" cy="110" r="95" fill="rgba(16, 185, 129, 0.08)" stroke="#10b981" stroke-width="2"/>
-                        <circle cx="110" cy="110" r="30" fill="#141e33" stroke="#10b981" stroke-width="2"/>
-                        <line x1="110" y1="10" x2="110" y2="210" stroke="#1f2d4d" stroke-width="1.5" stroke-dasharray="4,4"/>
-                        <line x1="10" y1="110" x2="210" y2="110" stroke="#1f2d4d" stroke-width="1.5" stroke-dasharray="4,4"/>
-                        <circle cx="110" cy="110" r="68" fill="none" stroke="#00f0ff" stroke-width="2" stroke-dasharray="6,4"/>
-                        <line x1="178" y1="110" x2="158" y2="62" stroke="#ff0055" stroke-width="2.5"/>
-                        <circle cx="178" cy="110" r="7" fill="#141e33" stroke="#10b981" stroke-width="2"/>
-                        <circle cx="158" cy="62" r="7" fill="#141e33" stroke="#10b981" stroke-width="2"/>
-                        <circle cx="110" cy="42" r="7" fill="#141e33" stroke="#10b981" stroke-width="2"/>
-                        <circle cx="62" cy="62" r="7" fill="#141e33" stroke="#10b981" stroke-width="2"/>
-                        <circle cx="42" cy="110" r="7" fill="#141e33" stroke="#10b981" stroke-width="2"/>
-                        <text x="182" y="85" fill="#ff0055" font-size="11" font-weight="800">k (Korde)</text>
-                        <text x="65" y="105" fill="#00f0ff" font-size="11" font-weight="800">PCD Ø</text>
-                    </svg>
-                </div>
-
-                <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.875rem;">
-                    <label style="display: flex; flex-direction: column; gap: 0.25rem;">
-                        <span style="font-size: 0.8125rem; font-weight: 600;">Delingssirkel Ø (PCD mm)</span>
-                        <input type="number" id="wpcd-dia" class="field-class" value="200" oninput="beregnWebPcd()">
-                    </label>
-                    <label style="display: flex; flex-direction: column; gap: 0.25rem;">
-                        <span style="font-size: 0.8125rem; font-weight: 600;">Antall hull (N)</span>
-                        <input type="number" id="wpcd-num" class="field-class" value="8" oninput="beregnWebPcd()">
-                    </label>
-                </div>
-
-                <div class="result-panel" style="background: rgba(16, 185, 129, 0.08); border-color: var(--emerald-green);">
-                    <div class="line-row strong"><span style="color: var(--emerald-green);">Kordeavstand (Hull-til-Hull målt):</span><span id="wpcd-res-chord" class="font-mono" style="font-size: 1.25rem; color: var(--emerald-green);">76.54 mm</span></div>
-                    <div class="line-row strong" style="margin-top: 0.25rem;"><span style="color: var(--emerald-green);">Vinkelstigning pr. hull:</span><span id="wpcd-res-angle" class="font-mono" style="color: var(--emerald-green);">45.0°</span></div>
-                </div>
-            </div>
-
-            <!-- TRIGONOMETRI TREKANT DIAGRAM -->
-            <div class="web-card">
-                <div class="web-card-header">
-                    <h3 style="margin: 0; font-size: 1.125rem; font-weight: 700;">📐 Trigonometri & Trekant (Pythagoras)</h3>
-                </div>
-
-                <div style="text-align: center; margin-bottom: 1rem; padding: 0.75rem; background: #0b1222; border-radius: 0.75rem; border: 1px solid var(--border-card);">
-                    <svg width="200" height="130" viewBox="0 0 240 150" xmlns="http://www.w3.org/2000/svg" style="max-width: 100%; height: auto;">
-                        <path d="M 40 110 L 50 110 L 50 120" fill="none" stroke="#a78bfa" stroke-width="2"/>
-                        <polygon points="40,120 200,120 40,20" fill="rgba(167, 139, 250, 0.12)" stroke="#a78bfa" stroke-width="3"/>
-                        <text x="18" y="75" fill="#f8fafc" font-size="13" font-weight="800">a (Vert)</text>
-                        <text x="105" y="142" fill="#f8fafc" font-size="13" font-weight="800">b (Horisont)</text>
-                        <text x="120" y="60" fill="#a78bfa" font-size="13" font-weight="800">c (Hypotenus)</text>
-                    </svg>
-                </div>
-
-                <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.875rem;">
-                    <label style="display: flex; flex-direction: column; gap: 0.25rem;">
-                        <span style="font-size: 0.8125rem; font-weight: 600;">Katet a (mm)</span>
-                        <input type="number" id="wtri-a" class="field-class" placeholder="f.eks 30" oninput="beregnWebTrekant()">
-                    </label>
-                    <label style="display: flex; flex-direction: column; gap: 0.25rem;">
-                        <span style="font-size: 0.8125rem; font-weight: 600;">Katet b (mm)</span>
-                        <input type="number" id="wtri-b" class="field-class" placeholder="f.eks 40" oninput="beregnWebTrekant()">
-                    </label>
-                </div>
-
-                <div class="result-panel" style="background: rgba(167, 139, 250, 0.08); border-color: var(--purple-neon);">
-                    <div class="line-row strong"><span style="color: var(--purple-neon);">Hypotenus c (Skrålengde):</span><span id="wtri-res-c" class="font-mono" style="font-size: 1.25rem; color: var(--purple-neon);">50.00 mm</span></div>
-                    <div class="line-row strong" style="margin-top: 0.25rem;"><span style="color: var(--purple-neon);">Vinkler A° og B°:</span><span id="wtri-res-angles" class="font-mono" style="color: var(--purple-neon);">A = 36.87° | B = 53.13°</span></div>
                 </div>
             </div>
         </div>
@@ -771,6 +1090,20 @@
         document.getElementById('web-page-sub').innerText = subMap[tabName];
     }
 
+    function switchSubTab(parentTab, subTabId) {
+        const parentEl = document.getElementById(`webtab-${parentTab}`);
+        if (!parentEl) return;
+
+        parentEl.querySelectorAll('.sub-tab-content').forEach(el => el.classList.remove('active'));
+        parentEl.querySelectorAll('.sub-tab-btn').forEach(el => el.classList.remove('active'));
+
+        const targetSubContent = document.getElementById(`subtab-${parentTab}-${subTabId}`);
+        const targetSubNav = document.getElementById(`subnav-${parentTab.substring(0,1)}-${subTabId}`);
+
+        if (targetSubContent) targetSubContent.classList.add('active');
+        if (targetSubNav) targetSubNav.classList.add('active');
+    }
+
     function beregnWebLonn() {
         const harFastlonn = document.getElementById('w-inkl-fastlonn').checked;
         const timelonn = parseFloat(document.getElementById('w-timelonn').value) || 316.5;
@@ -796,7 +1129,7 @@
         const totalBrutto = fastlonn - ferieTrekk + vaktBrutto;
         const unionDeduction = Math.max(0, totalBrutto * (unionPct / 100));
         const skatteGrunnlag = Math.max(0, totalBrutto - unionDeduction);
-        const skatt = skatteGrunnlag * 0.28; // Estimat Tabell 7101
+        const skatt = skatteGrunnlag * 0.28;
         const netto = totalBrutto - unionDeduction - skatt;
 
         const feriepenger = Math.max(0, totalBrutto * 0.12);
@@ -872,6 +1205,17 @@
         document.getElementById('wm-res-vf').innerText = Math.round(vfSirk) + " mm/min";
     }
 
+    function beregnWebGjengediameter() {
+        const dia = parseFloat(document.getElementById('wm-g-dia').value) || 16;
+        const pitch = parseFloat(document.getElementById('wm-g-pitch').value) || 2.0;
+
+        const innerDrill = dia - pitch;
+        const outerTurn = dia - (0.125 * pitch);
+
+        document.getElementById('wm-g-res-in').innerText = `${innerDrill.toFixed(2).replace('.', ',')} mm`;
+        document.getElementById('wm-g-res-ut').innerText = `${outerTurn.toFixed(2).replace('.', ',')} mm`;
+    }
+
     function beregnWebEffekt() {
         const ap = parseFloat(document.getElementById('wm-ap').value) || 5;
         const ae = parseFloat(document.getElementById('wm-ae').value) || 12;
@@ -882,10 +1226,10 @@
 
         const rpm = (vc * 1000) / (Math.PI * dFres);
         const vf = rpm * fz * z;
-        const q = (ap * ae * vf) / 1000; // cm³/min
-        const fc = 1800 * ap * Math.pow(fz, 0.72); // N
-        const pc = (fc * vc) / (60000 * 0.85); // kW
-        const mc = (pc * 9550) / Math.max(1, rpm); // Nm
+        const q = (ap * ae * vf) / 1000;
+        const fc = 1800 * ap * Math.pow(fz, 0.72);
+        const pc = (fc * vc) / (60000 * 0.85);
+        const mc = (pc * 9550) / Math.max(1, rpm);
 
         document.getElementById('wm-res-q').innerText = q.toFixed(1).replace('.', ',') + " cm³/min";
         document.getElementById('wm-res-fc').innerText = Math.round(fc) + " N";
@@ -928,6 +1272,65 @@
         document.getElementById('wv-res-vc').innerText = vc + " m/min";
         document.getElementById('wv-res-rpm').innerText = Math.round(rpm) + " RPM";
         document.getElementById('wv-res-vf').innerText = Math.round(vf) + " mm/min";
+    }
+
+    function beregnWebBoredybde() {
+        const dia = parseFloat(document.getElementById('wb-dia').value) || 16;
+        const angle = parseFloat(document.getElementById('wb-angle').value) || 118;
+        const depth = parseFloat(document.getElementById('wb-depth').value) || 25;
+
+        const rad = (angle / 2) * (Math.PI / 180);
+        const tipExtra = (dia / 2) / Math.tan(rad);
+        const totalZ = depth + tipExtra;
+
+        document.getElementById('wb-res-tip').innerText = `${tipExtra.toFixed(2).replace('.', ',')} mm`;
+        document.getElementById('wb-res-tot').innerText = `${totalZ.toFixed(2).replace('.', ',')} mm`;
+    }
+
+    const tapData = {
+        M6: "5.0 mm | Pitch 1.0 mm | Passbor 6.6 mm",
+        M8: "6.8 mm | Pitch 1.25 mm | Passbor 9.0 mm",
+        M10: "8.5 mm | Pitch 1.5 mm | Passbor 11.0 mm",
+        M12: "10.2 mm | Pitch 1.75 mm | Passbor 13.5 mm",
+        M16: "14.0 mm | Pitch 2.0 mm | Passbor 17.5 mm",
+        "G1/2": "19.0 mm | Pitch 1.81 mm (14 tpi) | Passbor 21.3 mm"
+    };
+
+    function beregnWebGjengetabell() {
+        const size = document.getElementById('wtap-select').value;
+        const str = tapData[size] || tapData.M10;
+        const parts = str.split(' | ');
+
+        document.getElementById('wtap-res-drill').innerText = parts[0];
+        document.getElementById('wtap-res-pitch').innerText = parts[1] ? parts[1].replace('Pitch ', '') : '1.5 mm';
+        document.getElementById('wtap-res-clear').innerText = parts[2] ? parts[2].replace('Passbor ', '') : '11.0 mm';
+    }
+
+    const ttolData = {
+        M10: { maj: "10.000 – 10.420", pitch: "9.026 – 9.206", min: "8.376 – 8.676" },
+        M12: { maj: "12.000 – 12.450", pitch: "10.863 – 11.063", min: "10.106 – 10.441" },
+        "G1/2": { maj: "20.955 – 21.350", pitch: "19.793 – 19.935", min: "18.631 – 19.000" }
+    };
+
+    function beregnWebGjengetoleranse() {
+        const size = document.getElementById('wttol-size').value;
+        const info = ttolData[size] || ttolData.M10;
+
+        document.getElementById('wttol-res-maj').innerText = `${info.maj} mm`;
+        document.getElementById('wttol-res-pitch').innerText = `${info.pitch} mm`;
+        document.getElementById('wttol-res-min').innerText = `${info.min} mm`;
+    }
+
+    function beregnWebVekt() {
+        const l = parseFloat(document.getElementById('ww-l').value) || 1000;
+        const b = parseFloat(document.getElementById('ww-b').value) || 500;
+        const t = parseFloat(document.getElementById('ww-t').value) || 10;
+        const den = parseFloat(document.getElementById('ww-mat').value) || 7.85;
+
+        const volCm3 = (l / 10) * (b / 10) * (t / 10);
+        const kg = (volCm3 * den) / 1000;
+
+        document.getElementById('ww-res-kg').innerText = `${kg.toFixed(2).replace('.', ',')} kg`;
     }
 
     const torqueData = {
@@ -976,6 +1379,21 @@
             document.getElementById('wtri-res-c').innerText = "Fyll inn Katet a og b";
             document.getElementById('wtri-res-angles').innerText = "A° og B° beregnes";
         }
+    }
+
+    function beregnWebBoy() {
+        const a = parseFloat(document.getElementById('wbend-a').value) || 100;
+        const b = parseFloat(document.getElementById('wbend-b').value) || 150;
+        const t = parseFloat(document.getElementById('wbend-t').value) || 3;
+        const r = parseFloat(document.getElementById('wbend-r').value) || 3;
+
+        const k = 0.33;
+        const bendAllowance = (Math.PI / 2) * (r + k * t);
+        const bendDeduction = 2 * (r + t) - bendAllowance;
+        const totalLen = Math.max(0, a + b - bendDeduction);
+
+        document.getElementById('wbend-res-bd').innerText = `${bendDeduction.toFixed(2).replace('.', ',')} mm`;
+        document.getElementById('wbend-res-len').innerText = `${totalLen.toFixed(2).replace('.', ',')} mm`;
     }
 
     function beregnWebElbil() {
@@ -1032,12 +1450,17 @@
     // Init
     beregnWebLonn();
     beregnWebMaskinering();
+    beregnWebGjengediameter();
     beregnWebEffekt();
     beregnWebCaxis();
     beregnWebVerksted();
+    beregnWebBoredybde();
+    beregnWebGjengetabell();
+    beregnWebGjengetoleranse();
     beregnWebTorque();
     beregnWebPcd();
     beregnWebTrekant();
+    beregnWebBoy();
     beregnWebElbil();
     beregnWebElbilSave();
     beregnWebVinter();
