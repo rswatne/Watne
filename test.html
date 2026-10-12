@@ -10,7 +10,7 @@
     <meta http-equiv="Expires" content="0">
 
     <script>
-        const APP_BUILD_VER = "v700.0-EV2point3kWAdded";
+        const APP_BUILD_VER = "v800.0-EVTempRangeDefaultFix";
         if (localStorage.getItem('app_build_v') !== APP_BUILD_VER) {
             localStorage.setItem('app_build_v', APP_BUILD_VER);
             if ('serviceWorker' in navigator) {
@@ -821,11 +821,11 @@
                         </div>
                         <div class="flex justify-between p-4 bg-amber-500/10 rounded-xl border border-amber-500/30">
                             <span class="font-bold text-amber-400">Reell Rekkevidde</span>
-                            <span class="font-bold text-2xl text-amber-400" id="ew-res-range">360 km (75% av WLTP)</span>
+                            <span class="font-bold text-2xl text-amber-400" id="ew-res-range">480 km (100% av WLTP)</span>
                         </div>
                         <div class="flex justify-between p-3 rounded-xl bg-slate-800/40 border border-slate-700/40 text-xs">
                             <span class="text-slate-300">Forventet Rekkeviddetap</span>
-                            <span class="font-mono text-amber-400 font-bold" id="ew-res-loss">− 120 km (25% tap)</span>
+                            <span class="font-mono text-amber-400 font-bold" id="ew-res-loss">− 0 km (0% tap)</span>
                         </div>
                     </div>
                 </div>
