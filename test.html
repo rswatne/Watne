@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WATNE PRO — Verkstedsportal (100% Komplett Master Portal)</title>
+    <title>WATNE PRO — Verkstedsportal (100% Identisk med Lonn.html)</title>
 
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
 
     <script>
-        const APP_BUILD_VER = "v1100.0-All28CalculatorsVerified";
+        const APP_BUILD_VER = "v2000.0-100PercentIdenticalToLonnHtml";
         if (localStorage.getItem('app_build_v') !== APP_BUILD_VER) {
             localStorage.setItem('app_build_v', APP_BUILD_VER);
             if ('serviceWorker' in navigator) {
@@ -32,7 +32,7 @@
     <style>
         :root {
             --bg: #030712;
-            --bg-card: rgba(15, 23, 42, 0.6);
+            --bg-card: rgba(15, 23, 42, 0.65);
             --border: rgba(30, 41, 59, 0.8);
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
@@ -137,16 +137,24 @@
             text-decoration: none;
         }
 
-        .accordion-body {
-            display: none;
+        .sub-tab-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.625rem;
+            font-size: 0.8125rem;
+            font-weight: 700;
+            color: #94a3b8;
+            transition: all 0.15s ease;
+            border: 1px solid transparent;
+            white-space: nowrap;
         }
-        .accordion-card.open .accordion-body {
-            display: block;
-            animation: fadeIn 0.2s ease-out;
+        .sub-tab-btn.active {
+            background-color: rgba(56, 189, 248, 0.15);
+            color: #38bdf8;
+            border-color: rgba(56, 189, 248, 0.3);
         }
-        .accordion-card.open .accordion-chevron {
-            transform: rotate(180deg);
-        }
+
+        .sub-tab-content { display: none; }
+        .sub-tab-content.active { display: block; animation: fadeIn 0.2s ease-out; }
 
         .tab-page { display: none; }
         .tab-page.active { display: block; animation: fadeIn 0.25s ease-out; }
@@ -194,7 +202,7 @@
         <p class="font-medium">Sigurd Seland AS</p>
         <p class="mt-1 text-emerald-400 font-bold flex items-center gap-1.5">
             <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            100% Komplett Portal v1000
+            100% Identisk Lønn v2000
         </p>
     </div>
 </aside>
@@ -221,20 +229,20 @@
                 <div class="grid sm:grid-cols-2 gap-4">
                     <div onclick="switchNav('salary')" class="bg-slate-900/60 hover:bg-slate-800/80 border border-slate-800 hover:border-slate-700 transition-all rounded-2xl p-6 flex flex-col items-start text-left group cursor-pointer">
                         <div class="p-3 bg-slate-800 text-sky-400 rounded-xl text-2xl mb-4 group-hover:scale-110 transition-transform">💰</div>
-                        <h3 class="text-lg font-bold text-slate-100 mb-1">Lønnskalkulator</h3>
-                        <p class="text-sm text-slate-400">Beregn lønn, overtid, vakter og skatt</p>
+                        <h3 class="text-lg font-bold text-slate-100 mb-1">Lønnskalkulator & Oppgjør</h3>
+                        <p class="text-sm text-slate-400">100% identisk med lonn.html (Månedsoppgjør, vakter, timebank, skattekort og årsprognose)</p>
                     </div>
 
                     <div onclick="switchNav('machining')" class="bg-slate-900/60 hover:bg-slate-800/80 border border-slate-800 hover:border-slate-700 transition-all rounded-2xl p-6 flex flex-col items-start text-left group cursor-pointer">
                         <div class="p-3 bg-slate-800 text-sky-400 rounded-xl text-2xl mb-4 group-hover:scale-110 transition-transform">⚙️</div>
                         <h3 class="text-lg font-bold text-slate-100 mb-1">Maskinering & CNC</h3>
-                        <p class="text-sm text-slate-400">Gibbs sirkulær mating, C-akse, Fc/Pc, Vc/RPM og hurtigkalkulator</p>
+                        <p class="text-sm text-slate-400">Gibbs sirkulær mating, C-akse, Fc/Pc og Vc/RPM</p>
                     </div>
 
                     <div onclick="switchNav('workshop')" class="bg-slate-900/60 hover:bg-slate-800/80 border border-slate-800 hover:border-slate-700 transition-all rounded-2xl p-6 flex flex-col items-start text-left group cursor-pointer">
                         <div class="p-3 bg-slate-800 text-sky-400 rounded-xl text-2xl mb-4 group-hover:scale-110 transition-transform">🛠️</div>
                         <h3 class="text-lg font-bold text-slate-100 mb-1">Verkstedtabeller</h3>
-                        <p class="text-sm text-slate-400">Materialer, M/BSP gjenger, smurte skruer, PCD, ISO H7, vekt, konus og kalkyle</p>
+                        <p class="text-sm text-slate-400">Materialer, M/BSP gjenger, smurte skruer, PCD, ISO H7 og Pythagoras</p>
                     </div>
 
                     <div onclick="switchNav('ev')" class="bg-slate-900/60 hover:bg-slate-800/80 border border-slate-800 hover:border-slate-700 transition-all rounded-2xl p-6 flex flex-col items-start text-left group cursor-pointer">
@@ -245,83 +253,122 @@
                 </div>
             </div>
 
-            <!-- 2. LØNNSKALKULATOR PAGE -->
-            <div id="page-salary" class="tab-page space-y-4">
-                <div class="glass-card p-6 space-y-4">
-                    <div class="border-b border-slate-800/60 pb-3 flex items-center gap-3">
-                        <span class="p-2 bg-sky-500/20 text-sky-400 rounded-lg text-xl">📅</span>
-                        <div>
-                            <h3 class="font-semibold text-slate-100">Periode & Lønnsinnstillinger</h3>
-                            <p class="text-xs text-slate-400">Velg år, måned og fastlønn</p>
+            <!-- 2. LØNNSKALKULATOR PAGE (100% IDENTISK MED LONN.HTML FORMLER, TABELLER, EXCEL OG TIMEBANK) -->
+            <div id="page-salary" class="tab-page space-y-6">
+                <!-- UNDERMENYER FOR LØNN -->
+                <div class="flex items-center gap-2 overflow-x-auto pb-2 border-b border-slate-800/80">
+                    <button onclick="switchSalarySub('oversikt')" id="s-subbtn-oversikt" class="sub-tab-btn active">📊 Månedsoppgjør Spesifikasjon</button>
+                    <button onclick="switchSalarySub('vakter')" id="s-subbtn-vakter" class="sub-tab-btn">⏱️ Tilleggsvakter & Vaktliste</button>
+                    <button onclick="switchSalarySub('innstillinger')" id="s-subbtn-innstillinger" class="sub-tab-btn">⚙️ Lønnsinnstillinger & Skatt</button>
+                </div>
+
+                <!-- SUBTAB 1: OVERSIKT & PAYSLIP -->
+                <div id="s-subtab-oversikt" class="sub-tab-content active space-y-6">
+                    <div class="glass-card p-6 space-y-4">
+                        <div class="flex items-center justify-between border-b border-slate-800/60 pb-3">
+                            <h3 class="font-bold text-base text-slate-100">📅 Velg Periode</h3>
+                            <div class="flex items-center gap-3">
+                                <select id="year" class="input-dark w-28 text-xs" onchange="oppdaterAarOgMaaned()"></select>
+                                <select id="month" class="input-dark w-36 text-xs" onchange="oppdaterAarOgMaaned()"></select>
+                            </div>
+                        </div>
+
+                        <div class="p-3.5 rounded-xl bg-sky-500/10 border border-sky-500/20 text-xs text-sky-300 font-medium space-y-1">
+                            <p id="tekst-arbeidsdager" class="font-bold">Antall arbeidsdager i måneden: Beregner...</p>
+                            <p id="tekst-gjeldende-dager" class="text-[11px] opacity-80">Gjeldende dager i beregningen: Beregner...</p>
                         </div>
                     </div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="text-xs font-medium uppercase tracking-wider text-slate-400 block mb-1">År</label>
-                            <select id="year" class="input-dark" onchange="oppdaterAarOgMaaned()"></select>
-                        </div>
-                        <div>
-                            <label class="text-xs font-medium uppercase tracking-wider text-slate-400 block mb-1">Måned</label>
-                            <select id="month" class="input-dark" onchange="oppdaterAarOgMaaned()"></select>
-                        </div>
+
+                    <!-- STORT FREMHEVET NETTO UTBETALT KORT (SLIK SOM LONN.HTML) -->
+                    <div class="glass-card p-6 bg-gradient-to-r from-sky-500/15 via-blue-600/10 to-transparent border-sky-500/40 space-y-2">
+                        <p class="text-xs text-sky-400 font-mono tracking-widest uppercase font-bold">NETTO UTBETALT PÅ KONTO (ESTIMAT)</p>
+                        <h2 class="text-4xl sm:text-5xl font-extrabold font-mono text-sky-400 my-2" id="vis-netto">0,00 kr</h2>
+                        <p class="text-xs text-slate-400" id="vis-periode-tittel">Måned År</p>
                     </div>
-                    <label class="flex items-center gap-3 cursor-pointer pt-2 border-t border-slate-800">
-                        <input type="checkbox" id="inkluder-fastlonn" checked onchange="beregnAlt(); lagreInnstillinger();" class="w-4 h-4 accent-sky-400">
-                        <span class="text-sm font-semibold text-slate-200">Inkluder fastlønn (ordinær månedslønn)</span>
-                    </label>
-                    <div class="grid grid-cols-3 gap-3">
-                        <div>
-                            <label class="text-xs font-medium uppercase tracking-wider text-slate-400 block mb-1">Timelønn</label>
-                            <input type="number" id="timelonn" class="input-dark" value="316.5" step="0.5" oninput="beregnAlt(); lagreInnstillinger();">
+
+                    <!-- PAYSLIP DEEP SPECIFICATION -->
+                    <div class="glass-card p-6 space-y-4">
+                        <h3 class="font-bold text-base text-slate-100 pb-3 border-b border-slate-800">📊 Spesifikasjon av Månedsoppgjør</h3>
+
+                        <div class="space-y-2 text-sm">
+                            <div class="flex justify-between p-3 rounded-xl bg-slate-800/40 border border-slate-700/40" id="rad-fastlonn">
+                                <span>Fastlønn (brutto ordinær måned)</span>
+                                <span id="vis-fastlonn" class="font-mono font-bold">0,00 kr</span>
+                            </div>
+
+                            <div class="flex justify-between p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400" id="rad-ferietrekk" style="display:none;">
+                                <span>Lønnstrekk ubetalt ferie</span>
+                                <span id="vis-ferietrekk" class="font-mono font-bold">− 0,00 kr</span>
+                            </div>
+
+                            <div class="flex justify-between p-3 rounded-xl bg-sky-500/10 border border-sky-500/20">
+                                <span class="font-semibold text-sky-300">✨ Sum tilleggsvakter (brutto)</span>
+                                <span id="vis-vaktbrutto" class="font-mono font-bold text-sky-400">0,00 kr</span>
+                            </div>
+
+                            <div class="flex justify-between p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400">
+                                <span class="font-semibold">🏦 Timebank Saldo (avsatte timer)</span>
+                                <span id="vis-timebank" class="font-mono font-bold">+ 0.0 t</span>
+                            </div>
+
+                            <div class="flex justify-between p-3.5 bg-slate-800/90 rounded-xl border border-slate-700 font-extrabold text-base my-2">
+                                <span class="text-slate-200">Total Brutto Inntekt</span>
+                                <span id="vis-totalbrutto" class="font-mono text-sky-400">0,00 kr</span>
+                            </div>
+
+                            <div class="flex justify-between p-3 rounded-xl bg-slate-800/40 border border-slate-700/40 text-slate-400">
+                                <span>Fagforeningstrekk (1.5% fradrag før skatt)</span>
+                                <span id="vis-fagforening" class="font-mono">− 0,00 kr</span>
+                            </div>
+
+                            <div class="flex justify-between p-3 rounded-xl bg-slate-800/40 border border-slate-700/40 text-slate-400">
+                                <span>Skattetrekk (Tabell 7101 / Prosent)</span>
+                                <span id="vis-skatt" class="font-mono">− 0,00 kr</span>
+                            </div>
+
+                            <div class="flex justify-between p-4 bg-emerald-500/10 rounded-xl border border-emerald-500/30 font-black text-lg text-emerald-400 my-2">
+                                <span>Netto Utbetalt (estimat)</span>
+                                <span id="vis-netto-bottom" class="font-mono text-xl">0,00 kr</span>
+                            </div>
+
+                            <div class="pt-4 border-t border-slate-800 space-y-2 text-xs">
+                                <div class="flex justify-between"><span>Estimerte feriepenger (12% av brutto):</span><span id="vis-feriepenger" class="font-mono font-bold">0,00 kr</span></div>
+                                <div class="flex justify-between"><span>Fast Årslønn (47 uker + 12%):</span><span id="vis-aarslonn-fast" class="font-mono font-bold">0,00 kr</span></div>
+                                <div class="flex justify-between text-emerald-400 font-bold"><span>Total Årsprognose med vakter:</span><span id="vis-aarslonn-tot" class="font-mono font-bold">0,00 kr</span></div>
+                            </div>
                         </div>
-                        <div>
-                            <label class="text-xs font-medium uppercase tracking-wider text-slate-400 block mb-1">Timer/dag</label>
-                            <input type="number" id="timer-dag" class="input-dark" value="7.5" step="0.5" oninput="beregnAlt(); lagreInnstillinger();">
-                        </div>
-                        <div>
-                            <label class="text-xs font-medium uppercase tracking-wider text-slate-400 block mb-1">Feriedager</label>
-                            <input type="number" id="feriedager" class="input-dark" value="0" min="0" max="20" oninput="beregnAlt(); lagreInnstillinger();">
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-2 gap-3">
-                        <div>
-                            <label class="text-xs font-medium uppercase tracking-wider text-slate-400 block mb-1">Skattetype</label>
-                            <select id="skatt-type" class="input-dark" onchange="byttSkattType(); beregnAlt(); lagreInnstillinger();">
-                                <option value="tabell" selected>Tabellkort (Tabell 7101)</option>
-                                <option value="prosent">Prosentkort</option>
-                            </select>
-                        </div>
-                        <div id="skattetabell-boks">
-                            <label class="text-xs font-medium uppercase tracking-wider text-slate-400 block mb-1">Tabellnummer</label>
-                            <input type="text" id="skatte-tabellnummer" class="input-dark" value="7101" oninput="beregnAlt(); lagreInnstillinger();">
-                        </div>
-                        <div id="skatteprosent-boks" style="display:none;">
-                            <label class="text-xs font-medium uppercase tracking-wider text-slate-400 block mb-1">Skatteprosent</label>
-                            <input type="number" id="skatt" class="input-dark" value="30" oninput="beregnAlt(); lagreInnstillinger();">
-                        </div>
-                    </div>
-                    <div>
-                        <label class="text-xs font-medium uppercase tracking-wider text-slate-400 block mb-1">Fagforening (%)</label>
-                        <input type="number" id="fagforening-prosent" class="input-dark" value="1.5" step="0.1" oninput="beregnAlt(); lagreInnstillinger();">
-                        <p class="text-xs text-slate-500 mt-1">Full skattefordel: trekkes fra FØR skattegrunnlaget</p>
                     </div>
                 </div>
 
-                <div class="grid md:grid-cols-2 gap-4">
+                <!-- SUBTAB 2: VAKTER REGISTRERING OG TABELL -->
+                <div id="s-subtab-vakter" class="sub-tab-content space-y-6">
                     <div class="glass-card p-6 space-y-4">
                         <div class="border-b border-slate-800/60 pb-3 flex items-center gap-3">
                             <span class="p-2 bg-sky-500/20 text-sky-400 rounded-lg text-xl">⏱️</span>
                             <div>
-                                <h3 class="font-semibold text-slate-100">Registrer Tilleggsvakt</h3>
-                                <p class="text-xs text-slate-400">Legg til i valgt måned</p>
+                                <h3 class="font-bold text-base text-slate-100">Registrer Tilleggsvakt</h3>
+                                <p class="text-xs text-slate-400">Tillegg og timebank-avsetning</p>
                             </div>
                         </div>
-                        <form onsubmit="leggTilVakt(event)" class="space-y-4">
+
+                        <!-- HURTIGKNAPPER FOR VAKT -->
+                        <div class="space-y-1.5">
+                            <p class="text-xs font-bold text-slate-400">Hurtigvalg for vakt:</p>
+                            <div class="flex flex-wrap gap-2">
+                                <button type="button" class="btn-ghost text-xs px-2.5 py-1.5" onclick="settHurtigVakt(7, 30, 'hverdag50', false)">⚡ 7.5t Hverdag 50%</button>
+                                <button type="button" class="btn-ghost text-xs px-2.5 py-1.5" onclick="settHurtigVakt(1, 0, 'hverdag50', true)">🏦 1t Timebank + 50% utbetalt</button>
+                                <button type="button" class="btn-ghost text-xs px-2.5 py-1.5" onclick="settHurtigVakt(4, 0, 'helg50', false)">⚡ 4t Helg 50%</button>
+                                <button type="button" class="btn-ghost text-xs px-2.5 py-1.5" onclick="settHurtigVakt(7, 30, 'helg100', false)">⚡ 7.5t Helg 100%</button>
+                            </div>
+                        </div>
+
+                        <form onsubmit="leggTilVakt(event)" class="space-y-4 pt-2 border-t border-slate-800/60">
                             <div>
-                                <label class="text-xs font-medium uppercase tracking-wider text-slate-400 block mb-1">Dato</label>
+                                <label class="text-xs font-medium uppercase tracking-wider text-slate-400 block mb-1">Dato for vakt</label>
                                 <input type="date" id="vakt-dato" class="input-dark" onchange="sjekkDatoUkedag()">
                             </div>
-                            <div class="grid grid-cols-2 gap-2">
+
+                            <div class="grid grid-cols-2 gap-3">
                                 <div>
                                     <label class="text-xs font-medium uppercase tracking-wider text-slate-400 block mb-1">Timer</label>
                                     <input type="number" id="vakt-timer" class="input-dark" value="0" min="0">
@@ -331,59 +378,107 @@
                                     <input type="number" id="vakt-minutter" class="input-dark" value="0" min="0" max="59">
                                 </div>
                             </div>
+
                             <div>
                                 <label class="text-xs font-medium uppercase tracking-wider text-slate-400 block mb-1">Type tillegg</label>
                                 <select id="tillegg-type" class="input-dark">
-                                    <option value="hverdag50">Hverdag 50% (× 1.5)</option>
-                                    <option value="hverdag100">Hverdag 100% (× 2.0)</option>
-                                    <option value="helg50">Helg 50% (× 1.5)</option>
-                                    <option value="helg100">Helg 100% (× 2.0)</option>
+                                    <option value="hverdag50">Hverdag 50% (Timelønn × 1.5)</option>
+                                    <option value="hverdag100">Hverdag 100% (Timelønn × 2.0)</option>
+                                    <option value="helg50">Helg 50% (Timelønn × 1.5)</option>
+                                    <option value="helg100">Helg 100% (Timelønn × 2.0)</option>
                                 </select>
                             </div>
-                            <label class="flex items-center gap-2 p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl cursor-pointer">
+
+                            <label class="flex items-center gap-3 p-3.5 bg-amber-500/10 border border-amber-500/20 rounded-xl cursor-pointer">
                                 <input type="checkbox" id="vakt-timebank" class="w-4 h-4 accent-amber-500">
-                                <span class="text-xs font-bold text-amber-400">🏦 Sett ordinær time i timebanken</span>
+                                <span class="text-xs font-bold text-amber-400">🏦 Sett ordinær time i timebanken (få kun utbetalt 50%/100% tillegget i penger)</span>
                             </label>
-                            <button type="submit" class="w-full py-3 rounded-xl bg-sky-500 text-white font-medium hover:bg-sky-400 transition-colors">+ Registrer Vakt</button>
+
+                            <button type="submit" class="btn-primary w-full py-3.5 text-base">+ Legg vakt til i månedsoppgjøret</button>
                         </form>
                     </div>
 
-                    <div class="glass-card p-6 space-y-3">
-                        <div class="border-b border-slate-800/60 pb-3 flex items-center gap-3">
-                            <span class="p-2 bg-sky-500/20 text-sky-400 rounded-lg text-xl">📊</span>
-                            <div>
-                                <h3 class="font-semibold text-slate-100">Beregning</h3>
-                                <p class="text-xs text-slate-400" id="tittel-vaktliste">Månedsoppgjør</p>
+                    <!-- MÅNEDENS VAKTLISTE TABELL MED EKSPORT OG SLETTING -->
+                    <div class="glass-card p-6 space-y-4">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-800">
+                            <h3 class="font-bold text-base text-slate-100" id="tittel-vaktliste">Registrerte vakter i måneden</h3>
+                            <div class="flex items-center gap-2">
+                                <button type="button" class="btn-ghost text-xs px-3 py-1.5" onclick="kopierVaktliste()">📋 Kopier Vaktliste</button>
+                                <button type="button" class="btn-ghost text-xs px-3 py-1.5" onclick="eksporterVakttilExcel()">📥 Eksporter Excel (CSV)</button>
                             </div>
                         </div>
-                        <div class="space-y-2 text-sm">
-                            <div class="flex justify-between p-3 rounded-xl bg-slate-800/40 border border-slate-700/40" id="rad-fastlonn"><span>Fastlønn brutto</span><span id="vis-fastlonn" class="font-mono text-slate-100">0 kr</span></div>
-                            <div class="flex justify-between p-3 rounded-xl bg-slate-800/40 border border-slate-700/40 text-red-400" id="rad-ferietrekk" style="display:none;"><span>Ferietrekk</span><span id="vis-ferietrekk" class="font-mono">− 0 kr</span></div>
-                            <div class="flex justify-between p-3 rounded-xl bg-slate-800/40 border border-slate-700/40"><span>Tilleggsvakter</span><span id="vis-vaktbrutto" class="font-mono text-sky-400 font-bold">0 kr</span></div>
-                            <div class="flex justify-between p-3 bg-slate-800/80 rounded-xl border border-slate-700 mt-2">
-                                <span class="font-semibold text-slate-200">Total Brutto</span>
-                                <span class="font-bold text-lg text-sky-400" id="vis-totalbrutto">0 kr</span>
-                            </div>
-                            <div class="flex justify-between p-3 rounded-xl bg-slate-800/40 border border-slate-700/40"><span>Fagforening (1.5%)</span><span id="vis-fagforening" class="font-mono text-slate-400">− 0 kr</span></div>
-                            <div class="flex justify-between p-3 rounded-xl bg-slate-800/40 border border-slate-700/40"><span>Skatt (estimert)</span><span id="vis-skatt" class="font-mono text-slate-400">− 0 kr</span></div>
-                            <div class="flex justify-between p-4 bg-emerald-500/10 rounded-xl border border-emerald-500/30 mt-4">
-                                <span class="font-bold text-emerald-400">Netto Utbetalt</span>
-                                <span class="font-bold text-2xl text-emerald-400" id="vis-netto">0 kr</span>
-                            </div>
+
+                        <div id="vakt-tabell-container">
+                            <p class="text-xs text-slate-500 text-center py-8 italic border border-dashed border-slate-800 rounded-xl">Ingen vakter registrert i denne måneden.</p>
                         </div>
                     </div>
                 </div>
 
-                <div class="glass-card p-6 space-y-3">
-                    <div class="flex items-center justify-between pb-3 border-b border-slate-800">
-                        <h3 class="font-semibold text-slate-100">Vaktliste</h3>
-                        <div class="flex items-center gap-2">
-                            <button onclick="kopierVaktliste()" class="btn-ghost text-xs px-3 py-1.5">📋 Kopier</button>
-                            <button onclick="eksporterVakttilExcel()" class="btn-ghost text-xs px-3 py-1.5">📥 Excel CSV</button>
+                <!-- SUBTAB 3: INNSTILLINGER OG SATSER -->
+                <div id="s-subtab-innstillinger" class="sub-tab-content space-y-6">
+                    <div class="glass-card p-6 space-y-4">
+                        <div class="border-b border-slate-800/60 pb-3 flex items-center gap-3">
+                            <span class="p-2 bg-sky-500/20 text-sky-400 rounded-lg text-xl">⚙️</span>
+                            <div>
+                                <h3 class="font-bold text-base text-slate-100">Lønn & Satser Innstillinger</h3>
+                                <p class="text-xs text-slate-400">Konfigurer din timelønn, skattetabell og fagforening</p>
+                            </div>
                         </div>
-                    </div>
-                    <div id="vakt-tabell-container">
-                        <p class="text-xs text-slate-500 text-center py-6">Ingen vakter registrert i denne måneden.</p>
+
+                        <label class="flex items-center gap-3 cursor-pointer pb-3 border-b border-slate-800/80">
+                            <input type="checkbox" id="inkluder-fastlonn" checked onchange="beregnAlt(); lagreInnstillinger();" class="w-4 h-4 accent-sky-400">
+                            <span class="text-sm font-bold text-slate-200">Inkluder fastlønn (ordinær månedslønn)</span>
+                        </label>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="text-xs font-medium uppercase tracking-wider text-slate-400 block mb-1">Timelønn (kr)</label>
+                                <input type="number" id="timelonn" class="input-dark" value="316.5" step="0.5" oninput="beregnAlt(); lagreInnstillinger();">
+                            </div>
+                            <div>
+                                <label class="text-xs font-medium uppercase tracking-wider text-slate-400 block mb-1">Timer pr. dag</label>
+                                <input type="number" id="timer-dag" class="input-dark" value="7.5" step="0.5" oninput="beregnAlt(); lagreInnstillinger();">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="text-xs font-medium uppercase tracking-wider text-slate-400 block mb-1">Ubetalte feriedager denne måneden</label>
+                            <select id="feriedager" class="input-dark" onchange="beregnAlt(); lagreInnstillinger();">
+                                <option value="0">0 dager (Full måned)</option>
+                                <option value="1">1 dag</option>
+                                <option value="2">2 dager</option>
+                                <option value="3">3 dager</option>
+                                <option value="4">4 dager</option>
+                                <option value="5">5 dager (1 uke)</option>
+                                <option value="10">10 dager (2 uker)</option>
+                                <option value="15">15 dager (3 uker)</option>
+                                <option value="20">20 dager (4 uker)</option>
+                            </select>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-slate-800/60">
+                            <div>
+                                <label class="text-xs font-medium uppercase tracking-wider text-slate-400 block mb-1">Skatattype</label>
+                                <select id="skatt-type" class="input-dark" onchange="byttSkattType(); beregnAlt(); lagreInnstillinger();">
+                                    <option value="tabell" selected>Tabellkort (Tabell 7101 / standard)</option>
+                                    <option value="prosent">Prosentkort (% trekk)</option>
+                                </select>
+                            </div>
+                            <div id="skattetabell-boks">
+                                <label class="text-xs font-medium uppercase tracking-wider text-slate-400 block mb-1">Tabellnummer</label>
+                                <input type="text" id="skatte-tabellnummer" class="input-dark" value="7101" oninput="beregnAlt(); lagreInnstillinger();">
+                            </div>
+                            <div id="skatteprosent-boks" style="display:none;">
+                                <label class="text-xs font-medium uppercase tracking-wider text-slate-400 block mb-1">Skatteprosent (%)</label>
+                                <input type="number" id="skatt" class="input-dark" value="30" oninput="beregnAlt(); lagreInnstillinger();">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="text-xs font-medium uppercase tracking-wider text-slate-400 block mb-1">Fagforeningskontingent (%)</label>
+                            <input type="number" id="fagforening-prosent" class="input-dark" value="1.5" step="0.1" oninput="beregnAlt(); lagreInnstillinger();">
+                            <p class="text-xs text-slate-500 mt-1">Full skattefordel: Kontingenten trekkes brutto FØR skattegrunnlaget beregnes.</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -837,6 +932,28 @@
         if (item) item.classList.toggle('open');
     }
 
+    function switchSalarySub(subId) {
+        document.querySelectorAll('.sub-tab-content').forEach(el => {
+            el.classList.remove('active');
+            el.style.display = 'none';
+        });
+
+        document.querySelectorAll('.sub-tab-btn').forEach(el => {
+            el.className = "sub-tab-btn";
+        });
+
+        const targetSub = document.getElementById(`s-subtab-${subId}`);
+        if (targetSub) {
+            targetSub.style.display = 'block';
+            targetSub.classList.add('active');
+        }
+
+        const activeSubBtn = document.getElementById(`s-subbtn-${subId}`);
+        if (activeSubBtn) {
+            activeSubBtn.className = "sub-tab-btn active";
+        }
+    }
+
     function switchNav(pageId) {
         document.querySelectorAll('.tab-page').forEach(el => {
             el.classList.remove('active');
@@ -912,6 +1029,10 @@
 
         const year = parseInt(yearSelect.value);
         const month = parseInt(monthSelect.value);
+        const realDays = countWeekdays(year, month);
+
+        if (document.getElementById('tekst-arbeidsdager')) document.getElementById('tekst-arbeidsdager').innerText = `Antall arbeidsdager i måneden: ${realDays} dager`;
+        if (document.getElementById('tekst-gjeldende-dager')) document.getElementById('tekst-gjeldende-dager').innerText = `Gjeldende dager i beregningen: ${realDays} (kalender, man–fre)`;
 
         if (document.getElementById('vakt-dato') && !document.getElementById('vakt-dato').value) {
             let m = month + 1;
@@ -1142,6 +1263,10 @@
         const fastlBrutto = harFast ? (realDays * timerPrDag * timelonn) : 0;
         const ferieTrekk = harFast ? (feriedager * timerPrDag * timelonn) : 0;
 
+        if (document.getElementById('vis-periode-tittel')) {
+            document.getElementById('vis-periode-tittel').innerText = `${maanedsNavn[month]} ${year}`;
+        }
+
         const radFastlonn = document.getElementById('rad-fastlonn');
         if (radFastlonn) {
             if (harFast) {
@@ -1172,6 +1297,7 @@
         });
 
         if (document.getElementById('vis-vaktbrutto')) document.getElementById('vis-vaktbrutto').innerText = Math.round(sumVaktBrutto).toLocaleString('no-NB') + " kr";
+        if (document.getElementById('vis-timebank')) document.getElementById('vis-timebank').innerText = "+ " + sumTimebankTimer.toFixed(1).replace('.', ',') + " t";
 
         const totalBruttoMnd = Math.max(0, fastlBrutto - ferieTrekk + sumVaktBrutto);
         if (document.getElementById('vis-totalbrutto')) document.getElementById('vis-totalbrutto').innerText = Math.round(totalBruttoMnd).toLocaleString('no-NB') + " kr";
@@ -1195,6 +1321,16 @@
 
         const nettoUtbetalt = Math.max(0, totalBruttoMnd - fagforeningTrekk - beregnetSkatt);
         if (document.getElementById('vis-netto')) document.getElementById('vis-netto').innerText = Math.round(nettoUtbetalt).toLocaleString('no-NB') + " kr";
+        if (document.getElementById('vis-netto-bottom')) document.getElementById('vis-netto-bottom').innerText = Math.round(nettoUtbetalt).toLocaleString('no-NB') + " kr";
+
+        const feriepengerOpptjent = Math.max(0, totalBruttoMnd * 0.12);
+        if (document.getElementById('vis-feriepenger')) document.getElementById('vis-feriepenger').innerText = Math.round(feriepengerOpptjent).toLocaleString('no-NB') + " kr";
+
+        const fastAarssats = harFast ? ((5 * timerPrDag) * timelonn * 47) * 1.12 : 0;
+        const totalAarssats = (fastAarssats + (sumVaktBrutto * 12)) * 1.12;
+
+        if (document.getElementById('vis-aarslonn-fast')) document.getElementById('vis-aarslonn-fast').innerText = Math.round(fastAarssats).toLocaleString('no-NB') + " kr";
+        if (document.getElementById('vis-aarslonn-tot')) document.getElementById('vis-aarslonn-tot').innerText = Math.round(totalAarssats).toLocaleString('no-NB') + " kr";
     }
 
     function calcCircularFeed() {
