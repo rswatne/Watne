@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WATNE PRO — Master React Web Portal 🛠️⚡</title>
+    <title>WATNE PRO — Verkstedsportal (Bolt 38im78cm Design)</title>
 
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
 
     <script>
-        const APP_BUILD_VER = "v100.0-RealReactLucideBoltPortal";
+        const APP_BUILD_VER = "v200.0-BoltExactVisualDesign";
         if (localStorage.getItem('app_build_v') !== APP_BUILD_VER) {
             localStorage.setItem('app_build_v', APP_BUILD_VER);
             if ('serviceWorker' in navigator) {
@@ -29,11 +29,19 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700;800&family=Orbitron:wght@600;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
-
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        slate: {
+                            950: '#030712'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <style>
         :root {
             --bg: #030712;
@@ -150,6 +158,22 @@
             background: rgba(255, 255, 255, 0.03);
         }
 
+        .seg-btn {
+            padding: 0.5rem 0.875rem;
+            border-radius: 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            white-space: nowrap;
+            color: #94a3b8;
+            transition: all 0.15s ease;
+            border: 1px solid transparent;
+        }
+        .seg-btn.active {
+            background-color: rgba(56, 189, 248, 0.12);
+            color: #38bdf8;
+            border-color: rgba(56, 189, 248, 0.3);
+        }
+
         .accordion-body {
             display: none;
         }
@@ -161,348 +185,1049 @@
             transform: rotate(180deg);
         }
 
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.25s ease-out; }
+
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(6px); }
             to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
-<body class="min-h-screen">
+<body class="min-h-screen flex flex-col lg:flex-row">
 
-<div id="root"></div>
+<!-- SIDEBAR NAVIGATION -->
+<aside class="w-full lg:w-64 bg-slate-900/90 border-b lg:border-b-0 lg:border-r border-slate-800/80 p-5 flex flex-col shrink-0 sticky top-0 lg:h-screen z-40 backdrop-blur-md">
+    <div class="flex items-center gap-3 pb-4 border-b border-slate-800 mb-5">
+        <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-sky-400 to-blue-600 flex items-center justify-center text-white font-extrabold text-xl shadow-[0_0_20px_rgba(56,189,248,0.3)]">
+            🛠️
+        </div>
+        <div>
+            <h2 class="font-orbitron font-black text-base text-sky-400 tracking-wider">WATNE PRO</h2>
+            <p class="text-[11px] text-slate-500 font-semibold">Verkstedsportal v16.0</p>
+        </div>
+    </div>
 
-<!-- REAL REACT 18 + BOLT APP SCRIPT -->
-<script type="text/babel">
-    const { useState, useEffect, useMemo } = React;
+    <!-- MAIN MENU ITEMS -->
+    <nav class="flex flex-row lg:flex-col gap-1.5 overflow-x-auto pb-2 lg:pb-0 scrollbar-thin">
+        <button onclick="switchNav('dashboard')" id="navitem-dashboard" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-xs sm:text-sm text-sky-400 bg-sky-500/10 border border-sky-500/20 whitespace-nowrap transition-all">
+            <span>🏠</span> <span>Oversikt</span>
+        </button>
+        <button onclick="switchNav('salary')" id="navitem-salary" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-medium text-xs sm:text-sm text-slate-400 hover:bg-slate-800/50 hover:text-slate-200 border border-transparent whitespace-nowrap transition-all">
+            <span>💰</span> <span>1. Lønnskalkulator</span>
+        </button>
+        <button onclick="switchNav('machining')" id="navitem-machining" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-medium text-xs sm:text-sm text-slate-400 hover:bg-slate-800/50 hover:text-slate-200 border border-transparent whitespace-nowrap transition-all">
+            <span>⚙️</span> <span>2. Maskinering & CNC</span>
+        </button>
+        <button onclick="switchNav('workshop')" id="navitem-workshop" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-medium text-xs sm:text-sm text-slate-400 hover:bg-slate-800/50 hover:text-slate-200 border border-transparent whitespace-nowrap transition-all">
+            <span>🛠️</span> <span>3. Verkstedtabeller</span>
+        </button>
+        <button onclick="switchNav('ev')" id="navitem-ev" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-medium text-xs sm:text-sm text-slate-400 hover:bg-slate-800/50 hover:text-slate-200 border border-transparent whitespace-nowrap transition-all">
+            <span>⚡</span> <span>4. Elbil-Kalkulator</span>
+        </button>
+    </nav>
 
-    function formatNOK(amount) {
-        return amount.toLocaleString('no-NO', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' kr';
-    }
+    <div class="mt-auto pt-4 border-t border-slate-800 text-[11px] text-slate-500 hidden lg:block">
+        <p class="font-medium">Sigurd Seland Smie & Mek. Verksted AS</p>
+        <p class="mt-1 text-emerald-400 font-bold flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            Watne Formler Active
+        </p>
+    </div>
+</aside>
 
-    // ACCORDION COMPONENT
-    function Accordion({ id, title, icon, badge, defaultOpen = false, children }) {
-        const [open, setOpen] = useState(defaultOpen);
-        return (
-            <div className={`glass-card accordion-item ${open ? 'open' : ''} transition-all duration-300`}>
-                <div onClick={() => setOpen(!open)} className="w-full flex items-center justify-between p-5 text-left hover:bg-slate-800/40 transition-colors cursor-pointer">
-                    <div className="flex items-center gap-3">
-                        <span className="text-sky-400 text-lg">{icon}</span>
-                        <span className="font-bold text-slate-100 text-sm">{title}</span>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        {badge && <span className="text-xs px-2.5 py-0.5 rounded-full bg-sky-500/15 text-sky-300 font-mono font-bold">{badge}</span>}
-                        <span className={`accordion-chevron text-slate-400 transition-transform ${open ? 'rotate-180' : ''}`}>▼</span>
-                    </div>
+<!-- MAIN CONTENT AREA -->
+<main class="flex-1 p-4 md:p-8 max-w-5xl mx-auto w-full">
+    <!-- TOP HEADER BAR -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-800/80 mb-6">
+        <div>
+            <h1 class="font-bold text-xl md:text-2xl text-slate-100" id="header-title">Oversikt</h1>
+            <p class="text-xs text-slate-500 mt-1" id="header-sub">Velg et verktøy under for å starte beregningen.</p>
+        </div>
+        <div class="flex items-center gap-2.5 shrink-0">
+            <button onclick="toggleTheme()" id="theme-btn" class="btn-ghost text-xs px-3 py-1.5">🌙 Mørkt</button>
+            <button onclick="toggleLang()" id="lang-btn" class="btn-ghost text-xs px-3 py-1.5">🇳🇴 NO</button>
+            <a href="index.html" class="btn-ghost text-xs px-3 py-1.5 hidden sm:inline-flex">📱 Mobil Visning ➔</a>
+        </div>
+    </div>
+
+    <!-- 1. DASHBOARD OVERSIKT (BOLT HERO GRID) -->
+    <div id="page-dashboard" class="space-y-6">
+        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800 border border-slate-800/80 p-6 md:p-10">
+            <div class="relative max-w-2xl">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-500/10 border border-sky-500/20 text-xs font-semibold text-sky-300 mb-4">
+                    ✨ Versjon 16.0 — Modernisert Verkstedsportal
                 </div>
-                <div className="accordion-body px-5 pb-5 border-t border-slate-800/60 pt-4">
-                    {children}
-                </div>
-            </div>
-        );
-    }
-
-    // 1. DASHBOARD COMPONENT
-    function Dashboard({ onSelect }) {
-        return (
-            <div className="space-y-6">
-                <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800 border border-slate-800/80 p-6 md:p-10">
-                    <div className="relative max-w-2xl">
-                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-500/10 border border-sky-500/20 text-xs font-semibold text-sky-300 mb-4">
-                            ✨ Versjon 16.0 — Modernisert Verkstedsportal
-                        </div>
-                        <h1 className="text-2xl md:text-3xl font-extrabold text-slate-100 leading-tight mb-2">
-                            Verkstedsportal
-                        </h1>
-                        <p className="text-slate-400 text-sm md:text-base leading-relaxed mb-6">
-                            Digitalt verktøy for produksjon, kalkulasjoner, vakter og lønn. Alt samlet i én moderne portal.
-                        </p>
-                        <div className="flex flex-wrap gap-3">
-                            <button onClick={() => onSelect('salary')} className="btn-primary">
-                                Start med lønnskalkulator ➔
-                            </button>
-                            <button onClick={() => onSelect('machining')} className="btn-ghost">
-                                Maskineringskalkulator
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="grid gap-4 sm:grid-cols-2">
-                    <div onClick={() => onSelect('salary')} className="glass-card p-6 text-left hover:border-sky-500/50 transition-all duration-200 group cursor-pointer">
-                        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center text-xl mb-4">💰</div>
-                        <h3 className="font-bold text-slate-100 text-base mb-1 group-hover:text-sky-400 transition-colors">Lønnskalkulator & Oppgjør</h3>
-                        <p className="text-xs text-slate-400 leading-relaxed">Beregning av timelønn, overtid, helgetillegg, timebank, skattetrekk, feriepenger og årsprognose.</p>
-                        <span className="inline-flex items-center gap-1 mt-4 text-xs font-bold text-sky-400">Åpne lønn ➔</span>
-                    </div>
-
-                    <div onClick={() => onSelect('machining')} className="glass-card p-6 text-left hover:border-sky-500/50 transition-all duration-200 group cursor-pointer">
-                        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-xl mb-4">⚙️</div>
-                        <h3 class="font-bold text-slate-100 text-base mb-1 group-hover:text-sky-400 transition-colors">Maskinering & CNC</h3>
-                        <p className="text-xs text-slate-400 leading-relaxed">Sirkulær bordsmating (GibbsCAM), gjengediameter, skjærekraft (Fc), effekt (Pc kW) og C-akse °/min.</p>
-                        <span className="inline-flex items-center gap-1 mt-4 text-xs font-bold text-sky-400">Åpne maskinering ➔</span>
-                    </div>
-
-                    <div onClick={() => onSelect('workshop')} className="glass-card p-6 text-left hover:border-sky-500/50 transition-all duration-200 group cursor-pointer">
-                        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center text-xl mb-4">🛠️</div>
-                        <h3 className="font-bold text-slate-100 text-base mb-1 group-hover:text-sky-400 transition-colors">Verkstedtabeller & Bor</h3>
-                        <p className="text-xs text-slate-400 leading-relaxed">Materialvelger, U-Bor, Hardmetall/HSS, M/BSP kjernebor, ISO 6H/6g, smurte skruer (-25% Nm), PCD og Pythagoras.</p>
-                        <span className="inline-flex items-center gap-1 mt-4 text-xs font-bold text-sky-400">Åpne verkstedtabeller ➔</span>
-                    </div>
-
-                    <div onClick={() => onSelect('ev')} className="glass-card p-6 text-left hover:border-sky-500/50 transition-all duration-200 group cursor-pointer">
-                        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-700 flex items-center justify-center text-xl mb-4">⚡</div>
-                        <h3 className="font-bold text-slate-100 text-base mb-1 group-hover:text-sky-400 transition-colors">Elbil-Kalkulator</h3>
-                        <p className="text-xs text-slate-400 leading-relaxed">Ladetid (kW, kWh), ladekostnad, månedlig bensinbesparelse og vinter-rekkevidde med temperaturtap.</p>
-                        <span class="inline-flex items-center gap-1 mt-4 text-xs font-bold text-sky-400">Åpne elbil ➔</span>
-                    </div>
+                <h1 class="text-2xl md:text-3xl font-extrabold text-slate-100 leading-tight mb-2">
+                    Verkstedsportal
+                </h1>
+                <p class="text-slate-400 text-sm md:text-base leading-relaxed mb-6">
+                    Digitalt verktøy for produksjon, kalkulasjoner, vakter og lønn. Alt samlet i én moderne portal.
+                </p>
+                <div class="flex flex-wrap gap-3">
+                    <button onclick="switchNav('salary')" class="btn-primary">
+                        Start med lønnskalkulator ➔
+                    </button>
+                    <button onclick="switchNav('machining')" class="btn-ghost">
+                        Maskineringskalkulator
+                    </button>
                 </div>
             </div>
-        );
-    }
+        </div>
 
-    // 2. SALARY CALCULATOR COMPONENT
-    function SalaryTool() {
-        const [harFast, setHarFast] = useState(true);
-        const [rate, setRate] = useState('316.5');
-        const [hoursDay, setHoursDay] = useState('7.5');
-        const [vacDays, setVacDays] = useState('0');
-        const [taxTable, setTaxTable] = useState('7101');
-        const [unionPct, setUnionPct] = useState('1.5');
+        <div class="grid gap-4 sm:grid-cols-2">
+            <!-- CARDS FOR THE 4 MAIN TOOLS -->
+            <div onclick="switchNav('salary')" class="glass-card p-6 text-left hover:border-sky-500/50 transition-all duration-200 group cursor-pointer">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center text-xl">💰</div>
+                    <span class="text-xs font-mono text-slate-600">v2.0</span>
+                </div>
+                <h3 class="font-bold text-slate-100 text-base mb-1 group-hover:text-sky-400 transition-colors">Lønnskalkulator & Oppgjør</h3>
+                <p class="text-xs text-slate-400 leading-relaxed">Beregning av timelønn, overtid, helgetillegg, timebank, skattetrekk, feriepenger og årsprognose.</p>
+                <span class="inline-flex items-center gap-1 mt-4 text-xs font-bold text-sky-400">Åpne verktøy ➔</span>
+            </div>
 
-        const [shiftHours, setShiftHours] = useState('7');
-        const [shiftMin, setShiftMin] = useState('30');
-        const [shiftType, setShiftType] = useState('hverdag50');
-        const [shiftTimebank, setShiftTimebank] = useState(false);
+            <div onclick="switchNav('machining')" class="glass-card p-6 text-left hover:border-sky-500/50 transition-all duration-200 group cursor-pointer">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-xl">⚙️</div>
+                    <span class="text-xs font-mono text-slate-600">v8.1</span>
+                </div>
+                <h3 class="font-bold text-slate-100 text-base mb-1 group-hover:text-sky-400 transition-colors">Maskinering & CNC</h3>
+                <p class="text-xs text-slate-400 leading-relaxed">Sirkulær bordsmating (GibbsCAM), gjengediameter, skjærekraft (Fc), effekt (Pc kW) og C-akse °/min.</p>
+                <span class="inline-flex items-center gap-1 mt-4 text-xs font-bold text-sky-400">Åpne verktøy ➔</span>
+            </div>
 
-        const [vakter, setVakter] = useState(() => {
-            if (localStorage.getItem('lonn_vakter_tabs_v26')) {
-                try { return JSON.parse(localStorage.getItem('lonn_vakter_tabs_v26')); } catch(e){}
-            }
-            return [];
-        });
+            <div onclick="switchNav('workshop')" class="glass-card p-6 text-left hover:border-sky-500/50 transition-all duration-200 group cursor-pointer">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center text-xl">🛠️</div>
+                    <span class="text-xs font-mono text-slate-600">v12.0</span>
+                </div>
+                <h3 class="font-bold text-slate-100 text-base mb-1 group-hover:text-sky-400 transition-colors">Verkstedtabeller & Bor</h3>
+                <p class="text-xs text-slate-400 leading-relaxed">Materialvelger, U-Bor, Hardmetall/HSS, M/BSP kjernebor, ISO 6H/6g, smurte skruer (-25% Nm), PCD og Pythagoras.</p>
+                <span class="inline-flex items-center gap-1 mt-4 text-xs font-bold text-sky-400">Åpne verktøy ➔</span>
+            </div>
 
-        const calc = useMemo(() => {
-            const r = parseFloat(rate) || 316.5;
-            const h = parseFloat(hoursDay) || 7.5;
-            const vd = parseInt(vacDays) || 0;
-            const uPct = parseFloat(unionPct) || 1.5;
+            <div onclick="switchNav('ev')" class="glass-card p-6 text-left hover:border-sky-500/50 transition-all duration-200 group cursor-pointer">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-700 flex items-center justify-center text-xl">⚡</div>
+                    <span class="text-xs font-mono text-slate-600">v4.0</span>
+                </div>
+                <h3 class="font-bold text-slate-100 text-base mb-1 group-hover:text-sky-400 transition-colors">Elbil-Kalkulator</h3>
+                <p class="text-xs text-slate-400 leading-relaxed">Ladetid (kW, kWh), ladekostnad, månedlig bensinbesparelse og vinter-rekkevidde med temperaturtap.</p>
+                <span class="inline-flex items-center gap-1 mt-4 text-xs font-bold text-sky-400">Åpne verktøy ➔</span>
+            </div>
+        </div>
 
-            const fast = harFast ? (22 * h * r) : 0;
-            const ferieDeduct = harFast ? (vd * h * r) : 0;
+        <div class="glass-card p-6 text-center">
+            <p class="text-xs text-slate-400">Verkstedsportal for Sigurd Seland AS — utviklet som PWA for mobil og desktop.</p>
+        </div>
+    </div>
 
-            let vaktBrutto = 0, timebankHours = 0;
-            vakter.forEach(v => {
-                const factor = v.isTimebank ? (v.kind.includes('50') ? 0.5 : 1.0) : (v.kind.includes('50') ? 1.5 : 2.0);
-                vaktBrutto += v.desimalTimer * (r * factor);
-                if (v.isTimebank) timebankHours += v.desimalTimer;
-            });
+    <!-- 2. LØNNSKALKULATOR PAGE -->
+    <div id="page-salary" class="tab-content space-y-6">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+            <div class="glass-card p-5 space-y-3">
+                <h3 class="font-bold text-sm text-slate-100 pb-2 border-b border-slate-800">📅 Fastlønn, Timelønn & Skatt</h3>
+                <label class="flex items-center gap-2 cursor-pointer pb-2 border-b border-slate-800/60">
+                    <input type="checkbox" id="ls-inkl-fastlonn" checked onchange="calcSalary()" class="w-4 h-4 accent-sky-400">
+                    <span class="text-xs font-semibold text-slate-300">Inkluder fastlønn (måned)</span>
+                </label>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Timelønn (kr/t)</label>
+                        <input type="number" id="ls-rate" class="input-dark" value="316.5" oninput="calcSalary()">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Timer/dag</label>
+                        <input type="number" id="ls-hoursday" class="input-dark" value="7.5" oninput="calcSalary()">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Ubetalt ferie</label>
+                        <input type="number" id="ls-vacdays" class="input-dark" value="0" min="0" max="20" oninput="calcSalary()">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Skattetabell</label>
+                        <input type="text" id="ls-tax" class="input-dark" value="7101" oninput="calcSalary()">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs text-slate-400 mb-1">Fagforening (%)</label>
+                    <input type="number" id="ls-union" class="input-dark" value="1.5" step="0.1" oninput="calcSalary()">
+                </div>
+            </div>
 
-            const gross = fast - ferieDeduct + vaktBrutto;
-            const union = Math.max(0, gross * (uPct / 100));
-            const taxable = Math.max(0, gross - union);
-            const tax = taxable * 0.28;
-            const net = gross - union - tax;
-
-            const vacationPay = gross * 0.12;
-            const fastYear = harFast ? ((5 * h) * r * 47) : 0;
-            const totalYear = (fastYear + (vaktBrutto * 12)) * 1.12;
-
-            return { fast, ferieDeduct, vaktBrutto, timebankHours, gross, union, tax, net, vacationPay, totalYear };
-        }, [harFast, rate, hoursDay, vacDays, unionPct, vakter]);
-
-        const addShift = (e) => {
-            e.preventDefault();
-            const h = parseInt(shiftHours) || 0;
-            const m = parseInt(shiftMin) || 0;
-            const d = new Date();
-            const newShift = {
-                id: Math.random().toString(36).substring(2),
-                date: d.toISOString().split('T')[0],
-                kind: shiftType,
-                hours: h,
-                minutes: m,
-                desimalTimer: h + (m/60),
-                isTimebank: shiftTimebank
-            };
-            const updated = [...vakter, newShift];
-            setVakter(updated);
-            localStorage.setItem('lonn_vakter_tabs_v26', JSON.stringify(updated));
-            alert("✅ Vakt registrert!");
-        };
-
-        return (
-            <div className="space-y-6">
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-                    <div className="glass-card p-5 space-y-3">
-                        <h3 className="font-bold text-sm text-slate-100 pb-2 border-b border-slate-800">📅 Fastlønn, Timelønn & Skatt</h3>
-                        <label className="flex items-center gap-2 cursor-pointer pb-2 border-b border-slate-800/60">
-                            <input type="checkbox" checked={harFast} onChange={(e) => setHarFast(e.target.checked)} className="w-4 h-4 accent-sky-400" />
-                            <span className="text-xs font-semibold text-slate-300">Inkluder fastlønn (måned)</span>
-                        </label>
-                        <div className="grid grid-cols-2 gap-2">
-                            <div>
-                                <label className="block text-xs text-slate-400 mb-1">Timelønn (kr/t)</label>
-                                <input type="number" value={rate} onChange={(e) => setRate(e.target.value)} className="input-dark" />
-                            </div>
-                            <div>
-                                <label className="block text-xs text-slate-400 mb-1">Timer/dag</label>
-                                <input type="number" value={hoursDay} onChange={(e) => setHoursDay(e.target.value)} className="input-dark" />
-                            </div>
-                        </div>
-                        <div className="grid grid-cols-2 gap-2">
-                            <div>
-                                <label className="block text-xs text-slate-400 mb-1">Ubetalt ferie</label>
-                                <input type="number" value={vacDays} onChange={(e) => setVacDays(e.target.value)} className="input-dark" />
-                            </div>
-                            <div>
-                                <label className="block text-xs text-slate-400 mb-1">Skattetabell</label>
-                                <input type="text" value={taxTable} onChange={(e) => setTaxTable(e.target.value)} className="input-dark" />
-                            </div>
+            <div class="glass-card p-5 space-y-3">
+                <h3 class="font-bold text-sm text-slate-100 pb-2 border-b border-slate-800">⏱️ Registrer Tilleggsvakt</h3>
+                <form onsubmit="addSalaryShift(event)" class="space-y-3">
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-xs text-slate-400 mb-1">Timer</label>
+                            <input type="number" id="lsv-hours" class="input-dark" value="7" min="0">
                         </div>
                         <div>
-                            <label className="block text-xs text-slate-400 mb-1">Fagforening (%)</label>
-                            <input type="number" value={unionPct} onChange={(e) => setUnionPct(e.target.value)} step="0.1" className="input-dark" />
+                            <label class="block text-xs text-slate-400 mb-1">Minutter</label>
+                            <input type="number" id="lsv-min" class="input-dark" value="30" min="0" max="59">
                         </div>
                     </div>
-
-                    <div className="glass-card p-5 space-y-3">
-                        <h3 className="font-bold text-sm text-slate-100 pb-2 border-b border-slate-800">⏱️ Registrer Tilleggsvakt</h3>
-                        <form onSubmit={addShift} className="space-y-3">
-                            <div className="grid grid-cols-2 gap-2">
-                                <div>
-                                    <label className="block text-xs text-slate-400 mb-1">Timer</label>
-                                    <input type="number" value={shiftHours} onChange={(e) => setShiftHours(e.target.value)} className="input-dark" />
-                                </div>
-                                <div>
-                                    <label className="block text-xs text-slate-400 mb-1">Minutter</label>
-                                    <input type="number" value={shiftMin} onChange={(e) => setShiftMin(e.target.value)} className="input-dark" />
-                                </div>
-                            </div>
-                            <div>
-                                <label className="block text-xs text-slate-400 mb-1">Type tillegg</label>
-                                <select value={shiftType} onChange={(e) => setShiftType(e.target.value)} className="input-dark">
-                                    <option value="hverdag50">Hverdag 50% (× 1.5)</option>
-                                    <option value="hverdag100">Hverdag 100% (× 2.0)</option>
-                                    <option value="helg50">Helg 50% (× 1.5)</option>
-                                    <option value="helg100">Helg 100% (× 2.0)</option>
-                                </select>
-                            </div>
-                            <label className="flex items-center gap-2 p-2 rounded-lg bg-amber-500/10 border border-amber-500/20 cursor-pointer">
-                                <input type="checkbox" checked={shiftTimebank} onChange={(e) => setShiftTimebank(e.target.checked)} className="w-4 h-4 accent-amber-500" />
-                                <span className="text-[11px] font-bold text-amber-400">🏦 Sett ordinær time i timebanken</span>
-                            </label>
-                            <button type="submit" className="btn-primary w-full">+ Registrer Vakt</button>
-                        </form>
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Type tillegg</label>
+                        <select id="lsv-type" class="input-dark">
+                            <option value="hverdag50">Hverdag 50% (× 1.5)</option>
+                            <option value="hverdag100">Hverdag 100% (× 2.0)</option>
+                            <option value="helg50">Helg 50% (× 1.5)</option>
+                            <option value="helg100">Helg 100% (× 2.0)</option>
+                        </select>
                     </div>
+                    <label class="flex items-center gap-2 p-2 rounded-lg bg-amber-500/10 border border-amber-500/20 cursor-pointer">
+                        <input type="checkbox" id="lsv-timebank" class="w-4 h-4 accent-amber-500">
+                        <span class="text-[11px] font-bold text-amber-400">🏦 Sett ordinær time i timebanken</span>
+                    </label>
+                    <button type="submit" class="btn-primary w-full">+ Registrer Vakt</button>
+                </form>
+            </div>
 
-                    <div className="glass-card p-5 space-y-2">
-                        <h3 className="font-bold text-sm text-slate-100 pb-2 border-b border-slate-800">📊 Spesifikasjon</h3>
-                        <div className="space-y-2 text-xs">
-                            <div className="flex justify-between"><span>Fastlønn (brutto):</span><span className="font-mono font-bold">{formatNOK(calc.fast)}</span></div>
-                            {calc.ferieDeduct > 0 && <div className="flex justify-between text-red-400"><span>Ferietrekk:</span><span className="font-mono font-bold">− {formatNOK(calc.ferieDeduct)}</span></div>}
-                            <div className="flex justify-between"><span>Tilleggsvakter:</span><span className="font-mono font-bold text-sky-400">{formatNOK(calc.vaktBrutto)}</span></div>
-                            <div className="flex justify-between text-amber-400"><span>Timebank Saldo:</span><span className="font-mono font-bold">+ {calc.timebankHours.toFixed(1)} t</span></div>
-                            <div className="flex justify-between font-bold pt-2 border-t border-slate-800"><span>Total Brutto:</span><span className="font-mono">{formatNOK(calc.gross)}</span></div>
-                            <div className="flex justify-between text-slate-400"><span>Fagforening (1.5%):</span><span className="font-mono">− {formatNOK(calc.union)}</span></div>
-                            <div className="flex justify-between text-slate-400"><span>Skattetrekk ({taxTable}):</span><span className="font-mono">− {formatNOK(calc.tax)}</span></div>
-                            <div className="flex justify-between text-sm font-bold text-sky-400 pt-2 border-t border-slate-800"><span>Netto Utbetalt:</span><span className="font-mono font-bold">{formatNOK(calc.net)}</span></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="glass-card p-6 bg-gradient-to-r from-sky-500/10 to-transparent border-sky-500/30">
-                    <p className="text-xs text-slate-400 uppercase tracking-wider font-semibold">NETTO UTBETALT PÅ KONTO (ESTIMAT)</p>
-                    <p className="text-3xl sm:text-4xl font-extrabold font-mono text-sky-400 my-2">{formatNOK(calc.net)}</p>
-                    <p className="text-xs text-slate-500">Inkludert fastlønn, tilleggsvakter, fagforening og skattetrekk.</p>
+            <div class="glass-card p-5 space-y-2">
+                <h3 class="font-bold text-sm text-slate-100 pb-2 border-b border-slate-800">📊 Spesifikasjon</h3>
+                <div class="space-y-2 text-xs">
+                    <div class="flex justify-between"><span>Fastlønn (brutto):</span><span id="ls-res-fast" class="font-mono font-bold">0,00 kr</span></div>
+                    <div class="flex justify-between text-red-400" id="ls-row-ferie" style="display:none;"><span>Ferietrekk:</span><span id="ls-res-ferie" class="font-mono font-bold">− 0,00 kr</span></div>
+                    <div class="flex justify-between"><span>Tilleggsvakter:</span><span id="ls-res-vaktbrutto" class="font-mono font-bold text-sky-400">0,00 kr</span></div>
+                    <div class="flex justify-between text-amber-400"><span>Timebank Saldo:</span><span id="ls-res-timebank" class="font-mono font-bold">+ 0.0 t</span></div>
+                    <div class="flex justify-between font-bold pt-2 border-t border-slate-800"><span>Total Brutto:</span><span id="ls-res-totbrutto" class="font-mono">0,00 kr</span></div>
+                    <div class="flex justify-between text-slate-400"><span>Fagforening (1.5%):</span><span id="ls-res-union" class="font-mono">− 0,00 kr</span></div>
+                    <div class="flex justify-between text-slate-400"><span>Skattetrekk (7101):</span><span id="ls-res-skatt" class="font-mono">− 0,00 kr</span></div>
+                    <div class="flex justify-between text-sm font-bold text-sky-400 pt-2 border-t border-slate-800"><span>Netto Utbetalt:</span><span id="ls-res-netto" class="font-mono font-bold">0,00 kr</span></div>
                 </div>
             </div>
-        );
+        </div>
+
+        <div class="glass-card p-6 bg-gradient-to-r from-sky-500/10 to-transparent border-sky-500/30">
+            <p class="text-xs text-slate-400 uppercase tracking-wider font-semibold">NETTO UTBETALT PÅ KONTO (ESTIMAT)</p>
+            <p class="text-3xl sm:text-4xl font-extrabold font-mono text-sky-400 my-2" id="ls-res-big-netto">0,00 kr</p>
+            <p class="text-xs text-slate-500">Beregnet ut fra fastlønn, overtid, skattekort og fagforeningsfradrag.</p>
+        </div>
+    </div>
+
+    <!-- 3. MASKINERING & CNC PAGE (BOLT ACCORDIONS) -->
+    <div id="page-machining" class="tab-content space-y-4">
+        <!-- ACCORDION 1: SIRKULÆR MATING -->
+        <div class="glass-card accordion-item open" id="acc-m-sirkulaer">
+            <div onclick="toggleAccordion('acc-m-sirkulaer')" class="w-full flex items-center justify-between p-5 text-left hover:bg-slate-800/40 transition-colors cursor-pointer">
+                <div class="flex items-center gap-3">
+                    <span class="text-sky-400 text-lg">🌀</span>
+                    <span class="font-bold text-slate-100 text-sm">Regne om til Sirkulær Mating (Aksling / Gjengefresing)</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-xs px-2.5 py-0.5 rounded-full bg-sky-500/15 text-sky-300 font-mono font-bold">Gibbs</span>
+                    <span class="accordion-chevron text-slate-400 transition-transform">▼</span>
+                </div>
+            </div>
+            <div class="accordion-body px-5 pb-5 border-t border-slate-800/60 pt-4">
+                <p class="text-xs text-slate-400 mb-4">Regn om bordmating til effektiv sirkulær mating for aksling/fresing og gjengefresing i Gibbs.</p>
+                <div class="grid grid-cols-2 gap-3 mb-4">
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Skjærehastighet Vc (m/min)</label>
+                        <input type="number" id="cf-vc" class="input-dark" value="120" oninput="calcCircularFeed()">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Mating fz (mm/tann)</label>
+                        <input type="number" step="0.01" id="cf-fz" class="input-dark" value="0.08" oninput="calcCircularFeed()">
+                    </div>
+                </div>
+                <div class="grid grid-cols-3 gap-3 mb-4">
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Skjær (z)</label>
+                        <input type="number" id="cf-z" class="input-dark" value="4" oninput="calcCircularFeed()">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Fres Ø (mm)</label>
+                        <input type="number" id="cf-dfres" class="input-dark" value="84" oninput="calcCircularFeed()">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Hull Ø (mm)</label>
+                        <input type="number" id="cf-dhull" class="input-dark" value="410" oninput="calcCircularFeed()">
+                    </div>
+                </div>
+                <div class="p-4 rounded-xl border border-sky-500/30 bg-sky-500/5 space-y-2 text-xs font-bold text-slate-300">
+                    <div class="flex justify-between"><span>Spindel RPM (n):</span><span id="cf-res-rpm" class="font-mono text-sky-400 font-bold text-sm">0 RPM</span></div>
+                    <div class="flex justify-between text-sm font-extrabold text-slate-100"><span>Sirkulær Bordsmating (Vf):</span><span id="cf-res-vf" class="font-mono text-sky-400 text-lg">0 mm/min</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ACCORDION 2: GJENGEDIAMETER -->
+        <div class="glass-card accordion-item" id="acc-m-gjenge">
+            <div onclick="toggleAccordion('acc-m-gjenge')" class="w-full flex items-center justify-between p-5 text-left hover:bg-slate-800/40 transition-colors cursor-pointer">
+                <div class="flex items-center gap-3">
+                    <span class="text-sky-400 text-lg">📐</span>
+                    <span class="font-bold text-slate-100 text-sm">Innvendige & Utvendige Gjenger</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-xs px-2.5 py-0.5 rounded-full bg-sky-500/15 text-sky-300 font-mono font-bold">Diameter</span>
+                    <span class="accordion-chevron text-slate-400 transition-transform">▼</span>
+                </div>
+            </div>
+            <div class="accordion-body px-5 pb-5 border-t border-slate-800/60 pt-4">
+                <p class="text-xs text-slate-400 mb-4">Beregning av lille diameter / diameter du legger inn i Gibbs eller dreiebenk.</p>
+                <div class="grid grid-cols-2 gap-3 mb-4">
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Nominell Ø (mm)</label>
+                        <input type="number" id="td-dia" class="input-dark" value="16" oninput="calcThreadDia()">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Pitch (mm)</label>
+                        <input type="number" step="0.1" id="td-pitch" class="input-dark" value="2.0" oninput="calcThreadDia()">
+                    </div>
+                </div>
+                <div class="p-4 rounded-xl border border-sky-500/30 bg-sky-500/5 space-y-2 text-xs font-bold text-slate-300">
+                    <div class="flex justify-between"><span>Innvendig Mutter Kjernebor Ø:</span><span id="td-res-in" class="font-mono text-sky-400">14.00 mm</span></div>
+                    <div class="flex justify-between"><span>Utvendig Skrue Dreiediameter Ø:</span><span id="td-res-ut" class="font-mono text-sky-400">15.75 mm</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ACCORDION 3: SKJÆREKRAFT EFFEKT -->
+        <div class="glass-card accordion-item" id="acc-m-effekt">
+            <div onclick="toggleAccordion('acc-m-effekt')" class="w-full flex items-center justify-between p-5 text-left hover:bg-slate-800/40 transition-colors cursor-pointer">
+                <div class="flex items-center gap-3">
+                    <span class="text-emerald-400 text-lg">⚡</span>
+                    <span class="font-bold text-slate-100 text-sm">Skjærekraft, Spindeleffekt & Dreiemoment</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 font-mono font-bold">kW & Nm</span>
+                    <span class="accordion-chevron text-slate-400 transition-transform">▼</span>
+                </div>
+            </div>
+            <div class="accordion-body px-5 pb-5 border-t border-slate-800/60 pt-4">
+                <div class="grid grid-cols-2 gap-3 mb-4">
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Aksial Dybde ap (mm)</label>
+                        <input type="number" id="cf-ap" class="input-dark" value="5" oninput="calcCuttingForce()">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Radial Bredde ae (mm)</label>
+                        <input type="number" id="cf-ae" class="input-dark" value="12" oninput="calcCuttingForce()">
+                    </div>
+                </div>
+                <div class="p-4 rounded-xl border border-emerald-500/30 bg-emerald-500/5 space-y-2 text-emerald-400 text-xs font-bold">
+                    <div class="flex justify-between"><span>Sponavvirkning (Q):</span><span id="cf-res-q" class="font-mono">0 cm³/min</span></div>
+                    <div class="flex justify-between"><span>Skjærekraft (Fc):</span><span id="cf-res-fc" class="font-mono">0 N</span></div>
+                    <div class="flex justify-between text-sm font-black"><span>Spindeleffektbehov (Pc):</span><span id="cf-res-pc" class="font-mono text-base">0.0 kW</span></div>
+                    <div class="flex justify-between"><span>Dreiemoment (Mc):</span><span id="cf-res-mc" class="font-mono">0 Nm</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ACCORDION 4: C-AKSE MATING -->
+        <div class="glass-card accordion-item" id="acc-m-cakse">
+            <div onclick="toggleAccordion('acc-m-cakse')" class="w-full flex items-center justify-between p-5 text-left hover:bg-slate-800/40 transition-colors cursor-pointer">
+                <div class="flex items-center gap-3">
+                    <span class="text-amber-400 text-lg">🔄</span>
+                    <span class="font-bold text-slate-100 text-sm">MM/MIN til Grader/MIN (C-Akse / 4. Akse)</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-xs px-2.5 py-0.5 rounded-full bg-amber-500/15 text-amber-300 font-mono font-bold">C-akse</span>
+                    <span class="accordion-chevron text-slate-400 transition-transform">▼</span>
+                </div>
+            </div>
+            <div class="accordion-body px-5 pb-5 border-t border-slate-800/60 pt-4">
+                <p class="text-xs text-slate-400 mb-4">Omregning fra lineær mating mm/min til roterende grader/min basert på emnediameter.</p>
+                <div class="grid grid-cols-2 gap-3 mb-4">
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Mating mm/min (Vf)</label>
+                        <input type="number" id="ca-vf" class="input-dark" value="1400" oninput="calcCAxis()">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Emnediameter DIA (mm)</label>
+                        <input type="number" step="0.01" id="ca-dia" class="input-dark" value="3.14" oninput="calcCAxis()">
+                    </div>
+                </div>
+                <div class="p-4 rounded-xl border border-amber-500/30 bg-amber-500/5 space-y-2 text-amber-400 text-xs font-bold">
+                    <div class="flex justify-between"><span>Omkrets:</span><span id="ca-res-omkrets" class="font-mono">0 mm</span></div>
+                    <div class="flex justify-between"><span>1 Grad tilsvarer:</span><span id="ca-res-onegrad" class="font-mono">0 mm/°</span></div>
+                    <div class="flex justify-between text-sm font-black"><span>Mating i Grader/MIN (°/min):</span><span id="ca-res-gradmin" class="font-mono text-base">0 °/min</span></div>
+                    <div class="flex justify-between"><span>Omdreininger pr. minutt:</span><span id="ca-res-revmin" class="font-mono">0 omdr/min</span></div>
+                    <div class="flex justify-between"><span>Tid pr. omdreining:</span><span id="ca-res-time" class="font-mono">0 min</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. VERKSTEDTABELLER PAGE (BOLT ACCORDIONS) -->
+    <div id="page-workshop" class="tab-content space-y-4">
+        <!-- ACCORDION 1: MATERIALVELGER -->
+        <div class="glass-card accordion-item open" id="acc-w-mat">
+            <div onclick="toggleAccordion('acc-w-mat')" class="w-full flex items-center justify-between p-5 text-left hover:bg-slate-800/40 transition-colors cursor-pointer">
+                <div class="flex items-center gap-3">
+                    <span class="text-sky-400 text-lg">🧪</span>
+                    <span class="font-bold text-slate-100 text-sm">Materialvelger & Anbefalte Skjæredata</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-xs px-2.5 py-0.5 rounded-full bg-sky-500/15 text-sky-300 font-mono font-bold">Vc & fz</span>
+                    <span class="accordion-chevron text-slate-400 transition-transform">▼</span>
+                </div>
+            </div>
+            <div class="accordion-body px-5 pb-5 border-t border-slate-800/60 pt-4 space-y-4">
+                <p class="text-xs text-slate-400">Velg verkstedmateriale, operasjon og verktøymateriale for anbefalte data.</p>
+                <div>
+                    <label class="block text-xs text-slate-400 mb-1">Materiale</label>
+                    <select id="ms-mat" class="input-dark" onchange="calcMaterial()">
+                        <option value="s355">Konstruksjonsstål / S355 / St52 (P1)</option>
+                        <option value="c45">Seigherdingsstål / C45 / 42CrMo4 (P2)</option>
+                        <option value="ss316" selected>Syrefast 316L / A4 (M1)</option>
+                        <option value="alu">Aluminium 6082-T6 (N1)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs text-slate-400 mb-1">Operasjonstype</label>
+                    <select id="ms-op" class="input-dark" onchange="calcMaterial()">
+                        <option value="mill_rough" selected>Fresing - Skrubb / Grovfresing</option>
+                        <option value="mill_finish">Fresing - Slett / Finfresing</option>
+                        <option value="drill">Boring - Spiralbor / Kjernebor</option>
+                        <option value="udrill">Boring - U-Bor / Vendeskjærsbor</option>
+                        <option value="turn_rough">Dreiing - Skrubbdreiing</option>
+                        <option value="tap">Gjenging - Gjengebor / Gjengefres</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs text-slate-400 mb-1">Verktøymateriale</label>
+                    <select id="ms-toolmat" class="input-dark" onchange="calcMaterial()">
+                        <option value="hm_coated" selected>Belagt Hardmetall (HM / VHM Carbide)</option>
+                        <option value="hm_uncoated">Ubelagt Hardmetall (HM / VHM - Alu/Plast)</option>
+                        <option value="hss_co">Hurtigstål Kobolt (HSS-Co / HSS-E)</option>
+                        <option value="hss_std">Hurtigstål Standard (HSS)</option>
+                    </select>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">DIA (mm)</label>
+                        <input type="number" id="ms-dia" class="input-dark" value="16" oninput="calcMaterial()">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Skjær (z)</label>
+                        <input type="number" id="ms-z" class="input-dark" value="4" oninput="calcMaterial()">
+                    </div>
+                </div>
+                <div class="p-4 rounded-xl border border-sky-500/30 bg-sky-500/5 space-y-2 text-xs font-bold text-slate-300">
+                    <div class="flex justify-between"><span>Anbefalt Vc:</span><span id="ms-res-vc" class="font-mono text-sky-400">90 m/min</span></div>
+                    <div class="flex justify-between"><span>Beregnet RPM:</span><span id="ms-res-rpm" class="font-mono text-sky-400">1790 RPM</span></div>
+                    <div class="flex justify-between text-sm font-black"><span>Bordsmating (Vf):</span><span id="ms-res-vf" class="font-mono text-sky-400 text-base">572 mm/min</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ACCORDION 2: GJENGETABELL -->
+        <div class="glass-card accordion-item" id="acc-w-tap">
+            <div onclick="toggleAccordion('acc-w-tap')" class="w-full flex items-center justify-between p-5 text-left hover:bg-slate-800/40 transition-colors cursor-pointer">
+                <div class="flex items-center gap-3">
+                    <span class="text-amber-400 text-lg">🔩</span>
+                    <span class="font-bold text-slate-100 text-sm">Gjengetabell & Kjernebor (M & BSP / Rørgjenger)</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-xs px-2.5 py-0.5 rounded-full bg-amber-500/15 text-amber-300 font-mono font-bold">Gjenger</span>
+                    <span class="accordion-chevron text-slate-400 transition-transform">▼</span>
+                </div>
+            </div>
+            <div class="accordion-body px-5 pb-5 border-t border-slate-800/60 pt-4 space-y-4">
+                <div>
+                    <label class="block text-xs text-slate-400 mb-1">Velg Gjengestørrelse</label>
+                    <select id="tt-select" class="input-dark" onchange="calcThreadTable()">
+                        <optgroup label="Metriske M-gjenger">
+                            <option value="M6">M6 × 1.0 mm</option>
+                            <option value="M8">M8 × 1.25 mm</option>
+                            <option value="M10" selected>M10 × 1.5 mm</option>
+                            <option value="M12">M12 × 1.75 mm</option>
+                            <option value="M16">M16 × 2.0 mm</option>
+                        </optgroup>
+                        <optgroup label="BSP / G Rørgjenger">
+                            <option value="G1/8">BSP / G 1/8" (28 tpi - Kjernebor 8.8 mm)</option>
+                            <option value="G1/4">BSP / G 1/4" (19 tpi - Kjernebor 11.8 mm)</option>
+                            <option value="G1/2">BSP / G 1/2" (14 tpi - Kjernebor 19.0 mm)</option>
+                        </optgroup>
+                    </select>
+                </div>
+                <div class="p-4 rounded-xl border border-amber-500/30 bg-amber-500/5 space-y-2 text-amber-400 text-xs font-bold">
+                    <div class="flex justify-between text-sm font-black"><span>Anbefalt Kjernebor:</span><span id="tt-res-drill" class="font-mono text-base">8.5 mm</span></div>
+                    <div class="flex justify-between"><span>Gjengestigning Pitch:</span><span id="tt-res-pitch" class="font-mono">1.50 mm</span></div>
+                    <div class="flex justify-between"><span>Frigangshull Passbor:</span><span id="tt-res-clear" class="font-mono">11.0 mm</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ACCORDION 3: SKRUEMOMENT MED SMØRING -->
+        <div class="glass-card accordion-item" id="acc-w-tq">
+            <div onclick="toggleAccordion('acc-w-tq')" class="w-full flex items-center justify-between p-5 text-left hover:bg-slate-800/40 transition-colors cursor-pointer">
+                <div class="flex items-center gap-3">
+                    <span class="text-emerald-400 text-lg">🔧</span>
+                    <span class="font-bold text-slate-100 text-sm">Tiltrekkingsmoment for Skruer (Nm & Smøring)</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 font-mono font-bold">Nm & Pasta</span>
+                    <span class="accordion-chevron text-slate-400 transition-transform">▼</span>
+                </div>
+            </div>
+            <div class="accordion-body px-5 pb-5 border-t border-slate-800/60 pt-4 space-y-4">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Skrue</label>
+                        <select id="tq-size" class="input-dark" onchange="calcTorque()">
+                            <option value="M6">M6</option>
+                            <option value="M8">M8</option>
+                            <option value="M10" selected>M10</option>
+                            <option value="M12">M12</option>
+                            <option value="M16">M16</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Klasse</label>
+                        <select id="tq-class" class="input-dark" onchange="calcTorque()">
+                            <option value="8.8" selected>Stål 8.8</option>
+                            <option value="10.9">Stål 10.9</option>
+                            <option value="12.9">Stål 12.9</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs text-slate-400 mb-1">Gjengeforhold & Smøring</label>
+                    <select id="tq-lube" class="input-dark" onchange="calcTorque()">
+                        <option value="dry">Tørre / Usmurte gjenger (μ = 0.14)</option>
+                        <option value="lube" selected>Smurte gjenger / Pasta / Fett (μ = 0.10, -25% Nm)</option>
+                    </select>
+                </div>
+                <div class="p-4 rounded-xl border border-emerald-500/30 bg-emerald-500/5 space-y-2 text-emerald-400 text-xs font-bold">
+                    <div class="flex justify-between text-sm font-black"><span>Tiltrekkingsmoment (Nm):</span><span id="tq-res-nm" class="font-mono text-base">35 Nm</span></div>
+                    <div class="flex justify-between"><span>Tiltrekkingskraft (kN):</span><span id="tq-res-kn" class="font-mono">26 kN</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ACCORDION 4: PCD FLENSE-DIAGRAM -->
+        <div class="glass-card accordion-item" id="acc-w-pcd">
+            <div onclick="toggleAccordion('acc-w-pcd')" class="w-full flex items-center justify-between p-5 text-left hover:bg-slate-800/40 transition-colors cursor-pointer">
+                <div class="flex items-center gap-3">
+                    <span class="text-sky-400 text-lg">⭕</span>
+                    <span class="font-bold text-slate-100 text-sm">Delingssirkel & Flense-koordinater (PCD)</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-xs px-2.5 py-0.5 rounded-full bg-sky-500/15 text-sky-300 font-mono font-bold">PCD Diagram</span>
+                    <span class="accordion-chevron text-slate-400 transition-transform">▼</span>
+                </div>
+            </div>
+            <div class="accordion-body px-5 pb-5 border-t border-slate-800/60 pt-4 space-y-4">
+                <div class="text-center p-3 bg-slate-900/80 rounded-xl border border-slate-800">
+                    <svg width="180" height="180" viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg" class="mx-auto max-w-full h-auto">
+                        <circle cx="110" cy="110" r="95" fill="rgba(16, 185, 129, 0.08)" stroke="#10b981" stroke-width="2"/>
+                        <circle cx="110" cy="110" r="30" fill="#0f172a" stroke="#10b981" stroke-width="2"/>
+                        <line x1="110" y1="10" x2="110" y2="210" stroke="#1e293b" stroke-width="1.5" stroke-dasharray="4,4"/>
+                        <line x1="10" y1="110" x2="210" y2="110" stroke="#1e293b" stroke-width="1.5" stroke-dasharray="4,4"/>
+                        <circle cx="110" cy="110" r="68" fill="none" stroke="#38bdf8" stroke-width="2" stroke-dasharray="6,4"/>
+                        <line x1="178" y1="110" x2="158" y2="62" stroke="#f43f5e" stroke-width="2.5"/>
+                        <circle cx="178" cy="110" r="7" fill="#0f172a" stroke="#10b981" stroke-width="2"/>
+                        <circle cx="158" cy="62" r="7" fill="#0f172a" stroke="#10b981" stroke-width="2"/>
+                        <circle cx="110" cy="42" r="7" fill="#0f172a" stroke="#10b981" stroke-width="2"/>
+                        <text x="182" y="85" fill="#f43f5e" font-size="11" font-weight="800">k (Korde)</text>
+                        <text x="65" y="105" fill="#38bdf8" font-size="11" font-weight="800">PCD Ø</text>
+                    </svg>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">PCD Ø (mm)</label>
+                        <input type="number" id="pcd-dia" class="input-dark" value="200" oninput="calcPCD()">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Antall hull</label>
+                        <input type="number" id="pcd-num" class="input-dark" value="8" oninput="calcPCD()">
+                    </div>
+                </div>
+                <div class="p-4 rounded-xl border border-emerald-500/30 bg-emerald-500/5 space-y-2 text-emerald-400 text-xs font-bold">
+                    <div class="flex justify-between text-sm font-black"><span>Kordeavstand (måles direkte):</span><span id="pcd-res-chord" class="font-mono text-base">76.54 mm</span></div>
+                    <div class="flex justify-between"><span>Vinkelstigning pr. hull:</span><span id="pcd-res-angle" class="font-mono">45.0°</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ACCORDION 5: TRIGONOMETRI -->
+        <div class="glass-card accordion-item" id="acc-w-trig">
+            <div onclick="toggleAccordion('acc-w-trig')" class="w-full flex items-center justify-between p-5 text-left hover:bg-slate-800/40 transition-colors cursor-pointer">
+                <div class="flex items-center gap-3">
+                    <span class="text-purple-400 text-lg">📐</span>
+                    <span class="font-bold text-slate-100 text-sm">Trigonometri & Trekant (Pythagoras med SVG Diagram)</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-xs px-2.5 py-0.5 rounded-full bg-purple-500/15 text-purple-300 font-mono font-bold">Pythagoras</span>
+                    <span class="accordion-chevron text-slate-400 transition-transform">▼</span>
+                </div>
+            </div>
+            <div class="accordion-body px-5 pb-5 border-t border-slate-800/60 pt-4 space-y-4">
+                <div class="text-center p-3 bg-slate-900/80 rounded-xl border border-slate-800">
+                    <svg width="200" height="130" viewBox="0 0 240 150" xmlns="http://www.w3.org/2000/svg" class="mx-auto max-w-full h-auto">
+                        <path d="M 40 110 L 50 110 L 50 120" fill="none" stroke="#a78bfa" stroke-width="2"/>
+                        <polygon points="40,120 200,120 40,20" fill="rgba(167, 139, 250, 0.12)" stroke="#a78bfa" stroke-width="3"/>
+                        <text x="18" y="75" fill="#f8fafc" font-size="13" font-weight="800">a (Vert)</text>
+                        <text x="105" y="142" fill="#f8fafc" font-size="13" font-weight="800">b (Horisont)</text>
+                        <text x="120" y="60" fill="#a78bfa" font-size="13" font-weight="800">c (Hypotenus)</text>
+                    </svg>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Katet a (mm)</label>
+                        <input type="number" id="tri-a" class="input-dark" placeholder="f.eks 30" oninput="calcTrig()">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Katet b (mm)</label>
+                        <input type="number" id="tri-b" class="input-dark" placeholder="f.eks 40" oninput="calcTrig()">
+                    </div>
+                </div>
+                <div class="p-4 rounded-xl border border-purple-500/30 bg-purple-500/5 space-y-2 text-purple-300 text-xs font-bold">
+                    <div class="flex justify-between text-sm font-black"><span>Hypotenus c:</span><span id="tri-res-c" class="font-mono text-base">50.00 mm</span></div>
+                    <div class="flex justify-between"><span>Vinkler A° og B°:</span><span id="tri-res-angles" class="font-mono">A = 36.87° | B = 53.13°</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. ELBIL PAGE (BOLT ACCORDIONS) -->
+    <div id="page-ev" class="tab-content space-y-4">
+        <!-- ACCORDION 1: LADETID -->
+        <div class="glass-card accordion-item open" id="acc-e-charge">
+            <div onclick="toggleAccordion('acc-e-charge')" class="w-full flex items-center justify-between p-5 text-left hover:bg-slate-800/40 transition-colors cursor-pointer">
+                <div class="flex items-center gap-3">
+                    <span class="text-sky-400 text-lg">🔌</span>
+                    <span class="font-bold text-slate-100 text-sm">Ladetid & Ladekostnad</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-xs px-2.5 py-0.5 rounded-full bg-sky-500/15 text-sky-300 font-mono font-bold">kW & kWh</span>
+                    <span class="accordion-chevron text-slate-400 transition-transform">▼</span>
+                </div>
+            </div>
+            <div class="accordion-body px-5 pb-5 border-t border-slate-800/60 pt-4 space-y-4">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Batteri (kWh)</label>
+                        <input type="number" id="ev-bat" class="input-dark" value="77" oninput="calcEVCharge()">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Ladeeffekt</label>
+                        <select id="ev-kw" class="input-dark" onchange="calcEVCharge()">
+                            <option value="7.4" selected>Hjemmelader 7.4 kW</option>
+                            <option value="11">Hjemmelader 11 kW</option>
+                            <option value="150">Lynlader 150 kW</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Start %</label>
+                        <input type="number" id="ev-start" class="input-dark" value="10" oninput="calcEVCharge()">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Mål %</label>
+                        <input type="number" id="ev-target" class="input-dark" value="80" oninput="calcEVCharge()">
+                    </div>
+                </div>
+                <div class="p-4 rounded-xl border border-sky-500/30 bg-sky-500/5 space-y-2 text-xs font-bold text-slate-300">
+                    <div class="flex justify-between text-sm font-black"><span>Estimert Ladetid:</span><span id="ev-res-time" class="font-mono text-sky-400 text-base">7t 18m</span></div>
+                    <div class="flex justify-between"><span>Ladekostnad (1.30 kr/kWh):</span><span id="ev-res-cost" class="font-mono text-sky-400">70,07 kr</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ACCORDION 2: VINTER-REKKEVIDDE -->
+        <div class="glass-card accordion-item" id="acc-e-winter">
+            <div onclick="toggleAccordion('acc-e-winter')" class="w-full flex items-center justify-between p-5 text-left hover:bg-slate-800/40 transition-colors cursor-pointer">
+                <div class="flex items-center gap-3">
+                    <span class="text-amber-400 text-lg">❄️</span>
+                    <span class="font-bold text-slate-100 text-sm">Vinter-Rekkevidde & Temperaturtap</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-xs px-2.5 py-0.5 rounded-full bg-amber-500/15 text-amber-300 font-mono font-bold">Temperatur</span>
+                    <span class="accordion-chevron text-slate-400 transition-transform">▼</span>
+                </div>
+            </div>
+            <div class="accordion-body px-5 pb-5 border-t border-slate-800/60 pt-4 space-y-4">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">WLTP Sommer-rekkevidde (km)</label>
+                        <input type="number" id="ew-wltp" class="input-dark" value="480" oninput="calcWinter()">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Utetemperatur</label>
+                        <select id="ew-temp" class="input-dark" onchange="calcWinter()">
+                            <option value="0" selected>+20°C Sommer (100% reell · 0% tap)</option>
+                            <option value="12">+10°C Vår/Høst (88% reell · -12% tap)</option>
+                            <option value="25">0°C Norsk Vinter (75% reell · -25% tap)</option>
+                            <option value="35">-10°C Kald Vinter (65% reell · -35% tap)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="p-4 rounded-xl border border-amber-500/30 bg-amber-500/5 space-y-2 text-amber-400 text-xs font-bold">
+                    <div class="flex justify-between text-sm font-black"><span>Reell Rekkevidde:</span><span id="ew-res-range" class="font-mono text-base">360 km (75% av WLTP)</span></div>
+                    <div class="flex justify-between"><span>Forventet Tap:</span><span id="ew-res-loss" class="font-mono">- 120 km (25% tap)</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    function toggleAccordion(accId) {
+        const item = document.getElementById(accId);
+        if (item) {
+            item.classList.toggle('open');
+        }
     }
 
-    // MAIN APP COMPONENT
-    function App() {
-        const [activeNav, setActiveNav] = useState('dashboard');
-        const [isLight, setIsLight] = useState(() => localStorage.getItem('lonn_theme') === 'light');
-        const [lang, setLang] = useState(() => localStorage.getItem('seland_lang') || 'no');
+    function switchNav(pageId) {
+        document.querySelectorAll('.tab-content, #page-dashboard').forEach(el => el.classList.add('hidden'));
+        document.querySelectorAll('nav button').forEach(el => {
+            el.className = "flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-medium text-xs sm:text-sm text-slate-400 hover:bg-slate-800/50 hover:text-slate-200 border border-transparent whitespace-nowrap transition-all";
+        });
 
-        useEffect(() => {
-            if (isLight) {
-                document.body.classList.add('light-mode');
-                localStorage.setItem('lonn_theme', 'light');
-            } else {
-                document.body.classList.remove('light-mode');
-                localStorage.setItem('lonn_theme', 'dark');
-            }
-        }, [isLight]);
+        const activeBtn = document.getElementById(`navitem-${pageId}`);
+        if (activeBtn) {
+            activeBtn.className = "flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-xs sm:text-sm text-sky-400 bg-sky-500/10 border border-sky-500/20 whitespace-nowrap transition-all";
+        }
 
-        const navTitle = {
+        const targetPage = document.getElementById(`page-${pageId}`);
+        if (targetPage) {
+            targetPage.classList.remove('hidden');
+            targetPage.classList.add('active');
+        }
+
+        const titleMap = {
             dashboard: "Oversikt",
             salary: "💰 Lønnskalkulator & Oppgjør",
             machining: "⚙️ Maskineringskalkulator & CNC",
             workshop: "🛠️ Verkstedtabeller & Bor",
             ev: "⚡ Elbil-Kalkulator & Ladetid"
         };
+        const subMap = {
+            dashboard: "Velg et verktøy under for å starte beregningen.",
+            salary: "Samlet web-dashbord for fastlønn, overtid, timebank, skattetrekk og årsprognose.",
+            machining: "Sirkulær bordsmating, C-akse mm/min til °/min, skjærekrefter og spindeleffekt.",
+            workshop: "Materialer, operasjonstyper, kjernebor, ISO-toleranser, PCD, trekant og skruemoment.",
+            ev: "Ladetid, ladekostnader, bensinbesparelser og temperaturtap om vinteren."
+        };
 
-        return (
-            <div className="min-h-screen flex flex-col lg:flex-row">
-                <aside className="w-full lg:w-64 bg-slate-900/90 border-b lg:border-b-0 lg:border-r border-slate-800/80 p-5 flex flex-col shrink-0 sticky top-0 lg:h-screen z-40 backdrop-blur-md">
-                    <div className="flex items-center gap-3 pb-4 border-b border-slate-800 mb-5">
-                        <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-sky-400 to-blue-600 flex items-center justify-center text-white font-extrabold text-xl shadow-[0_0_20px_rgba(56,189,248,0.3)]">
-                            🛠️
-                        </div>
-                        <div>
-                            <h2 className="font-orbitron font-black text-base text-sky-400 tracking-wider">WATNE PRO</h2>
-                            <p className="text-[11px] text-slate-500 font-semibold">React Web Portal v100</p>
-                        </div>
-                    </div>
-
-                    <nav className="flex flex-row lg:flex-col gap-1.5 overflow-x-auto pb-2 lg:pb-0 scrollbar-thin">
-                        <button onClick={() => setActiveNav('dashboard')} className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-xs sm:text-sm whitespace-nowrap transition-all ${activeNav === 'dashboard' ? 'text-sky-400 bg-sky-500/10 border border-sky-500/20' : 'text-slate-400 border border-transparent hover:bg-slate-800/50'}`}>
-                            <span>🏠</span> <span>Oversikt</span>
-                        </button>
-                        <button onClick={() => setActiveNav('salary')} className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-xs sm:text-sm whitespace-nowrap transition-all ${activeNav === 'salary' ? 'text-sky-400 bg-sky-500/10 border border-sky-500/20' : 'text-slate-400 border border-transparent hover:bg-slate-800/50'}`}>
-                            <span>💰</span> <span>1. Lønnskalkulator</span>
-                        </button>
-                        <button onClick={() => setActiveNav('machining')} className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-xs sm:text-sm whitespace-nowrap transition-all ${activeNav === 'machining' ? 'text-sky-400 bg-sky-500/10 border border-sky-500/20' : 'text-slate-400 border border-transparent hover:bg-slate-800/50'}`}>
-                            <span>⚙️</span> <span>2. Maskinering & CNC</span>
-                        </button>
-                        <button onClick={() => setActiveNav('workshop')} className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-xs sm:text-sm whitespace-nowrap transition-all ${activeNav === 'workshop' ? 'text-sky-400 bg-sky-500/10 border border-sky-500/20' : 'text-slate-400 border border-transparent hover:bg-slate-800/50'}`}>
-                            <span>🛠️</span> <span>3. Verkstedtabeller</span>
-                        </button>
-                        <button onClick={() => setActiveNav('ev')} className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-xs sm:text-sm whitespace-nowrap transition-all ${activeNav === 'ev' ? 'text-sky-400 bg-sky-500/10 border border-sky-500/20' : 'text-slate-400 border border-transparent hover:bg-slate-800/50'}`}>
-                            <span>⚡</span> <span>4. Elbil-Kalkulator</span>
-                        </button>
-                    </nav>
-
-                    <div className="mt-auto pt-4 border-t border-slate-800 text-[11px] text-slate-500 hidden lg:block">
-                        <p className="font-medium">Sigurd Seland AS</p>
-                        <p className="mt-1 text-emerald-400 font-bold flex items-center gap-1.5">
-                            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                            React 18 Active
-                        </p>
-                    </div>
-                </aside>
-
-                <main className="flex-1 p-4 md:p-8 max-w-5xl mx-auto w-full">
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-800/80 mb-6">
-                        <div>
-                            <h1 class="font-bold text-xl md:text-2xl text-slate-100">{navTitle[activeNav]}</h1>
-                            <p className="text-xs text-slate-500 mt-1">Sømløs React webportal koblet direkte til din data.</p>
-                        </div>
-                        <div className="flex items-center gap-2.5 shrink-0">
-                            <button onClick={() => setIsLight(!isLight)} className="btn-ghost text-xs px-3 py-1.5">{isLight ? '☀️ Lyst' : '🌙 Mørkt'}</button>
-                            <a href="index.html" className="btn-ghost text-xs px-3 py-1.5 hidden sm:inline-flex">📱 Mobil Visning ➔</a>
-                        </div>
-                    </div>
-
-                    {activeNav === 'dashboard' && <Dashboard onSelect={setActiveNav} />}
-                    {activeNav === 'salary' && <SalaryTool />}
-                </main>
-            </div>
-        );
+        document.getElementById('header-title').innerText = titleMap[pageId];
+        document.getElementById('header-sub').innerText = subMap[pageId];
     }
 
-    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+    function calcSalary() {
+        const elFast = document.getElementById('ls-inkl-fastlonn');
+        const elRate = document.getElementById('ls-rate');
+        const elHoursDay = document.getElementById('ls-hoursday');
+        const elFerier = document.getElementById('ls-vacdays');
+        const elUnion = document.getElementById('ls-union');
+
+        const harFast = elFast ? elFast.checked : true;
+        const rate = parseFloat(elRate ? elRate.value : '316.5') || 316.5;
+        const hDay = parseFloat(elHoursDay ? elHoursDay.value : '7.5') || 7.5;
+        const vacDays = parseInt(elFerier ? elFerier.value : '0') || 0;
+        const unionPct = parseFloat(elUnion ? elUnion.value : '1.5') || 1.5;
+
+        const fast = harFast ? (22 * hDay * rate) : 0;
+        const ferieDeduct = harFast ? (vacDays * hDay * rate) : 0;
+
+        let vaktBrutto = 0, timebankHours = 0;
+        let vakter = [];
+        if (localStorage.getItem('lonn_vakter_tabs_v26')) {
+            try { vakter = JSON.parse(localStorage.getItem('lonn_vakter_tabs_v26')); } catch(e){}
+        }
+
+        vakter.forEach(v => {
+            const factor = v.isTimebank ? (v.kind.includes('50') ? 0.5 : 1.0) : (v.kind.includes('50') ? 1.5 : 2.0);
+            vaktBrutto += v.desimalTimer * (rate * factor);
+            if (v.isTimebank) timebankHours += v.desimalTimer;
+        });
+
+        const gross = fast - ferieDeduct + vaktBrutto;
+        const union = Math.max(0, gross * (unionPct / 100));
+        const taxable = Math.max(0, gross - union);
+        const tax = taxable * 0.28;
+        const net = gross - union - tax;
+
+        if (document.getElementById('ls-res-big-netto')) document.getElementById('ls-res-big-netto').innerText = net.toFixed(2).replace('.', ',') + " kr";
+        if (document.getElementById('ls-res-netto')) document.getElementById('ls-res-netto').innerText = net.toFixed(2).replace('.', ',') + " kr";
+        if (document.getElementById('ls-res-fast')) document.getElementById('ls-res-fast').innerText = fast.toFixed(2).replace('.', ',') + " kr";
+        if (document.getElementById('ls-res-vaktbrutto')) document.getElementById('ls-res-vaktbrutto').innerText = vaktBrutto.toFixed(2).replace('.', ',') + " kr";
+        if (document.getElementById('ls-res-timebank')) document.getElementById('ls-res-timebank').innerText = "+ " + timebankHours.toFixed(1).replace('.', ',') + " t";
+        if (document.getElementById('ls-res-totbrutto')) document.getElementById('ls-res-totbrutto').innerText = gross.toFixed(2).replace('.', ',') + " kr";
+        if (document.getElementById('ls-res-union')) document.getElementById('ls-res-union').innerText = "− " + union.toFixed(2).replace('.', ',') + " kr";
+        if (document.getElementById('ls-res-skatt')) document.getElementById('ls-res-skatt').innerText = "− " + tax.toFixed(2).replace('.', ',') + " kr";
+
+        const ferieRow = document.getElementById('ls-row-ferie');
+        if (ferieRow) {
+            if (vacDays > 0) {
+                if (document.getElementById('ls-res-ferie')) document.getElementById('ls-res-ferie').innerText = "− " + ferieDeduct.toFixed(2).replace('.', ',') + " kr";
+                ferieRow.style.display = 'flex';
+            } else {
+                ferieRow.style.display = 'none';
+            }
+        }
+    }
+
+    function addSalaryShift(e) {
+        e.preventDefault();
+        const h = parseInt(document.getElementById('lsv-hours').value) || 0;
+        const m = parseInt(document.getElementById('lsv-min').value) || 0;
+        const type = document.getElementById('lsv-type').value;
+        const tb = document.getElementById('lsv-timebank').checked;
+
+        let vakter = [];
+        if (localStorage.getItem('lonn_vakter_tabs_v26')) {
+            try { vakter = JSON.parse(localStorage.getItem('lonn_vakter_tabs_v26')); } catch(e){}
+        }
+
+        const d = new Date();
+        vakter.push({
+            id: Math.random().toString(36).substring(2),
+            date: d.toISOString().split('T')[0],
+            dateLabel: `${d.getDate()}.${d.getMonth()+1}`,
+            kind: type,
+            kindLabel: type,
+            hours: h,
+            minutes: m,
+            desimalTimer: h + (m/60),
+            year: d.getFullYear(),
+            month: d.getMonth(),
+            isTimebank: tb
+        });
+
+        localStorage.setItem('lonn_vakter_tabs_v26', JSON.stringify(vakter));
+        calcSalary();
+        alert("✅ Vakt registrert!");
+    }
+
+    function calcCircularFeed() {
+        const vc = parseFloat(document.getElementById('cf-vc').value) || 120;
+        const fz = parseFloat(document.getElementById('cf-fz').value) || 0.08;
+        const z = parseFloat(document.getElementById('cf-z').value) || 4;
+        const dFres = parseFloat(document.getElementById('cf-dfres').value) || 84;
+        const dHull = parseFloat(document.getElementById('cf-dhull').value) || 410;
+
+        const rpm = (vc * 1000) / (Math.PI * dFres);
+        const vfTann = rpm * fz * z;
+        const vfSirk = vfTann * ((dHull - dFres) / dHull);
+
+        document.getElementById('cf-res-rpm').innerText = Math.round(rpm) + " RPM";
+        document.getElementById('cf-res-vf').innerText = Math.round(vfSirk) + " mm/min";
+    }
+
+    function calcThreadDia() {
+        const dia = parseFloat(document.getElementById('td-dia').value) || 16;
+        const pitch = parseFloat(document.getElementById('td-pitch').value) || 2.0;
+
+        const inner = dia - pitch;
+        const outer = dia - (0.125 * pitch);
+
+        document.getElementById('td-res-in').innerText = `${inner.toFixed(2).replace('.', ',')} mm`;
+        document.getElementById('td-res-ut').innerText = `${outer.toFixed(2).replace('.', ',')} mm`;
+    }
+
+    function calcCuttingForce() {
+        const ap = parseFloat(document.getElementById('cf-ap').value) || 5;
+        const ae = parseFloat(document.getElementById('cf-ae').value) || 12;
+        const vc = parseFloat(document.getElementById('cf-vc').value) || 120;
+        const fz = parseFloat(document.getElementById('cf-fz').value) || 0.08;
+        const z = parseFloat(document.getElementById('cf-z').value) || 4;
+        const dFres = parseFloat(document.getElementById('cf-dfres').value) || 84;
+
+        const rpm = (vc * 1000) / (Math.PI * dFres);
+        const vf = rpm * fz * z;
+        const q = (ap * ae * vf) / 1000;
+        const fc = 1800 * ap * Math.pow(fz, 0.72);
+        const pc = (fc * vc) / (60000 * 0.85);
+        const mc = (pc * 9550) / Math.max(1, rpm);
+
+        document.getElementById('cf-res-q').innerText = q.toFixed(1).replace('.', ',') + " cm³/min";
+        document.getElementById('cf-res-fc').innerText = Math.round(fc) + " N";
+        document.getElementById('cf-res-pc').innerText = pc.toFixed(2).replace('.', ',') + " kW";
+        document.getElementById('cf-res-mc').innerText = Math.round(mc) + " Nm";
+    }
+
+    function calcCAxis() {
+        const vf = parseFloat(document.getElementById('ca-vf').value) || 1400;
+        const dia = parseFloat(document.getElementById('ca-dia').value) || 3.14;
+
+        const omkrets = Math.PI * dia;
+        const oneGrad = omkrets > 0 ? (omkrets / 360) : 0;
+        const gradMin = oneGrad > 0 ? (vf / oneGrad) : 0;
+        const revMin = omkrets > 0 ? (vf / omkrets) : 0;
+        const timePerRev = vf > 0 ? (omkrets / vf) : 0;
+
+        if (document.getElementById('ca-res-omkrets')) document.getElementById('ca-res-omkrets').innerText = omkrets.toFixed(2).replace('.', ',') + " mm";
+        if (document.getElementById('ca-res-onegrad')) document.getElementById('ca-res-onegrad').innerText = oneGrad.toFixed(4).replace('.', ',') + " mm/°";
+        if (document.getElementById('ca-res-gradmin')) document.getElementById('ca-res-gradmin').innerText = gradMin.toFixed(1).replace('.', ',') + " °/min";
+        if (document.getElementById('ca-res-revmin')) document.getElementById('ca-res-revmin').innerText = revMin.toFixed(2).replace('.', ',') + " omdr/min";
+        if (document.getElementById('ca-res-time')) document.getElementById('ca-res-time').innerText = timePerRev.toFixed(3).replace('.', ',') + " min";
+    }
+
+    function calcMaterial() {
+        const mat = document.getElementById('ms-mat').value;
+        const op = document.getElementById('ms-op').value;
+        const toolMat = document.getElementById('ms-toolmat').value;
+        const dia = parseFloat(document.getElementById('ms-dia').value) || 16;
+        const z = parseFloat(document.getElementById('ms-z').value) || 4;
+
+        let baseVc = 90;
+        let baseFz = 0.08;
+
+        if (mat === 's355') { baseVc = 180; baseFz = 0.12; }
+        if (mat === 'alu') { baseVc = 450; baseFz = 0.20; }
+
+        let factor = (toolMat === 'hss_co') ? 0.22 : 1.0;
+        if (op === 'udrill') factor *= 1.0;
+        if (op === 'tap') factor *= 0.35;
+
+        const vc = Math.round(baseVc * factor);
+        const rpm = (vc * 1000) / (Math.PI * dia);
+        const vf = rpm * baseFz * z;
+
+        document.getElementById('ms-res-vc').innerText = vc + " m/min";
+        document.getElementById('ms-res-rpm').innerText = Math.round(rpm) + " RPM";
+        document.getElementById('ms-res-vf').innerText = Math.round(vf) + " mm/min";
+    }
+
+    const tapData = {
+        M6: "5.0 mm | Pitch 1.0 mm | Passbor 6.6 mm",
+        M8: "6.8 mm | Pitch 1.25 mm | Passbor 9.0 mm",
+        M10: "8.5 mm | Pitch 1.5 mm | Passbor 11.0 mm",
+        M12: "10.2 mm | Pitch 1.75 mm | Passbor 13.5 mm",
+        M16: "14.0 mm | Pitch 2.0 mm | Passbor 17.5 mm",
+        "G1/2": "19.0 mm | Pitch 1.81 mm (14 tpi) | Passbor 21.3 mm"
+    };
+
+    function calcThreadTable() {
+        const size = document.getElementById('tt-select').value;
+        const str = tapData[size] || tapData.M10;
+        const parts = str.split(' | ');
+
+        document.getElementById('tt-res-drill').innerText = parts[0];
+        document.getElementById('tt-res-pitch').innerText = parts[1] ? parts[1].replace('Pitch ', '') : '1.5 mm';
+        document.getElementById('tt-res-clear').innerText = parts[2] ? parts[2].replace('Passbor ', '') : '11.0 mm';
+    }
+
+    const torqueData = {
+        M6: "9.8 Nm (3.6 kN)", M8: "24 Nm (6.5 kN)", M10: "47 Nm (10.4 kN)",
+        M12: "81 Nm (15.1 kN)", M16: "197 Nm (28.2 kN)", M20: "385 Nm (44.0 kN)"
+    };
+
+    function calcTorque() {
+        const size = document.getElementById('tq-size').value;
+        const isLube = document.getElementById('tq-lube').value === 'lube';
+
+        const valStr = torqueData[size] || "47 Nm (10.4 kN)";
+        const parts = valStr.split(' (');
+        const baseNm = parseFloat(parts[0]) || 47;
+        const kn = parts[1] ? parts[1].replace(')', '') : '';
+
+        const finalNm = isLube ? Math.round(baseNm * 0.75) : baseNm;
+
+        document.getElementById('tq-res-nm').innerText = `${finalNm} Nm ${isLube ? '(Smurt -25%)' : '(Tørr)'}`;
+        document.getElementById('tq-res-kn').innerText = kn;
+    }
+
+    function calcPCD() {
+        const pcd = parseFloat(document.getElementById('pcd-dia').value) || 200;
+        const num = parseInt(document.getElementById('pcd-num').value) || 8;
+
+        const rad = (180 / Math.max(1, num)) * (Math.PI / 180);
+        const chord = pcd * Math.sin(rad);
+        const angle = 360 / Math.max(1, num);
+
+        document.getElementById('pcd-res-chord').innerText = `${chord.toFixed(2).replace('.', ',')} mm`;
+        document.getElementById('pcd-res-angle').innerText = `${angle.toFixed(1).replace('.', ',')}°`;
+    }
+
+    function calcTrig() {
+        let a = parseFloat(document.getElementById('tri-a').value);
+        let b = parseFloat(document.getElementById('tri-b').value);
+
+        if (!isNaN(a) && !isNaN(b)) {
+            const c = Math.sqrt(a*a + b*b);
+            const degA = Math.atan(a/b) * (180/Math.PI);
+            const degB = 90 - degA;
+            document.getElementById('tri-res-c').innerText = `${c.toFixed(2).replace('.', ',')} mm`;
+            document.getElementById('tri-res-angles').innerText = `A = ${degA.toFixed(2)}° | B = ${degB.toFixed(2)}°`;
+        } else {
+            document.getElementById('tri-res-c').innerText = "Fyll inn Katet a og b";
+            document.getElementById('tri-res-angles').innerText = "A° og B° beregnes";
+        }
+    }
+
+    function calcEVCharge() {
+        const bat = parseFloat(document.getElementById('ev-bat').value) || 77;
+        const kw = parseFloat(document.getElementById('ev-kw').value) || 7.4;
+        const start = parseFloat(document.getElementById('ev-start').value) || 10;
+        const target = parseFloat(document.getElementById('ev-target').value) || 80;
+
+        const neededKwh = bat * ((target - start) / 100);
+        const hours = neededKwh / kw;
+        const totMin = Math.round(hours * 60);
+        const h = Math.floor(totMin / 60);
+        const m = totMin % 60;
+        const cost = neededKwh * 1.30;
+
+        document.getElementById('ev-res-time').innerText = `${h}t ${m}m`;
+        document.getElementById('ev-res-cost').innerText = cost.toFixed(2).replace('.', ',') + " kr";
+    }
+
+    function calcWinter() {
+        const wltp = parseFloat(document.getElementById('ew-wltp').value) || 480;
+        const tempInput = document.getElementById('ew-temp').value;
+        const loss = (tempInput !== "" && !isNaN(parseFloat(tempInput))) ? parseFloat(tempInput) : 0;
+
+        const rem = Math.max(0, 100 - loss);
+        const real = Math.round(wltp * (rem / 100));
+        const lossKm = Math.round(wltp - real);
+
+        document.getElementById('ew-res-range').innerText = `${real} km (${rem}% av WLTP)`;
+        document.getElementById('ew-res-loss').innerText = `- ${lossKm} km (${loss}% tap)`;
+    }
+
+    function toggleTheme() {
+        const isLight = document.body.classList.contains('light-mode');
+        if (isLight) {
+            document.body.classList.remove('light-mode');
+            localStorage.setItem('lonn_theme', 'dark');
+            document.getElementById('theme-btn').innerText = '🌙 Mørkt';
+        } else {
+            document.body.classList.add('light-mode');
+            localStorage.setItem('lonn_theme', 'light');
+            document.getElementById('theme-btn').innerText = '☀️ Lyst';
+        }
+    }
+
+    function toggleLang() {
+        let cur = localStorage.getItem('seland_lang') || 'no';
+        let newLang = (cur === 'no') ? 'en' : 'no';
+        localStorage.setItem('seland_lang', newLang);
+        document.getElementById('lang-btn').innerText = (newLang === 'en') ? '🇬🇧 EN' : '🇳🇴 NO';
+    }
+
+    // Init
+    if (localStorage.getItem('lonn_theme') === 'light') {
+        document.body.classList.add('light-mode');
+        if (document.getElementById('theme-btn')) document.getElementById('theme-btn').innerText = '☀️ Lyst';
+    }
+    const curLang = localStorage.getItem('seland_lang') || 'no';
+    document.getElementById('lang-btn').innerText = (curLang === 'en') ? '🇬🇧 EN' : '🇳🇴 NO';
+
+    calcSalary();
+    calcCircularFeed();
+    calcThreadDia();
+    calcCuttingForce();
+    calcCAxis();
+    calcMaterial();
+    calcThreadTable();
+    calcTorque();
+    calcPCD();
+    calcTrig();
+    calcEVCharge();
+    calcWinter();
 </script>
 
 </body>
