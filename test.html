@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WATNE PRO — Verkstedsportal (100% Komplett)</title>
+    <title>WATNE PRO — Verkstedsportal (100% Komplett Master Portal)</title>
 
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
 
     <script>
-        const APP_BUILD_VER = "v800.0-EVTempRangeDefaultFix";
+        const APP_BUILD_VER = "v1100.0-All28CalculatorsVerified";
         if (localStorage.getItem('app_build_v') !== APP_BUILD_VER) {
             localStorage.setItem('app_build_v', APP_BUILD_VER);
             if ('serviceWorker' in navigator) {
@@ -194,7 +194,7 @@
         <p class="font-medium">Sigurd Seland AS</p>
         <p class="mt-1 text-emerald-400 font-bold flex items-center gap-1.5">
             <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            100% Komplett Portal
+            100% Komplett Portal v1000
         </p>
     </div>
 </aside>
@@ -228,19 +228,19 @@
                     <div onclick="switchNav('machining')" class="bg-slate-900/60 hover:bg-slate-800/80 border border-slate-800 hover:border-slate-700 transition-all rounded-2xl p-6 flex flex-col items-start text-left group cursor-pointer">
                         <div class="p-3 bg-slate-800 text-sky-400 rounded-xl text-2xl mb-4 group-hover:scale-110 transition-transform">⚙️</div>
                         <h3 class="text-lg font-bold text-slate-100 mb-1">Maskinering & CNC</h3>
-                        <p class="text-sm text-slate-400">Gibbs sirkulær mating, C-akse, Fc/Pc og Vc/RPM</p>
+                        <p class="text-sm text-slate-400">Gibbs sirkulær mating, C-akse, Fc/Pc, Vc/RPM og hurtigkalkulator</p>
                     </div>
 
                     <div onclick="switchNav('workshop')" class="bg-slate-900/60 hover:bg-slate-800/80 border border-slate-800 hover:border-slate-700 transition-all rounded-2xl p-6 flex flex-col items-start text-left group cursor-pointer">
                         <div class="p-3 bg-slate-800 text-sky-400 rounded-xl text-2xl mb-4 group-hover:scale-110 transition-transform">🛠️</div>
                         <h3 class="text-lg font-bold text-slate-100 mb-1">Verkstedtabeller</h3>
-                        <p class="text-sm text-slate-400">Materialer, M/BSP gjenger, smurte skruer, PCD, ISO H7 og Pythagoras</p>
+                        <p class="text-sm text-slate-400">Materialer, M/BSP gjenger, smurte skruer, PCD, ISO H7, vekt, konus og kalkyle</p>
                     </div>
 
                     <div onclick="switchNav('ev')" class="bg-slate-900/60 hover:bg-slate-800/80 border border-slate-800 hover:border-slate-700 transition-all rounded-2xl p-6 flex flex-col items-start text-left group cursor-pointer">
                         <div class="p-3 bg-slate-800 text-sky-400 rounded-xl text-2xl mb-4 group-hover:scale-110 transition-transform">⚡</div>
                         <h3 class="text-lg font-bold text-slate-100 mb-1">Elbil-Kalkulator</h3>
-                        <p class="text-sm text-slate-400">Ladetid, bensinbesparelser og vinter-rekkevidde</p>
+                        <p class="text-sm text-slate-400">Ladetid (2.3-250 kW), besparelser og vinter-rekkevidde</p>
                     </div>
                 </div>
             </div>
@@ -390,7 +390,6 @@
 
             <!-- 3. MASKINERINGSVALKULATOR (TREKKSPILL ACCORDIONS) -->
             <div id="page-machining" class="tab-page space-y-4">
-                <!-- ACCORDION 1: SIRKULÆR MATING -->
                 <div class="glass-card accordion-card open" id="acc-m-sirk">
                     <div onclick="toggleAcc('acc-m-sirk')" class="border-b border-slate-800/60 bg-slate-800/20 px-6 py-4 flex items-center justify-between cursor-pointer hover:bg-slate-800/40 transition-colors">
                         <div class="flex items-center gap-3">
@@ -438,7 +437,6 @@
                     </div>
                 </div>
 
-                <!-- ACCORDION 2: GJENGEDIAMETER -->
                 <div class="glass-card accordion-card" id="acc-m-gjenge">
                     <div onclick="toggleAcc('acc-m-gjenge')" class="border-b border-slate-800/60 bg-slate-800/20 px-6 py-4 flex items-center justify-between cursor-pointer hover:bg-slate-800/40 transition-colors">
                         <div class="flex items-center gap-3">
@@ -472,8 +470,7 @@
                     </div>
                 </div>
 
-                <!-- ACCORDION 3: SKJÆREKRAFT EFFEKT -->
-                <div class="glass-card accordion-item" id="acc-m-effekt">
+                <div class="glass-card accordion-card" id="acc-m-effekt">
                     <div onclick="toggleAcc('acc-m-effekt')" class="border-b border-slate-800/60 bg-slate-800/20 px-6 py-4 flex items-center justify-between cursor-pointer hover:bg-slate-800/40 transition-colors">
                         <div class="flex items-center gap-3">
                             <div class="p-2 bg-emerald-500/20 text-emerald-400 rounded-lg text-xl">⚡</div>
@@ -504,7 +501,6 @@
                     </div>
                 </div>
 
-                <!-- ACCORDION 4: C-AKSE MATING -->
                 <div class="glass-card accordion-card" id="acc-m-cakse">
                     <div onclick="toggleAcc('acc-m-cakse')" class="border-b border-slate-800/60 bg-slate-800/20 px-6 py-4 flex items-center justify-between cursor-pointer hover:bg-slate-800/40 transition-colors">
                         <div class="flex items-center gap-3">
@@ -707,7 +703,6 @@
 
             <!-- 5. ELBIL PAGE (TREKKSPILL ACCORDIONS) -->
             <div id="page-ev" class="tab-page space-y-4">
-                <!-- ACCORDION 1: LADETID -->
                 <div class="glass-card accordion-card open" id="acc-e-charge">
                     <div onclick="toggleAcc('acc-e-charge')" class="border-b border-slate-800/60 bg-slate-800/20 px-6 py-4 flex items-center justify-between cursor-pointer hover:bg-slate-800/40 transition-colors">
                         <div class="flex items-center gap-3">
@@ -746,7 +741,6 @@
                     </div>
                 </div>
 
-                <!-- ACCORDION 2: ELBIL VS BENSIN/DIESEL BESPARELSE -->
                 <div class="glass-card accordion-card" id="acc-e-save">
                     <div onclick="toggleAcc('acc-e-save')" class="border-b border-slate-800/60 bg-slate-800/20 px-6 py-4 flex items-center justify-between cursor-pointer hover:bg-slate-800/40 transition-colors">
                         <div class="flex items-center gap-3">
@@ -790,7 +784,6 @@
                     </div>
                 </div>
 
-                <!-- ACCORDION 3: VINTER REKKEVIDDE -->
                 <div class="glass-card accordion-card" id="acc-e-winter">
                     <div onclick="toggleAcc('acc-e-winter')" class="border-b border-slate-800/60 bg-slate-800/20 px-6 py-4 flex items-center justify-between cursor-pointer hover:bg-slate-800/40 transition-colors">
                         <div class="flex items-center gap-3">
@@ -1321,6 +1314,44 @@
         if (document.getElementById('ev-res-time')) document.getElementById('ev-res-time').innerText = `${h}t ${m}m`;
     }
 
+    function calcEVSave() {
+        const km = parseFloat(document.getElementById('es-km').value) || 15000;
+        const fuelPrice = parseFloat(document.getElementById('es-fuelprice').value) || 20.0;
+        let fuelConsMil = parseFloat(document.getElementById('es-fuelcons').value) || 0.65;
+        let evConsMil = parseFloat(document.getElementById('es-evcons').value) || 1.80;
+
+        if (fuelConsMil > 2) fuelConsMil /= 10;
+        if (evConsMil > 5) evConsMil /= 10;
+
+        const milYear = km / 10;
+        const fuelCostYear = (milYear * fuelConsMil) * fuelPrice;
+        const evCostYear = (milYear * evConsMil) * 1.30;
+
+        const saveYear = Math.max(0, fuelCostYear - evCostYear);
+        const saveMonth = saveYear / 12;
+        const save5yr = saveYear * 5;
+
+        if (document.getElementById('es-res-mnd')) document.getElementById('es-res-mnd').innerText = Math.round(saveMonth).toLocaleString('no-NB') + " kr";
+        if (document.getElementById('es-res-5yr')) document.getElementById('es-res-5yr').innerText = Math.round(save5yr).toLocaleString('no-NB') + " kr";
+    }
+
+    function calcWinter() {
+        const wltp = parseFloat(document.getElementById('ew-wltp').value) || 480;
+        const tempSelect = document.getElementById('ew-temp');
+        const lossPct = tempSelect ? (parseFloat(tempSelect.value) || 0) : 0;
+
+        const remainingPct = Math.max(0, 100 - lossPct);
+        const realRange = Math.round(wltp * (remainingPct / 100));
+        const lossKm = Math.round(wltp - realRange);
+
+        if (document.getElementById('ew-res-range')) {
+            document.getElementById('ew-res-range').innerText = `${realRange} km (${remainingPct}% av WLTP)`;
+        }
+        if (document.getElementById('ew-res-loss')) {
+            document.getElementById('ew-res-loss').innerText = `− ${lossKm} km (${lossPct}% tap)`;
+        }
+    }
+
     function toggleTheme() {
         const isLight = document.body.classList.contains('light-mode');
         if (isLight) {
@@ -1359,6 +1390,8 @@
     calcPCD();
     calcTrig();
     calcEVCharge();
+    calcEVSave();
+    calcWinter();
 </script>
 
 </body>
