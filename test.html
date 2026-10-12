@@ -109,7 +109,7 @@
         main.web-content {
             flex: 1;
             padding: 2.5rem 3rem;
-            max-width: 78rem;
+            max-width: 84rem;
             margin: 0 auto;
         }
 
@@ -131,12 +131,6 @@
         .portal-grid-2 {
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 1.5rem;
-        }
-
-        .portal-grid-3 {
-            display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
             gap: 1.5rem;
         }
 
@@ -187,6 +181,7 @@
             border: none;
             cursor: pointer;
             transition: all 0.2s ease;
+            text-decoration: none;
         }
         .btn-cyan { background: var(--primary-cyan); color: #000; box-shadow: 0 0 15px rgba(0, 240, 255, 0.3); }
         .btn-green { background: var(--emerald-green); color: #fff; box-shadow: 0 0 15px rgba(16, 185, 129, 0.3); }
@@ -212,7 +207,7 @@
             body { flex-direction: column; }
             aside.web-sidebar { width: 100%; height: auto; position: relative; }
             main.web-content { padding: 1.5rem 1rem; }
-            .portal-grid-2, .portal-grid-3 { grid-template-columns: 1fr; }
+            .portal-grid-2 { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -224,22 +219,22 @@
         <div class="brand-logo">🛠️</div>
         <div>
             <h2 class="font-orbitron" style="font-size: 1.15rem; font-weight: 900; margin: 0; color: var(--primary-cyan);">WATNE PRO</h2>
-            <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">Master Web Portal · Test Design</span>
+            <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">Master Web Portal · Komplett</span>
         </div>
     </div>
 
     <div class="nav-group">
         <div class="nav-item active" onclick="switchWebTab('lonn')" id="nav-lonn">
-            <span>💰</span> <span>Lønn & Vakter</span>
+            <span>💰</span> <span>1. Lønn & Vakter</span>
         </div>
         <div class="nav-item" onclick="switchWebTab('maskinering')" id="nav-maskinering">
-            <span>⚙️</span> <span>Maskinering & CNC</span>
+            <span>⚙️</span> <span>2. Maskinering & CNC</span>
         </div>
         <div class="nav-item" onclick="switchWebTab('verksted')" id="nav-verksted">
-            <span>🛠️</span> <span>Verkstedtabeller & Bor</span>
+            <span>🛠️</span> <span>3. Verkstedtabeller & Bor</span>
         </div>
         <div class="nav-item" onclick="switchWebTab('elbil')" id="nav-elbil">
-            <span>⚡</span> <span>Elbil-Kalkulator</span>
+            <span>⚡</span> <span>4. Elbil-Kalkulator</span>
         </div>
     </div>
 
@@ -254,7 +249,7 @@
     <div class="top-bar">
         <div>
             <h1 class="font-orbitron" style="font-size: 1.875rem; font-weight: 900; margin: 0; color: var(--text-main);" id="web-page-title">💰 Lønnskalkulator & Oppgjør</h1>
-            <p style="font-size: 0.875rem; color: var(--text-muted); margin: 0.25rem 0 0 0;" id="web-page-sub">Samlet web-dashbord for fastlønn, overtid, timebank og skattetrekk.</p>
+            <p style="font-size: 0.875rem; color: var(--text-muted); margin: 0.25rem 0 0 0;" id="web-page-sub">Samlet web-dashbord for fastlønn, overtid, timebank, skattetrekk og årsprognose.</p>
         </div>
         <div style="display: flex; align-items: center; gap: 0.75rem;">
             <button type="button" class="btn-action btn-outline" onclick="toggleWebLang()" id="web-lang-btn">🇳🇴 NO</button>
@@ -268,7 +263,7 @@
             <div>
                 <div class="web-card">
                     <div class="web-card-header">
-                        <h3 style="margin: 0; font-size: 1.125rem; font-weight: 700;">📅 Periode & Innstillinger</h3>
+                        <h3 style="margin: 0; font-size: 1.125rem; font-weight: 700;">📅 Periode, Fastlønn & Skatt</h3>
                         <span class="font-mono" style="font-size: 0.75rem; color: var(--primary-cyan);">01</span>
                     </div>
 
@@ -291,14 +286,19 @@
 
                         <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.875rem;">
                             <label style="display: flex; flex-direction: column; gap: 0.375rem;">
+                                <span style="font-size: 0.8125rem; font-weight: 600;">Ubetalte Feriedager</span>
+                                <input type="number" id="w-ferier" class="field-class" value="0" min="0" max="20" oninput="beregnWebLonn()">
+                            </label>
+                            <label style="display: flex; flex-direction: column; gap: 0.375rem;">
                                 <span style="font-size: 0.8125rem; font-weight: 600;">Tabellnummer / Skatt</span>
                                 <input type="text" id="w-skatt-tabell" class="field-class" value="7101" oninput="beregnWebLonn()">
                             </label>
-                            <label style="display: flex; flex-direction: column; gap: 0.375rem;">
-                                <span style="font-size: 0.8125rem; font-weight: 600;">Fagforening (%)</span>
-                                <input type="number" id="w-union-pct" class="field-class" value="1.5" oninput="beregnWebLonn()">
-                            </label>
                         </div>
+
+                        <label style="display: flex; flex-direction: column; gap: 0.375rem;">
+                            <span style="font-size: 0.8125rem; font-weight: 600;">Fagforeningskontingent (%)</span>
+                            <input type="number" id="w-union-pct" class="field-class" value="1.5" step="0.1" oninput="beregnWebLonn()">
+                        </label>
                     </div>
                 </div>
 
@@ -330,6 +330,11 @@
                             </select>
                         </label>
 
+                        <label style="display: flex; align-items: center; gap: 0.625rem; cursor: pointer; padding: 0.625rem; background: rgba(245, 158, 11, 0.1); border-radius: 0.5rem; border: 1px solid var(--amber-gold);">
+                            <input type="checkbox" id="wv-timebank" style="width: 1.125rem; height: 1.125rem; accent-color: var(--amber-gold);">
+                            <span style="font-size: 0.8125rem; font-weight: 700; color: var(--amber-gold);">🏦 Sett ordinær time i timebanken (kun tillegg utbetales)</span>
+                        </label>
+
                         <button type="submit" class="btn-action btn-cyan">+ Legg Vakt til i Måneden</button>
                     </form>
                 </div>
@@ -345,15 +350,24 @@
 
                 <div class="web-card">
                     <div class="web-card-header">
-                        <h3 style="margin: 0; font-size: 1.125rem; font-weight: 700;">📊 Spesifikasjon av Månedsoppgjør</h3>
+                        <h3 style="margin: 0; font-size: 1.125rem; font-weight: 700;">📊 Månedsoppgjør & Årsprognose</h3>
                     </div>
 
                     <div class="line-row"><span>Fastlønn (brutto full måned):</span><span id="vis-w-fastlonn" class="font-mono" style="font-weight: 700;">0,00 kr</span></div>
+                    <div class="line-row" id="row-w-ferie" style="display:none;"><span style="color: #ef4444;">Lønnstrekk ubetalt ferie:</span><span id="vis-w-ferietrekk" class="font-mono" style="color: #ef4444;">− 0,00 kr</span></div>
                     <div class="line-row"><span>Sum tilleggsvakter (brutto):</span><span id="vis-w-vaktbrutto" class="font-mono" style="font-weight: 700; color: var(--primary-cyan);">0,00 kr</span></div>
+                    <div class="line-row"><span>🏦 Timebank Saldo (opptjente timer):</span><span id="vis-w-timebank" class="font-mono" style="color: var(--amber-gold); font-weight: 700;">+ 0.0 t</span></div>
+
                     <div class="line-row" style="border-top: 1px solid var(--border-card); margin-top: 0.5rem; padding-top: 0.5rem; font-weight: 800;"><span>Total Brutto Inntekt:</span><span id="vis-w-totalbrutto" class="font-mono">0,00 kr</span></div>
                     <div class="line-row"><span>Fagforeningstrekk (1.5% fradrag før skatt):</span><span id="vis-w-union" class="font-mono" style="color: var(--text-muted);">− 0,00 kr</span></div>
                     <div class="line-row"><span>Skattetrekk (Tabell 7101):</span><span id="vis-w-skatt" class="font-mono" style="color: var(--text-muted);">− 0,00 kr</span></div>
                     <div class="line-row" style="border-top: 1px solid var(--border-card); margin-top: 0.5rem; padding-top: 0.5rem; font-size: 1.1rem; font-weight: 800; color: var(--primary-cyan);"><span>Netto Utbetalt:</span><span id="vis-w-netto-bottom" class="font-mono">0,00 kr</span></div>
+
+                    <div style="margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--border-card);">
+                        <div class="line-row"><span>Estimerte feriepenger (12% av brutto):</span><span id="vis-w-feriepenger" class="font-mono">0,00 kr</span></div>
+                        <div class="line-row"><span>Fast Årslønn (47 uker + 12%):</span><span id="vis-w-aarslonn-fast" class="font-mono">0,00 kr</span></div>
+                        <div class="line-row strong" style="color: var(--emerald-green);"><span>Total Årsprognose med vakter:</span><span id="vis-w-aarslonn-tot" class="font-mono">0,00 kr</span></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -362,6 +376,7 @@
     <!-- TAB 2: MASKINERING & CNC -->
     <div id="webtab-maskinering" class="page-tab-content">
         <div class="portal-grid-2">
+            <!-- SKJÆREDATA & GIBBS -->
             <div class="web-card">
                 <div class="web-card-header">
                     <h3 style="margin: 0; font-size: 1.125rem; font-weight: 700;">🌀 Sirkulær Bordsmating (GibbsCAM)</h3>
@@ -401,38 +416,42 @@
                 </div>
             </div>
 
-            <!-- C-AKSE ROTERENDE MATING -->
+            <!-- SKJÆREKRAFT, EFFEKT & DREIEMOMENT -->
             <div class="web-card">
                 <div class="web-card-header">
-                    <h3 style="margin: 0; font-size: 1.125rem; font-weight: 700;">🔄 MM/MIN til Grader/MIN (C-Akse)</h3>
+                    <h3 style="margin: 0; font-size: 1.125rem; font-weight: 700;">⚡ Skjærekraft, Spindeleffekt & Dreiemoment</h3>
                 </div>
 
                 <div style="display: flex; flex-direction: column; gap: 0.875rem;">
-                    <label style="display: flex; flex-direction: column; gap: 0.25rem;">
-                        <span style="font-size: 0.8125rem; font-weight: 600;">Mating mm/min (Vf)</span>
-                        <input type="number" id="wm-c-vf" class="field-class" value="1400" oninput="beregnWebCaxis()">
-                    </label>
-                    <label style="display: flex; flex-direction: column; gap: 0.25rem;">
-                        <span style="font-size: 0.8125rem; font-weight: 600;">Emnediameter DIA (mm)</span>
-                        <input type="number" step="0.01" id="wm-c-dia" class="field-class" value="3.14" oninput="beregnWebCaxis()">
-                    </label>
+                    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.875rem;">
+                        <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                            <span style="font-size: 0.8125rem; font-weight: 600;">Aksial Dybde ap (mm)</span>
+                            <input type="number" id="wm-ap" class="field-class" value="5" oninput="beregnWebEffekt()">
+                        </label>
+                        <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                            <span style="font-size: 0.8125rem; font-weight: 600;">Radial Bredde ae (mm)</span>
+                            <input type="number" id="wm-ae" class="field-class" value="12" oninput="beregnWebEffekt()">
+                        </label>
+                    </div>
 
-                    <div class="result-panel" style="background: rgba(245, 158, 11, 0.08); border-color: var(--amber-gold);">
-                        <div class="line-row strong"><span style="color: var(--amber-gold);">1 Grad tilsvarer:</span><span id="wm-c-onegrad" class="font-mono" style="color: var(--amber-gold);">0 mm</span></div>
-                        <div class="line-row strong" style="margin-top: 0.375rem;"><span style="color: var(--amber-gold); font-size: 1.1rem;">Roterende Mating (°/min):</span><span id="wm-c-res" class="font-mono" style="font-size: 1.35rem; color: var(--amber-gold);">0 °/min</span></div>
+                    <div class="result-panel" style="background: rgba(16, 185, 129, 0.08); border-color: var(--emerald-green);">
+                        <div class="line-row strong"><span style="color: var(--emerald-green);">Sponavvirkning (Q):</span><span id="wm-res-q" class="font-mono" style="color: var(--emerald-green);">0 cm³/min</span></div>
+                        <div class="line-row strong" style="margin-top: 0.25rem;"><span style="color: var(--emerald-green);">Skjærekraft (Fc):</span><span id="wm-res-fc" class="font-mono" style="color: var(--emerald-green);">0 N</span></div>
+                        <div class="line-row strong" style="margin-top: 0.25rem;"><span style="color: var(--emerald-green); font-size: 1.1rem;">Spindeleffektbehov (Pc):</span><span id="wm-res-pc" class="font-mono" style="font-size: 1.25rem; color: var(--emerald-green);">0.0 kW</span></div>
+                        <div class="line-row strong" style="margin-top: 0.25rem;"><span style="color: var(--emerald-green);">Dreiemoment (Mc):</span><span id="wm-res-mc" class="font-mono" style="color: var(--emerald-green);">0 Nm</span></div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- TAB 3: VERKSTEDTABELLER & BOR -->
+    <!-- TAB 3: VERKSTEDTABELLER, MATERIALER, GJENGER, PCD & TREKANT -->
     <div id="webtab-verksted" class="page-tab-content">
         <div class="portal-grid-2">
-            <!-- MATERIALER OG SKJÆREDATA -->
+            <!-- MATERIALER, OPERASJONER OG VERKTØY -->
             <div class="web-card">
                 <div class="web-card-header">
-                    <h3 style="margin: 0; font-size: 1.125rem; font-weight: 700;">🧪 Materialvelger & Operasjoner</h3>
+                    <h3 style="margin: 0; font-size: 1.125rem; font-weight: 700;">🧪 Materialvelger, Operasjon & Verktøy</h3>
                 </div>
 
                 <div style="display: flex; flex-direction: column; gap: 0.875rem;">
@@ -443,16 +462,20 @@
                             <option value="c45">Seigherdingsstål / C45 / 42CrMo4 (P2)</option>
                             <option value="ss316" selected>Syrefast 316L / A4 (M1)</option>
                             <option value="alu">Aluminium 6082-T6 (N1)</option>
+                            <option value="brass">Messing / Kobber (N2)</option>
+                            <option value="pom">Plast / POM / PEHD</option>
                         </select>
                     </label>
 
                     <label style="display: flex; flex-direction: column; gap: 0.25rem;">
                         <span style="font-size: 0.8125rem; font-weight: 600;">Operasjonstype</span>
                         <select id="wv-op" class="field-class" onchange="beregnWebVerksted()">
-                            <option value="mill_rough">Fresing - Skrubb / Grovfresing</option>
+                            <option value="mill_rough" selected>Fresing - Skrubb / Grovfresing</option>
                             <option value="mill_finish">Fresing - Slett / Finfresing</option>
                             <option value="drill">Boring - Spiralbor / Kjernebor</option>
                             <option value="udrill">Boring - U-Bor / Vendeskjærsbor</option>
+                            <option value="turn_rough">Dreiing - Skrubbdreiing</option>
+                            <option value="turn_finish">Dreiing - Slettdreiing</option>
                             <option value="tap">Gjenging - Gjengebor / Gjengefres</option>
                         </select>
                     </label>
@@ -461,7 +484,9 @@
                         <span style="font-size: 0.8125rem; font-weight: 600;">Verktøymateriale</span>
                         <select id="wv-toolmat" class="field-class" onchange="beregnWebVerksted()">
                             <option value="hm_coated" selected>Belagt Hardmetall (HM / VHM Carbide)</option>
+                            <option value="hm_uncoated">Ubelagt Hardmetall (HM / VHM - Alu/Plast)</option>
                             <option value="hss_co">Hurtigstål Kobolt (HSS-Co / HSS-E)</option>
+                            <option value="hss_std">Hurtigstål Standard (HSS)</option>
                         </select>
                     </label>
 
@@ -484,7 +509,7 @@
                 </div>
             </div>
 
-            <!-- SKRUEMOMENT OG PASTA -->
+            <!-- SKRUEMOMENT MED SMØRING (-25% Nm) -->
             <div class="web-card">
                 <div class="web-card-header">
                     <h3 style="margin: 0; font-size: 1.125rem; font-weight: 700;">🔧 Tiltrekkingsmoment & Friksjon</h3>
@@ -495,12 +520,16 @@
                         <label style="display: flex; flex-direction: column; gap: 0.25rem;">
                             <span style="font-size: 0.8125rem; font-weight: 600;">Skruestørrelse</span>
                             <select id="wt-size" class="field-class" onchange="beregnWebTorque()">
+                                <option value="M4">M4</option>
+                                <option value="M5">M5</option>
                                 <option value="M6">M6</option>
                                 <option value="M8">M8</option>
                                 <option value="M10" selected>M10</option>
                                 <option value="M12">M12</option>
                                 <option value="M16">M16</option>
                                 <option value="M20">M20</option>
+                                <option value="M24">M24</option>
+                                <option value="M30">M30</option>
                             </select>
                         </label>
                         <label style="display: flex; flex-direction: column; gap: 0.25rem;">
@@ -528,12 +557,87 @@
                     </div>
                 </div>
             </div>
+
+            <!-- PCD FLENSE-DIAGRAM -->
+            <div class="web-card">
+                <div class="web-card-header">
+                    <h3 style="margin: 0; font-size: 1.125rem; font-weight: 700;">⭕ Delingssirkel & Flense-koordinater (PCD)</h3>
+                </div>
+
+                <div style="text-align: center; margin-bottom: 1rem; padding: 0.75rem; background: #0b1222; border-radius: 0.75rem; border: 1px solid var(--border-card);">
+                    <svg width="180" height="180" viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg" style="max-width: 100%; height: auto;">
+                        <circle cx="110" cy="110" r="95" fill="rgba(16, 185, 129, 0.08)" stroke="#10b981" stroke-width="2"/>
+                        <circle cx="110" cy="110" r="30" fill="#141e33" stroke="#10b981" stroke-width="2"/>
+                        <line x1="110" y1="10" x2="110" y2="210" stroke="#1f2d4d" stroke-width="1.5" stroke-dasharray="4,4"/>
+                        <line x1="10" y1="110" x2="210" y2="110" stroke="#1f2d4d" stroke-width="1.5" stroke-dasharray="4,4"/>
+                        <circle cx="110" cy="110" r="68" fill="none" stroke="#00f0ff" stroke-width="2" stroke-dasharray="6,4"/>
+                        <line x1="178" y1="110" x2="158" y2="62" stroke="#ff0055" stroke-width="2.5"/>
+                        <circle cx="178" cy="110" r="7" fill="#141e33" stroke="#10b981" stroke-width="2"/>
+                        <circle cx="158" cy="62" r="7" fill="#141e33" stroke="#10b981" stroke-width="2"/>
+                        <circle cx="110" cy="42" r="7" fill="#141e33" stroke="#10b981" stroke-width="2"/>
+                        <circle cx="62" cy="62" r="7" fill="#141e33" stroke="#10b981" stroke-width="2"/>
+                        <circle cx="42" cy="110" r="7" fill="#141e33" stroke="#10b981" stroke-width="2"/>
+                        <text x="182" y="85" fill="#ff0055" font-size="11" font-weight="800">k (Korde)</text>
+                        <text x="65" y="105" fill="#00f0ff" font-size="11" font-weight="800">PCD Ø</text>
+                    </svg>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.875rem;">
+                    <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                        <span style="font-size: 0.8125rem; font-weight: 600;">Delingssirkel Ø (PCD mm)</span>
+                        <input type="number" id="wpcd-dia" class="field-class" value="200" oninput="beregnWebPcd()">
+                    </label>
+                    <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                        <span style="font-size: 0.8125rem; font-weight: 600;">Antall hull (N)</span>
+                        <input type="number" id="wpcd-num" class="field-class" value="8" oninput="beregnWebPcd()">
+                    </label>
+                </div>
+
+                <div class="result-panel" style="background: rgba(16, 185, 129, 0.08); border-color: var(--emerald-green);">
+                    <div class="line-row strong"><span style="color: var(--emerald-green);">Kordeavstand (Hull-til-Hull målt):</span><span id="wpcd-res-chord" class="font-mono" style="font-size: 1.25rem; color: var(--emerald-green);">76.54 mm</span></div>
+                    <div class="line-row strong" style="margin-top: 0.25rem;"><span style="color: var(--emerald-green);">Vinkelstigning pr. hull:</span><span id="wpcd-res-angle" class="font-mono" style="color: var(--emerald-green);">45.0°</span></div>
+                </div>
+            </div>
+
+            <!-- TRIGONOMETRI TREKANT DIAGRAM -->
+            <div class="web-card">
+                <div class="web-card-header">
+                    <h3 style="margin: 0; font-size: 1.125rem; font-weight: 700;">📐 Trigonometri & Trekant (Pythagoras)</h3>
+                </div>
+
+                <div style="text-align: center; margin-bottom: 1rem; padding: 0.75rem; background: #0b1222; border-radius: 0.75rem; border: 1px solid var(--border-card);">
+                    <svg width="200" height="130" viewBox="0 0 240 150" xmlns="http://www.w3.org/2000/svg" style="max-width: 100%; height: auto;">
+                        <path d="M 40 110 L 50 110 L 50 120" fill="none" stroke="#a78bfa" stroke-width="2"/>
+                        <polygon points="40,120 200,120 40,20" fill="rgba(167, 139, 250, 0.12)" stroke="#a78bfa" stroke-width="3"/>
+                        <text x="18" y="75" fill="#f8fafc" font-size="13" font-weight="800">a (Vert)</text>
+                        <text x="105" y="142" fill="#f8fafc" font-size="13" font-weight="800">b (Horisont)</text>
+                        <text x="120" y="60" fill="#a78bfa" font-size="13" font-weight="800">c (Hypotenus)</text>
+                    </svg>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.875rem;">
+                    <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                        <span style="font-size: 0.8125rem; font-weight: 600;">Katet a (mm)</span>
+                        <input type="number" id="wtri-a" class="field-class" placeholder="f.eks 30" oninput="beregnWebTrekant()">
+                    </label>
+                    <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                        <span style="font-size: 0.8125rem; font-weight: 600;">Katet b (mm)</span>
+                        <input type="number" id="wtri-b" class="field-class" placeholder="f.eks 40" oninput="beregnWebTrekant()">
+                    </label>
+                </div>
+
+                <div class="result-panel" style="background: rgba(167, 139, 250, 0.08); border-color: var(--purple-neon);">
+                    <div class="line-row strong"><span style="color: var(--purple-neon);">Hypotenus c (Skrålengde):</span><span id="wtri-res-c" class="font-mono" style="font-size: 1.25rem; color: var(--purple-neon);">50.00 mm</span></div>
+                    <div class="line-row strong" style="margin-top: 0.25rem;"><span style="color: var(--purple-neon);">Vinkler A° og B°:</span><span id="wtri-res-angles" class="font-mono" style="color: var(--purple-neon);">A = 36.87° | B = 53.13°</span></div>
+                </div>
+            </div>
         </div>
     </div>
 
     <!-- TAB 4: ELBIL-KALKULATOR -->
     <div id="webtab-elbil" class="page-tab-content">
         <div class="portal-grid-2">
+            <!-- LADETID -->
             <div class="web-card">
                 <div class="web-card-header">
                     <h3 style="margin: 0; font-size: 1.125rem; font-weight: 700;">🔌 Ladetid & Ladekostnad</h3>
@@ -573,13 +677,49 @@
                 </div>
             </div>
 
-            <!-- VINTERTAP -->
+            <!-- BENSIN VS ELBIL BESPARELSE -->
             <div class="web-card">
                 <div class="web-card-header">
-                    <h3 style="margin: 0; font-size: 1.125rem; font-weight: 700;">❄️ Vinter-Rekkevidde & Temperatur</h3>
+                    <h3 style="margin: 0; font-size: 1.125rem; font-weight: 700;">💰 Elbil vs Bensin/Diesel Besparelse</h3>
                 </div>
 
                 <div style="display: flex; flex-direction: column; gap: 0.875rem;">
+                    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.875rem;">
+                        <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                            <span style="font-size: 0.8125rem; font-weight: 600;">Årlig Kjørelengde (km/år)</span>
+                            <input type="number" id="we-save-km" class="field-class" value="15000" oninput="beregnWebElbilSave()">
+                        </label>
+                        <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                            <span style="font-size: 0.8125rem; font-weight: 600;">Bensin/DieselPris (kr/L)</span>
+                            <input type="number" step="0.5" id="we-save-fuelprice" class="field-class" value="20.0" oninput="beregnWebElbilSave()">
+                        </label>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.875rem;">
+                        <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                            <span style="font-size: 0.8125rem; font-weight: 600;">Drivstofforbruk (L/mil)</span>
+                            <input type="number" step="0.05" id="we-save-fuelcons" class="field-class" value="0.65" oninput="beregnWebElbilSave()">
+                        </label>
+                        <label style="display: flex; flex-direction: column; gap: 0.25rem;">
+                            <span style="font-size: 0.8125rem; font-weight: 600;">Elbil Forbruk (kWh/mil)</span>
+                            <input type="number" step="0.1" id="we-save-evcons" class="field-class" value="1.80" oninput="beregnWebElbilSave()">
+                        </label>
+                    </div>
+
+                    <div class="result-panel" style="background: rgba(16, 185, 129, 0.08); border-color: var(--emerald-green);">
+                        <div class="line-row strong"><span style="color: var(--emerald-green);">Besparelse pr. Måned:</span><span id="we-res-save-mnd" class="font-mono" style="font-size: 1.25rem; color: var(--emerald-green);">1 332,50 kr</span></div>
+                        <div class="line-row strong" style="margin-top: 0.25rem;"><span style="color: var(--emerald-green);">Samlet Besparelse over 5 År:</span><span id="we-res-save-5yr" class="font-mono" style="color: var(--emerald-green);">79 950,00 kr</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VINTERTAP -->
+            <div class="web-card" style="grid-column: span 2;">
+                <div class="web-card-header">
+                    <h3 style="margin: 0; font-size: 1.125rem; font-weight: 700;">❄️ Vinter-Rekkevidde & Temperaturtap</h3>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.875rem;">
                     <label style="display: flex; flex-direction: column; gap: 0.25rem;">
                         <span style="font-size: 0.8125rem; font-weight: 600;">WLTP Sommer-rekkevidde (km)</span>
                         <input type="number" id="we-wltp" class="field-class" value="480" oninput="beregnWebVinter()">
@@ -588,16 +728,18 @@
                     <label style="display: flex; flex-direction: column; gap: 0.25rem;">
                         <span style="font-size: 0.8125rem; font-weight: 600;">Utetemperatur</span>
                         <select id="we-temp" class="field-class" onchange="beregnWebVinter()">
-                            <option value="0">+20°C Sommer (100% reell)</option>
-                            <option value="25" selected>0°C Norsk Vinter (-25% tap)</option>
-                            <option value="35">-10°C Kald Vinter (-35% tap)</option>
+                            <option value="0" selected>+20°C Sommer (100% reell · 0% tap)</option>
+                            <option value="12">+10°C Vår/Høst (88% reell · -12% tap)</option>
+                            <option value="25">0°C Norsk Vinter (75% reell · -25% tap)</option>
+                            <option value="35">-10°C Kald Vinter (65% reell · -35% tap)</option>
+                            <option value="42">-20°C Ekstrem Kulde (58% reell · -42% tap)</option>
                         </select>
                     </label>
+                </div>
 
-                    <div class="result-panel" style="background: rgba(245, 158, 11, 0.08); border-color: var(--amber-gold);">
-                        <div class="line-row strong"><span style="color: var(--amber-gold);">Reell Rekkevidde:</span><span id="we-res-winter-range" class="font-mono" style="font-size: 1.25rem; color: var(--amber-gold);">360 km (75% av WLTP)</span></div>
-                        <div class="line-row strong" style="margin-top: 0.25rem;"><span style="color: var(--amber-gold);">Forventet Tap:</span><span id="we-res-winter-loss" class="font-mono" style="color: var(--amber-gold);">- 120 km (25% tap)</span></div>
-                    </div>
+                <div class="result-panel" style="background: rgba(245, 158, 11, 0.08); border-color: var(--amber-gold); margin-top: 1rem;">
+                    <div class="line-row strong"><span style="color: var(--amber-gold);">Reell Rekkevidde:</span><span id="we-res-winter-range" class="font-mono" style="font-size: 1.25rem; color: var(--amber-gold);">360 km (75% av WLTP)</span></div>
+                    <div class="line-row strong" style="margin-top: 0.25rem;"><span style="color: var(--amber-gold);">Forventet Tap:</span><span id="we-res-winter-loss" class="font-mono" style="color: var(--amber-gold);">- 120 km (25% tap)</span></div>
                 </div>
             </div>
         </div>
@@ -619,9 +761,9 @@
             elbil: "⚡ Elbil-Kalkulator & Ladetid"
         };
         const subMap = {
-            lonn: "Samlet web-dashbord for fastlønn, overtid, timebank og skattetrekk.",
-            maskinering: "Sirkulær bordsmating, C-akse mm/min til °/min og skjæredata.",
-            verksted: "Materialer, operasjonstyper, kjernebor, ISO-toleranser og skruemoment.",
+            lonn: "Samlet web-dashbord for fastlønn, overtid, timebank, skattetrekk og årsprognose.",
+            maskinering: "Sirkulær bordsmating, C-akse mm/min til °/min, skjærekrefter og spindeleffekt.",
+            verksted: "Materialer, operasjonstyper, kjernebor, ISO-toleranser, PCD, trekant og skruemoment.",
             elbil: "Ladetid, ladekostnader, bensinbesparelser og temperaturtap om vinteren."
         };
 
@@ -633,11 +775,13 @@
         const harFastlonn = document.getElementById('w-inkl-fastlonn').checked;
         const timelonn = parseFloat(document.getElementById('w-timelonn').value) || 316.5;
         const timerDag = parseFloat(document.getElementById('w-timer-dag').value) || 7.5;
+        const feriedager = parseInt(document.getElementById('w-ferier').value) || 0;
         const unionPct = parseFloat(document.getElementById('w-union-pct').value) || 1.5;
 
         const fastlonn = harFastlonn ? (22 * timerDag * timelonn) : 0;
-        let vaktBrutto = 0;
+        const ferieTrekk = harFastlonn ? (feriedager * timerDag * timelonn) : 0;
 
+        let vaktBrutto = 0, sumTimebankTimer = 0;
         let vakter = [];
         if (localStorage.getItem('lonn_vakter_tabs_v26')) {
             try { vakter = JSON.parse(localStorage.getItem('lonn_vakter_tabs_v26')); } catch(e){}
@@ -646,21 +790,39 @@
         vakter.forEach(v => {
             const faktor = v.isTimebank ? (v.kind.includes('50') ? 0.5 : 1.0) : (v.kind.includes('50') ? 1.5 : 2.0);
             vaktBrutto += v.desimalTimer * (timelonn * faktor);
+            if (v.isTimebank) sumTimebankTimer += v.desimalTimer;
         });
 
-        const totalBrutto = fastlonn + vaktBrutto;
-        const unionDeduction = totalBrutto * (unionPct / 100);
+        const totalBrutto = fastlonn - ferieTrekk + vaktBrutto;
+        const unionDeduction = Math.max(0, totalBrutto * (unionPct / 100));
         const skatteGrunnlag = Math.max(0, totalBrutto - unionDeduction);
         const skatt = skatteGrunnlag * 0.28; // Estimat Tabell 7101
         const netto = totalBrutto - unionDeduction - skatt;
 
+        const feriepenger = Math.max(0, totalBrutto * 0.12);
+        const fastAarBrutto = harFastlonn ? ((5 * timerDag) * timelonn * 47) : 0;
+        const totalAarPrognose = (fastAarBrutto + (vaktBrutto * 12)) * 1.12;
+
         document.getElementById('vis-web-netto').innerText = netto.toFixed(2).replace('.', ',') + " kr";
         document.getElementById('vis-w-fastlonn').innerText = fastlonn.toFixed(2).replace('.', ',') + " kr";
+
+        const rowFerie = document.getElementById('row-w-ferie');
+        if (feriedager > 0) {
+            document.getElementById('vis-w-ferietrekk').innerText = "− " + ferieTrekk.toFixed(2).replace('.', ',') + " kr";
+            rowFerie.style.display = 'flex';
+        } else {
+            rowFerie.style.display = 'none';
+        }
+
         document.getElementById('vis-w-vaktbrutto').innerText = vaktBrutto.toFixed(2).replace('.', ',') + " kr";
+        document.getElementById('vis-w-timebank').innerText = "+ " + sumTimebankTimer.toFixed(1).replace('.', ',') + " t";
         document.getElementById('vis-w-totalbrutto').innerText = totalBrutto.toFixed(2).replace('.', ',') + " kr";
         document.getElementById('vis-w-union').innerText = "− " + unionDeduction.toFixed(2).replace('.', ',') + " kr";
         document.getElementById('vis-w-skatt').innerText = "− " + skatt.toFixed(2).replace('.', ',') + " kr";
         document.getElementById('vis-w-netto-bottom').innerText = netto.toFixed(2).replace('.', ',') + " kr";
+        document.getElementById('vis-w-feriepenger').innerText = feriepenger.toFixed(2).replace('.', ',') + " kr";
+        document.getElementById('vis-w-aarslonn-fast').innerText = (fastAarBrutto * 1.12).toFixed(2).replace('.', ',') + " kr";
+        document.getElementById('vis-w-aarslonn-tot').innerText = totalAarPrognose.toFixed(2).replace('.', ',') + " kr";
     }
 
     function leggTilWebVakt(e) {
@@ -668,6 +830,7 @@
         const t = parseInt(document.getElementById('wv-timer').value) || 0;
         const m = parseInt(document.getElementById('wv-min').value) || 0;
         const type = document.getElementById('wv-type').value;
+        const isTb = document.getElementById('wv-timebank').checked;
 
         let vakter = [];
         if (localStorage.getItem('lonn_vakter_tabs_v26')) {
@@ -686,7 +849,7 @@
             desimalTimer: t + (m/60),
             year: d.getFullYear(),
             month: d.getMonth(),
-            isTimebank: false
+            isTimebank: isTb
         });
 
         localStorage.setItem('lonn_vakter_tabs_v26', JSON.stringify(vakter));
@@ -709,6 +872,27 @@
         document.getElementById('wm-res-vf').innerText = Math.round(vfSirk) + " mm/min";
     }
 
+    function beregnWebEffekt() {
+        const ap = parseFloat(document.getElementById('wm-ap').value) || 5;
+        const ae = parseFloat(document.getElementById('wm-ae').value) || 12;
+        const vc = parseFloat(document.getElementById('wm-vc').value) || 120;
+        const fz = parseFloat(document.getElementById('wm-fz').value) || 0.08;
+        const z = parseFloat(document.getElementById('wm-z').value) || 4;
+        const dFres = parseFloat(document.getElementById('wm-dfres').value) || 84;
+
+        const rpm = (vc * 1000) / (Math.PI * dFres);
+        const vf = rpm * fz * z;
+        const q = (ap * ae * vf) / 1000; // cm³/min
+        const fc = 1800 * ap * Math.pow(fz, 0.72); // N
+        const pc = (fc * vc) / (60000 * 0.85); // kW
+        const mc = (pc * 9550) / Math.max(1, rpm); // Nm
+
+        document.getElementById('wm-res-q').innerText = q.toFixed(1).replace('.', ',') + " cm³/min";
+        document.getElementById('wm-res-fc').innerText = Math.round(fc) + " N";
+        document.getElementById('wm-res-pc').innerText = pc.toFixed(2).replace('.', ',') + " kW";
+        document.getElementById('wm-res-mc').innerText = Math.round(mc) + " Nm";
+    }
+
     function beregnWebCaxis() {
         const vf = parseFloat(document.getElementById('wm-c-vf').value) || 1400;
         const dia = parseFloat(document.getElementById('wm-c-dia').value) || 3.14;
@@ -722,6 +906,7 @@
 
     function beregnWebVerksted() {
         const mat = document.getElementById('wv-mat').value;
+        const op = document.getElementById('wv-op').value;
         const toolMat = document.getElementById('wv-toolmat').value;
         const dia = parseFloat(document.getElementById('wv-dia').value) || 16;
         const z = parseFloat(document.getElementById('wv-z').value) || 4;
@@ -733,6 +918,9 @@
         if (mat === 'alu') { baseVc = 450; baseFz = 0.20; }
 
         let factor = (toolMat === 'hss_co') ? 0.22 : 1.0;
+        if (op === 'udrill') factor *= 1.0;
+        if (op === 'tap') factor *= 0.35;
+
         const vc = Math.round(baseVc * factor);
         const rpm = (vc * 1000) / (Math.PI * dia);
         const vf = rpm * baseFz * z;
@@ -762,6 +950,34 @@
         document.getElementById('wt-res-kn').innerText = kn;
     }
 
+    function beregnWebPcd() {
+        const pcd = parseFloat(document.getElementById('wpcd-dia').value) || 200;
+        const num = parseInt(document.getElementById('wpcd-num').value) || 8;
+
+        const rad = (180 / Math.max(1, num)) * (Math.PI / 180);
+        const chord = pcd * Math.sin(rad);
+        const angle = 360 / Math.max(1, num);
+
+        document.getElementById('wpcd-res-chord').innerText = `${chord.toFixed(2).replace('.', ',')} mm`;
+        document.getElementById('wpcd-res-angle').innerText = `${angle.toFixed(1).replace('.', ',')}°`;
+    }
+
+    function beregnWebTrekant() {
+        let a = parseFloat(document.getElementById('wtri-a').value);
+        let b = parseFloat(document.getElementById('wtri-b').value);
+
+        if (!isNaN(a) && !isNaN(b)) {
+            const c = Math.sqrt(a*a + b*b);
+            const degA = Math.atan(a/b) * (180/Math.PI);
+            const degB = 90 - degA;
+            document.getElementById('wtri-res-c').innerText = `${c.toFixed(2).replace('.', ',')} mm`;
+            document.getElementById('wtri-res-angles').innerText = `A = ${degA.toFixed(2)}° | B = ${degB.toFixed(2)}°`;
+        } else {
+            document.getElementById('wtri-res-c').innerText = "Fyll inn Katet a og b";
+            document.getElementById('wtri-res-angles').innerText = "A° og B° beregnes";
+        }
+    }
+
     function beregnWebElbil() {
         const bat = parseFloat(document.getElementById('we-bat').value) || 77;
         const kw = parseFloat(document.getElementById('we-kw').value) || 7.4;
@@ -779,11 +995,33 @@
         document.getElementById('we-res-cost').innerText = cost.toFixed(2).replace('.', ',') + " kr";
     }
 
+    function beregnWebElbilSave() {
+        const km = parseFloat(document.getElementById('we-save-km').value) || 15000;
+        const fuelPrice = parseFloat(document.getElementById('we-save-fuelprice').value) || 20.0;
+        let fuelConsMil = parseFloat(document.getElementById('we-save-fuelcons').value) || 0.65;
+        let evConsMil = parseFloat(document.getElementById('we-save-evcons').value) || 1.80;
+
+        if (fuelConsMil > 2) fuelConsMil /= 10;
+        if (evConsMil > 5) evConsMil /= 10;
+
+        const milYear = km / 10;
+        const fuelCostYear = (milYear * fuelConsMil) * fuelPrice;
+        const evCostYear = (milYear * evConsMil) * 1.30;
+
+        const saveYear = Math.max(0, fuelCostYear - evCostYear);
+        const saveMonth = saveYear / 12;
+        const save5yr = saveYear * 5;
+
+        document.getElementById('we-res-save-mnd').innerText = saveMonth.toFixed(2).replace('.', ',') + " kr";
+        document.getElementById('we-res-save-5yr').innerText = save5yr.toFixed(2).replace('.', ',') + " kr";
+    }
+
     function beregnWebVinter() {
         const wltp = parseFloat(document.getElementById('we-wltp').value) || 480;
-        const loss = parseFloat(document.getElementById('we-temp').value) || 25;
+        const tempInput = document.getElementById('we-temp').value;
+        const loss = (tempInput !== "" && !isNaN(parseFloat(tempInput))) ? parseFloat(tempInput) : 0;
 
-        const rem = 100 - loss;
+        const rem = Math.max(0, 100 - loss);
         const real = Math.round(wltp * (rem / 100));
         const lossKm = Math.round(wltp - real);
 
@@ -794,10 +1032,14 @@
     // Init
     beregnWebLonn();
     beregnWebMaskinering();
+    beregnWebEffekt();
     beregnWebCaxis();
     beregnWebVerksted();
     beregnWebTorque();
+    beregnWebPcd();
+    beregnWebTrekant();
     beregnWebElbil();
+    beregnWebElbilSave();
     beregnWebVinter();
 </script>
 
