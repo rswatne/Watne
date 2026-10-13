@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Verkstedsportalen | CNC, Verktøy & Lønn</title>
+    <title>Verkstedsportalen | CNC, Verktøy, Lønn & Elbil</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -13,12 +13,6 @@
     
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
-    
-    <!-- PDF.js for Visma integration -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
-    
-    <!-- Tesseract.js for OCR -->
-    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 
     <!-- Theme Initialization -->
     <script>
@@ -112,6 +106,8 @@
         .glass-input-blue:focus { @apply ring-blue-500; }
         .glass-input-emerald:focus { @apply ring-emerald-500; }
         .glass-input-indigo:focus { @apply ring-indigo-500; }
+        .glass-input-teal:focus { @apply ring-teal-500; }
+        .glass-input-sky:focus { @apply ring-sky-500; }
     </style>
 </head>
 
@@ -131,7 +127,7 @@
             <i data-lucide="wrench" class="text-brand-500 w-7 h-7 mr-3 drop-shadow-[0_0_8px_rgba(245,158,11,0.4)]"></i>
             <div>
                 <h1 class="text-xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-none">Verksteds<span class="text-brand-500">Portal</span></h1>
-                <p class="text-[10px] text-slate-500 font-mono mt-1 font-bold">V15.1 | GITHUB PAGES</p>
+                <p class="text-[10px] text-slate-500 font-mono mt-1 font-bold">V16.0 | MED ELBIL</p>
             </div>
         </div>
         
@@ -147,6 +143,9 @@
             </button>
             <button onclick="switchTab('tools')" id="nav-tools" class="nav-btn w-full flex items-center px-4 py-3 text-sm font-medium rounded-xl text-slate-500 dark:text-slate-400 border border-transparent hover:bg-white/50 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-white transition-all">
                 <i data-lucide="ruler" class="w-5 h-5 mr-3 text-slate-400"></i> Verktøytabeller
+            </button>
+            <button onclick="switchTab('ev')" id="nav-ev" class="nav-btn w-full flex items-center px-4 py-3 text-sm font-medium rounded-xl text-slate-500 dark:text-slate-400 border border-transparent hover:bg-white/50 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-white transition-all">
+                <i data-lucide="battery-charging" class="w-5 h-5 mr-3 text-slate-400"></i> Elbil-Kalkulator
             </button>
         </nav>
         
@@ -185,6 +184,9 @@
         <button onclick="switchTab('tools'); toggleMobileMenu()" class="w-full flex items-center px-4 py-4 text-base font-semibold rounded-xl text-slate-600 dark:text-slate-300 bg-white/50 dark:bg-slate-800/50">
             <i data-lucide="ruler" class="w-5 h-5 mr-3 text-slate-400"></i> Verktøytabeller
         </button>
+        <button onclick="switchTab('ev'); toggleMobileMenu()" class="w-full flex items-center px-4 py-4 text-base font-semibold rounded-xl text-slate-600 dark:text-slate-300 bg-white/50 dark:bg-slate-800/50">
+            <i data-lucide="battery-charging" class="w-5 h-5 mr-3 text-slate-400"></i> Elbil-Kalkulator
+        </button>
         <div class="pt-6 mt-4 border-t border-slate-200 dark:border-slate-800">
             <button onclick="toggleTheme()" class="w-full flex items-center justify-center px-4 py-4 text-base font-bold rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-200/50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 shadow-sm">
                 <i data-lucide="sun" class="w-5 h-5 mr-2 hidden dark:block text-brand-400"></i>
@@ -202,17 +204,17 @@
         <section id="dashboard" class="tab-content active p-6 lg:p-10 max-w-7xl mx-auto">
             <header class="mb-10">
                 <h2 class="text-3xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-slate-900 via-slate-700 to-slate-500 dark:from-white dark:via-slate-200 dark:to-slate-400 mb-4 tracking-tight">Velkommen til<br>Verkstedsportalen</h2>
-                <p class="text-slate-600 dark:text-slate-400 text-lg font-medium max-w-2xl">Ditt alt-i-ett digitale verktøy for maskinering, kalkulering og lønnsregistrering.</p>
+                <p class="text-slate-600 dark:text-slate-400 text-lg font-medium max-w-2xl">Ditt alt-i-ett digitale verktøy for maskinering, kalkulering, lønnsregistrering og elbil-økonomi.</p>
             </header>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
                 <!-- Lønn Card -->
                 <div onclick="switchTab('salary')" class="bg-white/60 dark:bg-slate-800/40 backdrop-blur-md border border-slate-200 dark:border-slate-700/50 rounded-3xl p-6 cursor-pointer transition-all duration-300 group hover:border-brand-500/50 hover:shadow-[0_8px_30px_-5px_rgba(245,158,11,0.2)] dark:hover:bg-slate-800/80 relative overflow-hidden shadow-sm">
                     <div class="w-14 h-14 bg-white dark:bg-slate-900 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform border border-slate-100 dark:border-slate-700 shadow-sm">
                         <i data-lucide="banknote" class="w-7 h-7 text-brand-500"></i>
                     </div>
                     <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">Lønnskalkulator</h3>
-                    <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">Kalkuler skift, timebank, bruttolønn og estimert skattetrekk. Les av Visma lønnsslipp automatisk.</p>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">Kalkuler skift, timebank, bruttolønn og estimert skattetrekk.</p>
                 </div>
 
                 <!-- CNC Card -->
@@ -232,10 +234,126 @@
                     <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">Verktøytabeller</h3>
                     <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">Anbefalte skjæredata per materiale, gjengetabeller, kjernebor, vektestimering og PCD (delingssirkel).</p>
                 </div>
+
+                <!-- EV Card -->
+                <div onclick="switchTab('ev')" class="bg-white/60 dark:bg-slate-800/40 backdrop-blur-md border border-slate-200 dark:border-slate-700/50 rounded-3xl p-6 cursor-pointer transition-all duration-300 group hover:border-teal-500/50 hover:shadow-[0_8px_30px_-5px_rgba(20,184,166,0.2)] dark:hover:bg-slate-800/80 relative overflow-hidden shadow-sm">
+                    <div class="w-14 h-14 bg-white dark:bg-slate-900 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform border border-slate-100 dark:border-slate-700 shadow-sm">
+                        <i data-lucide="battery-charging" class="w-7 h-7 text-teal-500"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">Elbil-Kalkulator</h3>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">Kalkuler ladetid, kostnader, bensin-besparelser, og se forventet rekkeviddetap på vinteren.</p>
+                </div>
             </div>
         </section>
 
-        <!-- ================= LØNNSKALKULATOR ================= -->
+        <!-- ================= ELBIL-KALKULATOR ================= -->
+        <section id="ev" class="tab-content p-4 lg:p-8 max-w-7xl mx-auto">
+            <header class="mb-6 lg:mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 lg:w-16 lg:h-16 bg-teal-100 dark:bg-teal-900/30 rounded-2xl flex items-center justify-center mr-4 lg:mr-5 border border-teal-200 dark:border-teal-700/50 shadow-sm">
+                        <i data-lucide="battery-charging" class="w-6 h-6 lg:w-8 lg:h-8 text-teal-600 dark:text-teal-400"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl lg:text-3xl font-extrabold text-slate-900 dark:text-white">Elbil-Kalkulator</h2>
+                        <p class="text-xs lg:text-sm text-teal-600 dark:text-teal-400 font-mono mt-1">Ladetid, besparelse & rekkevidde</p>
+                    </div>
+                </div>
+            </header>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
+                <!-- Ladetid & Rekkevidde -->
+                <div class="bg-white/80 dark:bg-slate-900/60 backdrop-blur-md border border-slate-200 dark:border-slate-800 rounded-3xl p-6 lg:p-8 shadow-sm relative overflow-hidden transition-colors border-l-4 border-l-teal-500 h-fit">
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2 flex items-center"><i data-lucide="plug-zap" class="w-6 h-6 mr-3 text-teal-500"></i> Ladetid & Tilført Rekkevidde</h3>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 mb-6 border-b border-slate-200 dark:border-slate-800 pb-4 font-medium">Beregn tid, rekkevidde og pris for å lade elbilen.</p>
+                    
+                    <div class="grid grid-cols-2 gap-5 mb-6">
+                        <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Batteri (kWh)</label><input type="number" id="charge-battery" value="77" oninput="beregnLadetid()" class="glass-input glass-input-teal"></div>
+                        <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Snittforbruk (kWh/100km)</label><input type="number" step="0.5" id="charge-consumption" value="18" oninput="beregnLadetid()" class="glass-input glass-input-teal"></div>
+                        
+                        <div class="col-span-2">
+                            <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Ladekilde / Effekt</label>
+                            <select id="charge-type" class="glass-input glass-input-teal" onchange="beregnLadetid()">
+                                <option value="2.3">Stikkontakt (2.3 kW)</option>
+                                <option value="3.7">Hjemmelader 1-fase 16A (3.7 kW)</option>
+                                <option value="7.4" selected>Hjemmelader 1-fase 32A (7.4 kW)</option>
+                                <option value="11">Hjemmelader 3-fase 16A (11 kW)</option>
+                                <option value="22">Hjemmelader 3-fase 32A (22 kW)</option>
+                                <option value="50">Hurtiglader (50 kW)</option>
+                                <option value="150">Lynlader (150 kW)</option>
+                                <option value="250">Supercharger (250 kW)</option>
+                            </select>
+                        </div>
+                        
+                        <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Start %</label><input type="number" id="charge-start" value="10" min="0" max="100" oninput="beregnLadetid()" class="glass-input glass-input-teal"></div>
+                        <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Mål %</label><input type="number" id="charge-target" value="80" min="0" max="100" oninput="beregnLadetid()" class="glass-input glass-input-teal"></div>
+                        
+                        <div class="col-span-2"><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Strømpris (kr/kWh inkl. nettleie)</label><input type="number" step="0.1" id="charge-price" value="1.30" oninput="beregnLadetid()" class="glass-input glass-input-teal"></div>
+                    </div>
+                    
+                    <div class="bg-teal-50/80 dark:bg-teal-900/30 p-5 rounded-2xl border-l-4 border-teal-500 space-y-3 font-medium shadow-inner">
+                        <div class="flex justify-between items-center"><span class="text-teal-800 dark:text-teal-300 font-bold">⏱️ Estimert Ladetid:</span><span class="font-mono text-lg font-bold text-teal-700 dark:text-teal-400" id="res-charge-time">0t 0m</span></div>
+                        <div class="flex justify-between items-center"><span class="text-teal-800 dark:text-teal-300 font-bold">🔋 Tilført Rekkevidde:</span><span class="font-mono text-lg font-bold text-teal-700 dark:text-teal-400" id="res-charge-range">+ 0 km</span></div>
+                        <div class="flex justify-between items-center border-t border-teal-200 dark:border-teal-800/50 pt-3 mt-2"><span class="text-teal-900 dark:text-teal-200 font-bold text-base">💰 Ladekostnad:</span><span class="font-mono text-xl font-extrabold text-teal-600 dark:text-teal-400" id="res-charge-cost">0,00 kr</span></div>
+                    </div>
+                </div>
+
+                <!-- Besparelse -->
+                <div class="bg-white/80 dark:bg-slate-900/60 backdrop-blur-md border border-slate-200 dark:border-slate-800 rounded-3xl p-6 lg:p-8 shadow-sm relative overflow-hidden transition-colors border-l-4 border-l-blue-500 h-fit">
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2 flex items-center"><i data-lucide="piggy-bank" class="w-6 h-6 mr-3 text-blue-500"></i> Elbil vs Bensin/Diesel</h3>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 mb-6 border-b border-slate-200 dark:border-slate-800 pb-4 font-medium">Se hvor mye du sparer på å kjøre elektrisk.</p>
+                    
+                    <div class="grid grid-cols-2 gap-5 mb-6">
+                        <div class="col-span-2"><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Årlig Kjørelengde (km/år)</label><input type="number" id="save-km" value="15000" oninput="beregnBesparelse()" class="glass-input glass-input-blue"></div>
+                        
+                        <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Bensinpris (kr/L)</label><input type="number" step="0.5" id="save-fuel-price" value="20.0" oninput="beregnBesparelse()" class="glass-input glass-input-blue"></div>
+                        <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Forbruk Bensin (L/mil)</label><input type="number" step="0.05" id="save-fuel-cons" value="0.65" oninput="beregnBesparelse()" class="glass-input glass-input-blue"></div>
+                        
+                        <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Strømpris (kr/kWh)</label><input type="number" step="0.1" id="save-elek-price" value="1.30" oninput="beregnBesparelse()" class="glass-input glass-input-blue"></div>
+                        <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Forbruk Elbil (kWh/mil)</label><input type="number" step="0.1" id="save-ev-cons" value="1.80" oninput="beregnBesparelse()" class="glass-input glass-input-blue"></div>
+                    </div>
+                    
+                    <div class="bg-blue-50/80 dark:bg-blue-900/30 p-5 rounded-2xl border-l-4 border-blue-500 space-y-3 font-medium shadow-inner">
+                        <div class="flex justify-between items-center"><span class="text-blue-800 dark:text-blue-300 font-bold">✨ Besparelse pr. Måned:</span><span class="font-mono text-blue-700 dark:text-blue-400 text-base" id="res-save-month">0,00 kr</span></div>
+                        <div class="flex justify-between items-center"><span class="text-blue-800 dark:text-blue-300 font-bold">📅 Besparelse pr. År:</span><span class="font-mono text-blue-700 dark:text-blue-400 text-base" id="res-save-year">0,00 kr</span></div>
+                        <div class="flex justify-between items-center border-t border-blue-200 dark:border-blue-800/50 pt-3 mt-2"><span class="text-blue-900 dark:text-blue-200 font-bold text-base">🚀 Besparelse over 5 År:</span><span class="font-mono text-xl font-extrabold text-blue-600 dark:text-blue-400" id="res-save-5yr">0,00 kr</span></div>
+                    </div>
+                </div>
+
+                <!-- Vinter-Rekkevidde -->
+                <div class="bg-white/80 dark:bg-slate-900/60 backdrop-blur-md border border-slate-200 dark:border-slate-800 rounded-3xl p-6 lg:p-8 shadow-sm relative overflow-hidden transition-colors border-l-4 border-l-sky-500 h-fit lg:col-span-2">
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2 flex items-center"><i data-lucide="snowflake" class="w-6 h-6 mr-3 text-sky-500"></i> Vinter & Temperaturtap</h3>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 mb-6 border-b border-slate-200 dark:border-slate-800 pb-4 font-medium">Estimer reell rekkevidde i kulden basert på WLTP.</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
+                        <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">WLTP Sommer-rekkevidde (km)</label><input type="number" id="winter-wltp" value="480" oninput="beregnVinter()" class="glass-input glass-input-sky"></div>
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Utetemperatur & Forhold</label>
+                            <select id="winter-temp" class="glass-input glass-input-sky" onchange="beregnVinter()">
+                                <option value="0" selected>+20°C Sommer (100% · 0% tap)</option>
+                                <option value="12">+10°C Vår/Høst (88% · -12% tap)</option>
+                                <option value="25">0°C Norsk Vinter (75% · -25% tap)</option>
+                                <option value="35">-10°C Kald Vinter (65% · -35% tap)</option>
+                                <option value="42">-20°C Ekstrem Kulde (58% · -42% tap)</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-sky-50/80 dark:bg-sky-900/30 p-5 rounded-2xl border-l-4 border-sky-500 flex flex-col md:flex-row justify-between md:items-center gap-4 shadow-inner">
+                        <div class="flex-1">
+                            <span class="block text-sky-800 dark:text-sky-300 font-bold mb-1">❄️ Reell Vinter-Rekkevidde:</span>
+                            <span class="font-mono text-2xl font-extrabold text-sky-600 dark:text-sky-400" id="res-winter-range">0 km</span>
+                        </div>
+                        <div class="hidden md:block w-px h-12 bg-sky-200 dark:bg-sky-800"></div>
+                        <div class="flex-1">
+                            <span class="block text-sky-800 dark:text-sky-300 font-bold mb-1">📉 Forventet Rekkeviddetap:</span>
+                            <span class="font-mono text-lg font-bold text-loss-500 dark:text-loss-400" id="res-winter-loss">- 0 km</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= LØNNSKALKULATOR (Beholdt som den er) ================= -->
         <section id="salary" class="tab-content p-4 lg:p-8 max-w-7xl mx-auto">
             <header class="mb-6 lg:mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div class="flex items-center">
@@ -253,7 +371,6 @@
             <div class="flex space-x-2 overflow-x-auto pb-4 mb-6 border-b border-slate-200 dark:border-slate-800 scrollbar-hide">
                 <button onclick="switchSalaryTab('oversikt')" id="btn-sal-oversikt" class="salary-tab-btn active px-4 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all bg-brand-500 text-white shadow-md shadow-brand-500/20">📊 Oversikt</button>
                 <button onclick="switchSalaryTab('vakter')" id="btn-sal-vakter" class="salary-tab-btn px-4 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800">⏱️ Vakter & Timebank</button>
-                <button onclick="switchSalaryTab('visma')" id="btn-sal-visma" class="salary-tab-btn px-4 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800">📄 Visma Lønnsslipp</button>
                 <button onclick="switchSalaryTab('innstillinger')" id="btn-sal-innstillinger" class="salary-tab-btn px-4 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800">⚙️ Innstillinger</button>
             </div>
 
@@ -437,68 +554,6 @@
                             <button onclick="eksporterVakttilExcel()" class="col-span-2 bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 rounded-xl transition-colors shadow-md shadow-emerald-500/20 text-sm">📊 Eksporter til Excel (.CSV)</button>
                             <button onclick="kopierVaktliste()" class="bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold py-3 rounded-xl transition-colors text-sm">📋 Kopier</button>
                             <button onclick="window.print()" class="bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold py-3 rounded-xl transition-colors text-sm">🖨️ Skriv ut</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Lønn: Visma -->
-            <div id="stab-visma" class="salary-tab-content">
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
-                    <div class="bg-white/80 dark:bg-slate-900/60 backdrop-blur-md border border-slate-200 dark:border-slate-800 rounded-3xl p-6 lg:p-8 shadow-sm h-fit">
-                        <header class="mb-6 border-b border-slate-200 dark:border-slate-800 pb-5">
-                            <h3 class="text-xl font-bold text-slate-900 dark:text-white flex items-center">
-                                <i data-lucide="scan-text" class="w-6 h-6 mr-3 text-blue-500"></i> Les inn Visma Lønnsslipp
-                            </h3>
-                            <p class="text-sm font-medium text-slate-500 dark:text-slate-400 mt-2">Last opp PDF for automatisk analyse. Alt skjer lokalt og trygt i nettleseren din.</p>
-                        </header>
-                        <div class="space-y-5">
-                            <label class="block cursor-pointer">
-                                <span class="sr-only">Velg Visma-fil</span>
-                                <div class="border-2 border-dashed border-blue-300 dark:border-blue-700/50 rounded-2xl p-8 text-center bg-blue-50/50 dark:bg-blue-900/10 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors">
-                                    <i data-lucide="upload-cloud" class="w-8 h-8 text-blue-500 mx-auto mb-3"></i>
-                                    <span class="text-sm font-bold text-blue-700 dark:text-blue-400 block mb-1">Klikk for å laste opp PDF</span>
-                                    <span class="text-xs text-slate-500">Støtter også bilder (PNG/JPG) via OCR</span>
-                                </div>
-                                <input type="file" id="visma-file-input" accept=".pdf, image/png, image/jpeg, image/jpg" onchange="lesVismaFil(event)" class="hidden"/>
-                            </label>
-                            
-                            <div class="relative py-2">
-                                <div class="absolute inset-0 flex items-center" aria-hidden="true"><div class="w-full border-t border-slate-200 dark:border-slate-700"></div></div>
-                                <div class="relative flex justify-center"><span class="px-3 bg-white dark:bg-slate-900 text-xs font-bold tracking-widest text-slate-400 uppercase">Eller lim inn</span></div>
-                            </div>
-                            
-                            <textarea id="visma-text-input" rows="5" placeholder="Kopier all tekst fra PDFen din (Ctrl+A, Ctrl+C) og lim inn her..." class="glass-input glass-input-blue text-xs"></textarea>
-                            <button type="button" onclick="analyserVismaTekst()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 px-4 rounded-xl transition-colors shadow-lg shadow-blue-500/30">Analyser Tekst</button>
-                        </div>
-                    </div>
-
-                    <div id="visma-result-card" style="display:none;" class="bg-white/80 dark:bg-slate-900/60 backdrop-blur-md border border-slate-200 dark:border-slate-800 rounded-3xl p-6 lg:p-8 shadow-sm h-fit">
-                        <div class="flex justify-between items-center mb-6 border-b border-slate-200 dark:border-slate-800 pb-4">
-                            <h3 class="text-xl font-bold text-slate-900 dark:text-white flex items-center">
-                                <i data-lucide="check-circle" class="w-6 h-6 mr-2 text-emerald-500"></i> Avlest Data
-                            </h3>
-                            <span id="visma-res-mnd" class="text-xs font-bold text-slate-500 uppercase tracking-wider bg-slate-100 dark:bg-slate-800 px-3 py-1 rounded-lg">Måned År</span>
-                        </div>
-                        <p id="visma-diff-status" class="text-sm font-bold text-blue-700 dark:text-blue-300 mb-6 bg-blue-50 dark:bg-blue-900/30 p-3 rounded-xl border border-blue-200 dark:border-blue-800/50 flex items-center"><i data-lucide="info" class="w-4 h-4 mr-2"></i> Data funnet og fylt inn.</p>
-                        
-                        <!-- Skjulte felt brukt av JS -->
-                        <input type="hidden" id="v-edit-brutto"><input type="hidden" id="v-edit-skatt"><input type="hidden" id="v-edit-union"><input type="hidden" id="v-edit-ot50"><input type="hidden" id="v-edit-ot100"><input type="hidden" id="v-edit-netto">
-
-                        <div class="space-y-3 bg-slate-50/80 dark:bg-slate-800/50 p-6 rounded-2xl border border-slate-200 dark:border-slate-700/50 text-sm font-medium">
-                            <div class="line-row text-slate-600 dark:text-slate-300"><span>Avlest Brutto:</span><span id="visma-res-brutto" class="font-mono font-bold text-slate-900 dark:text-white text-base">0,00 kr</span></div>
-                            
-                            <div id="visma-res-overtid-box" style="display:none;" class="my-2 p-3 bg-brand-50 dark:bg-brand-900/20 rounded-xl border border-brand-100 dark:border-brand-800/50">
-                                <div id="visma-res-overtid-list" class="text-brand-700 dark:text-brand-300 text-xs space-y-1"></div>
-                            </div>
-                            
-                            <div class="line-row text-loss-600 dark:text-loss-400"><span>Avlest Skatt:</span><span id="visma-res-skatt" class="font-mono font-bold">− 0,00 kr</span></div>
-                            <div class="line-row text-slate-500 border-b border-slate-200 dark:border-slate-700/50 pb-3 mb-1"><span>Avlest Fagforening:</span><span id="visma-res-union" class="font-mono">− 0,00 kr</span></div>
-                            
-                            <div class="line-row strong pt-2 text-lg text-slate-900 dark:text-white"><span>Netto til utbetaling:</span><span id="visma-res-netto" class="font-mono font-extrabold text-blue-600 dark:text-blue-400">0,00 kr</span></div>
-                        </div>
-                        <div class="mt-6 text-center">
-                            <button onclick="nullstillVismaAnalysert()" class="text-sm text-rose-500 hover:text-rose-700 font-bold bg-rose-50 hover:bg-rose-100 dark:bg-rose-900/20 dark:hover:bg-rose-900/40 px-4 py-2 rounded-lg transition-colors">Nullstill avlesning</button>
                         </div>
                     </div>
                 </div>
@@ -917,7 +972,7 @@
                 btn.classList.add('text-slate-500', 'dark:text-slate-400', 'border-transparent');
                 let icon = btn.querySelector('svg') || btn.querySelector('i');
                 if (icon) {
-                    icon.classList.remove('text-brand-500', 'text-blue-500', 'text-emerald-500');
+                    icon.classList.remove('text-brand-500', 'text-blue-500', 'text-emerald-500', 'text-teal-500');
                     icon.classList.add('text-slate-400');
                 }
             });
@@ -932,6 +987,7 @@
                     if(tabId === 'dashboard' || tabId === 'salary') icon.classList.add('text-brand-500');
                     if(tabId === 'cnc') icon.classList.add('text-blue-500');
                     if(tabId === 'tools') icon.classList.add('text-emerald-500');
+                    if(tabId === 'ev') icon.classList.add('text-teal-500');
                 }
             }
         }
@@ -1364,133 +1420,6 @@
             }
         }
 
-        // --- VISMA LOGIC ---
-        function lesVismaFil(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-            const statusTxt = document.getElementById('visma-diff-status');
-            const resultCard = document.getElementById('visma-result-card');
-            if (statusTxt) statusTxt.innerHTML = `<i data-lucide="loader" class="w-4 h-4 mr-2 animate-spin"></i> Leses... Vennligst vent.`;
-            if (typeof lucide !== 'undefined') lucide.createIcons();
-            if (resultCard) resultCard.style.display = 'block';
-
-            if (file.type.startsWith('image/')) {
-                lesBildeMedOcr(file);
-                return;
-            }
-
-            const reader = new FileReader();
-            reader.onload = function(event) {
-                let extractedText = extractPdfTextStream(event.target.result);
-                document.getElementById('visma-text-input').value = extractedText;
-                analyserVismaTekst();
-            };
-            reader.readAsText(file);
-        }
-
-        function lesBildeMedOcr(imageFile) {
-            if (typeof Tesseract !== 'undefined') {
-                Tesseract.recognize(imageFile, 'nor').then(({ data: { text } }) => {
-                    document.getElementById('visma-text-input').value = text;
-                    analyserVismaTekst();
-                });
-            } else {
-                alert("OCR er ikke lastet inn. Sjekk internettilkobling.");
-            }
-        }
-
-        function extractPdfTextStream(rawPdf) {
-            let matches = rawPdf.match(/\(([^)]+)\)\s*T[jJ]/g) || [];
-            let extracted = matches.map(m => m.replace(/^\(/, '').replace(/\)\s*T[jJ]$/, '')).join(' ');
-            let btMatches = rawPdf.match(/BT[\s\S]*?ET/g) || [];
-            let btText = btMatches.map(bt => bt.replace(/[^\w\s\.,\-]/g, ' ')).join(' ');
-            if (btText.length > extracted.length) extracted = btText;
-            return extracted.length > 10 ? extracted : rawPdf;
-        }
-
-        function parseNorwegianAmount(s) {
-            if (!s) return 0;
-            s = s.replace(/\s/g, '').replace(',', '.');
-            const n = parseFloat(s);
-            return isNaN(n) ? 0 : Math.abs(n);
-        }
-
-        function analyserVismaTekst() {
-            let txt = document.getElementById('visma-text-input').value || "";
-            if (!txt.trim()) return;
-            
-            txt = txt.replace(/\d{2}\.\d{2}\.\d{4}/g, ' ').replace(/\d{4}-\d{2}/g, ' ').replace(/\d{2}\/\d{2}\/\d{4}/g, ' ');
-
-            let brutto = 0, skatt = 0, fagforening = 0, netto = 0, ot50Val = 0, ot100Val = 0;
-            let linjer = txt.split('\n');
-            
-            linjer.forEach(linje => {
-                let l = linje.trim().toLowerCase();
-                let matches = linje.match(/(-?[\d\s]+[\.,]\d{2})/g) || [];
-                let nums = matches.map(m => parseNorwegianAmount(m));
-                
-                if (l.includes('overtid')) {
-                    let lastNum = nums.length > 0 ? nums[nums.length - 1] : 0;
-                    if (lastNum > 0 && lastNum < 50000) {
-                        if (l.includes('100')) ot100Val += lastNum; else ot50Val += lastNum;
-                    }
-                }
-                if (l.includes('bruttolønn') || (l.includes('brutto') && !l.includes('netto'))) {
-                    let v = nums.filter(n => n >= 1000); if(v.length>0 && brutto===0) brutto = v[0];
-                }
-                if (l.includes('forskuddstrekk') || l.includes('skattetrekk')) {
-                    let v = nums.filter(n => n >= 100); if(v.length>0 && skatt===0) skatt = v[0];
-                }
-                if (l.includes('fagforening') || l.includes('kontingent')) {
-                    let v = nums.filter(n => n >= 10); if(v.length>0 && fagforening===0) fagforening = v[0];
-                }
-                if (l.includes('netto til utbetaling') || (l.includes('netto') && !l.includes('brutto'))) {
-                    let v = nums.filter(n => n >= 1000); if(v.length>0 && netto===0) netto = v[0];
-                }
-            });
-
-            if (brutto > 0 && netto === 0) {
-                if (fagforening === 0) fagforening = Math.round((brutto * 0.015) * 100) / 100;
-                if (skatt === 0) skatt = Math.round(((brutto - fagforening) * 0.30) * 100) / 100;
-                netto = Math.max(0, brutto - skatt - fagforening);
-            }
-
-            document.getElementById('visma-res-brutto').innerText = brutto.toFixed(2).replace('.', ',') + " kr";
-            document.getElementById('visma-res-skatt').innerText = "− " + skatt.toFixed(2).replace('.', ',') + " kr";
-            document.getElementById('visma-res-union').innerText = "− " + fagforening.toFixed(2).replace('.', ',') + " kr";
-            document.getElementById('visma-res-netto').innerText = netto.toFixed(2).replace('.', ',') + " kr";
-            
-            const otBox = document.getElementById('visma-res-overtid-box');
-            const otList = document.getElementById('visma-res-overtid-list');
-            if (otBox && otList) {
-                if (ot50Val > 0 || ot100Val > 0) {
-                    let otHtml = "";
-                    if (ot50Val > 0) otHtml += `<div class="line-row"><span>Overtid 50%:</span><span class="font-mono font-bold">+ ${ot50Val.toFixed(2).replace('.', ',')} kr</span></div>`;
-                    if (ot100Val > 0) otHtml += `<div class="line-row"><span>Overtid 100%:</span><span class="font-mono font-bold">+ ${ot100Val.toFixed(2).replace('.', ',')} kr</span></div>`;
-                    otList.innerHTML = otHtml;
-                    otBox.style.display = 'block';
-                } else {
-                    otBox.style.display = 'none';
-                }
-            }
-
-            const mndSelect = document.getElementById('month');
-            const yearSelect = document.getElementById('year');
-            if (mndSelect && yearSelect) {
-                document.getElementById('visma-res-mnd').innerText = `${maanedsNavn[mndSelect.value]} ${yearSelect.value}`;
-            }
-
-            document.getElementById('visma-result-card').style.display = 'block';
-            document.getElementById('visma-diff-status').innerHTML = `<i data-lucide="check" class="w-4 h-4 mr-2 text-emerald-500"></i> Avlest.`;
-            if (typeof lucide !== 'undefined') lucide.createIcons();
-        }
-
-        function nullstillVismaAnalysert() {
-            document.getElementById('visma-text-input').value = '';
-            document.getElementById('visma-file-input').value = '';
-            document.getElementById('visma-result-card').style.display = 'none';
-        }
-
         // --- CNC LOGIC ---
         function beregnSirkulaerMating() {
             const vc = parseFloat(document.getElementById('gf-vc').value) || 0;
@@ -1667,6 +1596,74 @@
             }
         }
 
+        // --- EV CALC LOGIC ---
+        function beregnLadetid() {
+            const bat = parseFloat(document.getElementById('charge-battery').value) || 77;
+            const kw = parseFloat(document.getElementById('charge-type').value) || 7.4;
+            const startPct = parseFloat(document.getElementById('charge-start').value) || 10;
+            const targetPct = parseFloat(document.getElementById('charge-target').value) || 80;
+            const price = parseFloat(document.getElementById('charge-price').value) || 1.30;
+            const cons = parseFloat(document.getElementById('charge-consumption').value) || 18;
+
+            const neededPct = Math.max(0, targetPct - startPct);
+            const neededKwh = bat * (neededPct / 100);
+
+            // Effektivitetsfaktor for hurtiglading over 80%
+            let effKw = kw;
+            if (kw > 50 && targetPct > 80) effKw = kw * 0.75;
+
+            const hours = neededKwh / effKw;
+            const totalMinutes = Math.round(hours * 60);
+            const h = Math.floor(totalMinutes / 60);
+            const m = totalMinutes % 60;
+
+            const addedRange = Math.round((neededKwh / cons) * 100);
+            const totalCost = neededKwh * price;
+
+            document.getElementById('res-charge-time').innerText = `${h}t ${m}m`;
+            document.getElementById('res-charge-range').innerText = `+ ${addedRange} km`;
+            document.getElementById('res-charge-cost').innerText = totalCost.toFixed(2).replace('.', ',') + " kr";
+        }
+
+        function beregnBesparelse() {
+            const km = parseFloat(document.getElementById('save-km').value) || 15000;
+            const fuelPrice = parseFloat(document.getElementById('save-fuel-price').value) || 20.0;
+            let fuelConsMil = parseFloat(document.getElementById('save-fuel-cons').value) || 0.65;
+            let evConsMil = parseFloat(document.getElementById('save-ev-cons').value) || 1.80;
+            const elekPrice = parseFloat(document.getElementById('save-elek-price').value) || 1.30;
+
+            if (fuelConsMil > 2) fuelConsMil = fuelConsMil / 10;
+            if (evConsMil > 5) evConsMil = evConsMil / 10;
+
+            const milPerYear = km / 10;
+            const fuelLitersYear = milPerYear * fuelConsMil;
+            const fuelCostYear = fuelLitersYear * fuelPrice;
+
+            const evKwhYear = milPerYear * evConsMil;
+            const evCostYear = evKwhYear * elekPrice;
+
+            const saveYear = Math.max(0, fuelCostYear - evCostYear);
+            const saveMonth = saveYear / 12;
+            const save5yr = saveYear * 5;
+
+            document.getElementById('res-save-month').innerText = saveMonth.toFixed(2).replace('.', ',') + " kr";
+            document.getElementById('res-save-year').innerText = saveYear.toFixed(2).replace('.', ',') + " kr";
+            document.getElementById('res-save-5yr').innerText = save5yr.toFixed(2).replace('.', ',') + " kr";
+        }
+
+        function beregnVinter() {
+            const wltp = parseFloat(document.getElementById('winter-wltp').value) || 480;
+            const tempInput = document.getElementById('winter-temp').value;
+            const lossPct = (tempInput !== "" && !isNaN(parseFloat(tempInput))) ? parseFloat(tempInput) : 0;
+
+            const remainingPct = Math.max(0, 100 - lossPct);
+            const realRange = Math.round(wltp * (remainingPct / 100));
+            const lossKm = Math.round(wltp - realRange);
+
+            document.getElementById('res-winter-range').innerText = `${realRange} km`;
+            document.getElementById('res-winter-loss').innerText = `- ${lossKm} km (${lossPct}%)`;
+        }
+
         // --- INIT ALL ---
         window.onload = function() {
             lastInnstillinger();
@@ -1674,6 +1671,7 @@
             beregnFinnVc(); beregnFinnRpm(); beregnFinnMmMin(); beregnGraderPrMin();
             oppdaterMaterialeData(); beregnBoredybde(); oppdaterGjengeTabell(); beregnGjengeToleranse(); beregnIso();
             beregnVekt(); beregnPcd(); beregnTrekant();
+            beregnLadetid(); beregnBesparelse(); beregnVinter();
         }
     </script>
 </body>
