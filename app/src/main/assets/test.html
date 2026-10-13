@@ -136,11 +136,12 @@
 
         .sub-tab-btn {
             padding: 0.5rem 1rem;
-            border-radius: 0.625rem;
+            border-radius: 9999px;
             font-size: 0.8125rem;
             font-weight: 700;
             color: #94a3b8;
             transition: all 0.15s ease;
+            background: rgba(255,255,255,0.03);
             border: 1px solid transparent;
             white-space: nowrap;
         }
@@ -148,13 +149,14 @@
             background-color: rgba(56, 189, 248, 0.15);
             color: #38bdf8;
             border-color: rgba(56, 189, 248, 0.3);
+            box-shadow: inset 0 0 10px rgba(56, 189, 248, 0.05);
         }
 
         .sub-tab-content { display: none; }
-        .sub-tab-content.active { display: block; animation: fadeIn 0.2s ease-out; }
+        .sub-tab-content.active { display: block; animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
 
         .tab-page { display: none; }
-        .tab-page.active { display: block; animation: fadeIn 0.25s ease-out; }
+        .tab-page.active { display: block; animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
 
         .accordion-body {
             display: none !important;
@@ -162,7 +164,7 @@
         .accordion-card.open .accordion-body,
         .accordion-item.open .accordion-body {
             display: block !important;
-            animation: fadeIn 0.2s ease-out;
+            animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .accordion-card.open .accordion-chevron,
         .accordion-item.open .accordion-chevron {
@@ -170,15 +172,57 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(6px); }
+            from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* FLYTENDE DOCK (MOBILE NAV) */
+        @media (max-width: 1024px) {
+            .mobile-dock {
+                position: fixed;
+                bottom: 1.5rem;
+                left: 50%;
+                transform: translateX(-50%);
+                background: rgba(15, 23, 42, 0.85);
+                backdrop-filter: blur(24px);
+                -webkit-backdrop-filter: blur(24px);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                border-top: 1px solid rgba(255, 255, 255, 0.15);
+                border-radius: 999px;
+                display: flex;
+                padding: 0.5rem;
+                gap: 0.5rem;
+                z-index: 50;
+                box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+                width: 92%;
+                max-width: 400px;
+                justify-content: space-around;
+            }
+            .mobile-dock-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 3.5rem;
+                height: 3.5rem;
+                border-radius: 50%;
+                transition: all 0.2s ease;
+                color: var(--text-muted);
+                font-size: 1.25rem;
+            }
+            .mobile-dock-btn.active {
+                background: rgba(56, 189, 248, 0.15);
+                color: var(--accent);
+                box-shadow: inset 0 0 15px rgba(56, 189, 248, 0.2);
+            }
+            .desktop-sidebar { display: none !important; }
+            main { padding-bottom: 7rem !important; } /* Gjør plass til dock */
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col lg:flex-row">
+<body class="min-h-screen bg-slate-950 font-sans text-slate-100 flex flex-col lg:flex-row">
 
-<!-- SIDEBAR NAVIGATION -->
-<aside class="w-full lg:w-64 bg-slate-900/80 backdrop-blur-xl border-b lg:border-b-0 lg:border-r border-slate-800/60 p-5 flex flex-col shrink-0 sticky top-0 lg:h-screen z-40">
+<!-- DESKTOP SIDEBAR -->
+<aside class="desktop-sidebar w-64 bg-slate-900/80 backdrop-blur-xl border-r border-slate-800/60 p-5 flex flex-col shrink-0 sticky top-0 h-screen z-40">
     <div class="flex items-center gap-3 pb-4 border-b border-slate-800 mb-5">
         <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-sky-400 to-blue-600 flex items-center justify-center text-white font-extrabold text-xl shadow-[0_0_20px_rgba(56,189,248,0.3)]">
             🛠️
@@ -190,20 +234,20 @@
     </div>
 
     <!-- MAIN MENU ITEMS -->
-    <nav class="flex flex-row lg:flex-col gap-1.5 overflow-x-auto pb-2 lg:pb-0 scrollbar-thin">
-        <button onclick="switchNav('dashboard')" id="navitem-dashboard" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-xs sm:text-sm text-sky-400 bg-sky-500/10 border border-sky-500/20 whitespace-nowrap transition-all">
+    <nav class="flex flex-col gap-1.5">
+        <button onclick="switchNav('dashboard')" id="navitem-dashboard" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm text-sky-400 bg-sky-500/10 border border-sky-500/20 transition-all">
             <span>🏠</span> <span>Oversikt</span>
         </button>
-        <button onclick="switchNav('salary')" id="navitem-salary" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-xs sm:text-sm text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 border border-transparent whitespace-nowrap transition-all">
+        <button onclick="switchNav('salary')" id="navitem-salary" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 border border-transparent transition-all">
             <span>💰</span> <span>1. Lønnskalkulator</span>
         </button>
-        <button onclick="switchNav('machining')" id="navitem-machining" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-xs sm:text-sm text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 border border-transparent whitespace-nowrap transition-all">
+        <button onclick="switchNav('machining')" id="navitem-machining" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 border border-transparent transition-all">
             <span>⚙️</span> <span>2. Maskinering</span>
         </button>
-        <button onclick="switchNav('workshop')" id="navitem-workshop" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-xs sm:text-sm text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 border border-transparent whitespace-nowrap transition-all">
-            <span>🛠️</span> <span>3. Verkstedtabeller</span>
+        <button onclick="switchNav('workshop')" id="navitem-workshop" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 border border-transparent transition-all">
+            <span>🛠️</span> <span>3. Tabeller</span>
         </button>
-        <button onclick="switchNav('ev')" id="navitem-ev" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-xs sm:text-sm text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 border border-transparent whitespace-nowrap transition-all">
+        <button onclick="switchNav('ev')" id="navitem-ev" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 border border-transparent transition-all">
             <span>⚡</span> <span>4. Elbil</span>
         </button>
     </nav>
@@ -237,28 +281,28 @@
             <!-- 1. DASHBOARD OVERSIKT -->
             <div id="page-dashboard" class="tab-page active space-y-6">
                 <div class="grid sm:grid-cols-2 gap-4">
-                    <div onclick="switchNav('salary')" class="bg-slate-900/60 hover:bg-slate-800/80 border border-slate-800 hover:border-slate-700 transition-all rounded-2xl p-6 flex flex-col items-start text-left group cursor-pointer">
-                        <div class="p-3 bg-slate-800 text-sky-400 rounded-xl text-2xl mb-4 group-hover:scale-110 transition-transform">💰</div>
-                        <h3 class="text-lg font-bold text-slate-100 mb-1">Lønnskalkulator & Oppgjør</h3>
-                        <p class="text-sm text-slate-400">Månedsoppgjør, vakter, timebank, skattekort, fagforening og Årsarkiv</p>
+                    <div onclick="switchNav('salary')" class="glass-card p-6 text-left group cursor-pointer border-transparent hover:border-[#00f2fe]/50">
+                        <div class="p-3 bg-white/5 text-[#00f2fe] rounded-xl text-2xl mb-4 group-hover:scale-110 transition-transform w-max glow-icon">💰</div>
+                        <h3 class="text-lg font-bold text-white mb-1">Lønnskalkulator & Oppgjør</h3>
+                        <p class="text-sm text-zinc-400">Månedsoppgjør, vakter, timebank, skattekort, fagforening og Årsarkiv</p>
                     </div>
 
-                    <div onclick="switchNav('machining')" class="bg-slate-900/60 hover:bg-slate-800/80 border border-slate-800 hover:border-slate-700 transition-all rounded-2xl p-6 flex flex-col items-start text-left group cursor-pointer">
-                        <div class="p-3 bg-slate-800 text-sky-400 rounded-xl text-2xl mb-4 group-hover:scale-110 transition-transform">⚙️</div>
-                        <h3 class="text-lg font-bold text-slate-100 mb-1">Maskinering & CNC</h3>
-                        <p class="text-sm text-slate-400">Gibbs sirkulær mating, C-akse, Fc/Pc og Vc/RPM</p>
+                    <div onclick="switchNav('machining')" class="glass-card p-6 text-left group cursor-pointer border-transparent hover:border-[#00f2fe]/50">
+                        <div class="p-3 bg-white/5 text-[#00f2fe] rounded-xl text-2xl mb-4 group-hover:scale-110 transition-transform w-max glow-icon">⚙️</div>
+                        <h3 class="text-lg font-bold text-white mb-1">Maskinering & CNC</h3>
+                        <p class="text-sm text-zinc-400">Gibbs sirkulær mating, C-akse, Fc/Pc og Vc/RPM</p>
                     </div>
 
-                    <div onclick="switchNav('workshop')" class="bg-slate-900/60 hover:bg-slate-800/80 border border-slate-800 hover:border-slate-700 transition-all rounded-2xl p-6 flex flex-col items-start text-left group cursor-pointer">
-                        <div class="p-3 bg-slate-800 text-sky-400 rounded-xl text-2xl mb-4 group-hover:scale-110 transition-transform">🛠️</div>
-                        <h3 class="text-lg font-bold text-slate-100 mb-1">Verkstedtabeller</h3>
-                        <p class="text-sm text-slate-400">Materialer, M/BSP gjenger, ISO H7/g6 passninger, Materialhardhet (HB/HRC/MPa), PCD og Pythagoras</p>
+                    <div onclick="switchNav('workshop')" class="glass-card p-6 text-left group cursor-pointer border-transparent hover:border-[#00f2fe]/50">
+                        <div class="p-3 bg-white/5 text-[#00f2fe] rounded-xl text-2xl mb-4 group-hover:scale-110 transition-transform w-max glow-icon">🛠️</div>
+                        <h3 class="text-lg font-bold text-white mb-1">Verkstedtabeller</h3>
+                        <p class="text-sm text-zinc-400">Materialer, M/BSP gjenger, ISO H7/g6 passninger, Materialhardhet (HB/HRC/MPa), PCD og Pythagoras</p>
                     </div>
 
-                    <div onclick="switchNav('ev')" class="bg-slate-900/60 hover:bg-slate-800/80 border border-slate-800 hover:border-slate-700 transition-all rounded-2xl p-6 flex flex-col items-start text-left group cursor-pointer">
-                        <div class="p-3 bg-slate-800 text-sky-400 rounded-xl text-2xl mb-4 group-hover:scale-110 transition-transform">⚡</div>
-                        <h3 class="text-lg font-bold text-slate-100 mb-1">Elbil-Kalkulator</h3>
-                        <p class="text-sm text-slate-400">Ladetid (2.3-250 kW), bensinbesparelser og vinter-rekkevidde</p>
+                    <div onclick="switchNav('ev')" class="glass-card p-6 text-left group cursor-pointer border-transparent hover:border-[#00f2fe]/50">
+                        <div class="p-3 bg-white/5 text-[#00f2fe] rounded-xl text-2xl mb-4 group-hover:scale-110 transition-transform w-max glow-icon">⚡</div>
+                        <h3 class="text-lg font-bold text-white mb-1">Elbil-Kalkulator</h3>
+                        <p class="text-sm text-zinc-400">Ladetid (2.3-250 kW), bensinbesparelser og vinter-rekkevidde</p>
                     </div>
                 </div>
             </div>
