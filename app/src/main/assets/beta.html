@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verkstedsportalen | CNC, Verktøy & Lønn (Beta Edition)</title>
+    <title>Verkstedsportalen | CNC, Verktøy & Lønn (Clean Beta)</title>
 
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
 
     <script>
-        const APP_BUILD_VER = "v7000.0-OpacityFixAllTabsVisible";
+        const APP_BUILD_VER = "v8000.0-CleanScratchGeminiDesign";
         if (localStorage.getItem('app_build_v') !== APP_BUILD_VER) {
             localStorage.setItem('app_build_v', APP_BUILD_VER);
             if ('serviceWorker' in navigator) {
@@ -85,18 +85,6 @@
         .animation-delay-2000 { animation-delay: 2s; }
         .animation-delay-4000 { animation-delay: 4s; }
 
-        .tab-content { display: none !important; opacity: 1 !important; }
-        .tab-content.active { display: block !important; opacity: 1 !important; }
-
-        .sub-tab-content { display: none !important; opacity: 1 !important; }
-        .sub-tab-content.active { display: block !important; opacity: 1 !important; }
-
-        .accordion-body { display: none !important; }
-        .accordion-card.open .accordion-body,
-        .accordion-item.open .accordion-body { display: block !important; animation: fadeIn 0.2s ease-out; }
-        .accordion-card.open .accordion-chevron,
-        .accordion-item.open .accordion-chevron { transform: rotate(180deg); }
-
         @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
         .data-table th {
@@ -148,32 +136,32 @@
         </div>
 
         <nav class="flex-1 overflow-y-auto py-4 space-y-2 px-3">
-            <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-lg bg-white dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700/50 text-slate-900 dark:text-white transition-all shadow-sm">
-                <i data-lucide="layout-dashboard" class="w-5 h-5 mr-3 text-brand-500 dark:text-brand-400"></i>
+            <button onclick="switchMainTab('dashboard')" id="side-nav-dashboard" class="side-btn w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-lg bg-white dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700/50 text-slate-900 dark:text-white transition-all shadow-sm">
+                <i data-lucide="layout-dashboard" class="w-5 h-5 mr-3 text-brand-500 dark:text-brand-400 pointer-events-none"></i>
                 Oversikt
             </button>
-            <button onclick="switchTab('salary')" id="nav-salary" class="nav-btn w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-slate-500 dark:text-slate-400 border border-transparent hover:bg-white/50 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-white transition-all">
-                <i data-lucide="calculator" class="w-5 h-5 mr-3 text-slate-400 dark:text-slate-500"></i>
+            <button onclick="switchMainTab('salary')" id="side-nav-salary" class="side-btn w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-slate-500 dark:text-slate-400 border border-transparent hover:bg-white/50 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-white transition-all">
+                <i data-lucide="calculator" class="w-5 h-5 mr-3 text-slate-400 dark:text-slate-500 pointer-events-none"></i>
                 1. Lønnskalkulator
             </button>
-            <button onclick="switchTab('cnc')" id="nav-cnc" class="nav-btn w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-slate-500 dark:text-slate-400 border border-transparent hover:bg-white/50 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-white transition-all">
-                <i data-lucide="cpu" class="w-5 h-5 mr-3 text-slate-400 dark:text-slate-500"></i>
+            <button onclick="switchMainTab('machining')" id="side-nav-machining" class="side-btn w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-slate-500 dark:text-slate-400 border border-transparent hover:bg-white/50 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-white transition-all">
+                <i data-lucide="cpu" class="w-5 h-5 mr-3 text-slate-400 dark:text-slate-500 pointer-events-none"></i>
                 2. Maskinering & CNC
             </button>
-            <button onclick="switchTab('tools')" id="nav-tools" class="nav-btn w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-slate-500 dark:text-slate-400 border border-transparent hover:bg-white/50 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-white transition-all">
-                <i data-lucide="ruler" class="w-5 h-5 mr-3 text-slate-400 dark:text-slate-500"></i>
+            <button onclick="switchMainTab('workshop')" id="side-nav-workshop" class="side-btn w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-slate-500 dark:text-slate-400 border border-transparent hover:bg-white/50 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-white transition-all">
+                <i data-lucide="ruler" class="w-5 h-5 mr-3 text-slate-400 dark:text-slate-500 pointer-events-none"></i>
                 3. Verkstedtabeller
             </button>
-            <button onclick="switchTab('ev')" id="nav-ev" class="nav-btn w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-slate-500 dark:text-slate-400 border border-transparent hover:bg-white/50 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-white transition-all">
-                <i data-lucide="zap" class="w-5 h-5 mr-3 text-slate-400 dark:text-slate-500"></i>
+            <button onclick="switchMainTab('ev')" id="side-nav-ev" class="side-btn w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-slate-500 dark:text-slate-400 border border-transparent hover:bg-white/50 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-white transition-all">
+                <i data-lucide="zap" class="w-5 h-5 mr-3 text-slate-400 dark:text-slate-500 pointer-events-none"></i>
                 4. Elbil-Kalkulator
             </button>
         </nav>
 
         <div class="p-4 border-t border-slate-200 dark:border-slate-700/50 bg-slate-100/50 dark:bg-slate-900/30">
             <button onclick="toggleTheme()" class="mb-3 w-full flex items-center justify-center px-3 py-2 text-sm font-medium rounded-lg text-slate-600 dark:text-slate-300 bg-slate-200/70 dark:bg-slate-800/70 hover:bg-slate-300/70 dark:hover:bg-slate-700/70 transition-all border border-slate-300/50 dark:border-slate-600/50 shadow-sm">
-                <i data-lucide="sun" class="w-4 h-4 mr-2 hidden dark:block text-brand-400"></i>
-                <i data-lucide="moon" class="w-4 h-4 mr-2 block dark:hidden text-indigo-500"></i>
+                <i data-lucide="sun" class="w-4 h-4 mr-2 hidden dark:block text-brand-400 pointer-events-none"></i>
+                <i data-lucide="moon" class="w-4 h-4 mr-2 block dark:hidden text-indigo-500 pointer-events-none"></i>
                 <span class="dark:hidden">Bytt til mørkt</span>
                 <span class="hidden dark:block">Bytt til lyst</span>
             </button>
@@ -182,7 +170,7 @@
                 <span class="w-2 h-2 rounded-full bg-emerald-500 mr-2 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.8)]"></span>
                 Sigurd Seland AS
             </div>
-            <div class="text-[10px] text-slate-400 dark:text-slate-500 font-mono mt-1 ml-4">Beta Edition v6000</div>
+            <div class="text-[10px] text-slate-400 dark:text-slate-500 font-mono mt-1 ml-4">Clean Beta v8000</div>
         </div>
     </aside>
 
@@ -192,33 +180,33 @@
             <i data-lucide="wrench" class="text-brand-500 w-5 h-5 mr-2"></i>
             <h1 class="text-lg font-bold text-slate-900 dark:text-white">Verksteds<span class="text-brand-500">Portal</span></h1>
         </div>
-        <button id="mobile-menu-btn" onclick="toggleMobileMenu()" class="text-slate-600 dark:text-slate-300 focus:outline-none p-2">
+        <button onclick="toggleMobileMenu()" class="text-slate-600 dark:text-slate-300 focus:outline-none p-2">
             <i data-lucide="menu" class="w-6 h-6"></i>
         </button>
     </div>
 
     <!-- MOBILE MENU OVERLAY -->
-    <div id="mobile-menu" class="fixed inset-0 bg-slate-50/95 dark:bg-slate-950/95 backdrop-blur-md z-40 hidden flex-col pt-20 px-4 space-y-3 md:hidden transition-colors">
-        <button onclick="switchTab('dashboard'); toggleMobileMenu()" class="w-full flex items-center px-4 py-3 text-base font-medium rounded-xl border border-slate-300 dark:border-slate-700/50 bg-white/80 dark:bg-slate-800/80 text-slate-900 dark:text-white shadow-lg">
-            <i data-lucide="layout-dashboard" class="w-5 h-5 mr-3 text-brand-500 dark:text-brand-400"></i> Oversikt
+    <div id="mobile-menu-overlay" class="fixed inset-0 bg-slate-50/95 dark:bg-slate-950/95 backdrop-blur-md z-40 hidden flex-col pt-20 px-4 space-y-3 md:hidden transition-colors">
+        <button onclick="switchMainTab('dashboard'); toggleMobileMenu()" class="w-full flex items-center px-4 py-3 text-base font-medium rounded-xl border border-slate-300 dark:border-slate-700/50 bg-white/80 dark:bg-slate-800/80 text-slate-900 dark:text-white shadow-lg">
+            <i data-lucide="layout-dashboard" class="w-5 h-5 mr-3 text-brand-500 dark:text-brand-400 pointer-events-none"></i> Oversikt
         </button>
-        <button onclick="switchTab('salary'); toggleMobileMenu()" class="w-full flex items-center px-4 py-3 text-base font-medium rounded-xl border border-transparent text-slate-600 dark:text-slate-300 hover:bg-slate-200/50 dark:hover:bg-slate-800/50">
-            <i data-lucide="calculator" class="w-5 h-5 mr-3 text-slate-500 dark:text-slate-400"></i> 1. Lønnskalkulator
+        <button onclick="switchMainTab('salary'); toggleMobileMenu()" class="w-full flex items-center px-4 py-3 text-base font-medium rounded-xl border border-transparent text-slate-600 dark:text-slate-300 hover:bg-slate-200/50 dark:hover:bg-slate-800/50">
+            <i data-lucide="calculator" class="w-5 h-5 mr-3 text-slate-500 dark:text-slate-400 pointer-events-none"></i> 1. Lønnskalkulator
         </button>
-        <button onclick="switchTab('cnc'); toggleMobileMenu()" class="w-full flex items-center px-4 py-3 text-base font-medium rounded-xl border border-transparent text-slate-600 dark:text-slate-300 hover:bg-slate-200/50 dark:hover:bg-slate-800/50">
-            <i data-lucide="cpu" class="w-5 h-5 mr-3 text-slate-500 dark:text-slate-400"></i> 2. Maskinering & CNC
+        <button onclick="switchMainTab('machining'); toggleMobileMenu()" class="w-full flex items-center px-4 py-3 text-base font-medium rounded-xl border border-transparent text-slate-600 dark:text-slate-300 hover:bg-slate-200/50 dark:hover:bg-slate-800/50">
+            <i data-lucide="cpu" class="w-5 h-5 mr-3 text-slate-500 dark:text-slate-400 pointer-events-none"></i> 2. Maskinering & CNC
         </button>
-        <button onclick="switchTab('tools'); toggleMobileMenu()" class="w-full flex items-center px-4 py-3 text-base font-medium rounded-xl border border-transparent text-slate-600 dark:text-slate-300 hover:bg-slate-200/50 dark:hover:bg-slate-800/50">
-            <i data-lucide="ruler" class="w-5 h-5 mr-3 text-slate-500 dark:text-slate-400"></i> 3. Verkstedtabeller
+        <button onclick="switchMainTab('workshop'); toggleMobileMenu()" class="w-full flex items-center px-4 py-3 text-base font-medium rounded-xl border border-transparent text-slate-600 dark:text-slate-300 hover:bg-slate-200/50 dark:hover:bg-slate-800/50">
+            <i data-lucide="ruler" class="w-5 h-5 mr-3 text-slate-500 dark:text-slate-400 pointer-events-none"></i> 3. Verkstedtabeller
         </button>
-        <button onclick="switchTab('ev'); toggleMobileMenu()" class="w-full flex items-center px-4 py-3 text-base font-medium rounded-xl border border-transparent text-slate-600 dark:text-slate-300 hover:bg-slate-200/50 dark:hover:bg-slate-800/50">
-            <i data-lucide="zap" class="w-5 h-5 mr-3 text-slate-500 dark:text-slate-400"></i> 4. Elbil-Kalkulator
+        <button onclick="switchMainTab('ev'); toggleMobileMenu()" class="w-full flex items-center px-4 py-3 text-base font-medium rounded-xl border border-transparent text-slate-600 dark:text-slate-300 hover:bg-slate-200/50 dark:hover:bg-slate-800/50">
+            <i data-lucide="zap" class="w-5 h-5 mr-3 text-slate-500 dark:text-slate-400 pointer-events-none"></i> 4. Elbil-Kalkulator
         </button>
 
         <div class="pt-6 mt-4 border-t border-slate-200 dark:border-slate-800">
             <button onclick="toggleTheme()" class="w-full flex items-center justify-center px-4 py-3 text-base font-medium rounded-xl border border-slate-300 dark:border-slate-700/50 bg-slate-200/50 dark:bg-slate-800/50 text-slate-700 dark:text-slate-300 shadow-sm">
-                <i data-lucide="sun" class="w-5 h-5 mr-2 hidden dark:block text-brand-400"></i>
-                <i data-lucide="moon" class="w-5 h-5 mr-2 block dark:hidden text-indigo-500"></i>
+                <i data-lucide="sun" class="w-5 h-5 mr-2 hidden dark:block text-brand-400 pointer-events-none"></i>
+                <i data-lucide="moon" class="w-5 h-5 mr-2 block dark:hidden text-indigo-500 pointer-events-none"></i>
                 <span class="dark:hidden">Bytt til mørkt tema</span>
                 <span class="hidden dark:block">Bytt til lyst tema</span>
             </button>
@@ -228,9 +216,9 @@
     <!-- MAIN CONTENT AREA -->
     <main class="flex-1 overflow-y-auto pt-16 md:pt-0 relative z-10 transition-colors">
 
-        <!-- 1. DASHBOARD TAB -->
-        <div id="dashboard" class="tab-content active p-6 max-w-7xl mx-auto">
-            <header class="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <!-- 1. DASHBOARD PAGE -->
+        <div id="page-dashboard" class="p-6 max-w-7xl mx-auto space-y-6">
+            <header class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                     <h2 class="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-slate-900 via-slate-700 to-slate-500 dark:from-white dark:via-slate-200 dark:to-slate-400 mb-1">Verkstedsportalen</h2>
                     <p class="text-slate-600 dark:text-slate-400 text-base">Digitalt verktøy for produksjon, kalkulasjoner, vakter og lønn.</p>
@@ -241,25 +229,25 @@
             </header>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-                <div onclick="switchTab('salary')" class="bg-white/60 dark:bg-gradient-to-br dark:from-slate-800/60 dark:to-slate-900/60 backdrop-blur-md border border-slate-200 dark:border-slate-700/50 rounded-2xl p-6 cursor-pointer transition-all duration-300 group hover:border-brand-500/50 hover:shadow-lg relative overflow-hidden">
+                <div onclick="switchMainTab('salary')" class="bg-white/60 dark:bg-gradient-to-br dark:from-slate-800/60 dark:to-slate-900/60 backdrop-blur-md border border-slate-200 dark:border-slate-700/50 rounded-2xl p-6 cursor-pointer transition-all duration-300 group hover:border-brand-500/50 hover:shadow-lg relative overflow-hidden">
                     <div class="w-12 h-12 bg-brand-100 dark:bg-brand-500/20 rounded-xl flex items-center justify-center mb-4 text-brand-500 text-2xl group-hover:scale-110 transition-transform">💰</div>
                     <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-1 group-hover:text-brand-500 transition-colors">Lønnskalkulator</h3>
                     <p class="text-xs text-slate-600 dark:text-slate-400">Månedsoppgjør, overtid, timebank, skattekort og årsprognose.</p>
                 </div>
 
-                <div onclick="switchTab('cnc')" class="bg-white/60 dark:bg-gradient-to-br dark:from-slate-800/60 dark:to-slate-900/60 backdrop-blur-md border border-slate-200 dark:border-slate-700/50 rounded-2xl p-6 cursor-pointer transition-all duration-300 group hover:border-blue-500/50 hover:shadow-lg relative overflow-hidden">
+                <div onclick="switchMainTab('machining')" class="bg-white/60 dark:bg-gradient-to-br dark:from-slate-800/60 dark:to-slate-900/60 backdrop-blur-md border border-slate-200 dark:border-slate-700/50 rounded-2xl p-6 cursor-pointer transition-all duration-300 group hover:border-blue-500/50 hover:shadow-lg relative overflow-hidden">
                     <div class="w-12 h-12 bg-blue-100 dark:bg-blue-500/20 rounded-xl flex items-center justify-center mb-4 text-blue-500 text-2xl group-hover:scale-110 transition-transform">⚙️</div>
                     <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-1 group-hover:text-blue-500 transition-colors">Maskinering & CNC</h3>
                     <p class="text-xs text-slate-600 dark:text-slate-400">Gibbs sirkulær mating, C-akse, Pc kW og G/M-koder.</p>
                 </div>
 
-                <div onclick="switchTab('tools')" class="bg-white/60 dark:bg-gradient-to-br dark:from-slate-800/60 dark:to-slate-900/60 backdrop-blur-md border border-slate-200 dark:border-slate-700/50 rounded-2xl p-6 cursor-pointer transition-all duration-300 group hover:border-emerald-500/50 hover:shadow-lg relative overflow-hidden">
+                <div onclick="switchMainTab('workshop')" class="bg-white/60 dark:bg-gradient-to-br dark:from-slate-800/60 dark:to-slate-900/60 backdrop-blur-md border border-slate-200 dark:border-slate-700/50 rounded-2xl p-6 cursor-pointer transition-all duration-300 group hover:border-emerald-500/50 hover:shadow-lg relative overflow-hidden">
                     <div class="w-12 h-12 bg-emerald-100 dark:bg-emerald-500/20 rounded-xl flex items-center justify-center mb-4 text-emerald-500 text-2xl group-hover:scale-110 transition-transform">🛠️</div>
                     <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-1 group-hover:text-emerald-500 transition-colors">Verkstedtabeller</h3>
                     <p class="text-xs text-slate-600 dark:text-slate-400">ISO H7/g6, Hardhet HB/HRC, M/BSP gjenger, PCD og skruer.</p>
                 </div>
 
-                <div onclick="switchTab('ev')" class="bg-white/60 dark:bg-gradient-to-br dark:from-slate-800/60 dark:to-slate-900/60 backdrop-blur-md border border-slate-200 dark:border-slate-700/50 rounded-2xl p-6 cursor-pointer transition-all duration-300 group hover:border-sky-500/50 hover:shadow-lg relative overflow-hidden">
+                <div onclick="switchMainTab('ev')" class="bg-white/60 dark:bg-gradient-to-br dark:from-slate-800/60 dark:to-slate-900/60 backdrop-blur-md border border-slate-200 dark:border-slate-700/50 rounded-2xl p-6 cursor-pointer transition-all duration-300 group hover:border-sky-500/50 hover:shadow-lg relative overflow-hidden">
                     <div class="w-12 h-12 bg-sky-100 dark:bg-sky-500/20 rounded-xl flex items-center justify-center mb-4 text-sky-500 text-2xl group-hover:scale-110 transition-transform">⚡</div>
                     <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-1 group-hover:text-sky-500 transition-colors">Elbil-Kalkulator</h3>
                     <p class="text-xs text-slate-600 dark:text-slate-400">Ladetid (2.3–250 kW), bensinbesparelser og vinter-rekkevidde.</p>
@@ -277,9 +265,9 @@
             </div>
         </div>
 
-        <!-- 2. SALARY CALCULATOR TAB -->
-        <div id="salary" class="tab-content p-6 max-w-5xl mx-auto space-y-6">
-            <header class="mb-6 flex items-center">
+        <!-- 2. SALARY PAGE -->
+        <div id="page-salary" class="p-6 max-w-5xl mx-auto space-y-6" style="display: none;">
+            <header class="mb-4 flex items-center">
                 <div class="w-12 h-12 bg-brand-100 dark:bg-brand-500/20 rounded-2xl flex items-center justify-center mr-4 text-brand-500 text-2xl shrink-0">
                     💰
                 </div>
@@ -291,14 +279,14 @@
 
             <!-- SUBTABS FOR SALARY -->
             <div class="flex items-center gap-2 overflow-x-auto pb-2 border-b border-slate-200 dark:border-slate-800">
-                <button onclick="switchSalarySub('oversikt')" id="s-subbtn-oversikt" class="sub-tab-btn active">📊 Månedsoppgjør Spesifikasjon</button>
-                <button onclick="switchSalarySub('vakter')" id="s-subbtn-vakter" class="sub-tab-btn">⏱️ Tilleggsvakter & Vaktliste</button>
-                <button onclick="switchSalarySub('innstillinger')" id="s-subbtn-innstillinger" class="sub-tab-btn">⚙️ Lønnsinnstillinger & Skatt</button>
-                <button onclick="switchSalarySub('arkiv')" id="s-subbtn-arkiv" class="sub-tab-btn">📈 Månedlig Lønnsarkiv</button>
+                <button onclick="switchSalarySub('oversikt')" id="sal-btn-oversikt" class="sub-tab-btn active">📊 Månedsoppgjør Spesifikasjon</button>
+                <button onclick="switchSalarySub('vakter')" id="sal-btn-vakter" class="sub-tab-btn">⏱️ Tilleggsvakter & Vaktliste</button>
+                <button onclick="switchSalarySub('innstillinger')" id="sal-btn-innstillinger" class="sub-tab-btn">⚙️ Lønnsinnstillinger & Skatt</button>
+                <button onclick="switchSalarySub('arkiv')" id="sal-btn-arkiv" class="sub-tab-btn">📈 Månedlig Lønnsarkiv</button>
             </div>
 
             <!-- SUBTAB 1: OVERSIKT & PAYSLIP -->
-            <div id="s-subtab-oversikt" class="sub-tab-content active space-y-6">
+            <div id="sal-sub-oversikt" class="space-y-6">
                 <div class="bg-white/80 dark:bg-slate-900/60 backdrop-blur-md border border-slate-200 dark:border-slate-700/50 rounded-2xl p-6 space-y-4">
                     <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
                         <h3 class="font-bold text-base text-slate-900 dark:text-slate-100">📅 Velg Periode</h3>
@@ -378,7 +366,7 @@
                 </div>
 
                 <!-- SUBTAB 2: VAKTER REGISTRERING OG TABELL -->
-                <div id="s-subtab-vakter" class="sub-tab-content space-y-6">
+                <div id="sal-sub-vakter" class="space-y-6" style="display: none;">
                     <div class="bg-white/80 dark:bg-slate-900/60 backdrop-blur-md border border-slate-200 dark:border-slate-700/50 rounded-2xl p-6 space-y-4">
                         <div class="border-b border-slate-200 dark:border-slate-800 pb-3 flex items-center gap-3">
                             <span class="p-2 bg-brand-500/20 text-brand-500 rounded-lg text-xl">⏱️</span>
@@ -450,7 +438,7 @@
                 </div>
 
                 <!-- SUBTAB 3: INNSTILLINGER -->
-                <div id="s-subtab-innstillinger" class="sub-tab-content space-y-6">
+                <div id="sal-sub-innstillinger" class="space-y-6" style="display: none;">
                     <div class="bg-white/80 dark:bg-slate-900/60 backdrop-blur-md border border-slate-200 dark:border-slate-700/50 rounded-2xl p-6 space-y-4">
                         <div class="border-b border-slate-200 dark:border-slate-800 pb-3 flex items-center gap-3">
                             <span class="p-2 bg-brand-500/20 text-brand-500 rounded-lg text-xl">⚙️</span>
@@ -518,7 +506,7 @@
                 </div>
 
                 <!-- SUBTAB 4: MÅNEDLIG LØNNSARKIV -->
-                <div id="s-subtab-arkiv" class="sub-tab-content space-y-6">
+                <div id="sal-sub-arkiv" class="space-y-6" style="display: none;">
                     <div class="bg-white/80 dark:bg-slate-900/60 backdrop-blur-md border border-slate-200 dark:border-slate-700/50 rounded-2xl p-6 space-y-4">
                         <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
                             <h3 class="font-bold text-base text-slate-900 dark:text-slate-100">📈 Lagrede Månedsoppgjør i Arkivet</h3>
@@ -533,7 +521,7 @@
             </div>
 
             <!-- 3. MASKINERINGSVALKULATOR TAB -->
-            <div id="cnc" class="tab-content space-y-6 max-w-7xl mx-auto p-6">
+            <div id="page-machining" class="space-y-6 max-w-7xl mx-auto p-6" style="display: none;">
                 <header class="mb-6 flex items-center">
                     <div class="w-12 h-12 bg-blue-100 dark:bg-blue-500/20 rounded-2xl flex items-center justify-center mr-4 text-blue-500 text-2xl shrink-0">
                         ⚙️
@@ -547,7 +535,7 @@
                 <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
                     <!-- ACCORDION 1: SIRKULÆR MATING -->
                     <div class="bg-white/80 dark:bg-slate-900/60 backdrop-blur-md border border-slate-200 dark:border-slate-700/50 rounded-2xl accordion-card open" id="acc-m-sirk">
-                        <div onclick="toggleAcc('acc-m-sirk')" class="border-b border-slate-200 dark:border-slate-800/60 bg-slate-50/50 dark:bg-slate-800/20 px-6 py-4 flex items-center justify-between cursor-pointer hover:bg-slate-100/50 dark:hover:bg-slate-800/40 transition-colors">
+                        <div onclick="toggleAccordion('acc-m-sirk')" class="border-b border-slate-200 dark:border-slate-800/60 bg-slate-50/50 dark:bg-slate-800/20 px-6 py-4 flex items-center justify-between cursor-pointer hover:bg-slate-100/50 dark:hover:bg-slate-800/40 transition-colors">
                             <div class="flex items-center gap-3">
                                 <div class="p-2 bg-blue-500/20 text-blue-500 rounded-lg text-xl">🌀</div>
                                 <div>
@@ -555,9 +543,9 @@
                                     <p class="text-xs text-slate-500 dark:text-slate-400">Fresing og gjengefresing</p>
                                 </div>
                             </div>
-                            <span class="accordion-chevron text-slate-400 text-xs transition-transform">▼</span>
+                            <span id="acc-m-sirk-icon" class="accordion-chevron text-slate-400 text-xs transition-transform">▼</span>
                         </div>
-                        <div class="accordion-body p-6 space-y-4 border-t border-slate-200 dark:border-slate-800/40">
+                        <div id="acc-m-sirk-body" class="accordion-body p-6 space-y-4 border-t border-slate-200 dark:border-slate-800/40">
                             <div class="grid grid-cols-2 gap-3">
                                 <div>
                                     <label class="text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400 block mb-1">Skjærehastighet Vc (m/min)</label>
@@ -595,7 +583,7 @@
 
                     <!-- ACCORDION 2: C-AKSE MATING -->
                     <div class="bg-white/80 dark:bg-slate-900/60 backdrop-blur-md border border-slate-200 dark:border-slate-700/50 rounded-2xl accordion-card" id="acc-m-cakse">
-                        <div onclick="toggleAcc('acc-m-cakse')" class="border-b border-slate-200 dark:border-slate-800/60 bg-slate-50/50 dark:bg-slate-800/20 px-6 py-4 flex items-center justify-between cursor-pointer hover:bg-slate-100/50 dark:hover:bg-slate-800/40 transition-colors">
+                        <div onclick="toggleAccordion('acc-m-cakse')" class="border-b border-slate-200 dark:border-slate-800/60 bg-slate-50/50 dark:bg-slate-800/20 px-6 py-4 flex items-center justify-between cursor-pointer hover:bg-slate-100/50 dark:hover:bg-slate-800/40 transition-colors">
                             <div class="flex items-center gap-3">
                                 <div class="p-2 bg-blue-500/20 text-blue-500 rounded-lg text-xl">🔄</div>
                                 <div>
@@ -603,9 +591,9 @@
                                     <p class="text-xs text-slate-500 dark:text-slate-400">Roterende mating</p>
                                 </div>
                             </div>
-                            <span class="accordion-chevron text-slate-400 text-xs transition-transform">▼</span>
+                            <span id="acc-m-cakse-icon" class="accordion-chevron text-slate-400 text-xs transition-transform">▼</span>
                         </div>
-                        <div class="accordion-body p-6 space-y-4 border-t border-slate-200 dark:border-slate-800/40">
+                        <div id="acc-m-cakse-body" class="accordion-body p-6 space-y-4 border-t border-slate-200 dark:border-slate-800/40">
                             <div class="grid grid-cols-2 gap-3">
                                 <div>
                                     <label class="text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400 block mb-1">Mating mm/min (Vf)</label>
@@ -676,7 +664,7 @@
             </div>
 
             <!-- 4. WORKSHOP TABLES TAB -->
-            <div id="tools" class="tab-content space-y-6 max-w-7xl mx-auto p-6">
+            <div id="page-workshop" class="space-y-6 max-w-7xl mx-auto p-6" style="display: none;">
                 <header class="mb-6 flex items-center">
                     <div class="w-12 h-12 bg-emerald-100 dark:bg-emerald-500/20 rounded-2xl flex items-center justify-center mr-4 text-emerald-500 text-2xl shrink-0">
                         🛠️
@@ -689,7 +677,7 @@
 
                 <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
                     <div class="bg-white/80 dark:bg-slate-900/60 backdrop-blur-md border border-slate-200 dark:border-slate-700/50 rounded-2xl accordion-card open" id="acc-w-mat">
-                        <div onclick="toggleAcc('acc-w-mat')" class="border-b border-slate-200 dark:border-slate-800/60 bg-slate-50/50 dark:bg-slate-800/20 px-6 py-4 flex items-center justify-between cursor-pointer hover:bg-slate-100/50 dark:hover:bg-slate-800/40 transition-colors">
+                        <div onclick="toggleAccordion('acc-w-mat')" class="border-b border-slate-200 dark:border-slate-800/60 bg-slate-50/50 dark:bg-slate-800/20 px-6 py-4 flex items-center justify-between cursor-pointer hover:bg-slate-100/50 dark:hover:bg-slate-800/40 transition-colors">
                             <div class="flex items-center gap-3">
                                 <div class="p-2 bg-emerald-500/20 text-emerald-500 rounded-lg text-xl">🧪</div>
                                 <div>
@@ -697,9 +685,9 @@
                                     <p class="text-xs text-slate-500 dark:text-slate-400">Vc og fz for Hardmetall/HSS & U-Bor</p>
                                 </div>
                             </div>
-                            <span class="accordion-chevron text-slate-400 text-xs transition-transform">▼</span>
+                            <span id="acc-w-mat-icon" class="accordion-chevron text-slate-400 text-xs transition-transform">▼</span>
                         </div>
-                        <div class="accordion-body p-6 space-y-4 border-t border-slate-200 dark:border-slate-800/40">
+                        <div id="acc-w-mat-body" class="accordion-body p-6 space-y-4 border-t border-slate-200 dark:border-slate-800/40">
                             <div>
                                 <label class="text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400 block mb-1">Materiale</label>
                                 <select id="ms-mat" class="input-dark" onchange="calcMaterial()">
@@ -722,7 +710,7 @@
 
                     <!-- ISO PASSNINGER H7/G6 CARD -->
                     <div class="bg-white/80 dark:bg-slate-900/60 backdrop-blur-md border border-slate-200 dark:border-slate-700/50 rounded-2xl accordion-card" id="acc-w-isofit">
-                        <div onclick="toggleAcc('acc-w-isofit')" class="border-b border-slate-200 dark:border-slate-800/60 bg-slate-50/50 dark:bg-slate-800/20 px-6 py-4 flex items-center justify-between cursor-pointer hover:bg-slate-100/50 dark:hover:bg-slate-800/40 transition-colors">
+                        <div onclick="toggleAccordion('acc-w-isofit')" class="border-b border-slate-200 dark:border-slate-800/60 bg-slate-50/50 dark:bg-slate-800/20 px-6 py-4 flex items-center justify-between cursor-pointer hover:bg-slate-100/50 dark:hover:bg-slate-800/40 transition-colors">
                             <div class="flex items-center gap-3">
                                 <div class="p-2 bg-emerald-500/20 text-emerald-500 rounded-lg text-xl">📏</div>
                                 <div>
@@ -730,9 +718,9 @@
                                     <p class="text-xs text-slate-500 dark:text-slate-400">Klaringer i tusendels mm (µm)</p>
                                 </div>
                             </div>
-                            <span class="accordion-chevron text-slate-400 text-xs transition-transform">▼</span>
+                            <span id="acc-w-isofit-icon" class="accordion-chevron text-slate-400 text-xs transition-transform">▼</span>
                         </div>
-                        <div class="accordion-body p-6 space-y-4 border-t border-slate-200 dark:border-slate-800/40">
+                        <div id="acc-w-isofit-body" class="accordion-body p-6 space-y-4 border-t border-slate-200 dark:border-slate-800/40">
                             <div class="grid grid-cols-2 gap-3">
                                 <div>
                                     <label class="text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400 block mb-1">Diameter (mm)</label>
@@ -756,7 +744,7 @@
             </div>
 
             <!-- 5. EV CALCULATOR TAB -->
-            <div id="ev" class="tab-content space-y-6 max-w-7xl mx-auto p-6">
+            <div id="page-ev" class="space-y-6 max-w-7xl mx-auto p-6" style="display: none;">
                 <header class="mb-6 flex items-center">
                     <div class="w-12 h-12 bg-sky-100 dark:bg-sky-500/20 rounded-2xl flex items-center justify-center mr-4 text-sky-500 text-2xl shrink-0">
                         ⚡
@@ -793,11 +781,18 @@
         </div>
     </main>
 
+    <!-- CLEAN, MODULAR, BULLETPROOF JAVASCRIPT -->
     <script>
         function initIcons() {
-            if (typeof lucide !== 'undefined') { lucide.createIcons(); }
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
         }
-        if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', initIcons); } else { initIcons(); }
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initIcons);
+        } else {
+            initIcons();
+        }
 
         function toggleTheme() {
             document.documentElement.classList.toggle('dark');
@@ -808,70 +803,74 @@
             }
         }
 
-        // BULLETPROOF TAB SWITCHER
-        function switchTab(tabId) {
-            console.log("switchTab requested:", tabId);
-            const allTabs = document.querySelectorAll('.tab-content');
-            allTabs.forEach(tab => {
-                tab.classList.remove('active');
-                tab.style.setProperty('display', 'none', 'important');
+        // 1. CLEAN MAIN TAB SWITCHING
+        function switchMainTab(tabId) {
+            console.log("switchMainTab requested:", tabId);
+            const mainPages = ['dashboard', 'salary', 'machining', 'workshop', 'ev'];
+            mainPages.forEach(id => {
+                const el = document.getElementById('page-' + id);
+                if (el) {
+                    el.style.display = (id === tabId) ? 'block' : 'none';
+                }
             });
 
-            const target = document.getElementById(tabId);
-            if (target) {
-                target.style.setProperty('display', 'block', 'important');
-                target.classList.add('active');
-            }
-
-            const navBtns = document.querySelectorAll('.nav-btn');
-            navBtns.forEach(btn => {
-                btn.classList.remove('bg-white', 'dark:bg-slate-800/70', 'border-slate-200', 'dark:border-slate-700/50', 'text-slate-900', 'dark:text-white');
-                btn.classList.add('text-slate-500', 'dark:text-slate-400', 'border-transparent');
+            // Update sidebar button active styles
+            const sideBtns = ['dashboard', 'salary', 'machining', 'workshop', 'ev'];
+            sideBtns.forEach(id => {
+                const btn = document.getElementById('side-nav-' + id);
+                if (btn) {
+                    if (id === tabId) {
+                        btn.className = "side-btn w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-lg bg-white dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700/50 text-slate-900 dark:text-white transition-all shadow-sm";
+                    } else {
+                        btn.className = "side-btn w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-slate-500 dark:text-slate-400 border border-transparent hover:bg-white/50 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-white transition-all";
+                    }
+                }
             });
-
-            const activeBtn = document.getElementById('nav-' + tabId);
-            if (activeBtn) {
-                activeBtn.classList.remove('text-slate-500', 'dark:text-slate-400', 'border-transparent');
-                activeBtn.classList.add('bg-white', 'dark:bg-slate-800/70', 'border-slate-200', 'dark:border-slate-700/50', 'text-slate-900', 'dark:text-white');
-            }
 
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function toggleMobileMenu() {
-            const mobileMenu = document.getElementById('mobile-menu');
-            if (mobileMenu) {
-                mobileMenu.classList.toggle('hidden');
-                mobileMenu.classList.toggle('flex');
-            }
-        }
-
-        function toggleAcc(accId) {
-            const item = document.getElementById(accId);
-            if (item) item.classList.toggle('open');
-        }
-
-        // BULLETPROOF SUBTAB SWITCHER
-        function switchSalarySub(subId) {
-            console.log("switchSalarySub requested:", subId);
-            const subTabs = document.querySelectorAll('.sub-tab-content');
-            subTabs.forEach(el => {
-                el.classList.remove('active');
-                el.style.setProperty('display', 'none', 'important');
+        // 2. CLEAN SUBTAB SWITCHING FOR SALARY
+        function switchSalaryTab(subId) {
+            console.log("switchSalaryTab requested:", subId);
+            const subPages = ['oversikt', 'vakter', 'innstillinger', 'arkiv'];
+            subPages.forEach(id => {
+                const el = document.getElementById('sal-sub-' + id);
+                if (el) {
+                    el.style.display = (id === subId) ? 'block' : 'none';
+                }
             });
 
-            const subBtns = document.querySelectorAll('.sub-tab-btn');
-            subBtns.forEach(el => el.classList.remove('active'));
+            subPages.forEach(id => {
+                const btn = document.getElementById('sal-btn-' + id);
+                if (btn) {
+                    if (id === subId) {
+                        btn.className = "sub-tab-btn active";
+                    } else {
+                        btn.className = "sub-tab-btn";
+                    }
+                }
+            });
+        }
 
-            const targetSub = document.getElementById(`s-subtab-${subId}`);
-            if (targetSub) {
-                targetSub.style.setProperty('display', 'block', 'important');
-                targetSub.classList.add('active');
+        // 3. CLEAN ACCORDION TOGGLING
+        function toggleAccordion(accId) {
+            const body = document.getElementById(accId + '-body');
+            const icon = document.getElementById(accId + '-icon');
+            if (body) {
+                const isOpen = body.style.display === 'block';
+                body.style.display = isOpen ? 'none' : 'block';
+                if (icon) {
+                    icon.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
+                }
             }
+        }
 
-            const activeSubBtn = document.getElementById(`s-subbtn-${subId}`);
-            if (activeSubBtn) {
-                activeSubBtn.classList.add('active');
+        function toggleMobileMenu() {
+            const overlay = document.getElementById('mobile-menu-overlay');
+            if (overlay) {
+                overlay.classList.toggle('hidden');
+                overlay.classList.toggle('flex');
             }
         }
 
