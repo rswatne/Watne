@@ -153,7 +153,7 @@
         /* Print-optimalisering */
         @media print {
             body { height: auto !important; overflow: visible !important; background: white !important; color: black !important; }
-            aside, #mobile-header, #mobile-bottom-nav, .animate-blob, #toast-container, #confirm-modal { display: none !important; }
+            aside, #mobile-header, #mobile-bottom-nav, .animate-blob, #toast-container, #confirm-modal, #pwa-modal { display: none !important; }
             main { overflow: visible !important; padding: 0 !important; }
         }
     </style>
@@ -195,7 +195,19 @@
                 <button onclick="lukkPwaModal()" class="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-800 dark:hover:text-white">✕</button>
             </div>
 
+            <!-- Alltid synlig direkteteknapp for PC / Mac -->
+            <div class="mb-4">
+                <button onclick="utlosPwaInstallasjon()" class="w-full flex items-center justify-center gap-2.5 py-3.5 px-4 rounded-2xl font-extrabold text-sm bg-brand-500 hover:bg-brand-400 text-slate-950 transition-all shadow-lg shadow-brand-500/25">
+                    <i data-lucide="download" class="w-5 h-5 stroke-[2.5]"></i>
+                    <span>Installer på PC / Mac nå</span>
+                </button>
+            </div>
+
             <div class="space-y-3 text-xs sm:text-sm text-slate-600 dark:text-slate-300 mb-6">
+                <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700/60">
+                    <p class="font-bold text-slate-900 dark:text-white mb-1">💻 På PC / Mac (Chrome / Edge / Opera):</p>
+                    <p class="text-slate-600 dark:text-slate-400 mb-2">Trykk på knappen over eller klikk på installasjons-ikonet <span class="inline-block px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-700 font-mono text-[11px]">💻</span> eller tre prikker <span class="inline-block px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-700 font-mono text-[11px]">⋮</span> øverst til høyre i nettleseren og velg <strong>«Installer app»</strong>.</p>
+                </div>
                 <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700/60">
                     <p class="font-bold text-slate-900 dark:text-white mb-1">🍎 På iPhone / iPad (Safari):</p>
                     <ol class="list-decimal list-inside space-y-1 text-slate-600 dark:text-slate-400">
@@ -205,7 +217,7 @@
                     </ol>
                 </div>
                 <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700/60">
-                    <p class="font-bold text-slate-900 dark:text-white mb-1">🤖 På Android (Chrome) & 💻 PC (Chrome/Edge):</p>
+                    <p class="font-bold text-slate-900 dark:text-white mb-1">🤖 På Android (Chrome):</p>
                     <ol class="list-decimal list-inside space-y-1 text-slate-600 dark:text-slate-400">
                         <li>Åpne menyen øverst til høyre <span class="inline-block px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-700 font-mono text-[11px]">⋮</span>.</li>
                         <li>Velg <strong>«Installer app»</strong> eller <strong>«Legg til på startsiden»</strong>.</li>
@@ -213,7 +225,7 @@
                 </div>
             </div>
 
-            <button onclick="lukkPwaModal()" class="w-full py-3 px-4 rounded-xl font-bold text-sm bg-brand-500 hover:bg-brand-600 text-slate-950 transition-colors shadow-lg shadow-brand-500/25">Den er grei!</button>
+            <button onclick="lukkPwaModal()" class="w-full py-3 px-4 rounded-xl font-bold text-sm bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-colors">Lukk vindu</button>
         </div>
     </div>
 
@@ -273,7 +285,7 @@
         </nav>
         
         <div class="p-4 border-t border-slate-200/50 dark:border-slate-800/50 bg-slate-50/50 dark:bg-slate-900/30 space-y-2">
-            <button id="pwa-install-btn-desktop" onclick="installerPwaApp()" class="w-full flex items-center justify-center px-4 py-2.5 text-xs font-extrabold rounded-xl text-slate-950 bg-brand-500 hover:bg-brand-400 transition-all shadow-md shadow-brand-500/20">
+            <button id="pwa-install-btn-desktop" onclick="apnePwaModal()" class="w-full flex items-center justify-center px-4 py-2.5 text-xs font-extrabold rounded-xl text-slate-950 bg-brand-500 hover:bg-brand-400 transition-all shadow-md shadow-brand-500/20">
                 <i data-lucide="download" class="w-4 h-4 mr-2 stroke-[2.5]"></i>
                 <span>Installer som App</span>
             </button>
@@ -298,7 +310,7 @@
             </div>
         </div>
         <div class="flex items-center gap-2">
-            <button id="pwa-install-btn-mobile" onclick="installerPwaApp()" class="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-brand-500 text-slate-950 font-extrabold text-xs shadow-sm">
+            <button id="pwa-install-btn-mobile" onclick="apnePwaModal()" class="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-brand-500 text-slate-950 font-extrabold text-xs shadow-sm">
                 <i data-lucide="download" class="w-3.5 h-3.5 stroke-[2.5]"></i>
                 <span>App</span>
             </button>
@@ -1291,6 +1303,62 @@
         setInterval(oppdaterLiveKlokke, 1000);
         oppdaterLiveKlokke();
 
+        // PWA INSTALLER LOGIC
+        function oppdaterPwaManifest() {
+            const svgIcon = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='115' fill='%230f172a'/><rect x='24' y='24' width='464' height='464' rx='95' fill='none' stroke='%23f59e0b' stroke-width='16' stroke-opacity='0.35'/><path d='M352 128c-30.5 0-57.8 14.3-75.4 36.6L140.6 300.6c-22.3 17.6-36.6 44.9-36.6 75.4 0 53 43 96 96 96 30.5 0 57.8-14.3 75.4-36.6l136-136c22.3-17.6 36.6-44.9 36.6-75.4 0-53-43-96-96-96zm-152 288c-22.1 0-40-17.9-40-40s17.9-40 40-40 40 17.9 40 40-17.9 40-40 40z' fill='%23f59e0b'/><circle cx='352' cy='224' r='32' fill='%230f172a'/></svg>`;
+            const manifestObj = {
+                name: "Verkstedsportal HMI",
+                short_name: "Verksted",
+                start_url: window.location.href,
+                display: "standalone",
+                background_color: "#0f172a",
+                theme_color: "#0f172a",
+                icons: [{ src: "data:image/svg+xml," + encodeURIComponent(svgIcon), sizes: "512x512", type: "image/svg+xml" }]
+            };
+            const manifestLink = document.getElementById('pwa-manifest');
+            if (manifestLink) {
+                manifestLink.href = "data:application/json;charset=utf-8," + encodeURIComponent(JSON.stringify(manifestObj));
+            }
+        }
+        oppdaterPwaManifest();
+
+        let deferredPrompt = null;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+        });
+
+        function apnePwaModal() {
+            const modal = document.getElementById('pwa-modal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
+        }
+
+        function lukkPwaModal() {
+            const modal = document.getElementById('pwa-modal');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        }
+
+        function utlosPwaInstallasjon() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        visToast("App installert!");
+                        lukkPwaModal();
+                    }
+                    deferredPrompt = null;
+                });
+            } else {
+                visToast("Installasjon utløses automatisk av nettleseren. Hvis knappen ikke reagerer, bruk menyen øverst til høyre (⋮) og velg 'Installer app'.", "brand");
+            }
+        }
+
         // TOAST SYSTEM
         function visToast(melding, type = 'brand') {
             const container = document.getElementById('toast-container');
@@ -1891,7 +1959,6 @@
                 localStorage.setItem('lonn_union_pct', document.getElementById('fagforening-prosent')?.value || '');
                 localStorage.setItem('lonn_vakter_tabs_v26', JSON.stringify(registrerteVakter));
 
-                // Lagre ALLE input og select på tvers av hele nettsiden
                 const stateObj = {};
                 document.querySelectorAll('input, select, textarea').forEach(el => {
                     if (el.id && !['year', 'month', 'vakt-dato', 'vakt-timer', 'vakt-minutter'].includes(el.id)) {
@@ -1931,7 +1998,6 @@
                     if (subEl) subEl.innerText = localStorage.getItem('siste_cnc_sub');
                 }
 
-                // Gjenopprett sist aktiverte faner
                 const activeTab = localStorage.getItem('active_tab');
                 if (activeTab) switchTab(activeTab);
                 const activeTools = localStorage.getItem('active_tools_tab');
@@ -1947,7 +2013,6 @@
             beregnAlt();
         }
 
-        // Legg til auto-save på alt i sanntid
         document.addEventListener('input', lagreAltState);
         document.addEventListener('change', lagreAltState);
 
