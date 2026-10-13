@@ -3,49 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WATNE PRO — Verkstedsportal (Pro Features)</title>
+    <title>WATNE PRO — Tesla Neo-Glass Edition</title>
 
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
 
-    <script>
-        const APP_BUILD_VER = "v2100.0-AccordionFix";
-        if (localStorage.getItem('app_build_v') !== APP_BUILD_VER) {
-            localStorage.setItem('app_build_v', APP_BUILD_VER);
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.getRegistrations().then(regs => {
-                    for (let reg of regs) reg.unregister();
-                });
-            }
-            if ('caches' in window) {
-                caches.keys().then(names => {
-                    for (let name of names) caches.delete(name);
-                });
-            }
-            window.location.reload(true);
-        }
-    </script>
-
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700;800&family=Orbitron:wght@600;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         :root {
-            --bg: #030712;
-            --bg-card: rgba(15, 23, 42, 0.65);
-            --border: rgba(30, 41, 59, 0.8);
+            --bg: #09090b; /* Dypere, nesten ren svart */
+            --bg-card: rgba(24, 24, 27, 0.5); /* Svært transparent mørk grå */
+            --border: rgba(255, 255, 255, 0.08); /* Ultratynn hvit glass-kant */
             --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --accent: #38bdf8;
-        }
-
-        body.light-mode {
-            --bg: #f8fafc;
-            --bg-card: rgba(255, 255, 255, 0.95);
-            --border: rgba(226, 232, 240, 0.95);
-            --text-main: #0f172a;
-            --text-muted: #64748b;
-            --accent: #0284c7;
+            --text-muted: #a1a1aa;
+            --accent: #00f2fe; /* Neon Cyan */
+            --accent-glow: rgba(0, 242, 254, 0.5);
         }
 
         body {
@@ -55,55 +29,71 @@
             margin: 0;
             padding: 0;
             -webkit-font-smoothing: antialiased;
+            /* Subtil mesh-gradient i bakgrunnen for Tesla-følelsen */
+            background-image:
+                radial-gradient(circle at 15% 50%, rgba(0, 242, 254, 0.04), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(79, 172, 254, 0.04), transparent 25%);
         }
 
-        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+            letter-spacing: -0.02em; /* Strammere tall */
+        }
         .font-orbitron { font-family: 'Orbitron', sans-serif; }
 
+        /* EKTE GLASSMORPHISM */
         .glass-card {
             background-color: var(--bg-card);
-            backdrop-filter: blur(12px);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
             border: 1px solid var(--border);
-            border-radius: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.12); /* Ekstra highlight på toppen for 3D glassfølelse */
+            border-left: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 1.25rem;
             overflow: hidden;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.5);
             margin-bottom: 1rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
 
+        /* NEON GLOW PÅ IKONER */
+        .glow-icon {
+            filter: drop-shadow(0 0 12px var(--accent-glow));
+        }
+
+        /* SLANKERE INPUT FELTER */
         .input-dark {
-            background-color: rgba(3, 7, 18, 0.5);
-            border: 1px solid #1e293b;
+            background-color: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.05);
             border-radius: 0.75rem;
             padding: 0.75rem 1rem;
             color: #f8fafc;
             font-size: 0.875rem;
             width: 100%;
             outline: none;
-            transition: all 0.15s ease;
-        }
-        body.light-mode .input-dark {
-            background-color: #f8fafc;
-            border-color: #cbd5e1;
-            color: #0f172a;
+            transition: all 0.2s ease;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
         }
         .input-dark:focus {
-            border-color: #38bdf8;
-            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
+            border-color: var(--accent);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.2), 0 0 0 1px var(--accent);
+            background-color: rgba(0, 0, 0, 0.5);
         }
 
         select.input-dark {
             cursor: pointer;
             appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%2394a3b8' viewBox='0 0 16 16'%3E%3Cpath d='M4 6l4 4 4-4'/%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23a1a1aa' viewBox='0 0 16 16'%3E%3Cpath d='M4 6l4 4 4-4'/%3E%3C/svg%3E");
             background-repeat: no-repeat;
             background-position: right 0.75rem center;
             padding-right: 2rem;
         }
 
+        /* KNAPPER MED CYBERPUNK/TESLA PREG */
         .btn-primary {
-            background-color: #0284c7;
-            color: #ffffff;
-            font-weight: 600;
+            background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+            color: #030712; /* Mørk tekst på lys cyan for kontrast */
+            font-weight: 800;
             font-size: 0.875rem;
             padding: 0.75rem 1.25rem;
             border-radius: 0.75rem;
@@ -115,12 +105,18 @@
             gap: 0.5rem;
             transition: all 0.2s ease;
             text-decoration: none;
+            box-shadow: 0 4px 15px var(--accent-glow);
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px var(--accent-glow);
+            filter: brightness(1.1);
         }
 
         .btn-ghost {
-            background: transparent;
-            color: #94a3b8;
-            border: 1px solid #1e293b;
+            background: rgba(255,255,255,0.03);
+            color: var(--text-muted);
+            border: 1px solid rgba(255,255,255,0.1);
             font-weight: 600;
             font-size: 0.875rem;
             padding: 0.75rem 1.25rem;
@@ -131,30 +127,38 @@
             justify-content: center;
             gap: 0.5rem;
             transition: all 0.2s ease;
-            text-decoration: none;
+            backdrop-filter: blur(8px);
+        }
+        .btn-ghost:hover {
+            color: #fff;
+            background: rgba(255,255,255,0.08);
+            border-color: rgba(255,255,255,0.2);
         }
 
+        /* UNDERMENYER / PILLER */
         .sub-tab-btn {
-            padding: 0.5rem 1rem;
-            border-radius: 0.625rem;
+            padding: 0.6rem 1.2rem;
+            border-radius: 999px; /* Helt runde piller */
             font-size: 0.8125rem;
             font-weight: 700;
-            color: #94a3b8;
-            transition: all 0.15s ease;
+            color: var(--text-muted);
+            transition: all 0.2s ease;
+            background: rgba(255,255,255,0.03);
             border: 1px solid transparent;
             white-space: nowrap;
         }
         .sub-tab-btn.active {
-            background-color: rgba(56, 189, 248, 0.15);
-            color: #38bdf8;
-            border-color: rgba(56, 189, 248, 0.3);
+            background-color: rgba(0, 242, 254, 0.1);
+            color: var(--accent);
+            border-color: rgba(0, 242, 254, 0.3);
+            box-shadow: inset 0 0 10px rgba(0, 242, 254, 0.05);
         }
 
         .sub-tab-content { display: none; }
-        .sub-tab-content.active { display: block; animation: fadeIn 0.2s ease-out; }
+        .sub-tab-content.active { display: block; animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
 
         .tab-page { display: none; }
-        .tab-page.active { display: block; animation: fadeIn 0.25s ease-out; }
+        .tab-page.active { display: block; animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
 
         .accordion-body {
             display: none !important;
@@ -162,7 +166,7 @@
         .accordion-card.open .accordion-body,
         .accordion-item.open .accordion-body {
             display: block !important;
-            animation: fadeIn 0.2s ease-out;
+            animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .accordion-card.open .accordion-chevron,
         .accordion-item.open .accordion-chevron {
@@ -170,52 +174,93 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(6px); }
+            from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* MOBIL DOCK NAVBAR (Svevende i bunn) */
+        @media (max-width: 1024px) {
+            .mobile-dock {
+                position: fixed;
+                bottom: 1.5rem;
+                left: 50%;
+                transform: translateX(-50%);
+                background: rgba(15, 23, 42, 0.85);
+                backdrop-filter: blur(24px);
+                -webkit-backdrop-filter: blur(24px);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                border-radius: 999px;
+                display: flex;
+                padding: 0.5rem;
+                gap: 0.5rem;
+                z-index: 50;
+                box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+                width: 90%;
+                max-width: 400px;
+                justify-content: space-around;
+            }
+            .mobile-dock-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 3rem;
+                height: 3rem;
+                border-radius: 50%;
+                transition: all 0.2s ease;
+                color: var(--text-muted);
+            }
+            .mobile-dock-btn.active {
+                background: rgba(0, 242, 254, 0.15);
+                color: var(--accent);
+                box-shadow: 0 0 15px rgba(0, 242, 254, 0.2);
+            }
+            .desktop-sidebar { display: none; }
+            main { padding-bottom: 6rem !important; } /* Gjør plass til dock */
         }
     </style>
 </head>
 <body class="min-h-screen flex flex-col lg:flex-row">
 
-<!-- SIDEBAR NAVIGATION -->
-<aside class="w-full lg:w-64 bg-slate-900/80 backdrop-blur-xl border-b lg:border-b-0 lg:border-r border-slate-800/60 p-5 flex flex-col shrink-0 sticky top-0 lg:h-screen z-40">
-    <div class="flex items-center gap-3 pb-4 border-b border-slate-800 mb-5">
-        <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-sky-400 to-blue-600 flex items-center justify-center text-white font-extrabold text-xl shadow-[0_0_20px_rgba(56,189,248,0.3)]">
-            🛠️
+<!-- DESKTOP SIDEBAR -->
+<aside class="desktop-sidebar w-64 bg-black/40 backdrop-blur-2xl border-r border-white/5 p-6 flex flex-col sticky top-0 h-screen z-40">
+    <div class="flex items-center gap-3 pb-6 border-b border-white/5 mb-6">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-[#00f2fe] to-[#4facfe] flex items-center justify-center text-black font-extrabold text-xl shadow-[0_0_15px_rgba(0,242,254,0.4)]">
+            W
         </div>
         <div>
-            <h1 class="font-bold text-xl bg-gradient-to-r from-sky-400 to-blue-500 bg-clip-text text-transparent">Verkstedsportal</h1>
-            <p class="text-[11px] text-slate-500 font-semibold">Sigurd Seland AS</p>
+            <h1 class="font-bold text-lg text-white tracking-wide">WATNE <span class="text-[#00f2fe]">PRO</span></h1>
+            <p class="text-[10px] text-zinc-400 font-mono tracking-widest uppercase">Neo-Glass Edition</p>
         </div>
     </div>
 
     <!-- MAIN MENU ITEMS -->
-    <nav class="flex flex-row lg:flex-col gap-1.5 overflow-x-auto pb-2 lg:pb-0 scrollbar-thin">
-        <button onclick="switchNav('dashboard')" id="navitem-dashboard" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-xs sm:text-sm text-sky-400 bg-sky-500/10 border border-sky-500/20 whitespace-nowrap transition-all">
-            <span>🏠</span> <span>Oversikt</span>
+    <nav class="flex flex-col gap-2">
+        <button onclick="switchNav('dashboard')" id="navitem-dashboard" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm text-[#00f2fe] bg-[#00f2fe]/10 border border-[#00f2fe]/20 transition-all">
+            <span class="text-lg glow-icon">🏠</span> <span>Oversikt</span>
         </button>
-        <button onclick="switchNav('salary')" id="navitem-salary" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-xs sm:text-sm text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 border border-transparent whitespace-nowrap transition-all">
-            <span>💰</span> <span>1. Lønnskalkulator</span>
+        <button onclick="switchNav('salary')" id="navitem-salary" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm text-zinc-400 hover:text-white hover:bg-white/5 border border-transparent transition-all">
+            <span class="text-lg">💰</span> <span>Lønn</span>
         </button>
-        <button onclick="switchNav('machining')" id="navitem-machining" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-xs sm:text-sm text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 border border-transparent whitespace-nowrap transition-all">
-            <span>⚙️</span> <span>2. Maskinering</span>
+        <button onclick="switchNav('machining')" id="navitem-machining" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm text-zinc-400 hover:text-white hover:bg-white/5 border border-transparent transition-all">
+            <span class="text-lg">⚙️</span> <span>Maskinering</span>
         </button>
-        <button onclick="switchNav('workshop')" id="navitem-workshop" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-xs sm:text-sm text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 border border-transparent whitespace-nowrap transition-all">
-            <span>🛠️</span> <span>3. Verkstedtabeller</span>
+        <button onclick="switchNav('workshop')" id="navitem-workshop" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm text-zinc-400 hover:text-white hover:bg-white/5 border border-transparent transition-all">
+            <span class="text-lg">🛠️</span> <span>Tabeller</span>
         </button>
-        <button onclick="switchNav('ev')" id="navitem-ev" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-xs sm:text-sm text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 border border-transparent whitespace-nowrap transition-all">
-            <span>⚡</span> <span>4. Elbil</span>
+        <button onclick="switchNav('ev')" id="navitem-ev" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm text-zinc-400 hover:text-white hover:bg-white/5 border border-transparent transition-all">
+            <span class="text-lg">⚡</span> <span>Elbil</span>
         </button>
     </nav>
-
-    <div class="mt-auto pt-4 border-t border-slate-800 text-[11px] text-slate-500 hidden lg:block">
-        <p class="font-medium">Sigurd Seland AS</p>
-        <p class="mt-1 text-emerald-400 font-bold flex items-center gap-1.5">
-            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            Watne Pro Active v2000
-        </p>
-    </div>
 </aside>
+
+<!-- MOBILE DOCK NAVIGATION -->
+<nav class="mobile-dock lg:hidden">
+    <button onclick="switchNav('dashboard')" id="mobnav-dashboard" class="mobile-dock-btn active"><span class="text-xl">🏠</span></button>
+    <button onclick="switchNav('salary')" id="mobnav-salary" class="mobile-dock-btn"><span class="text-xl">💰</span></button>
+    <button onclick="switchNav('machining')" id="mobnav-machining" class="mobile-dock-btn"><span class="text-xl">⚙️</span></button>
+    <button onclick="switchNav('workshop')" id="mobnav-workshop" class="mobile-dock-btn"><span class="text-xl">🛠️</span></button>
+    <button onclick="switchNav('ev')" id="mobnav-ev" class="mobile-dock-btn"><span class="text-xl">⚡</span></button>
+</nav>
 
 <!-- MAIN CONTENT AREA -->
 <main class="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
