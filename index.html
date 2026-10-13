@@ -112,6 +112,7 @@
         .glass-input-blue:focus { @apply ring-blue-500; }
         .glass-input-emerald:focus { @apply ring-emerald-500; }
         .glass-input-indigo:focus { @apply ring-indigo-500; }
+        .glass-input-purple:focus { @apply ring-purple-500; }
     </style>
 </head>
 
@@ -131,7 +132,7 @@
             <i data-lucide="wrench" class="text-brand-500 w-7 h-7 mr-3 drop-shadow-[0_0_8px_rgba(245,158,11,0.4)]"></i>
             <div>
                 <h1 class="text-xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-none">Verksteds<span class="text-brand-500">Portal</span></h1>
-                <p class="text-[10px] text-slate-500 font-mono mt-1 font-bold">V15.1 | GITHUB PAGES</p>
+                <p class="text-[10px] text-slate-500 font-mono mt-1 font-bold">V17.0 | GITHUB PAGES</p>
             </div>
         </div>
         
@@ -143,7 +144,7 @@
                 <i data-lucide="calculator" class="w-5 h-5 mr-3 text-slate-400"></i> Lønnskalkulator
             </button>
             <button onclick="switchTab('cnc')" id="nav-cnc" class="nav-btn w-full flex items-center px-4 py-3 text-sm font-medium rounded-xl text-slate-500 dark:text-slate-400 border border-transparent hover:bg-white/50 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-white transition-all">
-                <i data-lucide="cpu" class="w-5 h-5 mr-3 text-slate-400"></i> Maskinering
+                <i data-lucide="cpu" class="w-5 h-5 mr-3 text-slate-400"></i> Maskineringskalkulator
             </button>
             <button onclick="switchTab('tools')" id="nav-tools" class="nav-btn w-full flex items-center px-4 py-3 text-sm font-medium rounded-xl text-slate-500 dark:text-slate-400 border border-transparent hover:bg-white/50 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-white transition-all">
                 <i data-lucide="ruler" class="w-5 h-5 mr-3 text-slate-400"></i> Verktøytabeller
@@ -183,7 +184,7 @@
             <i data-lucide="calculator" class="w-5 h-5 mr-3 text-slate-400"></i> Lønnskalkulator
         </button>
         <button onclick="switchTab('cnc'); toggleMobileMenu()" class="w-full flex items-center px-4 py-4 text-base font-semibold rounded-xl text-slate-600 dark:text-slate-300 bg-white/50 dark:bg-slate-800/50">
-            <i data-lucide="cpu" class="w-5 h-5 mr-3 text-slate-400"></i> Maskinering
+            <i data-lucide="cpu" class="w-5 h-5 mr-3 text-slate-400"></i> Maskineringskalkulator
         </button>
         <button onclick="switchTab('tools'); toggleMobileMenu()" class="w-full flex items-center px-4 py-4 text-base font-semibold rounded-xl text-slate-600 dark:text-slate-300 bg-white/50 dark:bg-slate-800/50">
             <i data-lucide="ruler" class="w-5 h-5 mr-3 text-slate-400"></i> Verktøytabeller
@@ -226,7 +227,7 @@
                     <div class="w-14 h-14 bg-white dark:bg-slate-900 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform border border-slate-100 dark:border-slate-700 shadow-sm">
                         <i data-lucide="cpu" class="w-7 h-7 text-blue-500"></i>
                     </div>
-                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">Maskinering (CNC)</h3>
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">Maskineringskalkulator</h3>
                     <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">Omregning for sirkulær mating i Gibbs, innv/utv gjenger, hurtigkalkulator for skjæredata og C-akse.</p>
                 </div>
 
@@ -236,7 +237,7 @@
                         <i data-lucide="ruler" class="w-7 h-7 text-emerald-500"></i>
                     </div>
                     <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">Verktøytabeller</h3>
-                    <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">Anbefalte skjæredata per materiale, gjengetabeller, kjernebor, vektestimering og PCD (delingssirkel).</p>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">Anbefalte skjæredata per materiale, gjengetabeller, ISO-toleranser, vektestimering og PCD.</p>
                 </div>
 
                 <!-- AI Card -->
@@ -245,7 +246,7 @@
                         <i data-lucide="bot" class="w-7 h-7 text-purple-500"></i>
                     </div>
                     <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">CNC AI-Assistent</h3>
-                    <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">Få hjelp med G-kode, optimalisering av skjæredata for eksotiske materialer, problemløsing og forklaring av CNC-sykluser drevet av Gemini AI.</p>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">Få hjelp med G-kode, optimalisering av skjæredata for eksotiske materialer, problemløsing og forklaring av CNC-sykluser drevet av AI.</p>
                 </div>
             </div>
         </section>
@@ -906,7 +907,7 @@
                     </div>
                     <div>
                         <h2 class="text-2xl lg:text-3xl font-extrabold text-slate-900 dark:text-white">AI Assistent</h2>
-                        <p class="text-xs lg:text-sm text-purple-600 dark:text-purple-400 font-mono mt-1">Drevet av Gemini AI</p>
+                        <p class="text-xs lg:text-sm text-purple-600 dark:text-purple-400 font-mono mt-1">Drevet av Gemini 1.5 Flash</p>
                     </div>
                 </div>
             </header>
@@ -922,14 +923,8 @@
                         </div>
                         <div class="bg-slate-100 dark:bg-slate-800 rounded-2xl rounded-tl-none p-4 max-w-[85%] text-sm text-slate-800 dark:text-slate-200 shadow-sm">
                             <p class="font-bold mb-2">Hei! Jeg er din CNC og maskineringsassistent.</p>
-                            <p>Jeg kan hjelpe deg med ting som:</p>
-                            <ul class="list-disc pl-5 mt-2 space-y-1">
-                                <li>Forklare komplekse G-koder og M-koder.</li>
-                                <li>Foreslå skjæredata (Vc, fz) for eksotiske materialer (som Inconel eller Titan).</li>
-                                <li>Feilsøking av overflatefinish, vibrasjoner, eller verktøyslitasje.</li>
-                                <li>Matematiske utregninger for dreiing og fresing.</li>
-                            </ul>
-                            <p class="mt-3 text-xs opacity-75">Hva lurer du på i dag?</p>
+                            <p>Jeg er klar til å svare på alt om skjæredata, G-koder og verkstedteknikk.</p>
+                            <p class="mt-3 text-xs font-bold text-purple-600 dark:text-purple-400">Hva lurer du på i dag?</p>
                         </div>
                     </div>
                 </div>
@@ -949,7 +944,7 @@
                     </div>
 
                     <form onsubmit="handleAiSubmit(event)" class="flex items-end gap-3">
-                        <textarea id="ai-input" rows="2" class="glass-input !py-3 flex-1 resize-none" placeholder="Spør om CNC, G-kode, skjæredata..." onkeydown="if(event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); handleAiSubmit(event); }"></textarea>
+                        <textarea id="ai-input" rows="2" class="glass-input glass-input-purple !py-3 flex-1 resize-none" placeholder="Spør om CNC, G-kode, skjæredata..." onkeydown="if(event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); handleAiSubmit(event); }"></textarea>
                         <button type="submit" id="ai-submit-btn" class="h-[46px] w-[46px] rounded-xl bg-purple-600 hover:bg-purple-700 text-white flex items-center justify-center transition-colors shadow-md shadow-purple-500/20 shrink-0">
                             <i data-lucide="send" class="w-5 h-5 ml-1"></i>
                         </button>
@@ -993,7 +988,7 @@
                 btn.classList.add('text-slate-500', 'dark:text-slate-400', 'border-transparent');
                 let icon = btn.querySelector('svg') || btn.querySelector('i');
                 if (icon) {
-                    icon.classList.remove('text-brand-500', 'text-blue-500', 'text-emerald-500');
+                    icon.classList.remove('text-brand-500', 'text-blue-500', 'text-emerald-500', 'text-purple-500');
                     icon.classList.add('text-slate-400');
                 }
             });
@@ -1748,6 +1743,9 @@
         let aiChatHistory = [];
         const aiSystemInstruction = "Du er en ekspert og maskineringstekniker med inngående kunnskap om CNC-maskinering, programmering (inkludert G-kode, M-kode for Fanuc, Heidenhain, Mazak, GibbsCAM), skjæredata, verktøyvalg og metallurgi. Svar brukere på norsk på en profesjonell, presis og hjelpsom måte. Hvis du gir kodeeksempler (som G-kode), bruk code-blokker. Formater gjerne lister for å gjøre svarene lettleselige. Du henvender deg til CNC-operatører og maskinarbeidere.";
 
+        // HARDCODED API KEY (SECURITY RISK ON PUBLIC GITHUB PAGES)
+        const HARDCODED_API_KEY = "AQ.Ab8RN6I06yn0nYB_wTQUpYssty8_LzOoHQTXSgtdn6BY_zJg7A";
+
         function setAiPrompt(text) {
             document.getElementById('ai-input').value = text;
             document.getElementById('ai-input').focus();
@@ -1755,15 +1753,11 @@
 
         function simpleMarkdownParser(text) {
             let html = text;
-            // Bolding
             html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-            // Basic code blocks
             html = html.replace(/```([\s\S]*?)```/g, function(match, code) {
-                return `<pre class="bg-slate-900 text-slate-100 p-3 rounded-lg overflow-x-auto text-xs font-mono my-2 border border-slate-700"><code>${code.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</code></pre>`;
+                return `<pre class="bg-slate-900 text-slate-100 p-3 rounded-lg overflow-x-auto text-xs font-mono my-2 border border-slate-700 shadow-inner"><code>${code.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</code></pre>`;
             });
-            // Inline code
-            html = html.replace(/`([^`]+)`/g, '<code class="bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-xs font-mono text-pink-600 dark:text-pink-400">$1</code>');
-            // Line breaks
+            html = html.replace(/`([^`]+)`/g, '<code class="bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-xs font-mono text-purple-600 dark:text-purple-400">$1</code>');
             html = html.replace(/\n/g, '<br>');
             return html;
         }
@@ -1785,7 +1779,6 @@
             historyContainer.appendChild(msgDiv);
             if (typeof lucide !== 'undefined') lucide.createIcons();
             
-            // Scroll to bottom
             historyContainer.scrollTop = historyContainer.scrollHeight;
         }
 
@@ -1819,14 +1812,14 @@
             const inputField = document.getElementById('ai-input');
             const submitBtn = document.getElementById('ai-submit-btn');
             const prompt = inputField.value.trim();
+            const apiKey = localStorage.getItem('gemini_api_key') || HARDCODED_API_KEY; // Uses the hidden key if none is manually saved
             
             if (!prompt) return;
             
-            // Add user message to UI and history
             appendChatMessage('user', prompt);
             aiChatHistory.push({ role: "user", parts: [{ text: prompt }] });
-            
             inputField.value = '';
+            
             inputField.disabled = true;
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<i data-lucide="loader" class="w-5 h-5 ml-1 animate-spin"></i>';
@@ -1835,14 +1828,12 @@
             showAiTyping();
 
             try {
-                // Setup Gemini API Payload
                 const payload = {
                     contents: aiChatHistory,
                     systemInstruction: { parts: [{ text: aiSystemInstruction }] }
                 };
                 
-                const apiKey = ""; // Left empty as per Canvas environment requirements
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
                 
                 const response = await fetch(apiUrl, {
                     method: 'POST',
@@ -1858,6 +1849,8 @@
                     const aiText = result.candidates[0].content.parts[0].text;
                     appendChatMessage('model', aiText);
                     aiChatHistory.push({ role: "model", parts: [{ text: aiText }] });
+                } else if (result.error) {
+                    throw new Error(result.error.message || "Ugyldig respons fra AI-modellen.");
                 } else {
                     throw new Error("Ingen gyldig respons fra AI-modellen.");
                 }
@@ -1865,7 +1858,16 @@
             } catch (error) {
                 console.error("AI Error:", error);
                 removeAiTyping();
-                appendChatMessage('model', "Beklager, jeg støtte på et problem. Sjekk internett-tilkoblingen din eller prøv igjen litt senere.");
+                
+                let errorMsg = "Beklager, jeg støtte på et problem.";
+                if (error.message.includes("API key not valid")) {
+                    errorMsg = "⚠️ **Ugyldig API-nøkkel.**\n\nNøkkelen du ba meg legge inn (" + HARDCODED_API_KEY.substring(0, 8) + "...) ble avvist av Google. Sørg for at det faktisk er en ekte Google Gemini API-nøkkel.";
+                } else {
+                    errorMsg += " Sjekk internett-tilkoblingen din eller sjekk at API-nøkkelen din er gyldig.";
+                }
+                
+                appendChatMessage('model', errorMsg);
+                aiChatHistory.pop(); // Fjern den siste usendte meldingen fra minnet
             } finally {
                 inputField.disabled = false;
                 submitBtn.disabled = false;
