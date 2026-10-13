@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sigrid AI Assistent - Sigurd Seland AS</title>
+
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+
+    <script>
+        const APP_BUILD_VER = "v33.0-GlobalLanguageSync";
+        if (localStorage.getItem('app_build_v') !== APP_BUILD_VER) {
+            localStorage.setItem('app_build_v', APP_BUILD_VER);
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.getRegistrations().then(regs => {
+                    for (let reg of regs) reg.unregister();
+                });
+            }
+            if ('caches' in window) {
+                caches.keys().then(names => {
+                    for (let name of names) caches.delete(name);
+                });
+            }
+            window.location.reload(true);
+        }
+    </script>
+
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0284c7">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Sigrid AI">
+
+    <!-- GOOGLE SIGN-IN IDENTITY LIBRARY -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0284c7;
+            --primary-deep: #0369a1;
+            --primary-soft: #e0f2fe;
+            --purple: #7c3aed;
+            --purple-deep: #6d28d9;
+            --purple-soft: #f3e8ff;
+            --card: #ffffff;
+            --bg: #f8fafc;
+            --ink: #0f172a;
+            --muted: #64748b;
+            --line: #e2e8f0;
+            --shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.05);
+        }
+
+        body.dark-mode {
+            --primary: #38bdf8;
+            --primary-deep: #0284c7;
+            --primary-soft: rgba(56, 189, 248, 0.12);
+            --purple: #a78bfa;
+            --purple-deep: #8b5cf6;
+            --purple-soft: rgba(167, 139, 250, 0.12);
+            --card: #1e293b;
+            --bg: #0f172a;
+            --ink: #f8fafc;
+            --muted: #94a3b8;
+            --line: #334155;
+            --shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.35);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--ink);
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .main-layout {
+            max-width: 50rem;
+            margin: 0 auto;
+            padding: 1.5rem 1rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+
+        @media (max-width: 640px) {
+            .main-layout {
+                padding: 0.25rem !important;
+            }
+            .chat-messages {
+                padding: 0.625rem !important;
+            }
+            .msg-bubble {
+                max-width: 96% !important;
+                font-size: 0.875rem !important;
+                padding: 0.625rem 0.875rem !important;
+            }
+            header {
+                margin-bottom: 0.5rem !important;
+                padding-bottom: 0.5rem !important;
+            }
+        }
+
+        header {
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            border-bottom: 1px solid var(--line);
+            padding-bottom: 1rem;
+        }
+
+        .chat-container {
+            background: var(--card);
+            border-radius: 1.25rem;
+            border: 1px solid var(--line);
+            box-shadow: var(--shadow);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            min-height: 28rem;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 1.25rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            max-height: 32rem;
+        }
+
+        .msg-bubble {
+            max-width: 88%;
+            padding: 0.875rem 1.25rem;
+            border-radius: 1.125rem;
+            font-size: 0.9375rem;
+            line-height: 1.55;
+            word-wrap: break-word;
+        }
+
+        .msg-ai {
+            background: var(--purple-soft);
+            color: var(--ink);
+            border-bottom-left-radius: 0.25rem;
+            align-self: flex-start;
+            border: 1px solid var(--line);
+        }
+
+        .msg-user {
+            background: var(--purple-deep);
+            color: white;
+            border-bottom-right-radius: 0.25rem;
+            align-self: flex-end;
+            font-weight: 500;
+        }
+
+        .quick-prompts {
+            display: flex;
+            gap: 0.5rem;
+            padding: 0.75rem 1.25rem;
+            overflow-x: auto;
+            border-top: 1px solid var(--line);
+            background: var(--bg);
+        }
+
+        .prompt-chip {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 9999px;
+            padding: 0.375rem 0.875rem;
+            font-size: 0.8125rem;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            color: var(--muted);
+            transition: all 0.2s ease;
+        }
+        .prompt-chip:hover {
+            border-color: var(--purple);
+            color: var(--purple);
+        }
+        .prompt-chip-highlight {
+            background: var(--purple-deep);
+            color: white;
+            border-color: var(--purple-deep);
+        }
+        .prompt-chip-highlight:hover {
+            background: var(--purple);
+            color: white;
+        }
+
+        .chat-input-bar {
+            display: flex;
+            gap: 0.5rem;
+            padding: 1rem;
+            border-top: 1px solid var(--line);
+            background: var(--card);
+        }
+
+        .field-class {
+            height: 2.875rem;
+            flex: 1;
+            border-radius: 0.625rem;
+            border: 1px solid var(--line);
+            background-color: var(--bg);
+            padding: 0 0.875rem;
+            font-size: 0.9375rem;
+            color: var(--ink);
+            outline: none;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            border-radius: 0.625rem;
+            font-size: 0.875rem;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            text-decoration: none;
+        }
+        .btn-purple { background: var(--purple-deep); color: white; height: 2.875rem; padding: 0 1.25rem; }
+        .btn-outline { border: 1px solid var(--line); background: var(--card); color: var(--ink); height: 2.875rem; padding: 0 1rem; }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.2rem 0.6rem;
+            border-radius: 9999px;
+            background: var(--primary-soft);
+            color: var(--primary-deep);
+        }
+    </style>
+</head>
+<body>
+
+<div class="main-layout">
+    <header>
+        <div>
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 4px;">
+                <span class="status-badge" id="net-status">🟢 Online</span>
+            </div>
+            <h1 style="font-size: 1.75rem; font-weight: 800; margin: 0;" id="txt-title">🤖 Sigrid — AI Verkstedsassistent</h1>
+        </div>
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <button type="button" class="btn btn-outline" style="height: 2.875rem; padding: 0 0.75rem; font-size: 0.8125rem; color: var(--purple-deep);" onclick="tomSamtaleMinne()">🗑️ Tøm samtalen</button>
+            <button type="button" class="btn btn-outline" style="height: 2.875rem; padding: 0 0.75rem; font-size: 0.875rem;" onclick="toggleLanguage()" id="lang-toggle-btn">🇳🇴 NO</button>
+            <a href="index.html" class="btn btn-outline" style="height: 2.875rem; padding: 0 0.875rem; font-size: 0.875rem;" id="txt-btn-home">🏠 Hovedmeny</a>
+            <button type="button" class="btn btn-outline" style="height: 2.875rem; width: 2.875rem; padding: 0; border-radius: 50%; font-size: 1.15rem;" onclick="toggleTheme()" id="theme-toggle-btn">🌙</button>
+        </div>
+    </header>
+
+    <div class="chat-container">
+        <!-- CHAT MELDINGER -->
+        <div class="chat-messages" id="chat-box">
+            <div class="msg-bubble msg-ai" id="txt-welcome-msg">
+                ⚡ <strong>Hei! Jeg er Sigrid, din smart-assistent.</strong><br>Trykk på knappen <strong>«💡 Hva kan Sigrid gjøre?»</strong> for å se en full stikkordsliste over alle mine oppgaver og funksjoner!
+            </div>
+        </div>
+
+        <!-- HURTIGMELDINGER / KATEGORISERTE KNAPPER -->
+        <div class="quick-prompts">
+            <span class="prompt-chip prompt-chip-highlight" onclick="sendQuickPrompt('💡 Hva kan Sigrid gjøre?')" id="chip-menu">💡 Hva kan Sigrid gjøre?</span>
+            <span class="prompt-chip" onclick="sendQuickPrompt('Lag en lønnsrapport av vaktlisten min')" id="chip1">💰 Lønn & Vakter</span>
+            <span class="prompt-chip" onclick="sendQuickPrompt('Regn ut Vc, n og Vf for Ø16 fres i Syrefast 316L')" id="chip2">⚙️ CNC & Skjæredata</span>
+            <span class="prompt-chip" onclick="sendQuickPrompt('Gi meg sjekkliste og kjernebor for M16 i Syrefast 316L')" id="chip3">🛠️ Verksted & Gjenger</span>
+            <span class="prompt-chip" onclick="sendQuickPrompt('Hvor lang tid tar det å lade 77 kWh batteri fra 10% til 80% på 150 kW lynlader?')" id="chip4">⚡ Elbil & Lading</span>
+        </div>
+
+        <!-- LIVE GEMINI AI API BAR MED TESTKNAPP -->
+        <div style="padding: 0.625rem 1rem; background: var(--bg); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; font-size: 0.8125rem; flex-wrap: wrap;">
+            <div style="display: flex; align-items: center; gap: 0.5rem; flex: 1; min-width: 16rem; flex-wrap: wrap;">
+                <span style="font-weight: 700; color: var(--purple-deep);">🔑 Live Gemini AI Nøkkel:</span>
+                <label for="gemini-api-key" style="display:none;">Google Gemini API Nøkkel</label>
+                <input type="password" id="gemini-api-key" class="field-class" style="height: 2.125rem; font-size: 0.75rem; max-width: 14rem;" placeholder="Lim inn gratis Gemini API-nøkkel..." oninput="lagreApiKey()" onpaste="setTimeout(lagreApiKey, 100)">
+                <button type="button" class="btn btn-purple" style="height: 2.125rem; padding: 0 0.75rem; font-size: 0.75rem;" onclick="testGeminiTilkobling()">🧪 Test Live AI</button>
+                <span id="gemini-status-badge" style="font-size: 0.7rem; font-weight: 700; color: var(--muted);">⚡ Lokal modus</span>
+            </div>
+            <button type="button" class="btn btn-outline" style="height: 2.125rem; padding: 0 0.625rem; font-size: 0.75rem;" onclick="visApiKeyHjelp()">ℹ️ Skaff Gratis Nøkkel</button>
+        </div>
+
+        <!-- CHAT INPUT -->
+        <form class="chat-input-bar" onsubmit="handleChatSubmit(event)">
+            <label for="user-input" style="display:none;">Spørsmål eller oppgave</label>
+            <input type="text" id="user-input" class="field-class" placeholder="Be Sigrid om å utføre en oppgave, lag rapport eller beregn..." autocomplete="off">
+            <button type="submit" class="btn btn-purple" id="btn-send">Be Sigrid 🚀</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    const sigridGreetingsNo = [
+        "⚡ <strong>Hei! Jeg er Sigrid, din smart-assistent.</strong><br>Trykk på knappen <strong>«💡 Hva kan Sigrid gjøre?»</strong> for å se en full stikkordsliste over alle mine oppgaver og funksjoner!",
+        "🛠️ <strong>God dag! Sigrid her.</strong><br>Jeg kan generere lønnsrapporter, simulere netto utbetaling, eksportere `.ics` kalenderfiler, beregne sveisevarmetilførsel, strømkostnader og flenser!",
+        "💰 <strong>Hei! Sigrid til tjeneste.</strong><br>Be meg om å f.eks. <em>'Lag en lønnsrapport'</em>, <em>'Hva tjener jeg ekstra på 10t overtid?'</em> eller <em>'Registrer vakt på 7.5t'</em>!"
+    ];
+
+    const sigridGreetingsEn = [
+        "⚡ <strong>Hi! I am Sigrid, your smart workshop assistant.</strong><br>Click <strong>«💡 What can Sigrid do?»</strong> to see a full bulleted menu of all my tasks and capabilities!",
+        "🛠️ <strong>Hello! Sigrid here.</strong><br>I can generate payroll reports, simulate net income, export `.ics` calendar files, calculate welding heat input, power costs, and flange standards!"
+    ];
+
+    function setRandomSigridGreeting(lang) {
+        const list = (lang === 'en') ? sigridGreetingsEn : sigridGreetingsNo;
+        const randomIndex = Math.floor(Math.random() * list.length);
+        const welcomeEl = document.getElementById('txt-welcome-msg');
+        if (welcomeEl) {
+            welcomeEl.innerHTML = list[randomIndex];
+        }
+    }
+
+    const i18n = {
+        no: {
+            title: "🤖 Sigrid — AI Verkstedsassistent",
+            btnHome: "🏠 Hovedmeny",
+            chipMenu: "💡 Hva kan Sigrid gjøre?",
+            chip1: "📧 Lag Lønnsrapport",
+            chip2: "📊 Lønnssimulator",
+            chip3: "📅 Eksporter ICS Kalender",
+            chip4: "🛠️ Sjekkliste M16 Syrefast",
+            placeholder: "Be Sigrid om å utføre en oppgave, lag rapport eller beregn...",
+            sendBtn: "Be Sigrid 🚀"
+        },
+        en: {
+            title: "🤖 Sigrid — AI Workshop Assistant",
+            btnHome: "🏠 Main Menu",
+            chipMenu: "💡 What can Sigrid do?",
+            chip1: "📧 Generate Shift Report",
+            chip2: "📊 Net Income Simulator",
+            chip3: "📅 Export ICS Calendar",
+            chip4: "🛠️ Checklist M16 Stainless",
+            placeholder: "Ask Sigrid to perform a task, generate a report, or calculate...",
+            sendBtn: "Ask Sigrid 🚀"
+        }
+    };
+
+    function updateLanguageUI(lang) {
+        const t = i18n[lang] || i18n.no;
+        document.getElementById('txt-title').innerText = t.title;
+        document.getElementById('txt-btn-home').innerText = t.btnHome;
+        document.getElementById('chip-menu').innerText = t.chipMenu;
+        document.getElementById('chip1').innerText = t.chip1;
+        document.getElementById('chip2').innerText = t.chip2;
+        document.getElementById('chip3').innerText = t.chip3;
+        document.getElementById('chip4').innerText = t.chip4;
+        document.getElementById('user-input').placeholder = t.placeholder;
+        document.getElementById('btn-send').innerText = t.sendBtn;
+        document.getElementById('lang-toggle-btn').innerText = (lang === 'en') ? '🇬🇧 EN' : '🇳🇴 NO';
+        setRandomSigridGreeting(lang);
+    }
+
+    function toggleLanguage() {
+        let cur = localStorage.getItem('seland_lang') || 'no';
+        let newLang = (cur === 'no') ? 'en' : 'no';
+        localStorage.setItem('seland_lang', newLang);
+        updateLanguageUI(newLang);
+    }
+
+    function updateOnlineStatus() {
+        const badge = document.getElementById('net-status');
+        if (navigator.onLine) {
+            badge.innerText = "🟢 Online";
+            badge.style.background = "var(--primary-soft)";
+            badge.style.color = "var(--primary-deep)";
+        } else {
+            badge.innerText = "⚪ Offline";
+            badge.style.background = "rgba(100, 116, 139, 0.15)";
+            badge.style.color = "var(--muted)";
+        }
+    }
+
+    window.addEventListener('online', updateOnlineStatus);
+    window.addEventListener('offline', updateOnlineStatus);
+
+    window.addEventListener('load', function() {
+        updateOnlineStatus();
+        const curLang = localStorage.getItem('seland_lang') || 'no';
+        updateLanguageUI(curLang);
+    });
+
+    function toggleTheme() {
+        const isDark = document.body.classList.contains('dark-mode');
+        if (isDark) {
+            document.body.classList.remove('dark-mode');
+            localStorage.setItem('lonn_theme', 'light');
+            document.getElementById('theme-toggle-btn').innerText = '☀️';
+        } else {
+            document.body.classList.add('dark-mode');
+            localStorage.setItem('lonn_theme', 'dark');
+            document.getElementById('theme-toggle-btn').innerText = '🌙';
+        }
+    }
+
+    if (localStorage.getItem('lonn_theme') === 'dark') {
+        document.body.classList.add('dark-mode');
+        document.getElementById('theme-toggle-btn').innerText = '🌙';
+    }
+
+    function kopierTekst(text) {
+        navigator.clipboard.writeText(text);
+        alert("Teksten er kopiert til utklippstavlen!");
+    }
+
+    function lasteNedIcsFil(icsContent, filename) {
+        const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8;' });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.setAttribute("download", filename);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+    // SIGRID MASTER MOTOR FOR UTREGNINGER OG UTFØRELSER
+    function generateSigridResponse(input) {
+        const q = input.toLowerCase().trim();
+        const isEn = (localStorage.getItem('seland_lang') === 'en');
+
+        // MENY-KNAPP: KORTFATTET LISTE OVER SIGRIDS OPPGAVER OG FUNKSJONER
+        if (q.includes('hva kan sigrid gjøre') || q.includes('hva kan du gjøre') || q.includes('meny') || q.includes('stikkord') || q.includes('what can sigrid do')) {
+            if (isEn) {
+                return `⚡ <strong>Overview of Sigrid's Active Tasks & Functions:</strong><br><br>
+                <strong>💰 Salary & Payroll:</strong><br>
+                • <code>Add shift 7.5 hrs 50% today</code> — Logs shifts directly to paycheck<br>
+                • <code>Set my hourly wage to 350 NOK</code> — Updates settings<br>
+                • <code>Generate shift report</code> — Creates copyable email/SMS summary<br>
+                • <code>How much extra do I earn for 10 hrs overtime?</code> — Net income simulator<br>
+                • <code>Export my shifts as .ics calendar file</code> — Import to iPhone/Google Calendar<br>
+                • <code>Explain union dues / holiday pay (12%)</code> — Tax & payroll rule guide<br><br>
+                <strong>⚙️ Machining & CNC:</strong><br>
+                • <code>Calculate circular feed for Ø84 cutter in Ø410 hole</code> — Gibbs CAM feed<br>
+                • <code>Checklist for M16 in Stainless 316L</code> — Tap drill, $V_c$, $f_z$ & coolant tips<br>
+                • <code>What does G83 / G84 / M30 mean?</code> — CNC G-code troubleshooter<br><br>
+                <strong>🛠️ Workshop, Bending & Power:</strong><br>
+                • <code>Weight of steel plate 2000x1000x12 mm</code> — Instant kg weight<br>
+                • <code>Plate bend deduction Flange A=100 B=150 t=3</code> — Press brake allowance<br>
+                • <code>Is 39.98 mm within g6 for 40 mm?</code> — ISO tolerance check<br>
+                • <code>Flange standard PN16 / ANSI 150</code> — PCD, bolts & gasket dimensions<br>
+                • <code>Power cost for 15 kW machine in 4 hrs</code> — Machine electricity cost<br>
+                • <code>Heat input for welding</code> — Welding preheat & $KJ/mm$ formula`;
+            }
+            return `⚡ <strong>Kortfattet oversikt over Sigrids oppgaver & funksjoner:</strong><br><br>
+            <strong>💰 Lønn, Vakter & Skatt:</strong><br>
+            • <code>Legg til vakt på 7.5t 50% i dag</code> — Registrerer vakt direkte på lønnsslippen<br>
+            • <code>Sett timelønnen min til 350 kr</code> — Oppdaterer lønnsinnstillinger<br>
+            • <code>Lag en lønnsrapport</code> — Lager kopierbar vaktrapport til e-post/SMS<br>
+            • <code>Hvor mye ekstra tjener jeg på 10t overtid?</code> — Netto lønnssimulator<br>
+            • <code>Eksporter vaktlisten min som .ics kalenderfil</code> — Importer til iPhone/Google Kalender<br>
+            • <code>Forklar fagforeningstrekk / feriepenger (12%)</code> — Regel- & skatteguide<br><br>
+            <strong>⚙️ Maskinering & CNC:</strong><br>
+            • <code>Regn sirkulær mating for Ø84 fres i Ø410 hull</code> — Gibbs CAM-mating<br>
+            • <code>Sjekkliste for M16 i Syrefast 316L</code> — Kjernebor, $V_c$, $f_z$ & smøretips<br>
+            • <code>Hva betyr G83 / G84 / M30?</code> — CNC G-kode feilsøker<br><br>
+            <strong>🛠️ Verksted, Bøying & Vekt:</strong><br>
+            • <code>Vekt på stålplate 2000x1000x12 mm</code> — Beregner vekt i kg<br>
+            • <code>Plateutbretting for Flens A=100 B=150 t=3</code> — Bøyefradrag for kantpresse<br>
+            • <code>Er 39.98 mm innenfor g6 for 40 mm?</code> — ISO toleransesjekk<br>
+            • <code>Flensstandard PN16 / ANSI 150</code> — PCD, bolter & pakningsmål<br>
+            • <code>Strømkostnad for 15 kW maskin i 4 timer</code> — Maskinstrøm i kr<br>
+            • <code>Varmetilførsel for sveis</code> — Sveiseformler & forvarming ($KJ/mm$)`;
+        }
+
+        // OPPGAVE: EKSPORTERE KALENDERFIL (.ICS FOR IPHONE / GOOGLE KALENDER)
+        if (q.includes('kalender') || q.includes('ics') || q.includes('.ics') || q.includes('calendar')) {
+            let vakter = [];
+            if (localStorage.getItem('lonn_vakter_tabs_v26')) {
+                try { vakter = JSON.parse(localStorage.getItem('lonn_vakter_tabs_v26')); } catch(e){}
+            }
+
+            if (vakter.length === 0) {
+                return `📅 <strong>Ingen registrerte vakter å eksportere til kalender.</strong><br>Legg inn noen vakter på lønnskalkulatoren først!`;
+            }
+
+            let icsTxt = "BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Sigurd Seland AS//Vaktkalender//NO\n";
+            vakter.forEach(v => {
+                const dateCompact = v.date.replace(/-/g, '');
+                icsTxt += "BEGIN:VEVENT\n";
+                icsTxt += `SUMMARY:Vakt ${v.kindLabel} (${v.hours}t ${v.minutes}m)\n`;
+                icsTxt += `DTSTART;VALUE=DATE:${dateCompact}\n`;
+                icsTxt += `DTEND;VALUE=DATE:${dateCompact}\n`;
+                icsTxt += `DESCRIPTION:Registrert overtid/vakt for Sigurd Seland AS.\n`;
+                icsTxt += "END:VEVENT\n";
+            });
+            icsTxt += "END:VCALENDAR";
+
+            lasteNedIcsFil(icsTxt, "SigurdSeland_Vakter.ics");
+
+            return `📅 <strong>Kalenderfil (.ics) ble generert og lastet ned!</strong><br>Du kan nå åpne filen for å legge alle vaktene direkte inn i din iPhone Kalender eller Google Calendar!`;
+        }
+
+        // OPPGAVE: BEREGNE STRØMKOSTNAD FOR MASKINER
+        if (q.includes('strøm') || q.includes('effekt') || q.includes('kwh') || q.includes('power cost')) {
+            let matches = q.match(/(\d+[\.,]?\d*)\s*kw.*(\d+[\.,]?\d*)\s*(t|time|timer)/i) || q.match(/(\d+[\.,]?\d*)\s*kw/i);
+            let kw = matches && matches[1] ? parseFloat(matches[1].replace(',', '.')) : 15;
+            let hrs = matches && matches[2] ? parseFloat(matches[2].replace(',', '.')) : 4;
+
+            // Sjekk om bruker har oppgitt en egen strømpris i spørsmålet (f.eks. "med strømpris 1.80 kr")
+            let priceMatch = q.match(/(\d+[\.,]?\d*)\s*(kr|nok)/i);
+            let spotPrice = 1.20; // Standard gjennomsnittlig spotpris inkl. nettleie/mva
+            let isCustomPrice = false;
+            if (priceMatch && priceMatch[1] && parseFloat(priceMatch[1].replace(',', '.')) < 20) {
+                spotPrice = parseFloat(priceMatch[1].replace(',', '.'));
+                isCustomPrice = true;
+            }
+
+            const kwh = kw * hrs;
+            const cost = kwh * spotPrice;
+
+            return `⚡ <strong>Strømkostnads-beregning utført:</strong><br><br>
+            For en **${kw} kW** maskin som kjører i **${hrs} timer**:<br>
+            • <strong>Totalt energiforbruk:</strong> <code>${kwh.toFixed(1).replace('.', ',')} kWh</code><br>
+            • <strong>Benyttet strømpris:</strong> <code>${spotPrice.toFixed(2).replace('.', ',')} kr/kWh</code> ${isCustomPrice ? '(oppgitt av deg)' : '(estimert gjennomsnitt inkl. nettleie/mva)'}<br>
+            • <strong>⚡ TOTAL STRØMKOSTNAD:</strong> <code style="font-size:1.1rem; color:var(--purple); font-weight:800;">${cost.toFixed(2).replace('.', ',')} kr</code><br><br>
+            💡 <em>Tips:</em> Du kan spesifisere din egen strømpris i spørsmålet, f.eks: <em>'Strømkostnad for 15 kW i 4 timer med strømpris 1.80 kr'</em>.`;
+        }
+
+        // MASKINERING MASTER-FORMLE
+        if (q.includes('formel') || q.includes('omdreining') || q.includes('skjærehastighet') || q.includes('bordsmating') || q.includes('sponavvirkning') || q.includes('effekt') || q.includes('dreiemoment')) {
+            return `⚙️ <strong>Sigrids Master Maskinerings-Formler:</strong><br><br>
+            • <strong>Spindel-omdreininger ($n$):</strong><br>
+            <code>n = (V_c × 1000) / (π × D) [RPM]</code><br><br>
+            • <strong>Bordsmating ($V_f$):</strong><br>
+            <code>V_f = f_z × z × n [mm/min]</code><br><br>
+            • <strong>Sponavvirkningsrate ($Q$):</strong><br>
+            <code>Q = (a_p × a_e × V_f) / 1000 [cm³/min]</code><br><br>
+            • <strong>Maskineringstid ($T_c$):</strong><br>
+            <code>T_c = L / V_f [minutter]</code><br><br>
+            • <strong>Skjærekraft ($F_c$):</strong><br>
+            <code>F_c = k_{c1.1} × a_p × f_z^{(1 - mc)} [N]</code><br><br>
+            • <strong>Spindeleffektbehov ($P_c$):</strong><br>
+            <code>P_c = (F_c × V_c) / (60000 × η) [kW]</code><br><br>
+            • <strong>Spindel-dreiemoment ($M_c$):</strong><br>
+            <code>M_c = (P_c × 9550) / n [Nm]</code>`;
+        }
+
+        // VERKSTEDSTABELLER, MATERIALER OG KJERNEBOR
+        if (q.includes('material') || q.includes('316l') || q.includes('304') || q.includes('s355') || q.includes('aluminium') || q.includes('messing') || q.includes('pom') || q.includes('pehd') || q.includes('kjernebor') || q.includes('borspiss') || q.includes('toleranse')) {
+            return `🛠️ <strong>Sigrids Verksteds & Material-Guide:</strong><br><br>
+            • <strong>Materialer & Skjæredata ($V_c$ / $f_z$):</strong><br>
+            - <strong>S355/S235 Stål:</strong> $V_c = 180-250\text{ m/min}$, $f_z = 0,08-0,15\text{ mm/tann}$<br>
+            - <strong>AISI 316L Syrefast:</strong> $V_c = 90-140\text{ m/min}$, $f_z = 0,05-0,10\text{ mm/tann}$ (Bruk rigide oppspenningsverktøy og god kjølevæske!)<br>
+            - <strong>Aluminium 6082-T6:</strong> $V_c = 400-800\text{ m/min}$, $f_z = 0,10-0,25\text{ mm/tann}$<br>
+            - <strong>Messing:</strong> $V_c = 200-350\text{ m/min}$, $f_z = 0,08-0,18\text{ mm/tann}$<br>
+            - <strong>POM Plast:</strong> $V_c = 300-500\text{ m/min}$, $f_z = 0,10-0,25\text{ mm/tann}$ (Skarpt verktøy uten fas!)<br><br>
+            • <strong>M-Gjenger Kjernebor:</strong><br>
+            - M6: <strong>5.0 mm</strong> | M8: <strong>6.8 mm</strong> | M10: <strong>8.5 mm</strong> | M12: <strong>10.2 mm</strong> | M16: <strong>14.0 mm</strong> | M20: <strong>17.5 mm</strong><br><br>
+            • <strong>BSP Rørgjenger Kjernebor:</strong><br>
+            - G 1/8": <strong>8.8 mm</strong> | G 1/4": <strong>11.8 mm</strong> | G 3/8": <strong>15.2 mm</strong> | G 1/2": <strong>19.0 mm</strong> | G 3/4": <strong>24.5 mm</strong> | G 1": <strong>30.8 mm</strong><br><br>
+            • <strong>Borspisstillegg ($118^\circ$ vinkel):</strong><br>
+            Formel: <code>h = (D / 2) / tan(59°) ≈ 0.30 × Diameter</code> (Legges til ved blindhull for at hele diameteren skal gå gjennom!)`;
+        }
+
+        // LØNN, TABELLSKATT 7101 OG SKATTEVEILEDNING
+        if (q.includes('tabellskatt') || q.includes('7101') || q.includes('skatt') || q.includes('feriepenger') || q.includes('fastlønn') || q.includes('timebank')) {
+            return `💰 <strong>Sigrids Lønns- & Skatte-Guide:</strong><br><br>
+            • <strong>Tabellskatt (Tabell 7101):</strong><br>
+            Skatteetaten benytter en trinnvis månedlig tabellformel for fastlønnet inntekt. Fradrag for fagforeningskontingent trekkes fra $100\%$ før skattegrunnlaget beregnes: <code>Skattegrunnlag = Brutto − Fagforeningstrekk</code>.<br><br>
+            • <strong>Timebank-regler:</strong><br>
+            Når du haker av for timebank på en vakt, avsettes den ordinære timen til timebanken (timer til gode), mens KUN overtidstillegget ($50\%$ eller $100\%$) utbetales i penger på månedens lønnsslipp.<br><br>
+            • <strong>Feriepenger (12%):</strong><br>
+            Feriepenger utgjør $12\%$ av samlet brutto arbeidsinntekt i opptjeningsåret.<br><br>
+            • <strong>Årsprognose:</strong><br>
+            Fast årslønn beregnes som: <code>Årslønn = (5 dager × timer/dag) × timelønn × 47 uker × 1.12</code>.`;
+        }
+
+        // OPPGAVE: G-KODER OG CNC FEILSØKING
+        if (q.includes('g83') || q.includes('g84') || q.includes('g-kode') || q.includes('cnc')) {
+            return `⚙️ <strong>Sigrids CNC G-kode guide:</strong><br><br>
+            • <strong>G81:</strong> Bore-syklus uten sponbryting (for grunne hull).<br>
+            • <strong>G83:</strong> Peck-drilling syklus (boring med sponrydding for dype hull). $Q$-verdi angir dybde pr. jukk.<br>
+            • <strong>G84:</strong> Gjenge-syklus (Rigid tapping) der spindel og Z-akse synkroniseres.<br>
+            • <strong>M03 / M04:</strong> Spindel rotasjon med/mot klokken.<br>
+            • <strong>M08 / M09:</strong> Kjølevæske PÅ / AV.`;
+        }
+
+        // GENERERE RAPPORT FOR E-POST/SMS
+        if (q.includes('rapport') || q.includes('oppsummering') || q.includes('vaktliste') || q.includes('report')) {
+            let vakter = [];
+            if (localStorage.getItem('lonn_vakter_tabs_v26')) {
+                try { vakter = JSON.parse(localStorage.getItem('lonn_vakter_tabs_v26')); } catch(e){}
+            }
+
+            const activeYear = parseInt(localStorage.getItem('lonn_year')) || new Date().getFullYear();
+            const activeMonth = parseInt(localStorage.getItem('lonn_month')) || new Date().getMonth();
+            const mndNavn = ["Januar", "Februar", "Mars", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Desember"];
+            const mndVakter = vakter.filter(v => v.year === activeYear && v.month === activeMonth);
+
+            if (mndVakter.length === 0) {
+                return `📋 <strong>Ingen registrerte vakter funnet for ${mndNavn[activeMonth]} ${activeYear}.</strong>`;
+            }
+
+            const timelonn = parseFloat(localStorage.getItem('lonn_timelonn')) || 316.5;
+            let sumBrutto = 0, sumTimer = 0;
+            let reportTxt = `VAKTLISTERAPPORT - SIGURD SELAND AS\nPeriode: ${mndNavn[activeMonth]} ${activeYear}\n-----------------------------------\n`;
+
+            mndVakter.forEach((v, idx) => {
+                const faktor = v.isTimebank ? (v.kind.includes('50') ? 0.5 : 1.0) : (v.kind.includes('50') ? 1.5 : 2.0);
+                const brutto = v.desimalTimer * (timelonn * faktor);
+                sumBrutto += brutto;
+                sumTimer += v.desimalTimer;
+                reportTxt += `${idx+1}. ${v.dateLabel}: ${v.kindLabel} - ${v.hours}t ${v.minutes}m (${brutto.toFixed(2)} kr)\n`;
+            });
+
+            reportTxt += `-----------------------------------\nTotalt vaktimer: ${sumTimer.toFixed(1)} timer\nSum tilleggsvakter (brutto): ${sumBrutto.toFixed(2)} NOK`;
+
+            return `📧 <strong>Sigrid har generert vaktrapport for ${mndNavn[activeMonth]} ${activeYear}:</strong><br><br>
+            <textarea id="rep-area" style="width:100%; height:8rem; font-family:'JetBrains Mono',monospace; font-size:0.8rem; padding:0.5rem; border-radius:0.5rem; border:1px solid var(--line);" readonly>${reportTxt}</textarea><br>
+            <button type="button" class="btn btn-purple" style="margin-top:0.5rem; height:2.25rem; font-size:0.8rem;" onclick="kopierTekst(document.getElementById('rep-area').value)">📋 Kopier Rapport for E-post / SMS</button>`;
+        }
+
+        // LØNNSSIMULATOR
+        if (q.includes('hvor mye ekstra') || q.includes('hva tjener jeg') || q.includes('hvis jeg jobber')) {
+            let matches = q.match(/(\d+[\.,]?\d*)\s*(t|time|timer|hrs|hours)/);
+            let timer = matches && matches[1] ? parseFloat(matches[1].replace(',', '.')) : 10;
+            const timelonn = parseFloat(localStorage.getItem('lonn_timelonn')) || 316.5;
+
+            let faktor = 1.5;
+            let typeTekst = "50% overtid";
+            if (q.includes('100%')) { faktor = 2.0; typeTekst = "100% overtid"; }
+
+            const ekstraBrutto = timer * (timelonn * faktor);
+            const fagforeningPct = parseFloat(localStorage.getItem('lonn_union_pct')) || 1.5;
+            const skattPct = parseFloat(localStorage.getItem('lonn_skatt_pct')) || 30;
+
+            const fagforeningDeduction = ekstraBrutto * (fagforeningPct / 100);
+            const skattDeduction = (ekstraBrutto - fagforeningDeduction) * (skattPct / 100);
+            const ekstraNetto = ekstraBrutto - fagforeningDeduction - skattDeduction;
+
+            return `📊 <strong>Sigrids Lønnssimulerings-resultat:</strong><br><br>
+            For <strong>${timer} timer (${typeTekst})</strong> med timelønn på ${timelonn.toFixed(2).replace('.', ',')} kr/t:<br>
+            • <strong>Ekstra Brutto:</strong> <code>+ ${ekstraBrutto.toFixed(2).replace('.', ',')} kr</code><br>
+            • <strong>✨ EKSTRA NETTO UTBETALT PÅ KONTO:</strong> <code style="font-size:1.1rem; color:var(--purple); font-weight:800;">+ ${ekstraNetto.toFixed(2).replace('.', ',')} kr</code>`;
+        }
+
+        // MASKINERINGS-SJEKKLISTE
+        if (q.includes('sjekkliste') || q.includes('m16') || q.includes('m12') || q.includes('m10')) {
+            let thread = "M12";
+            if (q.includes('m16')) thread = "M16";
+            if (q.includes('m10')) thread = "M10";
+
+            const threadMap = {
+                M10: { drill: "8.5 mm", clear: "11.0 mm", pitch: "1.50 mm", vc: "90–120 m/min" },
+                M12: { drill: "10.2 mm", clear: "13.5 mm", pitch: "1.75 mm", vc: "90–120 m/min" },
+                M16: { drill: "14.0 mm", clear: "17.5 mm", pitch: "2.00 mm", vc: "90–120 m/min" }
+            };
+
+            const info = threadMap[thread] || threadMap.M12;
+
+            return `🛠️ <strong>Sigrids Maskineringssjekkliste for ${thread}:</strong><br><br>
+            • <strong>Anbefalt Kjernebor:</strong> <code>${info.drill}</code><br>
+            • <strong>Gjengestigning:</strong> <code>${info.pitch}</code><br>
+            • <strong>Frigangshull:</strong> <code>${info.clear}</code><br>
+            • <strong>Anbefalt Vc:</strong> <code>${info.vc}</code>`;
+        }
+
+        // REGISTRERE VAKT
+        if (q.includes('legg til vakt') || q.includes('registrer vakt')) {
+            let timer = 7.5;
+            let kind = 'hverdag50';
+            let kindLabel = 'Hverdag 50%';
+
+            if (q.includes('100%')) { kind = 'helg100'; kindLabel = 'Helg 100%'; }
+            let matches = q.match(/(\d+[\.,]?\d*)\s*(t|time|timer)/);
+            if (matches && matches[1]) { timer = parseFloat(matches[1].replace(',', '.')); }
+
+            const todaysDate = new Date();
+            const year = todaysDate.getFullYear();
+            const month = todaysDate.getMonth();
+            const ukedager = ["Søn", "Man", "Tir", "Ons", "Tor", "Fre", "Lør"];
+            const dateStr = `${year}-${(month+1 < 10 ? '0' : '') + (month+1)}-${(todaysDate.getDate() < 10 ? '0' : '') + todaysDate.getDate()}`;
+            const dateLabel = `${ukedager[todaysDate.getDay()]} ${todaysDate.getDate()}.${month+1}`;
+
+            let vakter = [];
+            if (localStorage.getItem('lonn_vakter_tabs_v26')) {
+                try { vakter = JSON.parse(localStorage.getItem('lonn_vakter_tabs_v26')); } catch(e){}
+            }
+
+            vakter.push({
+                id: Math.random().toString(36).substring(2),
+                date: dateStr,
+                dateLabel: dateLabel,
+                kind: kind,
+                kindLabel: kindLabel,
+                hours: Math.floor(timer),
+                minutes: Math.round((timer % 1) * 60),
+                desimalTimer: timer,
+                year: year,
+                month: month,
+                isTimebank: false
+            });
+
+            localStorage.setItem('lonn_vakter_tabs_v26', JSON.stringify(vakter));
+
+            return `✅ <strong>Oppgave utført!</strong><br>Jeg har registrert en vakt på <strong>${timer} timer (${kindLabel})</strong> for i dag direkte på lønnskalkulatoren din!`;
+        }
+
+        // ENDRE TIMELØNN
+        if (q.includes('sett timelønn') || q.includes('endre timelønn')) {
+            let matches = q.match(/(\d+[\.,]?\d*)/);
+            if (matches && matches[1]) {
+                const newRate = parseFloat(matches[1].replace(',', '.'));
+                localStorage.setItem('lonn_timelonn', newRate.toString());
+                return `✅ <strong>Oppgave utført!</strong><br>Jeg har oppdatert timelønnen din i innstillingene til <strong>${newRate.toFixed(2).replace('.', ',')} kr/t</strong>!`;
+            }
+        }
+
+        // PLATEVEKT
+        if (q.includes('veier') || q.includes('vekt på') || q.includes('platevekt')) {
+            let matches = q.match(/(\d+)\s*x\s*(\d+)\s*x\s*(\d+)/i) || q.match(/(\d+)\s*×\s*(\d+)\s*×\s*(\d+)/i);
+            if (matches && matches[1] && matches[2] && matches[3]) {
+                const l = parseFloat(matches[1]);
+                const b = parseFloat(matches[2]);
+                const t = parseFloat(matches[3]);
+                const volCm3 = (l / 10) * (b / 10) * (t / 10);
+                const kgSteel = (volCm3 * 7.85) / 1000;
+
+                return `⚖️ <strong>Vektberegning utført:</strong><br>
+                For platen <strong>${l} × ${b} × ${t} mm</strong>:<br>
+                • <strong>Stål / S355 (7.85 g/cm³):</strong> <code>${kgSteel.toFixed(2).replace('.', ',')} kg</code>`;
+            }
+        }
+
+        // FAGFORENING
+        if (q.includes('fagforening') || q.includes('kontingent')) {
+            return `✊ <strong>Sigrids forklaring av Fagforeningstrekk & Skattefordel:</strong><br><br>
+            1. <strong>Beregning:</strong> Fagforeningskontingenten (f.eks. 1.5%) trekkes av brutto månedslønn.<br>
+            2. <strong>Skattefordel:</strong> Kontingenten er 100% fradragsberettiget på skatten! Den trekkes fra før skattegrunnlaget beregnes (<code>Skattegrunnlag = Brutto − Fagforeningstrekk</code>), noe som gir deg lavere skattetrekk!`;
+        }
+
+        return `🤖 <strong>Hei! Jeg er Sigrid.</strong><br>Trykk på knappen <strong>«💡 Hva kan Sigrid gjøre?»</strong> for å se alt jeg kan utføre for deg!`;
+    }
+
+    function lagreApiKey() {
+        const input = document.getElementById('gemini-api-key');
+        if (!input) return;
+        let key = input.value.trim().replace(/["']/g, '');
+        if (key) {
+            localStorage.setItem('sigrid_gemini_api_key', key);
+            oppdaterApiKeyUI();
+        } else {
+            localStorage.removeItem('sigrid_gemini_api_key');
+            oppdaterApiKeyUI();
+        }
+    }
+
+    function getActiveGeminiApiKey() {
+        return (localStorage.getItem('sigrid_gemini_api_key') || "").trim().replace(/["']/g, '');
+    }
+
+    function oppdaterApiKeyUI() {
+        const key = getActiveGeminiApiKey();
+        const badge = document.getElementById('gemini-status-badge');
+        const input = document.getElementById('gemini-api-key');
+        if (key) {
+            if (input && input.value !== key) input.value = key;
+            if (badge) {
+                badge.innerText = "🟢 Egen Gemini AI Nøkkel Aktiv";
+                badge.style.color = "var(--emerald)";
+            }
+        } else {
+            if (badge) {
+                badge.innerText = "🟢 Live Sigrid AI Aktiv (Automatisk)";
+                badge.style.color = "var(--purple-deep)";
+            }
+        }
+    }
+
+    function visApiKeyHjelp() {
+        alert("🔑 Automatisk Live AI Tjeneste:\n\nSigrid AI fungerer automatisk for alle brukere!\n\nHvis du har en egen personlig Google Gemini API-nøkkel fra aistudio.google.com/app/apikey, kan du lim inn den her for å bruke din egen private kvote.");
+    }
+
+    async function finnArbeidendeGeminiEndpoint(apiKey) {
+        try {
+            const listRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`);
+            const listData = await listRes.json();
+            if (listData && listData.models && Array.isArray(listData.models)) {
+                let genModels = listData.models.filter(m => m.supportedGenerationMethods && m.supportedGenerationMethods.includes('generateContent'));
+                // Filter ut uaktuelle utgåtte versjoner
+                genModels = genModels.filter(m => !m.name.includes('2.5') && !m.name.includes('1.0') && !m.name.includes('001'));
+                if (genModels.length > 0) {
+                    let bestModel = genModels.find(m => m.name.endsWith('gemini-1.5-flash')) ||
+                                    genModels.find(m => m.name.includes('gemini-1.5-flash')) ||
+                                    genModels.find(m => m.name.includes('gemini-1.5-pro')) ||
+                                    genModels[0];
+                    let cleanName = bestModel.name.replace(/^models\//, '');
+                    return {
+                        url: `https://generativelanguage.googleapis.com/v1beta/models/${cleanName}:generateContent`,
+                        name: cleanName
+                    };
+                }
+            }
+        } catch(e) {
+            console.warn("ListModels feilet, bruker standard gemini-1.5-flash...", e);
+        }
+
+        return {
+            url: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent',
+            name: 'gemini-1.5-flash'
+        };
+    }
+
+    async function testGeminiTilkobling() {
+        lagreApiKey();
+        const apiKey = getActiveGeminiApiKey();
+        if (!apiKey) {
+            alert("⚠️ Lim inn din Google Gemini API-nøkkel i feltet først!");
+            return;
+        }
+
+        const statusBadge = document.getElementById('gemini-status-badge');
+        if (statusBadge) statusBadge.innerText = "⏳ Finner tilgjengelige Google-modeller...";
+
+        try {
+            const ep = await finnArbeidendeGeminiEndpoint(apiKey);
+            if (statusBadge) statusBadge.innerText = `⏳ Tester ${ep.name}...`;
+
+            const res = await fetch(`${ep.url}?key=${apiKey}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    contents: [{ role: 'user', parts: [{ text: "Si 'Hallo fra Live Gemini AI!' på norsk på 1 ukomplisert setning." }] }]
+                })
+            });
+            const data = await res.json();
+            if (res.ok && data.candidates && data.candidates[0]) {
+                const reply = data.candidates[0].content.parts[0].text;
+                localStorage.setItem('working_gemini_endpoint', ep.url);
+                localStorage.setItem('working_gemini_name', ep.name);
+                oppdaterApiKeyUI();
+                alert(`🎉 VELLYKKET TILKOBLING!\n\nSigrid AI er nå 100% koblet til live Google Gemini AI (${ep.name})!\n\nSvar fra Google Gemini:\n"${reply.trim()}"`);
+            } else {
+                const errMsg = (data.error && data.error.message) ? data.error.message : JSON.stringify(data);
+                oppdaterApiKeyUI();
+                alert(`🔴 TILKOBLINGSFEIL FRA GOOGLE:\n\n${errMsg}\n\nSjekk at du har kopiert hele API-nøkkelen fra aistudio.google.com/app/apikey uten ekstra tegn.`);
+            }
+        } catch(err) {
+            oppdaterApiKeyUI();
+            alert(`🔴 NETTVERKSFEIL:\n\nKunne ikke nå Google sin server: ${err.message}`);
+        }
+    }
+
+    async function queryGeminiApi(userPrompt) {
+        const apiKey = getActiveGeminiApiKey();
+        if (!apiKey) return null;
+
+        const uData = buildLiveUserDataSummary();
+
+        const systemInstruction = `Du er Sigrid, en erfaren mekaniker, CNC-programmerer, GibbsCAM-ekspert og lønnsekspert for Sigurd Seland Smie & Mek. Verksted AS i Lyngdal.
+Du har 100% full, dyp tilgang og kunnskap om hele Watne Pro portalen:
+
+1. LØNNSKALKULATOR & LØNNSOVERSIKT (lonn.html):
+   - Fastlønn: Beregnes av antall arbeidsdager i måneden (man-fre) × timer/dag × timelønn.
+   - Ubetalt Ferietrekk: Ubetalte feriedager × timer/dag × timelønn trekkes brutto.
+   - Tilleggsvakter: Hverdag 50% (1.5x), Hverdag 100% (2.0x), Helg 50% (1.5x), Helg 100% (2.0x).
+   - Timebank: Ved avsatt timebank legges ordinære timer (1.0x) til timebank-saldoen, mens KUN tillegget (0.5x eller 1.0x) utbetales på lønnsslippen!
+   - Fagforeningstrekk: ${uData.unionPct}% trekkes av brutto månedslønn. SKATTEFORDEL: Kontingenten trekkes fra FØR skattegrunnlaget beregnes (Skattegrunnlag = Brutto − Fagforeningstrekk)!
+   - Skattetrekk: Tabell 7101 (trinnvis månedlig tabellformel) eller fast skatteprosent.
+   - Netto Utbetalt: Total Brutto − Fagforeningstrekk − Skattetrekk.
+   - Feriepenger: 12% av total brutto i opptjeningsåret.
+   - Årsprognose: Fast Årslønn = (5 × timer/dag) × timelønn × 47 uker × 1.12.
+
+2. MASKINERINGSVALKULATOR (maskinering.html): Vc [m/min], n = (Vc*1000)/(pi*D) [RPM], Vf = fz*z*n [mm/min], Q = (ap*ae*Vf)/1000 [cm3/min], Tc = L/Vf [min/sek], Fc = kc1.1 * ap * fz^(1-mc) [N], Pc = (Fc*Vc)/(60000*eta) [kW], Mc = (Pc*9550)/n [Nm].
+3. VERKSTEDTABELLER (verksted.html): Skjæredata for S355, 316L, 304, Aluminium 6082-T6, Messing, POM. Kjernebor M/BSP gjenger, ISO 6H/6g gjengetoleranser, Borspisstillegg (0.3*D for 118deg).
+4. ELBIL-KALKULATOR (elbil.html): Ladetid, tilført km, ladekostnad, besparelse over bensin/diesel pr mnd/år/5år, vinter-rekkeviddetap (+20C, 0C, -15C, -25C).
+
+BRUKERENS REELLE DATA AKKURAT NÅ:
+- Valgt måned: ${uData.mndNavn} ${uData.activeYear}
+- Timelønn: ${uData.timelonn.toFixed(2)} kr/t | Timer/dag: ${uData.timerDag} t
+- Fastlønn inkludert: ${uData.harFastlonn ? 'Ja' : 'Nei'} | Ubetalt ferie: ${uData.feriedager} dager
+- Skattetype: Tabell ${uData.tabellNummer} (${uData.skattType})
+- Fagforeningssats: ${uData.unionPct}%
+- Registrerte vakter i ${uData.mndNavn}: ${uData.mndVakterCount} vakter (Sum brutto fra vakter: ${uData.sumVaktBrutto.toFixed(2)} kr)
+- Timebank-timer satt av i ${uData.mndNavn}: ${uData.sumTimebankTimer.toFixed(1)} timer
+
+Svar presist, pedagogisk, hjelpsomt og vennlig på norsk med HTML-formatering (f.eks <strong>, <code>, <br>).`;
+
+        let preferredUrl = localStorage.getItem('working_gemini_endpoint');
+        if (!preferredUrl) {
+            const ep = await finnArbeidendeGeminiEndpoint(apiKey);
+            preferredUrl = ep.url;
+        }
+
+        try {
+            const res = await fetch(`${preferredUrl}?key=${apiKey}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    contents: [
+                        { role: 'user', parts: [{ text: systemInstruction + "\n\nSpørsmål fra bruker: " + userPrompt }] }
+                    ]
+                })
+            });
+            const data = await res.json();
+            if (res.ok && data && data.candidates && data.candidates[0] && data.candidates[0].content) {
+                let replyText = data.candidates[0].content.parts[0].text;
+                return replyText.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            }
+        } catch(e) {
+            console.error("Gemini API error for endpoint " + preferredUrl, e);
+        }
+        return null;
+    }
+
+    let samtaleHistorikk = [];
+
+    function lastSamtaleHistorikk() {
+        const saved = localStorage.getItem('sigrid_samtaale_minne_v26');
+        if (saved) {
+            try { samtaleHistorikk = JSON.parse(saved); } catch(e){ samtaleHistorikk = []; }
+        }
+        tegnSamtaleFraMinne();
+    }
+
+    function lagreSamtaleHistorikk() {
+        localStorage.setItem('sigrid_samtaale_minne_v26', JSON.stringify(samtaleHistorikk));
+    }
+
+    function tomSamtaleMinne() {
+        if (confirm("Slette samtaleminnet til Sigrid AI?")) {
+            localStorage.removeItem('sigrid_samtaale_minne_v26');
+            samtaleHistorikk = [];
+            tegnSamtaleFraMinne();
+        }
+    }
+
+    function tegnSamtaleFraMinne() {
+        const box = document.getElementById('chat-box');
+        box.innerHTML = "";
+        if (samtaleHistorikk.length === 0) {
+            const curLang = localStorage.getItem('seland_lang') || 'no';
+            setRandomSigridGreeting(curLang);
+        } else {
+            samtaleHistorikk.forEach(m => {
+                const div = document.createElement('div');
+                div.className = `msg-bubble ${m.isUser ? 'msg-user' : 'msg-ai'}`;
+                div.innerHTML = m.text;
+                box.appendChild(div);
+            });
+            box.scrollTop = box.scrollHeight;
+        }
+    }
+
+    function appendMessage(text, isUser, lagre = true) {
+        if (lagre) {
+            samtaleHistorikk.push({ text: text, isUser: isUser });
+            lagreSamtaleHistorikk();
+        }
+        tegnSamtaleFraMinne();
+    }
+
+    async function handleChatSubmit(e) {
+        e.preventDefault();
+        const input = document.getElementById('user-input');
+        const text = input.value.trim();
+        if (!text) return;
+
+        appendMessage(text, true);
+        input.value = '';
+
+        const apiKey = getActiveGeminiApiKey();
+
+        // Vis midlertidig tenke-indikator
+        const box = document.getElementById('chat-box');
+        const thinkingDiv = document.createElement('div');
+        thinkingDiv.className = 'msg-bubble msg-ai';
+        thinkingDiv.innerHTML = "🤖 <em>Sigrid tenker...</em>";
+        box.appendChild(thinkingDiv);
+        box.scrollTop = box.scrollHeight;
+
+        let aiReply = null;
+        if (apiKey) {
+            aiReply = await queryGeminiApi(text);
+        }
+
+        if (!aiReply) {
+            aiReply = generateSigridResponse(text);
+        }
+
+        // Fjern tenke-indikatoren fra skjermen
+        if (thinkingDiv && thinkingDiv.parentNode) {
+            thinkingDiv.parentNode.removeChild(thinkingDiv);
+        }
+
+        appendMessage(aiReply, false);
+    }
+
+    function sendQuickPrompt(promptText) {
+        document.getElementById('user-input').value = promptText;
+        handleChatSubmit(new Event('submit'));
+    }
+
+    // Init lasting
+    window.addEventListener('load', function() {
+        oppdaterApiKeyUI();
+        lastSamtaleHistorikk();
+    });
+</script>
+
+</body>
+</html>
