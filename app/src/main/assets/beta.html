@@ -10,7 +10,7 @@
     <meta http-equiv="Expires" content="0">
 
     <script>
-        const APP_BUILD_VER = "v8000.0-CleanScratchGeminiDesign";
+        const APP_BUILD_VER = "v9000.0-HurtigVaktAndTabDisplayFix";
         if (localStorage.getItem('app_build_v') !== APP_BUILD_VER) {
             localStorage.setItem('app_build_v', APP_BUILD_VER);
             if ('serviceWorker' in navigator) {
@@ -810,7 +810,7 @@
             mainPages.forEach(id => {
                 const el = document.getElementById('page-' + id);
                 if (el) {
-                    el.style.display = (id === tabId) ? 'block' : 'none';
+                    el.style.setProperty('display', (id === tabId) ? 'block' : 'none', 'important');
                 }
             });
 
@@ -820,7 +820,7 @@
                 const btn = document.getElementById('side-nav-' + id);
                 if (btn) {
                     if (id === tabId) {
-                        btn.className = "side-btn w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-lg bg-white dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700/50 text-slate-900 dark:text-white transition-all shadow-sm";
+                        btn.className = "side-btn w-full flex items-center px-3 py-2.5 text-sm font-bold rounded-lg bg-brand-500/10 border border-brand-500/30 text-brand-600 dark:text-brand-400 transition-all shadow-sm";
                     } else {
                         btn.className = "side-btn w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-slate-500 dark:text-slate-400 border border-transparent hover:bg-white/50 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-white transition-all";
                     }
@@ -837,7 +837,7 @@
             subPages.forEach(id => {
                 const el = document.getElementById('sal-sub-' + id);
                 if (el) {
-                    el.style.display = (id === subId) ? 'block' : 'none';
+                    el.style.setProperty('display', (id === subId) ? 'block' : 'none', 'important');
                 }
             });
 
@@ -851,6 +851,13 @@
                     }
                 }
             });
+        }
+
+        function settHurtigVakt(t, m, type, timebank) {
+            if (document.getElementById('vakt-timer')) document.getElementById('vakt-timer').value = t;
+            if (document.getElementById('vakt-minutter')) document.getElementById('vakt-minutter').value = m;
+            if (document.getElementById('tillegg-type')) document.getElementById('tillegg-type').value = type;
+            if (document.getElementById('vakt-timebank')) document.getElementById('vakt-timebank').checked = timebank;
         }
 
         // 3. CLEAN ACCORDION TOGGLING
