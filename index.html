@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Verkstedsportalen | CNC, Verktøy, Lønn & Elbil</title>
+    <title>Verkstedsportalen | CNC, Verktøy, Lønn & Strøm</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -58,7 +58,7 @@
         }
     </script>
     
-    <style>
+    <style type="text/tailwindcss">
         /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         .dark ::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.5); }
@@ -103,15 +103,67 @@
         }
         .glass-input:focus { @apply border-transparent; }
         .glass-input-brand:focus { @apply ring-brand-500; }
+        .glass-input-amber:focus { @apply ring-amber-500; }
         .glass-input-blue:focus { @apply ring-blue-500; }
         .glass-input-emerald:focus { @apply ring-emerald-500; }
         .glass-input-indigo:focus { @apply ring-indigo-500; }
         .glass-input-teal:focus { @apply ring-teal-500; }
         .glass-input-sky:focus { @apply ring-sky-500; }
+        .glass-input-rose:focus { @apply ring-rose-500; }
+
+        /* Industrielt teknisk rutenett i bakgrunnen */
+        .bg-tech-grid {
+            background-size: 32px 32px;
+            background-image: 
+                linear-gradient(to right, rgba(148, 163, 184, 0.08) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(148, 163, 184, 0.08) 1px, transparent 1px);
+        }
+        .dark .bg-tech-grid {
+            background-image: 
+                linear-gradient(to right, rgba(51, 65, 85, 0.22) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(51, 65, 85, 0.22) 1px, transparent 1px);
+        }
+
+        /* Klikkbare resultatbokser med kopierings-indikator */
+        .copy-val {
+            @apply cursor-pointer relative inline-flex items-center gap-1.5 px-2 py-0.5 -mr-2 rounded-lg transition-all hover:bg-slate-900/10 dark:hover:bg-white/10 active:scale-95 select-none;
+        }
+        .copy-val::after {
+            content: "📋";
+            @apply text-[10px] opacity-0 transition-opacity duration-200;
+        }
+        .copy-val:hover::after {
+            @apply opacity-70;
+        }
+
+        /* Print-optimalisering */
+        @media print {
+            body { height: auto !important; overflow: visible !important; background: white !important; color: black !important; }
+            aside, #mobile-header, #mobile-bottom-nav, .animate-blob, #toast-container, #confirm-modal { display: none !important; }
+            main { overflow: visible !important; padding: 0 !important; }
+        }
     </style>
 </head>
 
-<body class="flex h-screen overflow-hidden antialiased selection:bg-brand-500 selection:text-white bg-slate-100 dark:bg-slate-950 text-slate-900 dark:text-slate-100 relative transition-colors duration-300">
+<body class="flex h-screen overflow-hidden antialiased selection:bg-brand-500 selection:text-white bg-slate-100 dark:bg-slate-950 text-slate-900 dark:text-slate-100 relative transition-colors duration-300 bg-tech-grid">
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="fixed top-20 md:top-6 right-4 z-[100] flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- Custom Confirm Modal (Erstatter nettleserens confirm/alert) -->
+    <div id="confirm-modal" class="fixed inset-0 z-[90] hidden items-center justify-center bg-slate-950/70 backdrop-blur-sm p-4">
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-3xl max-w-md w-full p-6 shadow-2xl animate-fadeIn">
+            <div class="w-12 h-12 rounded-2xl bg-rose-100 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400 flex items-center justify-center mb-4">
+                <i data-lucide="alert-triangle" class="w-6 h-6"></i>
+            </div>
+            <h3 class="text-lg font-extrabold text-slate-900 dark:text-white mb-2">Nullstill lønnskalkulator?</h3>
+            <p id="confirm-modal-text" class="text-sm text-slate-600 dark:text-slate-400 mb-6">Er du sikker på at du vil slette alle registrerte vakter og tilbakestille lønnsinnstillingene?</p>
+            <div class="flex gap-3">
+                <button onclick="lukkConfirmModal()" class="flex-1 py-3 px-4 rounded-xl font-bold text-sm bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">Avbryt</button>
+                <button id="confirm-modal-yes" class="flex-1 py-3 px-4 rounded-xl font-bold text-sm bg-rose-600 hover:bg-rose-700 text-white transition-colors shadow-lg shadow-rose-600/30">Ja, nullstill</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Ambient Background -->
     <div class="fixed inset-0 z-0 overflow-hidden pointer-events-none">
@@ -122,238 +174,239 @@
     </div>
 
     <!-- SIDEBAR (Desktop) -->
-    <aside class="w-64 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl border-r border-slate-200 dark:border-slate-800 flex-col hidden md:flex z-20 shadow-[4px_0_24px_rgba(0,0,0,0.02)] dark:shadow-[4px_0_24px_rgba(0,0,0,0.2)] transition-colors duration-300">
-        <div class="h-20 flex items-center px-6 border-b border-slate-200/50 dark:border-slate-800/50">
-            <i data-lucide="wrench" class="text-brand-500 w-7 h-7 mr-3 drop-shadow-[0_0_8px_rgba(245,158,11,0.4)]"></i>
+    <aside class="w-64 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-r border-slate-200/80 dark:border-slate-800 flex-col hidden md:flex z-20 shadow-[4px_0_24px_rgba(0,0,0,0.03)] dark:shadow-[4px_0_24px_rgba(0,0,0,0.3)] transition-colors duration-300">
+        <div class="h-20 flex items-center px-6 border-b border-slate-200/60 dark:border-slate-800/80">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center mr-3 shadow-md shadow-brand-500/20 text-slate-950">
+                <i data-lucide="wrench" class="w-5 h-5 stroke-[2.5]"></i>
+            </div>
             <div>
-                <h1 class="text-xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-none">Verksteds<span class="text-brand-500">Portal</span></h1>
-                <p class="text-[10px] text-slate-500 font-mono mt-1 font-bold">V16.0 | MED ELBIL</p>
+                <h1 class="text-lg font-extrabold tracking-tight text-slate-900 dark:text-white leading-none">Verksteds<span class="text-brand-500">Portal</span></h1>
+                <div class="flex items-center gap-1.5 mt-1">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <p class="text-[10px] text-slate-500 dark:text-slate-400 font-mono font-bold tracking-wider">V18.0 HMI PRO</p>
+                </div>
             </div>
         </div>
         
         <nav class="flex-1 overflow-y-auto py-6 space-y-2 px-4">
-            <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn w-full flex items-center px-4 py-3 text-sm font-semibold rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white transition-all shadow-sm">
-                <i data-lucide="layout-dashboard" class="w-5 h-5 mr-3 text-brand-500"></i> Oversikt
+            <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn w-full flex items-center justify-between px-4 py-3 text-sm font-semibold rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white transition-all shadow-sm">
+                <span class="flex items-center"><i data-lucide="layout-dashboard" class="w-5 h-5 mr-3 text-brand-500"></i> Oversikt</span>
+                <kbd class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-700 text-slate-400">1</kbd>
             </button>
-            <button onclick="switchTab('salary')" id="nav-salary" class="nav-btn w-full flex items-center px-4 py-3 text-sm font-medium rounded-xl text-slate-500 dark:text-slate-400 border border-transparent hover:bg-white/50 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-white transition-all">
-                <i data-lucide="calculator" class="w-5 h-5 mr-3 text-slate-400"></i> Lønnskalkulator
+            <button onclick="switchTab('salary')" id="nav-salary" class="nav-btn w-full flex items-center justify-between px-4 py-3 text-sm font-medium rounded-xl text-slate-500 dark:text-slate-400 border border-transparent hover:bg-white/50 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-white transition-all">
+                <span class="flex items-center"><i data-lucide="calculator" class="w-5 h-5 mr-3 text-slate-400"></i> Lønnskalkulator</span>
+                <kbd class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-400">2</kbd>
             </button>
-            <button onclick="switchTab('cnc')" id="nav-cnc" class="nav-btn w-full flex items-center px-4 py-3 text-sm font-medium rounded-xl text-slate-500 dark:text-slate-400 border border-transparent hover:bg-white/50 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-white transition-all">
-                <i data-lucide="cpu" class="w-5 h-5 mr-3 text-slate-400"></i> Maskinering
+            <button onclick="switchTab('cnc')" id="nav-cnc" class="nav-btn w-full flex items-center justify-between px-4 py-3 text-sm font-medium rounded-xl text-slate-500 dark:text-slate-400 border border-transparent hover:bg-white/50 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-white transition-all">
+                <span class="flex items-center"><i data-lucide="cpu" class="w-5 h-5 mr-3 text-slate-400"></i> Maskinering</span>
+                <kbd class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-400">3</kbd>
             </button>
-            <button onclick="switchTab('tools')" id="nav-tools" class="nav-btn w-full flex items-center px-4 py-3 text-sm font-medium rounded-xl text-slate-500 dark:text-slate-400 border border-transparent hover:bg-white/50 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-white transition-all">
-                <i data-lucide="ruler" class="w-5 h-5 mr-3 text-slate-400"></i> Verktøytabeller
+            <button onclick="switchTab('tools')" id="nav-tools" class="nav-btn w-full flex items-center justify-between px-4 py-3 text-sm font-medium rounded-xl text-slate-500 dark:text-slate-400 border border-transparent hover:bg-white/50 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-white transition-all">
+                <span class="flex items-center"><i data-lucide="ruler" class="w-5 h-5 mr-3 text-slate-400"></i> Verktøytabeller</span>
+                <kbd class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-400">4</kbd>
             </button>
-            <button onclick="switchTab('ev')" id="nav-ev" class="nav-btn w-full flex items-center px-4 py-3 text-sm font-medium rounded-xl text-slate-500 dark:text-slate-400 border border-transparent hover:bg-white/50 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-white transition-all">
-                <i data-lucide="battery-charging" class="w-5 h-5 mr-3 text-slate-400"></i> Elbil-Kalkulator
+            <button onclick="switchTab('ev')" id="nav-ev" class="nav-btn w-full flex items-center justify-between px-4 py-3 text-sm font-medium rounded-xl text-slate-500 dark:text-slate-400 border border-transparent hover:bg-white/50 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-white transition-all">
+                <span class="flex items-center"><i data-lucide="zap" class="w-5 h-5 mr-3 text-slate-400"></i> Strøm & Elbil</span>
+                <kbd class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-400">5</kbd>
             </button>
         </nav>
         
-        <div class="p-4 border-t border-slate-200/50 dark:border-slate-800/50 bg-slate-50/50 dark:bg-slate-900/30">
+        <div class="p-4 border-t border-slate-200/50 dark:border-slate-800/50 bg-slate-50/50 dark:bg-slate-900/30 space-y-2">
+            <div class="px-3 py-2 rounded-xl bg-slate-200/50 dark:bg-slate-800/60 text-[11px] text-slate-500 dark:text-slate-400 flex items-center justify-between font-mono">
+                <span>💡 Klikk tall for kopi</span>
+                <span class="text-brand-500 font-bold">AKTIV</span>
+            </div>
             <button onclick="toggleTheme()" class="w-full flex items-center justify-center px-4 py-2.5 text-sm font-semibold rounded-xl text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all border border-slate-200 dark:border-slate-700 shadow-sm">
                 <i data-lucide="sun" class="w-4 h-4 mr-2 hidden dark:block text-brand-400"></i>
                 <i data-lucide="moon" class="w-4 h-4 mr-2 block dark:hidden text-indigo-500"></i>
-                <span class="dark:hidden">Lyst tema</span>
-                <span class="hidden dark:block">Mørkt tema</span>
+                <span class="dark:hidden">Bytt til Mørk HMI</span>
+                <span class="hidden dark:block">Bytt til Lys HMI</span>
             </button>
         </div>
     </aside>
 
-    <!-- MOBILE HEADER -->
-    <div class="md:hidden fixed top-0 left-0 right-0 h-16 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-4 z-50 transition-colors">
+    <!-- MOBILE TOP HEADER -->
+    <div id="mobile-header" class="md:hidden fixed top-0 left-0 right-0 h-14 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-4 z-50 transition-colors">
         <div class="flex items-center">
-            <i data-lucide="wrench" class="text-brand-500 w-5 h-5 mr-2"></i>
-            <h1 class="text-lg font-bold text-slate-900 dark:text-white">Verksteds<span class="text-brand-500">Portal</span></h1>
+            <div class="w-7 h-7 rounded-lg bg-brand-500 flex items-center justify-center mr-2.5 text-slate-950">
+                <i data-lucide="wrench" class="w-4 h-4 stroke-[2.5]"></i>
+            </div>
+            <h1 class="text-base font-extrabold text-slate-900 dark:text-white tracking-tight">Verksteds<span class="text-brand-500">Portal</span></h1>
+            <span class="ml-2 text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-500">V18</span>
         </div>
-        <button id="mobile-menu-btn" class="text-slate-600 dark:text-slate-300 focus:outline-none p-2 rounded-lg bg-slate-100 dark:bg-slate-800">
-            <i data-lucide="menu" class="w-5 h-5"></i>
+        <button onclick="toggleTheme()" class="text-slate-600 dark:text-slate-300 focus:outline-none p-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+            <i data-lucide="sun" class="w-4 h-4 hidden dark:block text-brand-400"></i>
+            <i data-lucide="moon" class="w-4 h-4 block dark:hidden text-indigo-500"></i>
         </button>
     </div>
 
-    <!-- MOBILE MENU OVERLAY -->
-    <div id="mobile-menu" class="fixed inset-0 bg-slate-50/95 dark:bg-slate-900/95 backdrop-blur-xl z-40 hidden flex-col pt-20 px-4 space-y-3 md:hidden transition-colors">
-        <button onclick="switchTab('dashboard'); toggleMobileMenu()" class="w-full flex items-center px-4 py-4 text-base font-bold rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm">
-            <i data-lucide="layout-dashboard" class="w-5 h-5 mr-3 text-brand-500"></i> Oversikt
+    <!-- MOBILE BOTTOM DOCK (Enhåndsbetjening for verkstedet) -->
+    <nav id="mobile-bottom-nav" class="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-t border-slate-200 dark:border-slate-800 flex items-center justify-around px-1 z-50 shadow-[0_-4px_20px_rgba(0,0,0,0.1)]">
+        <button onclick="switchTab('dashboard')" id="mnav-dashboard" class="mnav-btn flex flex-col items-center justify-center w-full h-full text-brand-500 font-bold text-[10px] gap-1 transition-colors">
+            <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+            <span>Oversikt</span>
         </button>
-        <button onclick="switchTab('salary'); toggleMobileMenu()" class="w-full flex items-center px-4 py-4 text-base font-semibold rounded-xl text-slate-600 dark:text-slate-300 bg-white/50 dark:bg-slate-800/50">
-            <i data-lucide="calculator" class="w-5 h-5 mr-3 text-slate-400"></i> Lønnskalkulator
+        <button onclick="switchTab('salary')" id="mnav-salary" class="mnav-btn flex flex-col items-center justify-center w-full h-full text-slate-400 dark:text-slate-500 font-medium text-[10px] gap-1 transition-colors">
+            <i data-lucide="calculator" class="w-5 h-5"></i>
+            <span>Lønn</span>
         </button>
-        <button onclick="switchTab('cnc'); toggleMobileMenu()" class="w-full flex items-center px-4 py-4 text-base font-semibold rounded-xl text-slate-600 dark:text-slate-300 bg-white/50 dark:bg-slate-800/50">
-            <i data-lucide="cpu" class="w-5 h-5 mr-3 text-slate-400"></i> Maskinering
+        <button onclick="switchTab('cnc')" id="mnav-cnc" class="mnav-btn flex flex-col items-center justify-center w-full h-full text-slate-400 dark:text-slate-500 font-medium text-[10px] gap-1 transition-colors">
+            <i data-lucide="cpu" class="w-5 h-5"></i>
+            <span>CNC</span>
         </button>
-        <button onclick="switchTab('tools'); toggleMobileMenu()" class="w-full flex items-center px-4 py-4 text-base font-semibold rounded-xl text-slate-600 dark:text-slate-300 bg-white/50 dark:bg-slate-800/50">
-            <i data-lucide="ruler" class="w-5 h-5 mr-3 text-slate-400"></i> Verktøytabeller
+        <button onclick="switchTab('tools')" id="mnav-tools" class="mnav-btn flex flex-col items-center justify-center w-full h-full text-slate-400 dark:text-slate-500 font-medium text-[10px] gap-1 transition-colors">
+            <i data-lucide="ruler" class="w-5 h-5"></i>
+            <span>Tabeller</span>
         </button>
-        <button onclick="switchTab('ev'); toggleMobileMenu()" class="w-full flex items-center px-4 py-4 text-base font-semibold rounded-xl text-slate-600 dark:text-slate-300 bg-white/50 dark:bg-slate-800/50">
-            <i data-lucide="battery-charging" class="w-5 h-5 mr-3 text-slate-400"></i> Elbil-Kalkulator
+        <button onclick="switchTab('ev')" id="mnav-ev" class="mnav-btn flex flex-col items-center justify-center w-full h-full text-slate-400 dark:text-slate-500 font-medium text-[10px] gap-1 transition-colors">
+            <i data-lucide="zap" class="w-5 h-5"></i>
+            <span>Strøm</span>
         </button>
-        <div class="pt-6 mt-4 border-t border-slate-200 dark:border-slate-800">
-            <button onclick="toggleTheme()" class="w-full flex items-center justify-center px-4 py-4 text-base font-bold rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-200/50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 shadow-sm">
-                <i data-lucide="sun" class="w-5 h-5 mr-2 hidden dark:block text-brand-400"></i>
-                <i data-lucide="moon" class="w-5 h-5 mr-2 block dark:hidden text-indigo-500"></i>
-                <span class="dark:hidden">Bytt til mørkt tema</span>
-                <span class="hidden dark:block">Bytt til lyst tema</span>
-            </button>
-        </div>
-    </div>
+    </nav>
 
     <!-- MAIN CONTENT AREA -->
     <main class="flex-1 overflow-y-auto pt-16 md:pt-0 relative z-10 transition-colors pb-24 md:pb-12">
         
         <!-- ================= DASHBOARD ================= -->
-        <section id="dashboard" class="tab-content active p-6 lg:p-10 max-w-7xl mx-auto">
-            <header class="mb-10">
-                <h2 class="text-3xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-slate-900 via-slate-700 to-slate-500 dark:from-white dark:via-slate-200 dark:to-slate-400 mb-4 tracking-tight">Velkommen til<br>Verkstedsportalen</h2>
-                <p class="text-slate-600 dark:text-slate-400 text-lg font-medium max-w-2xl">Ditt alt-i-ett digitale verktøy for maskinering, kalkulering, lønnsregistrering og elbil-økonomi.</p>
-            </header>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
-                <!-- Lønn Card -->
-                <div onclick="switchTab('salary')" class="bg-white/60 dark:bg-slate-800/40 backdrop-blur-md border border-slate-200 dark:border-slate-700/50 rounded-3xl p-6 cursor-pointer transition-all duration-300 group hover:border-brand-500/50 hover:shadow-[0_8px_30px_-5px_rgba(245,158,11,0.2)] dark:hover:bg-slate-800/80 relative overflow-hidden shadow-sm">
-                    <div class="w-14 h-14 bg-white dark:bg-slate-900 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform border border-slate-100 dark:border-slate-700 shadow-sm">
-                        <i data-lucide="banknote" class="w-7 h-7 text-brand-500"></i>
+        <section id="dashboard" class="tab-content active p-4 sm:p-6 lg:p-10 max-w-7xl mx-auto">
+            <!-- LIVE KPI TELEMETRI-STRIPE (6 SANNTIDSKORT) -->
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 mb-8">
+                <!-- 1. Netto utbetalt + overtid -->
+                <div onclick="switchTab('salary')" class="bg-white/90 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200/90 dark:border-slate-800 rounded-2xl p-4 cursor-pointer hover:border-brand-500 transition-all group">
+                    <div class="flex items-center justify-between text-xs font-mono text-slate-400 mb-1">
+                        <span>NETTO UTBETALT</span>
+                        <i data-lucide="wallet" class="w-4 h-4 text-brand-500 group-hover:scale-110 transition-transform"></i>
                     </div>
-                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">Lønnskalkulator</h3>
-                    <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">Kalkuler skift, timebank, bruttolønn og estimert skattetrekk.</p>
+                    <p id="dash-kpi-netto" class="text-xl sm:text-2xl font-mono font-extrabold text-slate-900 dark:text-white truncate">0,00 kr</p>
+                    <p id="dash-kpi-periode" class="text-[11px] text-brand-600 dark:text-brand-400 font-medium mt-1 truncate">Herav overtid: + 0 kr</p>
+                </div>
+
+                <!-- 2. Timebank saldo + vakter -->
+                <div onclick="switchTab('salary'); switchSalaryTab('vakter');" class="bg-white/90 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200/90 dark:border-slate-800 rounded-2xl p-4 cursor-pointer hover:border-indigo-500 transition-all group">
+                    <div class="flex items-center justify-between text-xs font-mono text-slate-400 mb-1">
+                        <span>TIMEBANK SALDO</span>
+                        <i data-lucide="clock" class="w-4 h-4 text-indigo-500 group-hover:scale-110 transition-transform"></i>
+                    </div>
+                    <p id="dash-kpi-timebank" class="text-xl sm:text-2xl font-mono font-extrabold text-indigo-600 dark:text-indigo-400">+ 0,0 t</p>
+                    <p id="dash-kpi-vakter" class="text-[11px] text-slate-500 dark:text-slate-400 font-medium mt-1 truncate">0 vakter denne mnd</p>
+                </div>
+
+                <!-- 3. Ukenummer & Arbeidsdager -->
+                <div onclick="switchTab('salary')" class="bg-white/90 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200/90 dark:border-slate-800 rounded-2xl p-4 cursor-pointer hover:border-emerald-500 transition-all group">
+                    <div class="flex items-center justify-between text-xs font-mono text-slate-400 mb-1">
+                        <span>UKENUMMER & DAGER</span>
+                        <i data-lucide="calendar-days" class="w-4 h-4 text-emerald-500 group-hover:scale-110 transition-transform"></i>
+                    </div>
+                    <p id="dash-kpi-week" class="text-xl sm:text-2xl font-mono font-extrabold text-emerald-600 dark:text-emerald-400 truncate">Uke --</p>
+                    <p id="dash-kpi-workdays" class="text-[11px] text-slate-500 dark:text-slate-400 font-medium mt-1 truncate">Beregner arbeidsdager...</p>
+                </div>
+
+                <!-- 4. Siste CNC-utregning -->
+                <div id="dash-card-cnc" onclick="apneSisteCnc()" class="bg-white/90 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200/90 dark:border-slate-800 rounded-2xl p-4 cursor-pointer hover:border-blue-500 transition-all group">
+                    <div class="flex items-center justify-between text-xs font-mono text-slate-400 mb-1">
+                        <span>SISTE CNC-UTREGNING</span>
+                        <i data-lucide="cpu" class="w-4 h-4 text-blue-500 group-hover:scale-110 transition-transform"></i>
+                    </div>
+                    <p id="dash-kpi-cnc-val" class="text-xl sm:text-2xl font-mono font-extrabold text-blue-600 dark:text-blue-400 truncate">4775 RPM | F1146</p>
+                    <p id="dash-kpi-cnc-sub" class="text-[11px] text-slate-500 dark:text-slate-400 font-medium mt-1 truncate">Skjæredata: Ø12 mm (z=4)</p>
+                </div>
+
+                <!-- 5. Aktiv Gjenge & Kjernebor -->
+                <div onclick="switchTab('tools'); switchToolsTab('threads');" class="bg-white/90 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200/90 dark:border-slate-800 rounded-2xl p-4 cursor-pointer hover:border-amber-500 transition-all group">
+                    <div class="flex items-center justify-between text-xs font-mono text-slate-400 mb-1">
+                        <span>AKTIV GJENGE</span>
+                        <i data-lucide="settings-2" class="w-4 h-4 text-amber-500 group-hover:scale-110 transition-transform"></i>
+                    </div>
+                    <p id="dash-kpi-thread" class="text-xl sm:text-2xl font-mono font-extrabold text-amber-600 dark:text-amber-400 truncate">M10 → Ø8.5</p>
+                    <p id="dash-kpi-thread-sub" class="text-[11px] text-slate-500 dark:text-slate-400 font-medium mt-1 truncate">Formtapp: Ø9.3 mm · P=1.5</p>
+                </div>
+
+                <!-- 6. Strømsats & Lading -->
+                <div onclick="switchTab('ev')" class="bg-white/90 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200/90 dark:border-slate-800 rounded-2xl p-4 cursor-pointer hover:border-teal-500 transition-all group">
+                    <div class="flex items-center justify-between text-xs font-mono text-slate-400 mb-1">
+                        <span>STRØMSATS & ELBIL</span>
+                        <i data-lucide="zap" class="w-4 h-4 text-teal-500 group-hover:scale-110 transition-transform"></i>
+                    </div>
+                    <p id="dash-kpi-power" class="text-xl sm:text-2xl font-mono font-extrabold text-teal-600 dark:text-teal-400 truncate">1,30 kr/kWh</p>
+                    <p id="dash-kpi-power-sub" class="text-[11px] text-slate-500 dark:text-slate-400 font-medium mt-1 truncate">Lading: 7t 18m (+299 km)</p>
+                </div>
+            </div>
+
+            <!-- HOVEDMODULER (HMI KORT) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <!-- Lønn Card -->
+                <div onclick="switchTab('salary')" class="bg-white/80 dark:bg-slate-900/70 backdrop-blur-md border border-slate-200 dark:border-slate-800 border-t-4 border-t-brand-500 rounded-3xl p-6 cursor-pointer transition-all duration-300 group hover:shadow-xl hover:-translate-y-0.5 relative overflow-hidden">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="w-12 h-12 bg-brand-500/10 dark:bg-brand-500/15 rounded-2xl flex items-center justify-center border border-brand-500/30">
+                            <i data-lucide="banknote" class="w-6 h-6 text-brand-500"></i>
+                        </div>
+                        <span class="text-[11px] font-mono font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 group-hover:bg-brand-500 group-hover:text-slate-950 transition-colors">MODUL 01 →</span>
+                    </div>
+                    <h3 class="text-xl font-extrabold text-slate-900 dark:text-white mb-1.5">Lønn, Skift & Timebank</h3>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4">Full kontroll på fastlønn, 50%/100% overtid, avspasering i timebank, LO-kontingent og tabelltrekk.</p>
+                    <div class="flex flex-wrap gap-2 text-[11px] font-mono text-slate-500 dark:text-slate-400">
+                        <span class="px-2 py-1 rounded bg-slate-100 dark:bg-slate-800/80">📊 Lønnsslipp</span>
+                        <span class="px-2 py-1 rounded bg-slate-100 dark:bg-slate-800/80">🏦 Timebank</span>
+                        <span class="px-2 py-1 rounded bg-slate-100 dark:bg-slate-800/80">📥 CSV Eksport</span>
+                    </div>
                 </div>
 
                 <!-- CNC Card -->
-                <div onclick="switchTab('cnc')" class="bg-white/60 dark:bg-slate-800/40 backdrop-blur-md border border-slate-200 dark:border-slate-700/50 rounded-3xl p-6 cursor-pointer transition-all duration-300 group hover:border-blue-500/50 hover:shadow-[0_8px_30px_-5px_rgba(59,130,246,0.2)] dark:hover:bg-slate-800/80 relative overflow-hidden shadow-sm">
-                    <div class="w-14 h-14 bg-white dark:bg-slate-900 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform border border-slate-100 dark:border-slate-700 shadow-sm">
-                        <i data-lucide="cpu" class="w-7 h-7 text-blue-500"></i>
+                <div onclick="switchTab('cnc')" class="bg-white/80 dark:bg-slate-900/70 backdrop-blur-md border border-slate-200 dark:border-slate-800 border-t-4 border-t-blue-500 rounded-3xl p-6 cursor-pointer transition-all duration-300 group hover:shadow-xl hover:-translate-y-0.5 relative overflow-hidden">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="w-12 h-12 bg-blue-500/10 dark:bg-blue-500/15 rounded-2xl flex items-center justify-center border border-blue-500/30">
+                            <i data-lucide="cpu" class="w-6 h-6 text-blue-500"></i>
+                        </div>
+                        <span class="text-[11px] font-mono font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 group-hover:bg-blue-500 group-hover:text-white transition-colors">MODUL 02 →</span>
                     </div>
-                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">Maskinering (CNC)</h3>
-                    <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">Omregning for sirkulær mating i Gibbs, innv/utv gjenger, hurtigkalkulator for skjæredata og C-akse.</p>
+                    <h3 class="text-xl font-extrabold text-slate-900 dark:text-white mb-1.5">Maskinering (CNC)</h3>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4">Sentermating ved sirkulærfresing (innv/utv) for GibbsCAM/Heidenhain, gjengediameter, Vc/RPM og C-akse.</p>
+                    <div class="flex flex-wrap gap-2 text-[11px] font-mono text-slate-500 dark:text-slate-400">
+                        <span class="px-2 py-1 rounded bg-slate-100 dark:bg-slate-800/80">🔄 Sirkulær Vf</span>
+                        <span class="px-2 py-1 rounded bg-slate-100 dark:bg-slate-800/80">🔩 Gibbs Gjenger</span>
+                        <span class="px-2 py-1 rounded bg-slate-100 dark:bg-slate-800/80">🧭 C-Akse °/min</span>
+                        <span class="px-2 py-1 rounded bg-slate-100 dark:bg-slate-800/80">⚡ Tynn spon (hm)</span>
+                    </div>
                 </div>
 
                 <!-- Tools Card -->
-                <div onclick="switchTab('tools')" class="bg-white/60 dark:bg-slate-800/40 backdrop-blur-md border border-slate-200 dark:border-slate-700/50 rounded-3xl p-6 cursor-pointer transition-all duration-300 group hover:border-emerald-500/50 hover:shadow-[0_8px_30px_-5px_rgba(16,185,129,0.2)] dark:hover:bg-slate-800/80 relative overflow-hidden shadow-sm">
-                    <div class="w-14 h-14 bg-white dark:bg-slate-900 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform border border-slate-100 dark:border-slate-700 shadow-sm">
-                        <i data-lucide="ruler" class="w-7 h-7 text-emerald-500"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">Verktøytabeller</h3>
-                    <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">Anbefalte skjæredata per materiale, gjengetabeller, kjernebor, vektestimering og PCD (delingssirkel).</p>
-                </div>
-
-                <!-- EV Card -->
-                <div onclick="switchTab('ev')" class="bg-white/60 dark:bg-slate-800/40 backdrop-blur-md border border-slate-200 dark:border-slate-700/50 rounded-3xl p-6 cursor-pointer transition-all duration-300 group hover:border-teal-500/50 hover:shadow-[0_8px_30px_-5px_rgba(20,184,166,0.2)] dark:hover:bg-slate-800/80 relative overflow-hidden shadow-sm">
-                    <div class="w-14 h-14 bg-white dark:bg-slate-900 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform border border-slate-100 dark:border-slate-700 shadow-sm">
-                        <i data-lucide="battery-charging" class="w-7 h-7 text-teal-500"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">Elbil-Kalkulator</h3>
-                    <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">Kalkuler ladetid, kostnader, bensin-besparelser, og se forventet rekkeviddetap på vinteren.</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- ================= ELBIL-KALKULATOR ================= -->
-        <section id="ev" class="tab-content p-4 lg:p-8 max-w-7xl mx-auto">
-            <header class="mb-6 lg:mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div class="flex items-center">
-                    <div class="w-12 h-12 lg:w-16 lg:h-16 bg-teal-100 dark:bg-teal-900/30 rounded-2xl flex items-center justify-center mr-4 lg:mr-5 border border-teal-200 dark:border-teal-700/50 shadow-sm">
-                        <i data-lucide="battery-charging" class="w-6 h-6 lg:w-8 lg:h-8 text-teal-600 dark:text-teal-400"></i>
-                    </div>
-                    <div>
-                        <h2 class="text-2xl lg:text-3xl font-extrabold text-slate-900 dark:text-white">Elbil-Kalkulator</h2>
-                        <p class="text-xs lg:text-sm text-teal-600 dark:text-teal-400 font-mono mt-1">Ladetid, besparelse & rekkevidde</p>
-                    </div>
-                </div>
-            </header>
-
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
-                <!-- Ladetid & Rekkevidde -->
-                <div class="bg-white/80 dark:bg-slate-900/60 backdrop-blur-md border border-slate-200 dark:border-slate-800 rounded-3xl p-6 lg:p-8 shadow-sm relative overflow-hidden transition-colors border-l-4 border-l-teal-500 h-fit">
-                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2 flex items-center"><i data-lucide="plug-zap" class="w-6 h-6 mr-3 text-teal-500"></i> Ladetid & Tilført Rekkevidde</h3>
-                    <p class="text-sm text-slate-500 dark:text-slate-400 mb-6 border-b border-slate-200 dark:border-slate-800 pb-4 font-medium">Beregn tid, rekkevidde og pris for å lade elbilen.</p>
-                    
-                    <div class="grid grid-cols-2 gap-5 mb-6">
-                        <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Batteri (kWh)</label><input type="number" id="charge-battery" value="77" oninput="beregnLadetid()" class="glass-input glass-input-teal"></div>
-                        <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Snittforbruk (kWh/100km)</label><input type="number" step="0.5" id="charge-consumption" value="18" oninput="beregnLadetid()" class="glass-input glass-input-teal"></div>
-                        
-                        <div class="col-span-2">
-                            <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Ladekilde / Effekt</label>
-                            <select id="charge-type" class="glass-input glass-input-teal" onchange="beregnLadetid()">
-                                <option value="2.3">Stikkontakt (2.3 kW)</option>
-                                <option value="3.7">Hjemmelader 1-fase 16A (3.7 kW)</option>
-                                <option value="7.4" selected>Hjemmelader 1-fase 32A (7.4 kW)</option>
-                                <option value="11">Hjemmelader 3-fase 16A (11 kW)</option>
-                                <option value="22">Hjemmelader 3-fase 32A (22 kW)</option>
-                                <option value="50">Hurtiglader (50 kW)</option>
-                                <option value="150">Lynlader (150 kW)</option>
-                                <option value="250">Supercharger (250 kW)</option>
-                            </select>
+                <div onclick="switchTab('tools')" class="bg-white/80 dark:bg-slate-900/70 backdrop-blur-md border border-slate-200 dark:border-slate-800 border-t-4 border-t-emerald-500 rounded-3xl p-6 cursor-pointer transition-all duration-300 group hover:shadow-xl hover:-translate-y-0.5 relative overflow-hidden">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="w-12 h-12 bg-emerald-500/10 dark:bg-emerald-500/15 rounded-2xl flex items-center justify-center border border-emerald-500/30">
+                            <i data-lucide="ruler" class="w-6 h-6 text-emerald-500"></i>
                         </div>
-                        
-                        <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Start %</label><input type="number" id="charge-start" value="10" min="0" max="100" oninput="beregnLadetid()" class="glass-input glass-input-teal"></div>
-                        <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Mål %</label><input type="number" id="charge-target" value="80" min="0" max="100" oninput="beregnLadetid()" class="glass-input glass-input-teal"></div>
-                        
-                        <div class="col-span-2"><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Strømpris (kr/kWh inkl. nettleie)</label><input type="number" step="0.1" id="charge-price" value="1.30" oninput="beregnLadetid()" class="glass-input glass-input-teal"></div>
+                        <span class="text-[11px] font-mono font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 group-hover:bg-emerald-500 group-hover:text-slate-950 transition-colors">MODUL 03 →</span>
                     </div>
-                    
-                    <div class="bg-teal-50/80 dark:bg-teal-900/30 p-5 rounded-2xl border-l-4 border-teal-500 space-y-3 font-medium shadow-inner">
-                        <div class="flex justify-between items-center"><span class="text-teal-800 dark:text-teal-300 font-bold">⏱️ Estimert Ladetid:</span><span class="font-mono text-lg font-bold text-teal-700 dark:text-teal-400" id="res-charge-time">0t 0m</span></div>
-                        <div class="flex justify-between items-center"><span class="text-teal-800 dark:text-teal-300 font-bold">🔋 Tilført Rekkevidde:</span><span class="font-mono text-lg font-bold text-teal-700 dark:text-teal-400" id="res-charge-range">+ 0 km</span></div>
-                        <div class="flex justify-between items-center border-t border-teal-200 dark:border-teal-800/50 pt-3 mt-2"><span class="text-teal-900 dark:text-teal-200 font-bold text-base">💰 Ladekostnad:</span><span class="font-mono text-xl font-extrabold text-teal-600 dark:text-teal-400" id="res-charge-cost">0,00 kr</span></div>
+                    <h3 class="text-xl font-extrabold text-slate-900 dark:text-white mb-1.5">Verktøytabeller & Matte</h3>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4">Materialdatabank for skjæredata, bor-spisstillegg, kjernebor (skjære/formtapp), ISO-pasninger, vekt, PCD og trigonometri.</p>
+                    <div class="flex flex-wrap gap-2 text-[11px] font-mono text-slate-500 dark:text-slate-400">
+                        <span class="px-2 py-1 rounded bg-slate-100 dark:bg-slate-800/80">🧪 Skjæredata</span>
+                        <span class="px-2 py-1 rounded bg-slate-100 dark:bg-slate-800/80">📐 Rett Trekant</span>
+                        <span class="px-2 py-1 rounded bg-slate-100 dark:bg-slate-800/80">⚖️ Emnevekt</span>
+                        <span class="px-2 py-1 rounded bg-slate-100 dark:bg-slate-800/80">💧 Brix Kjølevæske</span>
                     </div>
                 </div>
 
-                <!-- Besparelse -->
-                <div class="bg-white/80 dark:bg-slate-900/60 backdrop-blur-md border border-slate-200 dark:border-slate-800 rounded-3xl p-6 lg:p-8 shadow-sm relative overflow-hidden transition-colors border-l-4 border-l-blue-500 h-fit">
-                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2 flex items-center"><i data-lucide="piggy-bank" class="w-6 h-6 mr-3 text-blue-500"></i> Elbil vs Bensin/Diesel</h3>
-                    <p class="text-sm text-slate-500 dark:text-slate-400 mb-6 border-b border-slate-200 dark:border-slate-800 pb-4 font-medium">Se hvor mye du sparer på å kjøre elektrisk.</p>
-                    
-                    <div class="grid grid-cols-2 gap-5 mb-6">
-                        <div class="col-span-2"><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Årlig Kjørelengde (km/år)</label><input type="number" id="save-km" value="15000" oninput="beregnBesparelse()" class="glass-input glass-input-blue"></div>
-                        
-                        <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Bensinpris (kr/L)</label><input type="number" step="0.5" id="save-fuel-price" value="20.0" oninput="beregnBesparelse()" class="glass-input glass-input-blue"></div>
-                        <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Forbruk Bensin (L/mil)</label><input type="number" step="0.05" id="save-fuel-cons" value="0.65" oninput="beregnBesparelse()" class="glass-input glass-input-blue"></div>
-                        
-                        <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Strømpris (kr/kWh)</label><input type="number" step="0.1" id="save-elek-price" value="1.30" oninput="beregnBesparelse()" class="glass-input glass-input-blue"></div>
-                        <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Forbruk Elbil (kWh/mil)</label><input type="number" step="0.1" id="save-ev-cons" value="1.80" oninput="beregnBesparelse()" class="glass-input glass-input-blue"></div>
-                    </div>
-                    
-                    <div class="bg-blue-50/80 dark:bg-blue-900/30 p-5 rounded-2xl border-l-4 border-blue-500 space-y-3 font-medium shadow-inner">
-                        <div class="flex justify-between items-center"><span class="text-blue-800 dark:text-blue-300 font-bold">✨ Besparelse pr. Måned:</span><span class="font-mono text-blue-700 dark:text-blue-400 text-base" id="res-save-month">0,00 kr</span></div>
-                        <div class="flex justify-between items-center"><span class="text-blue-800 dark:text-blue-300 font-bold">📅 Besparelse pr. År:</span><span class="font-mono text-blue-700 dark:text-blue-400 text-base" id="res-save-year">0,00 kr</span></div>
-                        <div class="flex justify-between items-center border-t border-blue-200 dark:border-blue-800/50 pt-3 mt-2"><span class="text-blue-900 dark:text-blue-200 font-bold text-base">🚀 Besparelse over 5 År:</span><span class="font-mono text-xl font-extrabold text-blue-600 dark:text-blue-400" id="res-save-5yr">0,00 kr</span></div>
-                    </div>
-                </div>
-
-                <!-- Vinter-Rekkevidde -->
-                <div class="bg-white/80 dark:bg-slate-900/60 backdrop-blur-md border border-slate-200 dark:border-slate-800 rounded-3xl p-6 lg:p-8 shadow-sm relative overflow-hidden transition-colors border-l-4 border-l-sky-500 h-fit lg:col-span-2">
-                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2 flex items-center"><i data-lucide="snowflake" class="w-6 h-6 mr-3 text-sky-500"></i> Vinter & Temperaturtap</h3>
-                    <p class="text-sm text-slate-500 dark:text-slate-400 mb-6 border-b border-slate-200 dark:border-slate-800 pb-4 font-medium">Estimer reell rekkevidde i kulden basert på WLTP.</p>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
-                        <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">WLTP Sommer-rekkevidde (km)</label><input type="number" id="winter-wltp" value="480" oninput="beregnVinter()" class="glass-input glass-input-sky"></div>
-                        <div>
-                            <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Utetemperatur & Forhold</label>
-                            <select id="winter-temp" class="glass-input glass-input-sky" onchange="beregnVinter()">
-                                <option value="0" selected>+20°C Sommer (100% · 0% tap)</option>
-                                <option value="12">+10°C Vår/Høst (88% · -12% tap)</option>
-                                <option value="25">0°C Norsk Vinter (75% · -25% tap)</option>
-                                <option value="35">-10°C Kald Vinter (65% · -35% tap)</option>
-                                <option value="42">-20°C Ekstrem Kulde (58% · -42% tap)</option>
-                            </select>
+                <!-- Strøm/Elbil Card -->
+                <div onclick="switchTab('ev')" class="bg-white/80 dark:bg-slate-900/70 backdrop-blur-md border border-slate-200 dark:border-slate-800 border-t-4 border-t-teal-500 rounded-3xl p-6 cursor-pointer transition-all duration-300 group hover:shadow-xl hover:-translate-y-0.5 relative overflow-hidden">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="w-12 h-12 bg-teal-500/10 dark:bg-teal-500/15 rounded-2xl flex items-center justify-center border border-teal-500/30">
+                            <i data-lucide="zap" class="w-6 h-6 text-teal-500"></i>
                         </div>
+                        <span class="text-[11px] font-mono font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 group-hover:bg-teal-500 group-hover:text-slate-950 transition-colors">MODUL 04 →</span>
                     </div>
-                    
-                    <div class="bg-sky-50/80 dark:bg-sky-900/30 p-5 rounded-2xl border-l-4 border-sky-500 flex flex-col md:flex-row justify-between md:items-center gap-4 shadow-inner">
-                        <div class="flex-1">
-                            <span class="block text-sky-800 dark:text-sky-300 font-bold mb-1">❄️ Reell Vinter-Rekkevidde:</span>
-                            <span class="font-mono text-2xl font-extrabold text-sky-600 dark:text-sky-400" id="res-winter-range">0 km</span>
-                        </div>
-                        <div class="hidden md:block w-px h-12 bg-sky-200 dark:bg-sky-800"></div>
-                        <div class="flex-1">
-                            <span class="block text-sky-800 dark:text-sky-300 font-bold mb-1">📉 Forventet Rekkeviddetap:</span>
-                            <span class="font-mono text-lg font-bold text-loss-500 dark:text-loss-400" id="res-winter-loss">- 0 km</span>
-                        </div>
+                    <h3 class="text-xl font-extrabold text-slate-900 dark:text-white mb-1.5">Strøm & Elbil</h3>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4">Strømforbruk i verksted og hjem, hurtigvalg for elbil-batterier, ladetid, drivstoffbesparelse og vintertap.</p>
+                    <div class="flex flex-wrap gap-2 text-[11px] font-mono text-slate-500 dark:text-slate-400">
+                        <span class="px-2 py-1 rounded bg-slate-100 dark:bg-slate-800/80">🔌 Ladetid</span>
+                        <span class="px-2 py-1 rounded bg-slate-100 dark:bg-slate-800/80">🏠 Verkstedstrøm</span>
+                        <span class="px-2 py-1 rounded bg-slate-100 dark:bg-slate-800/80">❄️ Vinter-WLTP</span>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- ================= LØNNSKALKULATOR (Beholdt som den er) ================= -->
+        <!-- ================= LØNNSKALKULATOR ================= -->
         <section id="salary" class="tab-content p-4 lg:p-8 max-w-7xl mx-auto">
             <header class="mb-6 lg:mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div class="flex items-center">
@@ -367,7 +420,6 @@
                 </div>
             </header>
 
-            <!-- Lønn Sub-Tabs -->
             <div class="flex space-x-2 overflow-x-auto pb-4 mb-6 border-b border-slate-200 dark:border-slate-800 scrollbar-hide">
                 <button onclick="switchSalaryTab('oversikt')" id="btn-sal-oversikt" class="salary-tab-btn active px-4 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all bg-brand-500 text-white shadow-md shadow-brand-500/20">📊 Oversikt</button>
                 <button onclick="switchSalaryTab('vakter')" id="btn-sal-vakter" class="salary-tab-btn px-4 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800">⏱️ Vakter & Timebank</button>
@@ -415,7 +467,6 @@
                     <!-- Høyre: Oppgjør / Lønnsslipp -->
                     <div class="lg:col-span-7">
                         <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-xl overflow-hidden flex flex-col h-full">
-                            <!-- Header -->
                             <div class="bg-brand-500 dark:bg-brand-600 p-8 text-white text-center relative overflow-hidden">
                                 <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-white/20 via-transparent to-transparent opacity-50"></div>
                                 <p class="text-xs font-mono font-bold tracking-[0.2em] uppercase opacity-90 mb-2 relative z-10">Netto Utbetalt</p>
@@ -424,14 +475,12 @@
                             </div>
 
                             <div class="p-6 md:p-8 space-y-5 text-sm flex-1">
-                                <!-- Vakter Netto Boks -->
                                 <div class="bg-brand-50 dark:bg-brand-900/20 border border-brand-200 dark:border-brand-800/50 rounded-2xl p-5">
                                     <div class="line-row strong"><span class="text-brand-800 dark:text-brand-300">✨ Sum tilleggsvakter (brutto)</span><span id="vis-sumvakt-brutto" class="font-mono text-brand-700 dark:text-brand-400">0,00 kr</span></div>
                                     <div class="line-row strong mt-2"><span class="text-brand-800 dark:text-brand-300 text-base">💰 Netto utbetalt fra vakter</span><span id="vis-sumvakt-netto" class="font-mono text-brand-700 dark:text-brand-400 text-lg">0,00 kr</span></div>
                                     <div class="mt-3 text-xs text-brand-600/80 dark:text-brand-400/80 font-bold text-center bg-brand-100/50 dark:bg-brand-900/40 py-1.5 rounded-lg" id="vis-tillegg-prosent">Tillegg utgjør 0% av brutto</div>
                                 </div>
 
-                                <!-- Timebank Boks -->
                                 <div class="bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-200 dark:border-indigo-800/50 rounded-2xl p-4 flex justify-between items-center">
                                     <div>
                                         <span class="block font-bold text-indigo-800 dark:text-indigo-300 text-base">🏦 Timebank (timer til gode)</span>
@@ -440,7 +489,6 @@
                                     <span id="vis-timebank-saldo" class="font-mono font-extrabold text-xl text-indigo-700 dark:text-indigo-400 bg-indigo-100 dark:bg-indigo-900/50 px-3 py-1 rounded-lg">+ 0,0 t</span>
                                 </div>
 
-                                <!-- Detaljer -->
                                 <div class="space-y-2 pt-2 font-medium">
                                     <div id="rad-fastlonn" class="line-row border-b border-slate-100 dark:border-slate-800/50 pb-2" style="display: none;">
                                         <div>
@@ -474,7 +522,6 @@
                                 </div>
                             </div>
 
-                            <!-- Footer (Prognose) -->
                             <div class="bg-slate-50 dark:bg-slate-900/50 p-6 text-xs space-y-2 border-t border-slate-200 dark:border-slate-800 font-medium">
                                 <div class="line-row text-slate-600 dark:text-slate-400"><span>Estimerte feriepenger (12 % av brutto)</span><span id="vis-feriepenger" class="font-mono font-bold">0,00 kr</span></div>
                                 <div class="pt-3 pb-1 text-[10px] font-extrabold tracking-widest text-slate-400 uppercase">Årsprognose</div>
@@ -502,6 +549,7 @@
                                 <button type="button" class="px-3 py-2 text-xs font-bold rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:border-brand-500 dark:hover:border-brand-500 transition-colors shadow-sm" onclick="settHurtigVakt(7, 30, 'hverdag50', false)">⚡ 7.5t Hverdag 50%</button>
                                 <button type="button" class="px-3 py-2 text-xs font-bold rounded-xl border border-indigo-300 dark:border-indigo-600 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 hover:border-indigo-500 transition-colors shadow-sm" onclick="settHurtigVakt(1, 0, 'hverdag50', true)">🏦 1t Timebank (+50% ut)</button>
                                 <button type="button" class="px-3 py-2 text-xs font-bold rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:border-brand-500 transition-colors shadow-sm" onclick="settHurtigVakt(4, 0, 'helg50', false)">⚡ 4t Helg 50%</button>
+                                <button type="button" class="px-3 py-2 text-xs font-bold rounded-xl border border-rose-300 dark:border-rose-600 bg-rose-50 dark:bg-rose-900/30 text-rose-700 dark:text-rose-300 hover:border-rose-500 transition-colors shadow-sm" onclick="settHurtigVakt(7, 30, 'uttak_tb', false)">🏖️ -7.5t Uttak Timebank</button>
                             </div>
                         </div>
 
@@ -527,6 +575,7 @@
                                     <option value="hverdag100">Hverdag 100% (T.lønn x 2.0)</option>
                                     <option value="helg50">Helg 50% (T.lønn x 1.5)</option>
                                     <option value="helg100">Helg 100% (T.lønn x 2.0)</option>
+                                    <option value="uttak_tb">🏖️ Uttak avspasering (Trekker fra Timebank)</option>
                                 </select>
                             </div>
                             <label class="flex items-start gap-4 p-5 bg-indigo-50/80 dark:bg-indigo-900/30 border border-indigo-200 dark:border-indigo-700/50 rounded-2xl cursor-pointer group transition-colors hover:bg-indigo-100 dark:hover:bg-indigo-900/50">
@@ -587,6 +636,10 @@
                                     <option value="0">0 dager</option><option value="1">1 dag</option><option value="2">2 dager</option><option value="3">3 dager</option><option value="4">4 dager</option><option value="5">5 dager (1 uke)</option><option value="10">10 dager (2 uker)</option><option value="15">15 dager (3 uker)</option><option value="20">20 dager (4 uker)</option>
                                 </select>
                             </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Overstyr dager (valgfritt)</label>
+                                <input id="overstyr-dager" type="number" step="0.01" placeholder="Auto (kalender)" class="glass-input glass-input-brand" oninput="oppdaterAarOgMaaned()">
+                            </div>
                         </div>
                     </div>
 
@@ -619,9 +672,18 @@
                                 <input id="fagforening-kroner-input" type="number" placeholder="Tast inn kr..." class="glass-input glass-input-brand" oninput="regnUtProsentFraKroner()">
                             </div>
                         </div>
-                        <div class="mt-8 pt-6 border-t border-slate-200 dark:border-slate-800 text-center">
+                        <div class="mt-8 pt-6 border-t border-slate-200 dark:border-slate-800 space-y-3">
+                            <div class="grid grid-cols-2 gap-3">
+                                <button type="button" onclick="eksporterBackupJson()" class="bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold py-3 px-4 rounded-xl border border-slate-200 dark:border-slate-700 transition-colors flex items-center justify-center text-xs">
+                                    <i data-lucide="download" class="w-4 h-4 mr-2 text-brand-500"></i> Lagre Backup (.json)
+                                </button>
+                                <label class="bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold py-3 px-4 rounded-xl border border-slate-200 dark:border-slate-700 transition-colors flex items-center justify-center text-xs cursor-pointer">
+                                    <i data-lucide="upload" class="w-4 h-4 mr-2 text-emerald-500"></i> Importer Backup
+                                    <input type="file" accept=".json" class="hidden" onchange="importerBackupJson(event)">
+                                </label>
+                            </div>
                             <button onclick="nullstillAlt()" class="bg-rose-50 hover:bg-rose-100 dark:bg-rose-900/20 dark:hover:bg-rose-900/40 text-loss-600 dark:text-loss-400 font-bold py-3.5 px-6 rounded-xl border border-rose-200 dark:border-rose-800/50 transition-colors flex items-center justify-center text-sm w-full">
-                                <i data-lucide="trash-2" class="w-5 h-5 mr-2"></i> Nullstill alt i kalkulatoren
+                                <i data-lucide="trash-2" class="w-5 h-5 mr-2"></i> Nullstill lønnskalkulatoren
                             </button>
                         </div>
                     </div>
@@ -645,8 +707,15 @@
                 <!-- Sirkulær Mating -->
                 <div class="bg-white/80 dark:bg-slate-900/60 backdrop-blur-md border border-slate-200 dark:border-slate-800 rounded-3xl p-6 lg:p-8 shadow-sm relative overflow-hidden transition-colors border-l-4 border-l-blue-500">
                     <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2 flex items-center"><i data-lucide="rotate-cw" class="w-6 h-6 mr-3 text-blue-500"></i> Sirkulær Mating</h3>
-                    <p class="text-sm text-slate-500 dark:text-slate-400 mb-6 border-b border-slate-200 dark:border-slate-800 pb-4 font-medium">Regn om bordmating til effektiv sirkulær mating (for Gibbs/Heidenhain).</p>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 mb-6 border-b border-slate-200 dark:border-slate-800 pb-4 font-medium">Regn om bordmating til effektiv sentermating (for Gibbs/Heidenhain).</p>
                     <div class="grid grid-cols-2 gap-5 mb-6">
+                        <div class="col-span-2">
+                            <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Bearbeidingstype</label>
+                            <select id="gf-mode" onchange="beregnSirkulaerMating()" class="glass-input glass-input-blue">
+                                <option value="internal" selected>Innvendig fresing (Hull / Lomme)</option>
+                                <option value="external">Utvendig fresing (Aksling / Tapp)</option>
+                            </select>
+                        </div>
                         <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Vc (m/min)</label><input type="number" id="gf-vc" value="350" oninput="beregnSirkulaerMating()" class="glass-input glass-input-blue"></div>
                         <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">fz (mm)</label><input type="number" step="0.01" id="gf-fz" value="0.18" oninput="beregnSirkulaerMating()" class="glass-input glass-input-blue"></div>
                         <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Skjær (z)</label><input type="number" id="gf-z" value="6" oninput="beregnSirkulaerMating()" class="glass-input glass-input-blue"></div>
@@ -655,7 +724,8 @@
                     </div>
                     <div class="bg-blue-50/80 dark:bg-blue-900/30 p-5 rounded-2xl border-l-4 border-blue-500 space-y-3 font-medium shadow-inner">
                         <div class="flex justify-between items-center"><span class="text-slate-700 dark:text-slate-300">Spindel (n):</span><span class="font-mono text-lg font-bold text-blue-700 dark:text-blue-400" id="gf-res-rpm">0 RPM</span></div>
-                        <div class="flex justify-between items-center"><span class="text-blue-800 dark:text-blue-300 font-bold text-base">Sirkulær mating (Vf):</span><span class="font-mono text-xl font-extrabold text-blue-600 dark:text-blue-400" id="gf-res-mating">0 mm/min</span></div>
+                        <div class="flex justify-between items-center"><span class="text-slate-600 dark:text-slate-400 text-sm">Lineær bordmating (Vf):</span><span class="font-mono text-sm font-bold text-slate-700 dark:text-slate-300" id="gf-res-lin">0 mm/min</span></div>
+                        <div class="flex justify-between items-center border-t border-blue-200 dark:border-blue-800/50 pt-2"><span class="text-blue-800 dark:text-blue-300 font-bold text-base">Sirkulær mating (Senter):</span><span class="font-mono text-xl font-extrabold text-blue-600 dark:text-blue-400" id="gf-res-mating">0 mm/min</span></div>
                     </div>
                 </div>
 
@@ -731,6 +801,24 @@
                         <div class="flex justify-between items-center border-t border-brand-200 dark:border-brand-800/50 pt-2 mt-2 text-xs font-bold"><span class="text-brand-700 dark:text-brand-500">Omdreininger pr. min:</span><span class="font-mono text-brand-600 dark:text-brand-400" id="deg-res-revmin">0,00</span></div>
                     </div>
                 </div>
+
+                <!-- Tynn Spon / Radial Chip Thinning (NY!) -->
+                <div class="bg-white/80 dark:bg-slate-900/60 backdrop-blur-md border border-slate-200 dark:border-slate-800 rounded-3xl p-6 lg:p-8 shadow-sm relative overflow-hidden transition-colors border-l-4 border-l-emerald-500 lg:col-span-2">
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2 flex items-center"><i data-lucide="flame" class="w-6 h-6 mr-3 text-emerald-500"></i> Tynn Spon-kompensasjon (Radial Chip Thinning / Dynamisk fresing)</h3>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 mb-6 border-b border-slate-200 dark:border-slate-800 pb-4 font-medium">Når sideinngrepet (ae) er under 50% av fresediameteren (D), blir sponen tynnere enn fz. Øk fz for å unngå gnissing og varmgang.</p>
+                    <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
+                        <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Fres Dia (D)</label><input type="number" step="0.1" id="rct-d" value="16" oninput="beregnChipThinning()" class="glass-input glass-input-emerald"></div>
+                        <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Sideinngrep (ae)</label><input type="number" step="0.1" id="rct-ae" value="1.6" oninput="beregnChipThinning()" class="glass-input glass-input-emerald"></div>
+                        <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Ønsket hm (mm)</label><input type="number" step="0.01" id="rct-hm" value="0.10" oninput="beregnChipThinning()" class="glass-input glass-input-emerald"></div>
+                        <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Skjær (z)</label><input type="number" id="rct-z" value="5" oninput="beregnChipThinning()" class="glass-input glass-input-emerald"></div>
+                        <div class="col-span-2 md:col-span-1"><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Spindel (RPM)</label><input type="number" id="rct-rpm" value="4500" oninput="beregnChipThinning()" class="glass-input glass-input-emerald"></div>
+                    </div>
+                    <div class="bg-emerald-50/80 dark:bg-emerald-900/30 p-5 rounded-2xl border-l-4 border-emerald-500 grid grid-cols-1 md:grid-cols-3 gap-4 shadow-inner">
+                        <div class="flex justify-between items-center md:flex-col md:items-start md:border-r md:border-emerald-200 md:dark:border-emerald-800"><span class="text-emerald-800 dark:text-emerald-300 font-bold md:mb-1">Inngrepsprosent (ae/D):</span><span class="font-mono text-lg font-bold text-emerald-700 dark:text-emerald-400" id="rct-res-pct">10.0 % (x1.67)</span></div>
+                        <div class="flex justify-between items-center md:flex-col md:items-start md:border-r md:border-emerald-200 md:dark:border-emerald-800 md:pl-4"><span class="text-emerald-800 dark:text-emerald-300 font-bold md:mb-1">Kompensert fz:</span><span class="font-mono text-lg font-bold text-emerald-700 dark:text-emerald-400" id="rct-res-fz">0.167 mm/tann</span></div>
+                        <div class="flex justify-between items-center md:flex-col md:items-start md:pl-4"><span class="text-emerald-900 dark:text-emerald-200 font-bold md:mb-1">Ny Bordmating (Vf):</span><span class="font-mono text-xl font-extrabold text-emerald-600 dark:text-emerald-400" id="rct-res-vf">3750 mm/min</span></div>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -741,8 +829,8 @@
                     <i data-lucide="ruler" class="w-6 h-6 lg:w-8 lg:h-8 text-emerald-600 dark:text-emerald-400"></i>
                 </div>
                 <div>
-                    <h2 class="text-2xl lg:text-3xl font-extrabold text-slate-900 dark:text-white">Verktøytabeller & Bor</h2>
-                    <p class="text-xs lg:text-sm text-emerald-600 dark:text-emerald-400 font-mono mt-1">Data, Toleranser & Matte</p>
+                    <h2 class="text-2xl lg:text-3xl font-extrabold text-slate-900 dark:text-white">Verktøytabeller & Konverterer</h2>
+                    <p class="text-xs lg:text-sm text-emerald-600 dark:text-emerald-400 font-mono mt-1">Data, Toleranser, Matte & Enheter</p>
                 </div>
             </header>
 
@@ -751,6 +839,7 @@
                 <button onclick="switchToolsTab('threads')" id="btn-t-threads" class="tools-tab-btn px-4 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800">🔩 Gjenger & Toleranser</button>
                 <button onclick="switchToolsTab('weight')" id="btn-t-weight" class="tools-tab-btn px-4 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800">⚖️ Vekt & PCD</button>
                 <button onclick="switchToolsTab('math')" id="btn-t-math" class="tools-tab-btn px-4 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800">📐 Matte</button>
+                <button onclick="switchToolsTab('conv')" id="btn-t-conv" class="tools-tab-btn px-4 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800">🔄 Konverterer</button>
             </div>
 
             <!-- Tab: Skjæredata -->
@@ -788,6 +877,37 @@
                             <div class="flex justify-between items-center border-t border-blue-200 dark:border-blue-800/50 pt-3 mt-2"><span class="text-blue-900 dark:text-blue-200 font-bold text-base">Total Z-dybde:</span><span class="font-mono text-xl font-extrabold text-blue-600 dark:text-blue-400" id="drill-res-total">29.80 mm</span></div>
                         </div>
                     </div>
+
+                    <!-- NY: Kjølevæske & Refraktometer (Brix) -->
+                    <div class="bg-white/80 dark:bg-slate-900/60 backdrop-blur-md border border-slate-200 dark:border-slate-800 rounded-3xl p-6 lg:p-8 shadow-sm relative overflow-hidden transition-colors border-l-4 border-l-teal-500 h-fit">
+                        <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2 flex items-center"><i data-lucide="droplets" class="w-6 h-6 mr-3 text-teal-500"></i> Kjølevæske & Refraktometer (Brix)</h3>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mb-6 border-b border-slate-200 dark:border-slate-800 pb-4 font-medium">Beregn nøyaktig hvor mange liter ren olje/konsentrat som må etterfylles i sumpen.</p>
+                        <div class="grid grid-cols-2 gap-4 mb-6">
+                            <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Tankvolum (Liter)</label><input type="number" id="cool-vol" value="250" class="glass-input glass-input-teal" oninput="beregnKjolevaeske()"></div>
+                            <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Refraktometer-faktor</label><input type="number" step="0.1" id="cool-factor" value="1.4" class="glass-input glass-input-teal" oninput="beregnKjolevaeske()"></div>
+                            <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Målt Brix (%)</label><input type="number" step="0.1" id="cool-brix" value="3.5" class="glass-input glass-input-teal" oninput="beregnKjolevaeske()"></div>
+                            <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Ønsket Konsentrasjon (%)</label><input type="number" step="0.5" id="cool-target" value="8.0" class="glass-input glass-input-teal" oninput="beregnKjolevaeske()"></div>
+                        </div>
+                        <div class="bg-teal-50/80 dark:bg-teal-900/30 p-5 rounded-2xl border-l-4 border-teal-500 space-y-3 font-medium shadow-inner">
+                            <div class="flex justify-between items-center"><span class="text-teal-800 dark:text-teal-300 font-bold">Faktisk konsentrasjon nå:</span><span class="font-mono text-teal-700 dark:text-teal-400 text-base" id="cool-res-actual">4.9 %</span></div>
+                            <div class="flex justify-between items-center border-t border-teal-200 dark:border-teal-800/50 pt-3 mt-2"><span class="text-teal-900 dark:text-teal-200 font-bold text-base">Etterfyll rent konsentrat:</span><span class="font-mono text-xl font-extrabold text-teal-600 dark:text-teal-400" id="cool-res-add">+ 7.75 Liter</span></div>
+                        </div>
+                    </div>
+
+                    <!-- NY: Overflateruhet (Ra / Rz & Dreiing) -->
+                    <div class="bg-white/80 dark:bg-slate-900/60 backdrop-blur-md border border-slate-200 dark:border-slate-800 rounded-3xl p-6 lg:p-8 shadow-sm relative overflow-hidden transition-colors border-l-4 border-l-indigo-500 h-fit">
+                        <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2 flex items-center"><i data-lucide="waves" class="w-6 h-6 mr-3 text-indigo-500"></i> Overflateruhet (Ra, Rz & Dreiing)</h3>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mb-6 border-b border-slate-200 dark:border-slate-800 pb-4 font-medium">Teoretisk ruhet ut fra neseradius (RE) og mating (fn), eller finn maks mating for et gitt Ra-krav.</p>
+                        <div class="grid grid-cols-2 gap-4 mb-6">
+                            <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Neseradius RE (mm)</label><select id="ra-re" class="glass-input glass-input-indigo" onchange="beregnOverflate()"><option value="0.2">R 0.2 mm</option><option value="0.4">R 0.4 mm</option><option value="0.8" selected>R 0.8 mm</option><option value="1.2">R 1.2 mm</option><option value="1.6">R 1.6 mm</option></select></div>
+                            <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Mating fn (mm/o)</label><input type="number" step="0.01" id="ra-fn" value="0.18" class="glass-input glass-input-indigo" oninput="beregnOverflate('fn')"></div>
+                            <div class="col-span-2"><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Eller tast inn ønsket Ra (µm) for å finne maks fn:</label><input type="number" step="0.1" id="ra-target" value="1.6" class="glass-input glass-input-indigo" oninput="beregnOverflate('ra')"></div>
+                        </div>
+                        <div class="bg-indigo-50/80 dark:bg-indigo-900/30 p-5 rounded-2xl border-l-4 border-indigo-500 space-y-3 font-medium shadow-inner">
+                            <div class="flex justify-between items-center"><span class="text-indigo-800 dark:text-indigo-300 font-bold">Teoretisk Ra / Rz:</span><span class="font-mono text-indigo-700 dark:text-indigo-400 text-base" id="ra-res-val">Ra 1.30 µm (Rz 5.06)</span></div>
+                            <div class="flex justify-between items-center border-t border-indigo-200 dark:border-indigo-800/50 pt-3 mt-2"><span class="text-indigo-900 dark:text-indigo-200 font-bold text-base">Anbefalt maks fn:</span><span class="font-mono text-xl font-extrabold text-indigo-600 dark:text-indigo-400" id="ra-res-maxfn">0.20 mm/o</span></div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -797,38 +917,137 @@
                     <!-- Gjengetabell -->
                     <div class="bg-white/80 dark:bg-slate-900/60 backdrop-blur-md border border-slate-200 dark:border-slate-800 rounded-3xl p-6 lg:p-8 shadow-sm relative overflow-hidden transition-colors border-l-4 border-l-brand-500">
                         <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2 flex items-center"><i data-lucide="settings-2" class="w-6 h-6 mr-3 text-brand-500"></i> Gjengetabell & Kjernebor</h3>
-                        <p class="text-sm text-slate-500 dark:text-slate-400 mb-6 border-b border-slate-200 dark:border-slate-800 pb-4 font-medium">Oppslag for Metriske (M) og Rørgjenger (BSP/G/R).</p>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mb-6 border-b border-slate-200 dark:border-slate-800 pb-4 font-medium">Oppslag for Metriske grov-/fingjenger (M3–M36) og Rørgjenger (BSP/G).</p>
                         <div class="mb-6">
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Velg gjengedimensjon & stigning</label>
                             <select id="tap-select" class="glass-input glass-input-brand" onchange="oppdaterGjengeTabell()">
-                                <optgroup label="Metriske Gjenger"><option value="M3">M3 × 0.5</option><option value="M4">M4 × 0.7</option><option value="M5">M5 × 0.8</option><option value="M6">M6 × 1.0</option><option value="M8">M8 × 1.25</option><option value="M10" selected>M10 × 1.5</option><option value="M12">M12 × 1.75</option><option value="M16">M16 × 2.0</option><option value="M20">M20 × 2.5</option></optgroup>
-                                <optgroup label="BSP / G Rørgjenger"><option value="G1/8">G 1/8" (28 tpi)</option><option value="G1/4">G 1/4" (19 tpi)</option><option value="G3/8">G 3/8" (19 tpi)</option><option value="G1/2">G 1/2" (14 tpi)</option><option value="G3/4">G 3/4" (14 tpi)</option><option value="G1">G 1" (11 tpi)</option></optgroup>
+                                <optgroup label="Metrisk Standard (Grovgjenger M3–M36)">
+                                    <option value="M3x0.5">M3 × 0.5 (Std)</option>
+                                    <option value="M4x0.7">M4 × 0.7 (Std)</option>
+                                    <option value="M5x0.8">M5 × 0.8 (Std)</option>
+                                    <option value="M6x1">M6 × 1.0 (Std)</option>
+                                    <option value="M8x1.25">M8 × 1.25 (Std)</option>
+                                    <option value="M10x1.5" selected>M10 × 1.5 (Std)</option>
+                                    <option value="M12x1.75">M12 × 1.75 (Std)</option>
+                                    <option value="M14x2">M14 × 2.0 (Std)</option>
+                                    <option value="M16x2">M16 × 2.0 (Std)</option>
+                                    <option value="M18x2.5">M18 × 2.5 (Std)</option>
+                                    <option value="M20x2.5">M20 × 2.5 (Std)</option>
+                                    <option value="M22x2.5">M22 × 2.5 (Std)</option>
+                                    <option value="M24x3">M24 × 3.0 (Std)</option>
+                                    <option value="M27x3">M27 × 3.0 (Std)</option>
+                                    <option value="M30x3.5">M30 × 3.5 (Std)</option>
+                                    <option value="M33x3.5">M33 × 3.5 (Std)</option>
+                                    <option value="M36x4">M36 × 4.0 (Std)</option>
+                                </optgroup>
+                                <optgroup label="Metriske Fingjenger (MF)">
+                                    <option value="M8x1">M8 × 1.0 (Fin)</option>
+                                    <option value="M10x1">M10 × 1.0 (Fin)</option>
+                                    <option value="M10x1.25">M10 × 1.25 (Fin)</option>
+                                    <option value="M12x1.25">M12 × 1.25 (Fin)</option>
+                                    <option value="M12x1.5">M12 × 1.5 (Fin)</option>
+                                    <option value="M14x1.5">M14 × 1.5 (Fin)</option>
+                                    <option value="M16x1.5">M16 × 1.5 (Fin)</option>
+                                    <option value="M18x1.5">M18 × 1.5 (Fin)</option>
+                                    <option value="M20x1.5">M20 × 1.5 (Fin)</option>
+                                    <option value="M20x2">M20 × 2.0 (Fin)</option>
+                                    <option value="M22x1.5">M22 × 1.5 (Fin)</option>
+                                    <option value="M24x1.5">M24 × 1.5 (Fin)</option>
+                                    <option value="M24x2">M24 × 2.0 (Fin)</option>
+                                    <option value="M27x1.5">M27 × 1.5 (Fin)</option>
+                                    <option value="M27x2">M27 × 2.0 (Fin)</option>
+                                    <option value="M30x1.5">M30 × 1.5 (Fin)</option>
+                                    <option value="M30x2">M30 × 2.0 (Fin)</option>
+                                    <option value="M30x3">M30 × 3.0 (Fin)</option>
+                                    <option value="M33x2">M33 × 2.0 (Fin)</option>
+                                    <option value="M33x3">M33 × 3.0 (Fin)</option>
+                                    <option value="M36x1.5">M36 × 1.5 (Fin)</option>
+                                    <option value="M36x2">M36 × 2.0 (Fin)</option>
+                                    <option value="M36x3">M36 × 3.0 (Fin)</option>
+                                </optgroup>
+                                <optgroup label="BSP / G Rørgjenger">
+                                    <option value="G1/8">G 1/8" (28 tpi)</option>
+                                    <option value="G1/4">G 1/4" (19 tpi)</option>
+                                    <option value="G3/8">G 3/8" (19 tpi)</option>
+                                    <option value="G1/2">G 1/2" (14 tpi)</option>
+                                    <option value="G3/4">G 3/4" (14 tpi)</option>
+                                    <option value="G1">G 1" (11 tpi)</option>
+                                    <option value="G1-1/4">G 1 1/4" (11 tpi)</option>
+                                    <option value="G1-1/2">G 1 1/2" (11 tpi)</option>
+                                </optgroup>
                             </select>
                         </div>
                         <div class="bg-brand-50/80 dark:bg-brand-900/30 p-5 rounded-2xl border-l-4 border-brand-500 space-y-3 font-medium shadow-inner">
-                            <div class="flex justify-between items-center"><span class="text-brand-800 dark:text-brand-300 font-bold">Kjernebor:</span><span class="font-mono text-xl font-extrabold text-brand-700 dark:text-brand-400" id="tap-res-drill">8.5 mm</span></div>
-                            <div class="flex justify-between items-center"><span class="text-brand-800 dark:text-brand-300 font-bold">Stigning (Pitch):</span><span class="font-mono text-brand-700 dark:text-brand-400 text-base" id="tap-res-pitch">1.50 mm</span></div>
+                            <div class="flex justify-between items-center"><span class="text-brand-800 dark:text-brand-300 font-bold">Skjærende Tapp (Bor):</span><span class="font-mono text-xl font-extrabold text-brand-700 dark:text-brand-400" id="tap-res-drill">8.50 mm</span></div>
+                            <div class="flex justify-between items-center" id="tap-row-form"><span class="text-brand-800 dark:text-brand-300 font-bold">Formtapp / Rulling (Bor):</span><span class="font-mono text-xl font-extrabold text-brand-600 dark:text-brand-400" id="tap-res-form">9.30 mm</span></div>
+                            <div class="flex justify-between items-center border-t border-brand-200 dark:border-brand-800/50 pt-3 mt-2"><span class="text-brand-800 dark:text-brand-300 font-bold">Stigning (Pitch):</span><span class="font-mono text-brand-700 dark:text-brand-400 text-base" id="tap-res-pitch">1.50 mm</span></div>
                         </div>
                     </div>
                     
                     <!-- Toleranser -->
                     <div class="bg-white/80 dark:bg-slate-900/60 backdrop-blur-md border border-slate-200 dark:border-slate-800 rounded-3xl p-6 lg:p-8 shadow-sm relative overflow-hidden transition-colors border-l-4 border-l-brand-500">
                         <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2 flex items-center"><i data-lucide="scan-line" class="w-6 h-6 mr-3 text-brand-500"></i> Gjenge & ISO-Toleranser</h3>
-                        <p class="text-sm text-slate-500 dark:text-slate-400 mb-6 border-b border-slate-200 dark:border-slate-800 pb-4 font-medium">Min/maks mål for 6H og 6g.</p>
-                        <div class="grid grid-cols-2 gap-4 mb-6">
-                            <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Størrelse</label><select id="ttol-select" class="glass-input glass-input-brand" onchange="beregnGjengeToleranse()"><option value="M10" selected>M10</option><option value="M12">M12</option><option value="M16">M16</option></select></div>
-                            <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Passning</label><select id="ttol-fit" class="glass-input glass-input-brand" onchange="beregnGjengeToleranse()"><option value="6H">Mutter 6H</option><option value="6g">Skrue 6g</option></select></div>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mb-6 border-b border-slate-200 dark:border-slate-800 pb-4 font-medium">Min/maks mål for 6H (mutter) og 6g (skrue) fra M3 til M36 med valg av stigning.</p>
+                        <div class="grid grid-cols-3 gap-3 mb-6">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Størrelse</label>
+                                <select id="ttol-select" class="glass-input glass-input-brand !px-3" onchange="oppdaterToleranseStigninger()">
+                                    <option value="3">M3</option>
+                                    <option value="4">M4</option>
+                                    <option value="5">M5</option>
+                                    <option value="6">M6</option>
+                                    <option value="8">M8</option>
+                                    <option value="10" selected>M10</option>
+                                    <option value="12">M12</option>
+                                    <option value="14">M14</option>
+                                    <option value="16">M16</option>
+                                    <option value="18">M18</option>
+                                    <option value="20">M20</option>
+                                    <option value="22">M22</option>
+                                    <option value="24">M24</option>
+                                    <option value="27">M27</option>
+                                    <option value="30">M30</option>
+                                    <option value="33">M33</option>
+                                    <option value="36">M36</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Stigning (P)</label>
+                                <select id="ttol-pitch" class="glass-input glass-input-brand !px-3" onchange="beregnGjengeToleranse()"></select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Pasning</label>
+                                <select id="ttol-fit" class="glass-input glass-input-brand !px-3" onchange="beregnGjengeToleranse()">
+                                    <option value="6H">Mutter 6H</option>
+                                    <option value="6g">Skrue 6g</option>
+                                </select>
+                            </div>
                         </div>
-                        <div class="bg-brand-50/80 dark:bg-brand-900/30 p-5 rounded-2xl border-l-4 border-brand-500 space-y-3 font-medium shadow-inner">
-                            <div class="flex justify-between items-center"><span class="text-brand-800 dark:text-brand-300 font-bold">Store dia:</span><span class="font-mono text-brand-700 dark:text-brand-400 text-base" id="ttol-res-major">10.000–10.420</span></div>
-                            <div class="flex justify-between items-center"><span class="text-brand-800 dark:text-brand-300 font-bold">Lille dia:</span><span class="font-mono text-brand-700 dark:text-brand-400 text-base" id="ttol-res-minor">8.376–8.676</span></div>
+                        <div class="bg-brand-50/80 dark:bg-brand-900/30 p-5 rounded-2xl border-l-4 border-brand-500 space-y-2.5 font-medium shadow-inner">
+                            <div class="flex justify-between items-center"><span class="text-brand-800 dark:text-brand-300 font-bold text-sm" id="ttol-lbl-major">Store dia (D):</span><span class="font-mono text-brand-700 dark:text-brand-400 text-base font-bold" id="ttol-res-major">Min 10.000 mm</span></div>
+                            <div class="flex justify-between items-center"><span class="text-brand-800 dark:text-brand-300 font-bold text-sm" id="ttol-lbl-pitch">Flankedia (D2):</span><span class="font-mono text-brand-700 dark:text-brand-400 text-base font-bold" id="ttol-res-pitch">9.026 – 9.206 mm</span></div>
+                            <div class="flex justify-between items-center border-t border-brand-200 dark:border-brand-800/50 pt-2.5"><span class="text-brand-800 dark:text-brand-300 font-bold text-sm" id="ttol-lbl-minor">Lille dia (D1):</span><span class="font-mono text-brand-600 dark:text-brand-400 text-base font-extrabold" id="ttol-res-minor">8.376 – 8.676 mm</span></div>
                         </div>
                         
-                        <h4 class="text-sm font-bold text-brand-600 dark:text-brand-400 mb-3 mt-6 uppercase tracking-wider border-t border-slate-200 dark:border-slate-800 pt-5">ISO Aksling/Hull (H7/g6)</h4>
+                        <h4 class="text-sm font-bold text-brand-600 dark:text-brand-400 mb-3 mt-6 uppercase tracking-wider border-t border-slate-200 dark:border-slate-800 pt-5">ISO Aksling/Hull (H7 / g6 / h6 / f7)</h4>
                         <div class="grid grid-cols-2 gap-4 mb-4">
-                            <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Mål (mm)</label><input type="number" id="iso-dia" value="40" class="glass-input glass-input-brand" oninput="beregnIso()"></div>
-                            <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Klasse</label><select id="iso-class" class="glass-input glass-input-brand" onchange="beregnIso()"><option value="H7" selected>H7</option><option value="g6">g6</option></select></div>
+                            <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Nominelt Mål (mm)</label><input type="number" id="iso-dia" value="40" class="glass-input glass-input-brand" oninput="beregnIso()"></div>
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Toleranseklasse</label>
+                                <select id="iso-class" class="glass-input glass-input-brand" onchange="beregnIso()">
+                                    <option value="H7" selected>Hull H7 (Standard pasning)</option>
+                                    <option value="H8">Hull H8 (Romslig pasning)</option>
+                                    <option value="g6">Aksling g6 (Glidende)</option>
+                                    <option value="h6">Aksling h6 (Null-linje)</option>
+                                    <option value="f7">Aksling f7 (Løpende klaring)</option>
+                                    <option value="m6">Aksling m6 (Lett press)</option>
+                                </select>
+                            </div>
                         </div>
-                        <div class="bg-brand-50/80 dark:bg-brand-900/30 p-4 rounded-xl border-l-4 border-brand-500 flex justify-between items-center shadow-inner"><span class="text-brand-800 dark:text-brand-300 font-bold text-sm">Avvik (µm):</span><span class="font-mono font-bold text-brand-600 dark:text-brand-400" id="iso-res">+25 / 0</span></div>
+                        <div class="bg-brand-50/80 dark:bg-brand-900/30 p-4 rounded-xl border-l-4 border-brand-500 flex justify-between items-center shadow-inner">
+                            <span class="text-brand-800 dark:text-brand-300 font-bold text-sm">Avvik (µm) & Ferdig mål:</span>
+                            <span class="font-mono font-bold text-brand-600 dark:text-brand-400 text-sm sm:text-base" id="iso-res">+25 / 0 µm (40.000–40.025)</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -846,18 +1065,18 @@
                             
                             <!-- Betingede felt -->
                             <div id="w-inputs-plate" class="col-span-2 grid grid-cols-2 gap-4">
-                                <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Lengde</label><input type="number" id="wp-l" value="1000" class="glass-input glass-input-emerald" oninput="beregnVekt()"></div>
-                                <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Bredde</label><input type="number" id="wp-b" value="500" class="glass-input glass-input-emerald" oninput="beregnVekt()"></div>
-                                <div class="col-span-2"><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Tykkelse</label><input type="number" id="wp-t" value="10" class="glass-input glass-input-emerald" oninput="beregnVekt()"></div>
+                                <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Lengde (mm)</label><input type="number" id="wp-l" value="1000" class="glass-input glass-input-emerald" oninput="beregnVekt()"></div>
+                                <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Bredde (mm)</label><input type="number" id="wp-b" value="500" class="glass-input glass-input-emerald" oninput="beregnVekt()"></div>
+                                <div class="col-span-2"><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Tykkelse (mm)</label><input type="number" id="wp-t" value="10" class="glass-input glass-input-emerald" oninput="beregnVekt()"></div>
                             </div>
                             <div id="w-inputs-shaft" class="col-span-2 grid grid-cols-2 gap-4" style="display:none;">
-                                <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Dia</label><input type="number" id="ws-d" value="80" class="glass-input glass-input-emerald" oninput="beregnVekt()"></div>
-                                <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Lengde</label><input type="number" id="ws-l" value="1000" class="glass-input glass-input-emerald" oninput="beregnVekt()"></div>
+                                <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Dia (mm)</label><input type="number" id="ws-d" value="80" class="glass-input glass-input-emerald" oninput="beregnVekt()"></div>
+                                <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Lengde (mm)</label><input type="number" id="ws-l" value="1000" class="glass-input glass-input-emerald" oninput="beregnVekt()"></div>
                             </div>
                             <div id="w-inputs-pipe" class="col-span-2 grid grid-cols-2 gap-4" style="display:none;">
-                                <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Utv Dia</label><input type="number" id="wpi-dout" value="114.3" class="glass-input glass-input-emerald" oninput="beregnVekt()"></div>
-                                <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Gods</label><input type="number" id="wpi-wall" value="6.3" class="glass-input glass-input-emerald" oninput="beregnVekt()"></div>
-                                <div class="col-span-2"><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Lengde</label><input type="number" id="wpi-l" value="1000" class="glass-input glass-input-emerald" oninput="beregnVekt()"></div>
+                                <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Utv Dia (mm)</label><input type="number" id="wpi-dout" value="114.3" class="glass-input glass-input-emerald" oninput="beregnVekt()"></div>
+                                <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Gods (mm)</label><input type="number" id="wpi-wall" value="6.3" class="glass-input glass-input-emerald" oninput="beregnVekt()"></div>
+                                <div class="col-span-2"><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Lengde (mm)</label><input type="number" id="wpi-l" value="1000" class="glass-input glass-input-emerald" oninput="beregnVekt()"></div>
                             </div>
                         </div>
                         <div class="bg-emerald-50/80 dark:bg-emerald-900/30 p-5 rounded-2xl border-l-4 border-emerald-500 flex justify-between items-center shadow-inner">
@@ -907,7 +1126,7 @@
                     <!-- Trigonometri -->
                     <div class="bg-white/80 dark:bg-slate-900/60 backdrop-blur-md border border-slate-200 dark:border-slate-800 rounded-3xl p-6 lg:p-8 shadow-sm relative overflow-hidden transition-colors border-l-4 border-l-indigo-500">
                         <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2 flex items-center"><i data-lucide="triangle-right" class="w-6 h-6 mr-3 text-indigo-500"></i> Trigonometri</h3>
-                        <p class="text-sm text-slate-500 dark:text-slate-400 mb-6 border-b border-slate-200 dark:border-slate-800 pb-4 font-medium">Pythagoras for ukjente sider og vinkler.</p>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mb-6 border-b border-slate-200 dark:border-slate-800 pb-4 font-medium">Fyll inn hvilke som helst 2 verdier for å løse hele trekanten.</p>
                         
                         <!-- Dynamisk SVG -->
                         <div class="flex justify-center mb-6">
@@ -923,20 +1142,214 @@
                         </div>
 
                         <div class="grid grid-cols-2 gap-4 mb-6">
-                            <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Katet a</label><input type="number" id="tri-a" placeholder="f.eks 30" class="glass-input glass-input-indigo" oninput="beregnTrekant()"></div>
-                            <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Katet b</label><input type="number" id="tri-b" placeholder="f.eks 40" class="glass-input glass-input-indigo" oninput="beregnTrekant()"></div>
-                            <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Hyp (c)</label><input type="number" id="tri-c" placeholder="Valgfritt" class="glass-input glass-input-indigo" oninput="beregnTrekant()"></div>
-                            <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Vinkel A</label><input type="number" id="tri-deg" placeholder="Valgfritt" class="glass-input glass-input-indigo" oninput="beregnTrekant()"></div>
+                            <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Katet a (motstående)</label><input type="number" step="any" id="tri-a" value="30" placeholder="f.eks 30" class="glass-input glass-input-indigo" oninput="beregnTrekant()"></div>
+                            <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Katet b (hosliggende)</label><input type="number" step="any" id="tri-b" value="40" placeholder="f.eks 40" class="glass-input glass-input-indigo" oninput="beregnTrekant()"></div>
+                            <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Hypotenus (c)</label><input type="number" step="any" id="tri-c" placeholder="Valgfritt" class="glass-input glass-input-indigo" oninput="beregnTrekant()"></div>
+                            <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Vinkel A (°)</label><input type="number" step="any" id="tri-deg" placeholder="Valgfritt" class="glass-input glass-input-indigo" oninput="beregnTrekant()"></div>
                         </div>
                         <div class="bg-indigo-50/80 dark:bg-indigo-900/30 p-5 rounded-2xl border-l-4 border-indigo-500 space-y-3 font-medium shadow-inner">
-                            <div class="flex justify-between items-center"><span class="text-indigo-800 dark:text-indigo-300 font-bold">Hypotenus c:</span><span class="font-mono text-xl font-extrabold text-indigo-700 dark:text-indigo-400" id="tri-res-c">50.00 mm</span></div>
+                            <div class="flex justify-between items-center"><span class="text-indigo-800 dark:text-indigo-300 font-bold">Sider (a / b / c):</span><span class="font-mono text-base font-extrabold text-indigo-700 dark:text-indigo-400" id="tri-res-c">c: 50.00 (a: 30.00 | b: 40.00)</span></div>
                             <div class="flex justify-between items-center border-t border-indigo-200 dark:border-indigo-800/50 pt-3 mt-2"><span class="text-indigo-800 dark:text-indigo-300 font-bold">Vinkler:</span><span class="font-mono text-base text-indigo-700 dark:text-indigo-400" id="tri-res-angles">A = 36.87° | B = 53.13°</span></div>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <!-- Tab: Konverterer (Enhetskonvertering) -->
+            <div id="ttab-conv" class="tools-tab-content">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
+                    <!-- Tommer / Millimeter -->
+                    <div class="bg-white/80 dark:bg-slate-900/60 backdrop-blur-md border border-slate-200 dark:border-slate-800 rounded-3xl p-6 lg:p-8 shadow-sm relative overflow-hidden transition-colors border-l-4 border-l-rose-500 h-fit">
+                        <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2 flex items-center"><i data-lucide="arrow-left-right" class="w-6 h-6 mr-3 text-rose-500"></i> Lengde (Tommer & mm)</h3>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mb-6 border-b border-slate-200 dark:border-slate-800 pb-4 font-medium">Konverter mellom tommer (brøk/desimal) og millimeter.</p>
+                        <div class="grid grid-cols-2 gap-5 mb-6">
+                            <div class="col-span-2">
+                                <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Hurtigvalg Brøk (Tommer)</label>
+                                <select id="conv-frac" class="glass-input glass-input-rose" onchange="byttTommeFraksjon()">
+                                    <option value="0.0625">1/16"</option><option value="0.125">1/8"</option><option value="0.1875">3/16"</option>
+                                    <option value="0.25">1/4"</option><option value="0.375" selected>3/8"</option><option value="0.5">1/2"</option>
+                                    <option value="0.625">5/8"</option><option value="0.75">3/4"</option><option value="0.875">7/8"</option>
+                                    <option value="1.0">1"</option><option value="1.25">1 1/4"</option><option value="1.5">1 1/2"</option>
+                                    <option value="2.0">2"</option>
+                                </select>
+                            </div>
+                            <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Tommer (inch)</label><input type="number" step="any" id="conv-inch" value="0.375" oninput="beregnFraTommer()" class="glass-input glass-input-rose"></div>
+                            <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Millimeter (mm)</label><input type="number" step="any" id="conv-mm" value="9.525" oninput="beregnFraMm()" class="glass-input glass-input-rose"></div>
+                        </div>
+                    </div>
+
+                    <!-- Trykk, Moment & Vekt -->
+                    <div class="bg-white/80 dark:bg-slate-900/60 backdrop-blur-md border border-slate-200 dark:border-slate-800 rounded-3xl p-6 lg:p-8 shadow-sm relative overflow-hidden transition-colors border-l-4 border-l-rose-500 h-fit">
+                        <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2 flex items-center"><i data-lucide="gauge" class="w-6 h-6 mr-3 text-rose-500"></i> Trykk, Moment & Vekt</h3>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mb-6 border-b border-slate-200 dark:border-slate-800 pb-4 font-medium">Britiske/Amerikanske enheter til metrisk.</p>
+                        <div class="space-y-5">
+                            <div class="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-200 dark:border-slate-700/50 flex flex-col sm:flex-row sm:items-center gap-4">
+                                <div class="flex-1"><label class="block text-xs font-semibold text-slate-500 mb-1">PSI</label><input type="number" id="conv-psi" value="3000" oninput="beregnTrykkVekt()" class="glass-input glass-input-rose !py-2 !px-3"></div>
+                                <div class="hidden sm:block text-slate-400"><i data-lucide="arrow-right" class="w-5 h-5"></i></div>
+                                <div class="flex-1"><div class="block text-xs font-semibold text-slate-500 mb-1">Bar / MPa</div><div id="res-bar" class="font-mono font-bold text-rose-600 dark:text-rose-400 text-lg mt-1.5">206.8 Bar</div></div>
+                            </div>
+                            <div class="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-200 dark:border-slate-700/50 flex flex-col sm:flex-row sm:items-center gap-4">
+                                <div class="flex-1"><label class="block text-xs font-semibold text-slate-500 mb-1">Lbs (Pund)</label><input type="number" id="conv-lbs" value="220" oninput="beregnTrykkVekt()" class="glass-input glass-input-rose !py-2 !px-3"></div>
+                                <div class="hidden sm:block text-slate-400"><i data-lucide="arrow-right" class="w-5 h-5"></i></div>
+                                <div class="flex-1"><div class="block text-xs font-semibold text-slate-500 mb-1">Kilo (kg)</div><div id="res-kg" class="font-mono font-bold text-rose-600 dark:text-rose-400 text-lg mt-1.5">99.79 kg</div></div>
+                            </div>
+                            <div class="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-200 dark:border-slate-700/50 flex flex-col sm:flex-row sm:items-center gap-4">
+                                <div class="flex-1"><label class="block text-xs font-semibold text-slate-500 mb-1">Fahrenheit (°F)</label><input type="number" id="conv-f" value="68" oninput="beregnTrykkVekt()" class="glass-input glass-input-rose !py-2 !px-3"></div>
+                                <div class="hidden sm:block text-slate-400"><i data-lucide="arrow-right" class="w-5 h-5"></i></div>
+                                <div class="flex-1"><div class="block text-xs font-semibold text-slate-500 mb-1">Celsius (°C)</div><div id="res-c" class="font-mono font-bold text-rose-600 dark:text-rose-400 text-lg mt-1.5">20.0 °C</div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </section>
-        
+
+        <!-- ================= STRØM & ELBIL ================= -->
+        <section id="ev" class="tab-content p-4 lg:p-8 max-w-7xl mx-auto">
+            <header class="mb-6 lg:mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 lg:w-16 lg:h-16 bg-teal-100 dark:bg-teal-900/30 rounded-2xl flex items-center justify-center mr-4 lg:mr-5 border border-teal-200 dark:border-teal-700/50 shadow-sm">
+                        <i data-lucide="zap" class="w-6 h-6 lg:w-8 lg:h-8 text-teal-600 dark:text-teal-400"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl lg:text-3xl font-extrabold text-slate-900 dark:text-white">Strøm & Elbil</h2>
+                        <p class="text-xs lg:text-sm text-teal-600 dark:text-teal-400 font-mono mt-1">Kostnader for Hjem & Bil</p>
+                    </div>
+                </div>
+            </header>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
+
+                <!-- Strømkostnad for apparater -->
+                <div class="bg-white/80 dark:bg-slate-900/60 backdrop-blur-md border border-slate-200 dark:border-slate-800 rounded-3xl p-6 lg:p-8 shadow-sm relative overflow-hidden transition-colors border-l-4 border-l-amber-500 h-fit lg:col-span-2">
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2 flex items-center"><i data-lucide="home" class="w-6 h-6 mr-3 text-amber-500"></i> Strømkostnad for Hjem & Apparater</h3>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 mb-6 border-b border-slate-200 dark:border-slate-800 pb-4 font-medium">Finn ut hva kompressoren, varmeovnen eller tørketrommelen faktisk koster å bruke.</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Hurtigvalg (Eksempler)</label>
+                            <select id="app-quick" class="glass-input glass-input-amber" onchange="byttApparat()">
+                                <option value="2000" selected>Varmeovn (2000 W)</option>
+                                <option value="2500">Tørketrommel (2500 W)</option>
+                                <option value="1500">Verkstedkompressor (1500 W)</option>
+                                <option value="100">TV / Stor PC (100 W)</option>
+                                <option value="10">LED Lyspære (10 W)</option>
+                            </select>
+                        </div>
+                        <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Apparatets Effekt (Watt)</label><input type="number" id="app-watt" value="2000" oninput="beregnApparat()" class="glass-input glass-input-amber"></div>
+                        <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Bruk i timer pr. døgn</label><input type="number" id="app-hours" value="5" oninput="beregnApparat()" class="glass-input glass-input-amber"></div>
+                        <div class="md:col-span-3"><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Strømpris (kr/kWh inkl. nettleie)</label><input type="number" step="0.1" id="app-price" value="1.30" oninput="beregnApparat(); syncStrømPris('app');" class="glass-input glass-input-amber"></div>
+                    </div>
+                    
+                    <div class="bg-amber-50/80 dark:bg-amber-900/30 p-5 rounded-2xl border-l-4 border-amber-500 grid grid-cols-1 md:grid-cols-3 gap-4 shadow-inner">
+                        <div class="flex justify-between items-center md:flex-col md:items-start md:border-r md:border-amber-200 md:dark:border-amber-800"><span class="text-amber-800 dark:text-amber-300 font-bold md:mb-1">Pris pr. time:</span><span class="font-mono text-lg font-bold text-amber-700 dark:text-amber-400" id="res-app-hour">0,00 kr</span></div>
+                        <div class="flex justify-between items-center md:flex-col md:items-start md:border-r md:border-amber-200 md:dark:border-amber-800 md:pl-4"><span class="text-amber-800 dark:text-amber-300 font-bold md:mb-1">Pris pr. døgn:</span><span class="font-mono text-lg font-bold text-amber-700 dark:text-amber-400" id="res-app-day">0,00 kr</span></div>
+                        <div class="flex justify-between items-center md:flex-col md:items-start md:pl-4"><span class="text-amber-900 dark:text-amber-200 font-bold md:mb-1">Pris pr. måned:</span><span class="font-mono text-xl font-extrabold text-amber-600 dark:text-amber-400" id="res-app-month">0,00 kr</span></div>
+                    </div>
+                </div>
+
+                <!-- Venstre: Ladetid & Rekkevidde -->
+                <div class="bg-white/80 dark:bg-slate-900/60 backdrop-blur-md border border-slate-200 dark:border-slate-800 rounded-3xl p-6 lg:p-8 shadow-sm relative overflow-hidden transition-colors border-l-4 border-l-teal-500 h-fit">
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2 flex items-center"><i data-lucide="plug-zap" class="w-6 h-6 mr-3 text-teal-500"></i> Ladetid & Tilført Rekkevidde</h3>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 mb-4 border-b border-slate-200 dark:border-slate-800 pb-4 font-medium">Beregn tid, rekkevidde og pris for å lade elbilen.</p>
+                    
+                    <!-- Hurtigvalg Bilprofil -->
+                    <div class="mb-5">
+                        <span class="block text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 mb-2">Hurtigvalg bilprofil</span>
+                        <div class="flex flex-wrap gap-2">
+                            <button type="button" onclick="settElbilProfil(85, 22.5, 420)" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-teal-500/10 hover:bg-teal-500/20 text-teal-700 dark:text-teal-300 border border-teal-500/30 transition-all">🚙 Stor SUV (85 kWh)</button>
+                            <button type="button" onclick="settElbilProfil(77, 17.5, 480)" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-800 hover:border-teal-500 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 transition-all">🚗 Familiebil (77 kWh)</button>
+                            <button type="button" onclick="settElbilProfil(35.8, 14.5, 230)" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-800 hover:border-teal-500 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 transition-all">⚡ Kompakt (35.8 kWh)</button>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-5 mb-6">
+                        <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Batteri (kWh)</label><input type="number" step="0.1" id="charge-battery" value="77" oninput="beregnLadetid()" class="glass-input glass-input-teal"></div>
+                        <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Snittforbruk (kWh/100km)</label><input type="number" step="0.5" id="charge-consumption" value="18" oninput="beregnLadetid()" class="glass-input glass-input-teal"></div>
+                        
+                        <div class="col-span-2">
+                            <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Ladekilde / Effekt</label>
+                            <select id="charge-type" class="glass-input glass-input-teal" onchange="beregnLadetid()">
+                                <option value="2.3">Stikkontakt (2.3 kW)</option>
+                                <option value="3.7">Hjemmelader 1-fase 16A (3.7 kW)</option>
+                                <option value="7.4" selected>Hjemmelader 1-fase 32A (7.4 kW)</option>
+                                <option value="11">Hjemmelader 3-fase 16A (11 kW)</option>
+                                <option value="22">Hjemmelader 3-fase 32A (22 kW)</option>
+                                <option value="50">Hurtiglader (50 kW)</option>
+                                <option value="150">Lynlader (150 kW)</option>
+                                <option value="250">Supercharger (250 kW)</option>
+                            </select>
+                        </div>
+                        
+                        <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Start %</label><input type="number" id="charge-start" value="10" min="0" max="100" oninput="beregnLadetid()" class="glass-input glass-input-teal"></div>
+                        <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Mål %</label><input type="number" id="charge-target" value="80" min="0" max="100" oninput="beregnLadetid()" class="glass-input glass-input-teal"></div>
+                        
+                        <div class="col-span-2"><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Strømpris (kr/kWh inkl. nettleie)</label><input type="number" step="0.1" id="charge-price" value="1.30" oninput="beregnLadetid(); syncStrømPris('charge');" class="glass-input glass-input-teal"></div>
+                    </div>
+                    
+                    <div class="bg-teal-50/80 dark:bg-teal-900/30 p-5 rounded-2xl border-l-4 border-teal-500 space-y-3 font-medium shadow-inner">
+                        <div class="flex justify-between items-center"><span class="text-teal-800 dark:text-teal-300 font-bold">⏱️ Estimert Ladetid:</span><span class="font-mono text-lg font-bold text-teal-700 dark:text-teal-400" id="res-charge-time">0t 0m</span></div>
+                        <div class="flex justify-between items-center"><span class="text-teal-800 dark:text-teal-300 font-bold">🔋 Tilført Rekkevidde:</span><span class="font-mono text-lg font-bold text-teal-700 dark:text-teal-400" id="res-charge-range">+ 0 km</span></div>
+                        <div class="flex justify-between items-center border-t border-teal-200 dark:border-teal-800/50 pt-3 mt-2"><span class="text-teal-900 dark:text-teal-200 font-bold text-base">💰 Ladekostnad:</span><span class="font-mono text-xl font-extrabold text-teal-600 dark:text-teal-400" id="res-charge-cost">0,00 kr</span></div>
+                    </div>
+                </div>
+
+                <!-- Besparelse -->
+                <div class="bg-white/80 dark:bg-slate-900/60 backdrop-blur-md border border-slate-200 dark:border-slate-800 rounded-3xl p-6 lg:p-8 shadow-sm relative overflow-hidden transition-colors border-l-4 border-l-blue-500 h-fit">
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2 flex items-center"><i data-lucide="piggy-bank" class="w-6 h-6 mr-3 text-blue-500"></i> Elbil vs Bensin/Diesel</h3>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 mb-6 border-b border-slate-200 dark:border-slate-800 pb-4 font-medium">Se hvor mye du sparer på å kjøre elektrisk.</p>
+                    
+                    <div class="grid grid-cols-2 gap-5 mb-6">
+                        <div class="col-span-2"><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Årlig Kjørelengde (km/år)</label><input type="number" id="save-km" value="15000" oninput="beregnBesparelse()" class="glass-input glass-input-blue"></div>
+                        
+                        <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Bensinpris (kr/L)</label><input type="number" step="0.5" id="save-fuel-price" value="20.0" oninput="beregnBesparelse()" class="glass-input glass-input-blue"></div>
+                        <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Forbruk Bensin (L/mil)</label><input type="number" step="0.05" id="save-fuel-cons" value="0.65" oninput="beregnBesparelse()" class="glass-input glass-input-blue"></div>
+                        
+                        <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Strømpris (kr/kWh)</label><input type="number" step="0.1" id="save-elek-price" value="1.30" oninput="beregnBesparelse(); syncStrømPris('save');" class="glass-input glass-input-blue"></div>
+                        <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Forbruk Elbil (kWh/mil)</label><input type="number" step="0.1" id="save-ev-cons" value="1.80" oninput="beregnBesparelse()" class="glass-input glass-input-blue"></div>
+                    </div>
+                    
+                    <div class="bg-blue-50/80 dark:bg-blue-900/30 p-5 rounded-2xl border-l-4 border-blue-500 space-y-3 font-medium shadow-inner">
+                        <div class="flex justify-between items-center"><span class="text-blue-800 dark:text-blue-300 font-bold">✨ Besparelse pr. Måned:</span><span class="font-mono text-blue-700 dark:text-blue-400 text-base" id="res-save-month">0,00 kr</span></div>
+                        <div class="flex justify-between items-center"><span class="text-blue-800 dark:text-blue-300 font-bold">📅 Besparelse pr. År:</span><span class="font-mono text-blue-700 dark:text-blue-400 text-base" id="res-save-year">0,00 kr</span></div>
+                        <div class="flex justify-between items-center border-t border-blue-200 dark:border-blue-800/50 pt-3 mt-2"><span class="text-blue-900 dark:text-blue-200 font-bold text-base">🚀 Besparelse over 5 År:</span><span class="font-mono text-xl font-extrabold text-blue-600 dark:text-blue-400" id="res-save-5yr">0,00 kr</span></div>
+                    </div>
+                </div>
+
+                <!-- Vinter-Rekkevidde -->
+                <div class="bg-white/80 dark:bg-slate-900/60 backdrop-blur-md border border-slate-200 dark:border-slate-800 rounded-3xl p-6 lg:p-8 shadow-sm relative overflow-hidden transition-colors border-l-4 border-l-sky-500 h-fit lg:col-span-2">
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2 flex items-center"><i data-lucide="snowflake" class="w-6 h-6 mr-3 text-sky-500"></i> Vinter & Temperaturtap</h3>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 mb-6 border-b border-slate-200 dark:border-slate-800 pb-4 font-medium">Estimer reell rekkevidde i kulden basert på WLTP.</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
+                        <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">WLTP Sommer-rekkevidde (km)</label><input type="number" id="winter-wltp" value="480" oninput="beregnVinter()" class="glass-input glass-input-sky"></div>
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Utetemperatur & Forhold</label>
+                            <select id="winter-temp" class="glass-input glass-input-sky" onchange="beregnVinter()">
+                                <option value="0" selected>+20°C Sommer (100% · 0% tap)</option>
+                                <option value="12">+10°C Vår/Høst (88% · -12% tap)</option>
+                                <option value="25">0°C Norsk Vinter (75% · -25% tap)</option>
+                                <option value="35">-10°C Kald Vinter (65% · -35% tap)</option>
+                                <option value="42">-20°C Ekstrem Kulde (58% · -42% tap)</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-sky-50/80 dark:bg-sky-900/30 p-5 rounded-2xl border-l-4 border-sky-500 flex flex-col md:flex-row justify-between md:items-center gap-4 shadow-inner">
+                        <div class="flex-1">
+                            <span class="block text-sky-800 dark:text-sky-300 font-bold mb-1">❄️ Reell Vinter-Rekkevidde:</span>
+                            <span class="font-mono text-2xl font-extrabold text-sky-600 dark:text-sky-400" id="res-winter-range">0 km</span>
+                        </div>
+                        <div class="hidden md:block w-px h-12 bg-sky-200 dark:bg-sky-800"></div>
+                        <div class="flex-1">
+                            <span class="block text-sky-800 dark:text-sky-300 font-bold mb-1">📉 Forventet Rekkeviddetap:</span>
+                            <span class="font-mono text-lg font-bold text-loss-500 dark:text-loss-400" id="res-winter-loss">- 0 km</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <div class="h-24 md:h-12"></div>
     </main>
 
@@ -946,20 +1359,73 @@
         function initIcons() { if (typeof lucide !== 'undefined') lucide.createIcons(); }
         if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', initIcons); } else { initIcons(); }
 
+        // TOAST SYSTEM (Erstatter alert)
+        function visToast(melding, type = 'brand') {
+            const container = document.getElementById('toast-container');
+            if (!container) return;
+            const toast = document.createElement('div');
+            const farge = type === 'error' ? 'border-rose-500 bg-rose-950/90 text-rose-200' : 'border-brand-500 bg-slate-900/95 text-white';
+            toast.className = `pointer-events-auto flex items-center gap-2.5 px-4 py-3 rounded-2xl border-l-4 ${farge} shadow-xl backdrop-blur-md text-xs font-mono font-bold transition-all duration-300 animate-fadeIn`;
+            toast.innerHTML = `<span>⚡</span><span>${melding}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(-8px)';
+                setTimeout(() => toast.remove(), 300);
+            }, 2400);
+        }
+
+        // KOPIER TIL UTKLIPPSTAVLE (Fungerer i iframe og alle nettlesere)
+        function kopierTekst(tekst, label = 'Verdi') {
+            const tempInput = document.createElement('textarea');
+            tempInput.value = tekst;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            try {
+                document.execCommand('copy');
+                visToast(`${label} kopiert: ${tekst}`);
+            } catch (e) {
+                visToast('Kunne ikke kopiere', 'error');
+            }
+            document.body.removeChild(tempInput);
+        }
+
+        // GJØR ALLE RESULTATFELT KLIKKBARE FOR HURTIGKOPIERING
+        function aktiverHurtigKopiering() {
+            const resultatIder = [
+                'vis-netto-hoved', 'gf-res-rpm', 'gf-res-lin', 'gf-res-mating',
+                'gjin-res-lilledia', 'gjut-res-lilledia', 'res-fvc', 'res-frpm', 'res-fmm',
+                'deg-res-gradmin', 'rct-res-fz', 'rct-res-vf', 'mat-res-vc', 'mat-res-rpm', 'mat-res-mating',
+                'cool-res-add', 'ra-res-val', 'ra-res-maxfn',
+                'tap-res-drill', 'tap-res-form', 'ttol-res-major', 'ttol-res-pitch', 'ttol-res-minor', 'iso-res',
+                'w-res-kg', 'pcd-res-chord', 'tri-res-c', 'res-bar', 'res-kg', 'res-c',
+                'res-app-hour', 'res-app-day', 'res-app-month'
+            ];
+            resultatIder.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.classList.add('copy-val');
+                    el.title = 'Klikk for å kopiere verdi';
+                    el.addEventListener('click', () => {
+                        // Henter ut kun tallet eller hele teksten
+                        kopierTekst(el.innerText.trim(), 'Resultat');
+                    });
+                }
+            });
+        }
+
         // THEME
         function toggleTheme() {
             document.documentElement.classList.toggle('dark');
             localStorage.theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
         }
 
-        // MOBILE MENU
-        const mobileBtn = document.getElementById('mobile-menu-btn');
-        const mobileMenu = document.getElementById('mobile-menu');
-        function toggleMobileMenu() {
-            mobileMenu.classList.toggle('hidden');
-            mobileMenu.classList.toggle('flex');
-        }
-        if(mobileBtn) mobileBtn.addEventListener('click', toggleMobileMenu);
+        // TASTATURSNARVEIER (1-5 for faner når man ikke står i et input-felt)
+        document.addEventListener('keydown', (e) => {
+            if (['INPUT', 'SELECT', 'TEXTAREA'].includes(document.activeElement?.tagName)) return;
+            const map = { '1': 'dashboard', '2': 'salary', '3': 'cnc', '4': 'tools', '5': 'ev' };
+            if (map[e.key]) switchTab(map[e.key]);
+        });
 
         // --- NAVIGATION LOGIC ---
         function switchTab(tabId) {
@@ -967,6 +1433,7 @@
             const target = document.getElementById(tabId);
             if(target) target.classList.add('active');
 
+            // Desktop sidebar
             document.querySelectorAll('.nav-btn').forEach(btn => {
                 btn.classList.remove('bg-white', 'dark:bg-slate-800', 'border-slate-200', 'dark:border-slate-700', 'text-slate-900', 'dark:text-white', 'shadow-sm');
                 btn.classList.add('text-slate-500', 'dark:text-slate-400', 'border-transparent');
@@ -989,6 +1456,21 @@
                     if(tabId === 'tools') icon.classList.add('text-emerald-500');
                     if(tabId === 'ev') icon.classList.add('text-teal-500');
                 }
+            }
+
+            // Mobil bunn-navigasjon
+            document.querySelectorAll('.mnav-btn').forEach(btn => {
+                btn.classList.remove('text-brand-500', 'text-blue-500', 'text-emerald-500', 'text-teal-500', 'font-bold');
+                btn.classList.add('text-slate-400', 'dark:text-slate-500', 'font-medium');
+            });
+            const activeMnav = document.getElementById('mnav-' + tabId);
+            if (activeMnav) {
+                activeMnav.classList.remove('text-slate-400', 'dark:text-slate-500', 'font-medium');
+                activeMnav.classList.add('font-bold');
+                if(tabId === 'dashboard' || tabId === 'salary') activeMnav.classList.add('text-brand-500');
+                if(tabId === 'cnc') activeMnav.classList.add('text-blue-500');
+                if(tabId === 'tools') activeMnav.classList.add('text-emerald-500');
+                if(tabId === 'ev') activeMnav.classList.add('text-teal-500');
             }
         }
 
@@ -1073,15 +1555,21 @@
             const year = parseInt(yearSelect.value);
             const month = parseInt(monthSelect.value);
             const realDays = countWeekdays(year, month);
+            const overstyrt = parseFloat(document.getElementById('overstyr-dager')?.value);
+            const bruktDager = (!isNaN(overstyrt) && overstyrt > 0) ? overstyrt : realDays;
 
             document.getElementById('tekst-arbeidsdager').innerText = `Antall arbeidsdager i måneden: ${realDays} dager`;
-            document.getElementById('tekst-gjeldende-dager').innerText = `Gjeldende dager i beregningen: ${realDays} (kalender, man-fre)`;
+            document.getElementById('tekst-gjeldende-dager').innerText = (!isNaN(overstyrt) && overstyrt > 0)
+                ? `Gjeldende dager i beregningen: ${bruktDager} (manuelt overstyrt)`
+                : `Gjeldende dager i beregningen: ${realDays} (kalender, man-fre)`;
 
             if (!document.getElementById('vakt-dato').value) {
                 let m = month + 1;
                 document.getElementById('vakt-dato').value = `${year}-${m < 10 ? '0'+m : m}-01`;
             }
-            beregnAlt(); lagreInnstillinger();
+            oppdaterVaktTabell();
+            beregnAlt();
+            lagreInnstillinger();
         }
 
         function sjekkDatoUkedag() {
@@ -1135,7 +1623,7 @@
         function leggTilVakt(event) {
             event.preventDefault();
             const datoValgt = document.getElementById('vakt-dato').value;
-            if (!datoValgt) { alert("Velg dato."); return; }
+            if (!datoValgt) { visToast("Velg en dato for vakten først", "error"); return; }
             const d = new Date(datoValgt);
             const vaktAar = d.getFullYear();
             const vaktMnd = d.getMonth();
@@ -1145,7 +1633,7 @@
 
             const timer = parseInt(document.getElementById('vakt-timer').value) || 0;
             const minutter = parseInt(document.getElementById('vakt-minutter').value) || 0;
-            if (timer === 0 && minutter === 0) { alert("Oppgi tid."); return; }
+            if (timer === 0 && minutter === 0) { visToast("Oppgi antall timer eller minutter", "error"); return; }
 
             const type = document.getElementById('tillegg-type').value;
             const typeTekst = document.getElementById('tillegg-type').options[document.getElementById('tillegg-type').selectedIndex].text;
@@ -1170,6 +1658,7 @@
 
             document.getElementById('vakt-timer').value = 0; document.getElementById('vakt-minutter').value = 0; document.getElementById('vakt-timebank').checked = false;
             sorterOgOppdaterVakter();
+            visToast(`Vakt (${ formatertDato }) lagt til!`);
         }
 
         function slettVakt(id) {
@@ -1206,16 +1695,19 @@
             const timelonn = parseFloat(document.getElementById('timelonn').value) || 316.5;
             let html = '<ul class="space-y-3">';
             aktive.forEach(v => {
-                const faktor = v.isTimebank ? (v.kind.includes('50') ? 0.5 : 1.0) : (v.kind.includes('50') ? 1.5 : 2.0);
+                const erUttak = v.kind === 'uttak_tb';
+                const faktor = erUttak ? 0 : (v.isTimebank ? (v.kind.includes('50') ? 0.5 : 1.0) : (v.kind.includes('50') ? 1.5 : 2.0));
                 const brutto = v.desimalTimer * (timelonn * faktor);
-                const tbBadge = v.isTimebank ? `<span class="bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 text-[10px] px-2 py-0.5 rounded border border-indigo-200 dark:border-indigo-800/50 font-bold ml-2">🏦 Timebank</span>` : '';
+                const tbBadge = erUttak
+                    ? `<span class="bg-rose-100 dark:bg-rose-900/40 text-rose-700 dark:text-rose-300 text-[10px] px-2 py-0.5 rounded border border-rose-200 dark:border-rose-800/50 font-bold ml-2">🏖️ Avspasering (-${v.desimalTimer.toFixed(1)}t)</span>`
+                    : (v.isTimebank ? `<span class="bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 text-[10px] px-2 py-0.5 rounded border border-indigo-200 dark:border-indigo-800/50 font-bold ml-2">🏦 Timebank (+${v.desimalTimer.toFixed(1)}t)</span>` : '');
 
                 html += `<li class="flex items-center justify-between gap-3 p-4 bg-slate-50/80 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/50 rounded-2xl">
                     <div class="flex-1 min-w-0">
                         <p class="font-bold text-sm text-slate-900 dark:text-white m-0 truncate">${v.dateLabel}${tbBadge}</p>
                         <p class="text-xs font-medium text-slate-500 dark:text-slate-400 m-0 truncate mt-1">${v.kindLabel} · ${v.hours}t ${v.minutes}m</p>
                     </div>
-                    <p class="font-mono font-bold text-base text-brand-600 dark:text-brand-400 m-0 whitespace-nowrap">${brutto.toFixed(2).replace('.', ',')} kr</p>
+                    <p class="font-mono font-bold text-base ${erUttak ? 'text-rose-500' : 'text-brand-600 dark:text-brand-400'} m-0 whitespace-nowrap">${erUttak ? '−' + v.desimalTimer.toFixed(1) + ' t' : brutto.toFixed(2).replace('.', ',') + ' kr'}</p>
                     <button type="button" class="w-10 h-10 flex items-center justify-center rounded-xl bg-rose-50 dark:bg-rose-900/20 text-rose-500 hover:text-rose-600 hover:bg-rose-100 transition-colors shrink-0" onclick="slettVakt('${v.id}')">✕</button>
                 </li>`;
             });
@@ -1225,10 +1717,10 @@
 
         function kopierVaktliste() {
             const aktive = hentAktiveVakter();
-            if (aktive.length === 0) return;
+            if (aktive.length === 0) { visToast("Ingen vakter å kopiere", "error"); return; }
             let txt = "Registrerte tilleggsvakter:\n";
             aktive.forEach(v => { txt += `- ${v.dateLabel}: ${v.kindLabel} (${v.hours}t ${v.minutes}m) ${v.isTimebank ? '[Timebank]' : ''}\n`; });
-            navigator.clipboard.writeText(txt); alert("Kopiert!");
+            kopierTekst(txt, "Vaktliste");
         }
 
         function eksporterVakttilExcel() {
@@ -1259,7 +1751,7 @@
             let justert = avrundetBrutto - fribelop;
             let skatt = 0;
             if (justert <= 7100) skatt = 0;
-            else if (justert <= 16500) skatt = (justert - 16500) * 0.28;
+            else if (justert <= 16500) skatt = (justert - 7100) * 0.28;
             else if (justert <= 60000) skatt = 2632 + (justert - 16500) * 0.34;
             else if (justert <= 95000) skatt = 17422 + (justert - 60000) * 0.44;
             else skatt = 32822 + (justert - 95000) * 0.49;
@@ -1275,7 +1767,8 @@
             const year = parseInt(yearSelect.value);
             const month = parseInt(monthSelect.value);
             const realDays = countWeekdays(year, month);
-            let dager = realDays;
+            const overstyrt = parseFloat(document.getElementById('overstyr-dager')?.value);
+            let dager = (!isNaN(overstyrt) && overstyrt > 0) ? overstyrt : realDays;
 
             const harFastlonn = document.getElementById('inkluder-fastlonn').checked;
             const timelonn = parseFloat(document.getElementById('timelonn').value) || 316.5;
@@ -1288,7 +1781,7 @@
             const radFastlonn = document.getElementById('rad-fastlonn');
             if (harFastlonn) {
                 document.getElementById('vis-fastlonn').innerText = fastlBrunto.toFixed(2).replace('.', ',') + " kr";
-                document.getElementById('vis-fastlonn-sub').innerText = `${dager} dager × ${timerPrDag.toString().replace('.', ',')} t × ${timelonn.toFixed(2).replace('.', ',')} kr`;
+                document.getElementById('vis-fastlonn-sub').innerText = `${dager.toString().replace('.', ',')} dager × ${timerPrDag.toString().replace('.', ',')} t × ${timelonn.toFixed(2).replace('.', ',')} kr`;
                 radFastlonn.style.display = 'flex';
             } else radFastlonn.style.display = 'none';
 
@@ -1301,6 +1794,10 @@
             let hverdag50 = 0, hverdag100 = 0, helg50 = 0, helg100 = 0, sumVaktBrutto = 0, sumVaktTimer = 0, sumTimebankTimer = 0;
             const aktive = hentAktiveVakter();
             aktive.forEach(v => {
+                if (v.kind === 'uttak_tb') {
+                    sumTimebankTimer -= v.desimalTimer;
+                    return;
+                }
                 const faktor = v.isTimebank ? (v.kind.includes('50') ? 0.5 : 1.0) : (v.kind.includes('50') ? 1.5 : 2.0);
                 const b = v.desimalTimer * (timelonn * faktor);
                 sumVaktBrutto += b;
@@ -1320,13 +1817,14 @@
             document.getElementById('vis-helg100').innerText = helg100.toFixed(2).replace('.', ',') + " kr";
 
             const ordinareTimer = harFastlonn ? ((dager - feriedager) * timerPrDag) : 0;
-            const totalTimer = ordinareTimer + sumVaktTimer + sumTimebankTimer;
+            const totalTimer = ordinareTimer + sumVaktTimer + Math.max(0, sumTimebankTimer);
+            const fortegnTb = sumTimebankTimer >= 0 ? "+ " : "− ";
             
             document.getElementById('vis-totaltimer').innerText = totalTimer.toFixed(1).replace('.', ',') + " t";
             document.getElementById('vis-ordinartimer').innerText = ordinareTimer.toFixed(1).replace('.', ',') + " t";
             document.getElementById('vis-vakttimer').innerText = sumVaktTimer.toFixed(1).replace('.', ',') + " t";
             document.getElementById('vis-timebank-vakttimer').innerText = sumTimebankTimer.toFixed(1).replace('.', ',') + " t";
-            document.getElementById('vis-timebank-saldo').innerText = "+ " + sumTimebankTimer.toFixed(1).replace('.', ',') + " t";
+            document.getElementById('vis-timebank-saldo').innerText = fortegnTb + Math.abs(sumTimebankTimer).toFixed(1).replace('.', ',') + " t";
 
             const totalBrutto = fastlBrunto - ferieTrekk + sumVaktBrutto;
             window.sisteBrutto = totalBrutto;
@@ -1371,6 +1869,110 @@
             document.getElementById('vis-aarslonn-fast').innerText = (fastAarBrutto * 1.12).toFixed(2).replace('.', ',') + " kr";
             document.getElementById('vis-aarslonn-total').innerText = totalAarMedFeriepenger.toFixed(2).replace('.', ',') + " kr";
             document.getElementById('vis-aarslonn-aar').innerText = (totalAarMedFeriepenger * (unionPct / 100)).toFixed(2).replace('.', ',') + " kr";
+
+            // Oppdater sanntids-KPIer på Dashboard
+            const kpiNetto = document.getElementById('dash-kpi-netto');
+            const kpiPeriode = document.getElementById('dash-kpi-periode');
+            const kpiTb = document.getElementById('dash-kpi-timebank');
+            const kpiVakter = document.getElementById('dash-kpi-vakter');
+            if (kpiNetto) kpiNetto.innerText = netto.toFixed(2).replace('.', ',') + " kr";
+            if (kpiPeriode) {
+                if (sumVaktBrutto > 0) {
+                    kpiPeriode.innerText = `Overtid ut: + ${Math.round(vaktNetto).toLocaleString('no-NO')} kr (${maanedsNavn[month].slice(0,3)})`;
+                } else {
+                    kpiPeriode.innerText = `${maanedsNavn[month]} ${year} · Ingen overtid ennå`;
+                }
+            }
+            if (kpiTb) kpiTb.innerText = fortegnTb + Math.abs(sumTimebankTimer).toFixed(1).replace('.', ',') + " t";
+            if (kpiVakter) kpiVakter.innerText = `${aktive.length} vakt${aktive.length === 1 ? '' : 'er'} i ${maanedsNavn[month].toLowerCase()}`;
+
+            oppdaterUkeOgArbeidsdagerKpi();
+        }
+
+        // Hjelpefunksjon for ISO-ukenummer og gjenværende arbeidsdager i måneden
+        function hentIsoUkenummer(dato) {
+            const d = new Date(Date.UTC(dato.getFullYear(), dato.getMonth(), dato.getDate()));
+            const dayNum = d.getUTCDay() || 7;
+            d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+            const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+            return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+        }
+
+        function oppdaterUkeOgArbeidsdagerKpi() {
+            const naa = new Date();
+            const uke = hentIsoUkenummer(naa);
+            const aar = naa.getFullYear();
+            const mnd = naa.getMonth();
+            const idagDato = naa.getDate();
+            const dagerIMnd = new Date(aar, mnd + 1, 0).getDate();
+
+            let dagerIgjen = 0;
+            for (let dag = idagDato; dag <= dagerIMnd; dag++) {
+                const ukedag = new Date(aar, mnd, dag).getDay();
+                if (ukedag >= 1 && ukedag <= 5) dagerIgjen++;
+            }
+
+            const kortDager = ["Søn", "Man", "Tir", "Ons", "Tor", "Fre", "Lør"];
+            const datoTekst = `${kortDager[naa.getDay()]} ${idagDato}. ${maanedsNavn[mnd].slice(0,3).toLowerCase()}`;
+
+            const weekEl = document.getElementById('dash-kpi-week');
+            const workdaysEl = document.getElementById('dash-kpi-workdays');
+            if (weekEl) weekEl.innerText = `Uke ${uke} · ${datoTekst}`;
+            if (workdaysEl) workdaysEl.innerText = `${dagerIgjen} arbeidsdag${dagerIgjen === 1 ? '' : 'er'} igjen i ${maanedsNavn[mnd].toLowerCase()}`;
+        }
+
+        // Holder styr på siste CNC-utregning for sanntidskortet på forsiden
+        window.sisteCncMaal = { tab: 'tools', subTab: 'data' };
+        function oppdaterSisteCncKpi(hovedVerdi, underTekst, tab = 'cnc', subTab = null) {
+            const valEl = document.getElementById('dash-kpi-cnc-val');
+            const subEl = document.getElementById('dash-kpi-cnc-sub');
+            if (valEl) valEl.innerText = hovedVerdi;
+            if (subEl) subEl.innerText = underTekst;
+            window.sisteCncMaal = { tab, subTab };
+        }
+
+        function apneSisteCnc() {
+            const maal = window.sisteCncMaal || { tab: 'cnc', subTab: null };
+            switchTab(maal.tab);
+            if (maal.tab === 'tools' && maal.subTab) {
+                switchToolsTab(maal.subTab);
+            }
+        }
+
+        function eksporterBackupJson() {
+            const data = {};
+            Object.keys(localStorage).forEach(k => {
+                if (k.startsWith('lonn_') || k === 'theme') data[k] = localStorage.getItem(k);
+            });
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `verkstedsportal-backup-${new Date().toISOString().slice(0,10)}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            visToast("Backup-fil (.json) lastet ned!");
+        }
+
+        function importerBackupJson(event) {
+            const file = event.target.files?.[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    Object.keys(data).forEach(k => {
+                        if (k.startsWith('lonn_') || k === 'theme') localStorage.setItem(k, data[k]);
+                    });
+                    lastInnstillinger();
+                    visToast("Backup gjenopprettet!");
+                } catch (err) {
+                    visToast("Ugyldig backup-fil", "error");
+                }
+            };
+            reader.readAsText(file);
         }
 
         function lagreInnstillinger() {
@@ -1380,6 +1982,7 @@
             localStorage.setItem('lonn_timelonn', document.getElementById('timelonn').value);
             localStorage.setItem('lonn_timer', document.getElementById('timer-dag').value);
             localStorage.setItem('lonn_ferier', document.getElementById('feriedager').value);
+            localStorage.setItem('lonn_overstyr_dager', document.getElementById('overstyr-dager')?.value || '');
             localStorage.setItem('lonn_skatt_type', document.getElementById('skatt-type').value);
             localStorage.setItem('lonn_tabell', document.getElementById('skatte-tabellnummer').value);
             localStorage.setItem('lonn_skatt_pct', document.getElementById('skatt').value);
@@ -1396,6 +1999,9 @@
             if (localStorage.getItem('lonn_timelonn')) document.getElementById('timelonn').value = localStorage.getItem('lonn_timelonn');
             if (localStorage.getItem('lonn_timer')) document.getElementById('timer-dag').value = localStorage.getItem('lonn_timer');
             if (localStorage.getItem('lonn_ferier')) document.getElementById('feriedager').value = localStorage.getItem('lonn_ferier');
+            if (localStorage.getItem('lonn_overstyr_dager') && document.getElementById('overstyr-dager')) {
+                document.getElementById('overstyr-dager').value = localStorage.getItem('lonn_overstyr_dager');
+            }
             if (localStorage.getItem('lonn_skatt_type')) document.getElementById('skatt-type').value = localStorage.getItem('lonn_skatt_type');
             if (localStorage.getItem('lonn_tabell')) document.getElementById('skatte-tabellnummer').value = localStorage.getItem('lonn_tabell');
             if (localStorage.getItem('lonn_skatt_pct')) document.getElementById('skatt').value = localStorage.getItem('lonn_skatt_pct');
@@ -1409,64 +2015,131 @@
         }
 
         function nullstillAlt() {
-            if (confirm("Er du sikker på at du vil slette alt og nullstille?")) {
-                localStorage.clear(); registrerteVakter = []; byggAarsOgMaanedsLister();
+            const modal = document.getElementById('confirm-modal');
+            const yesBtn = document.getElementById('confirm-modal-yes');
+            if (!modal || !yesBtn) return;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            yesBtn.onclick = function() {
+                Object.keys(localStorage).forEach(k => { if (k.startsWith('lonn_')) localStorage.removeItem(k); });
+                registrerteVakter = []; byggAarsOgMaanedsLister();
                 document.getElementById('inkluder-fastlonn').checked = true;
                 document.getElementById('timelonn').value = "316.5"; document.getElementById('timer-dag').value = "7.5";
                 document.getElementById('feriedager').value = "0";
+                if (document.getElementById('overstyr-dager')) document.getElementById('overstyr-dager').value = "";
                 document.getElementById('skatt-type').value = "tabell"; document.getElementById('skatte-tabellnummer').value = "7101";
                 document.getElementById('skatt').value = "30"; document.getElementById('fagforening-prosent').value = "1.5";
                 byttSkattType(); oppdaterAarOgMaaned(); oppdaterVaktTabell(); beregnAlt();
+                lukkConfirmModal();
+                visToast("Lønnskalkulator nullstilt");
+            };
+        }
+
+        function lukkConfirmModal() {
+            const modal = document.getElementById('confirm-modal');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
             }
         }
 
         // --- CNC LOGIC ---
         function beregnSirkulaerMating() {
+            const mode = document.getElementById('gf-mode')?.value || 'internal';
             const vc = parseFloat(document.getElementById('gf-vc').value) || 0;
             const fz = parseFloat(document.getElementById('gf-fz').value) || 0;
             const z = parseFloat(document.getElementById('gf-z').value) || 0;
             const dFres = parseFloat(document.getElementById('gf-dfres').value) || 1;
             const dHull = parseFloat(document.getElementById('gf-dhull').value) || 1;
             const rpm = (vc * 1000) / (Math.PI * dFres);
+            const vfLin = rpm * z * fz;
+
             document.getElementById('gf-res-rpm').innerText = Math.round(rpm) + " RPM";
-            document.getElementById('gf-res-mating').innerText = Math.round(((dHull - dFres) / dHull) * (rpm * z * fz)) + " mm/min";
+            document.getElementById('gf-res-lin').innerText = Math.round(vfLin) + " mm/min";
+
+            if (mode === 'internal') {
+                if (dFres >= dHull) {
+                    document.getElementById('gf-res-mating').innerText = "Fres ≥ Hull!";
+                } else {
+                    const vfSirk = ((dHull - dFres) / dHull) * vfLin;
+                    document.getElementById('gf-res-mating').innerText = Math.round(vfSirk) + " mm/min";
+                    oppdaterSisteCncKpi(`${Math.round(rpm)} RPM | F${Math.round(vfSirk)}`, `Sirkulær innv: Ø${dFres} i Ø${dHull}`, 'cnc');
+                }
+            } else {
+                const vfSirk = ((dHull + dFres) / dHull) * vfLin;
+                document.getElementById('gf-res-mating').innerText = Math.round(vfSirk) + " mm/min";
+                oppdaterSisteCncKpi(`${Math.round(rpm)} RPM | F${Math.round(vfSirk)}`, `Sirkulær utv: Ø${dFres} på Ø${dHull}`, 'cnc');
+            }
         }
         function beregnGjengerInnvendig() {
             const st = parseFloat(document.getElementById('gjin-storedia').value) || 0;
             const pi = parseFloat(document.getElementById('gjin-stigning').value) || 0;
             const ju = parseFloat(document.getElementById('gjin-justering').value) || 0;
-            document.getElementById('gjin-res-lilledia').innerText = ((pi * ju) + st).toFixed(3) + " mm";
+            const res = ((pi * ju) + st).toFixed(3);
+            document.getElementById('gjin-res-lilledia').innerText = res + " mm";
+            oppdaterSisteCncKpi(`Gibbs Ø${res}`, `Innv. gjenge M${st}×${pi}`, 'cnc');
         }
         function beregnGjengerUtvendig() {
             const st = parseFloat(document.getElementById('gjut-storedia').value) || 0;
             const pi = parseFloat(document.getElementById('gjut-stigning').value) || 0;
             const ju = parseFloat(document.getElementById('gjut-justering').value) || 0;
-            document.getElementById('gjut-res-lilledia').innerText = (st - (pi * ju)).toFixed(3) + " mm";
+            const res = (st - (pi * ju)).toFixed(3);
+            document.getElementById('gjut-res-lilledia').innerText = res + " mm";
+            oppdaterSisteCncKpi(`Gibbs Ø${res}`, `Utv. gjenge M${st}×${pi}`, 'cnc');
         }
         function beregnFinnVc() {
             const d = parseFloat(document.getElementById('fvc-d').value) || 0;
             const rpm = parseFloat(document.getElementById('fvc-rpm').value) || 0;
-            document.getElementById('res-fvc').innerText = Math.round((Math.PI * d * rpm) / 1000) + " m/min";
+            const vc = Math.round((Math.PI * d * rpm) / 1000);
+            document.getElementById('res-fvc').innerText = vc + " m/min";
+            oppdaterSisteCncKpi(`Vc ${vc} m/min`, `Hurtigkalk: Ø${d} ved ${rpm} RPM`, 'cnc');
         }
         function beregnFinnRpm() {
             const d = parseFloat(document.getElementById('frpm-d').value) || 0;
             const vc = parseFloat(document.getElementById('frpm-vc').value) || 0;
-            document.getElementById('res-frpm').innerText = Math.round((vc * 1000) / (Math.PI * d)) + " RPM";
+            const rpm = Math.round((vc * 1000) / (Math.PI * d));
+            document.getElementById('res-frpm').innerText = rpm + " RPM";
+            oppdaterSisteCncKpi(`${rpm} RPM`, `Hurtigkalk: Ø${d} ved Vc ${vc}`, 'cnc');
         }
         function beregnFinnMmMin() {
             const z = parseFloat(document.getElementById('fmm-z').value) || 0;
             const rpm = parseFloat(document.getElementById('fmm-rpm').value) || 0;
             const fz = parseFloat(document.getElementById('fmm-fz').value) || 0;
-            document.getElementById('res-fmm').innerText = Math.round(rpm * fz * z) + " mm/min";
+            const vf = Math.round(rpm * fz * z);
+            document.getElementById('res-fmm').innerText = vf + " mm/min";
+            oppdaterSisteCncKpi(`${rpm} RPM | F${vf}`, `Bordmating: z=${z}, fz=${fz}`, 'cnc');
         }
         function beregnGraderPrMin() {
             const mmmin = parseFloat(document.getElementById('deg-mmmin').value) || 0;
             const dia = parseFloat(document.getElementById('deg-dia').value) || 0;
             const omkrets = Math.PI * dia;
+            const gradMin = (omkrets > 0 ? (mmmin / (omkrets / 360)) : 0).toFixed(1);
             document.getElementById('deg-res-omkrets').innerText = omkrets.toFixed(2) + " mm";
             document.getElementById('deg-res-onegrad').innerText = (omkrets > 0 ? (omkrets / 360) : 0).toFixed(4) + " mm/°";
-            document.getElementById('deg-res-gradmin').innerText = (omkrets > 0 ? (mmmin / (omkrets / 360)) : 0).toFixed(1) + " °/min";
+            document.getElementById('deg-res-gradmin').innerText = gradMin + " °/min";
             document.getElementById('deg-res-revmin').innerText = (omkrets > 0 ? (mmmin / omkrets) : 0).toFixed(2) + " omdr/min";
+            oppdaterSisteCncKpi(`${gradMin} °/min`, `C-Akse: Ø${dia} mm (F${mmmin})`, 'cnc');
+        }
+
+        function beregnChipThinning() {
+            const d = parseFloat(document.getElementById('rct-d')?.value) || 16;
+            const ae = parseFloat(document.getElementById('rct-ae')?.value) || 1.6;
+            const hm = parseFloat(document.getElementById('rct-hm')?.value) || 0.10;
+            const z = parseFloat(document.getElementById('rct-z')?.value) || 5;
+            const rpm = parseFloat(document.getElementById('rct-rpm')?.value) || 4500;
+
+            const pct = (ae / d) * 100;
+            let rctFactor = 1.0;
+            if (ae > 0 && ae < d / 2) {
+                rctFactor = 1 / (2 * Math.sqrt((ae / d) * (1 - (ae / d))));
+            }
+            const fzComp = hm * rctFactor;
+            const vf = rpm * z * fzComp;
+
+            document.getElementById('rct-res-pct').innerText = `${pct.toFixed(1)} % (x${rctFactor.toFixed(2)})`;
+            document.getElementById('rct-res-fz').innerText = `${fzComp.toFixed(3)} mm/tann`;
+            document.getElementById('rct-res-vf').innerText = `${Math.round(vf)} mm/min`;
+            oppdaterSisteCncKpi(`fz ${fzComp.toFixed(3)} | F${Math.round(vf)}`, `Tynn spon: Ø${d} (ae=${ae} mm)`, 'cnc');
         }
 
         // --- TOOLS LOGIC ---
@@ -1504,6 +2177,7 @@
             document.getElementById('mat-res-vc').innerText = `${vc} m/min`;
             document.getElementById('mat-res-rpm').innerText = `${Math.round(rpm)} RPM`;
             document.getElementById('mat-res-mating').innerText = `${Math.round(vf)} mm/min`;
+            oppdaterSisteCncKpi(`${Math.round(rpm)} RPM | F${Math.round(vf)}`, `Skjæredata: Ø${dia} mm (Vc ${vc})`, 'tools', 'data');
         }
         
         function beregnBoredybde() {
@@ -1514,52 +2188,225 @@
             document.getElementById('drill-res-tip').innerText = h.toFixed(2) + " mm";
             document.getElementById('drill-res-total').innerText = (depth + h).toFixed(2) + " mm";
         }
+
+        function beregnKjolevaeske() {
+            const vol = parseFloat(document.getElementById('cool-vol')?.value) || 250;
+            const factor = parseFloat(document.getElementById('cool-factor')?.value) || 1.4;
+            const brix = parseFloat(document.getElementById('cool-brix')?.value) || 3.5;
+            const target = parseFloat(document.getElementById('cool-target')?.value) || 8.0;
+
+            const actual = brix * factor;
+            const diffPct = Math.max(0, target - actual);
+            const literAdd = (diffPct / 100) * vol;
+
+            document.getElementById('cool-res-actual').innerText = `${actual.toFixed(1)} %`;
+            document.getElementById('cool-res-add').innerText = literAdd > 0 ? `+ ${literAdd.toFixed(2)} Liter` : `Perfekt / Nivå OK`;
+        }
+
+        function beregnOverflate(mode = 'fn') {
+            const re = parseFloat(document.getElementById('ra-re')?.value) || 0.8;
+            const fnEl = document.getElementById('ra-fn');
+            const targetEl = document.getElementById('ra-target');
+            if (!fnEl || !targetEl) return;
+
+            if (mode === 'ra') {
+                const targetRa = parseFloat(targetEl.value) || 1.6;
+                const maxFn = Math.sqrt((targetRa * 31.2 * re) / 1000);
+                fnEl.value = maxFn.toFixed(2);
+            }
+
+            const fn = parseFloat(fnEl.value) || 0.18;
+            const rz = ((fn * fn) / (8 * re)) * 1000;
+            const ra = ((fn * fn) / (31.2 * re)) * 1000;
+            const targetRa = parseFloat(targetEl.value) || 1.6;
+            const recMaxFn = Math.sqrt((targetRa * 31.2 * re) / 1000);
+
+            document.getElementById('ra-res-val').innerText = `Ra ${ra.toFixed(2)} µm (Rz ${rz.toFixed(1)})`;
+            document.getElementById('ra-res-maxfn').innerText = `${recMaxFn.toFixed(2)} mm/o (for Ra ${targetRa})`;
+        }
         
+        const bspTabell = {
+            "G1/8":   { drill: 8.80,  pitch: 0.907 },
+            "G1/4":   { drill: 11.80, pitch: 1.337 },
+            "G3/8":   { drill: 15.25, pitch: 1.337 },
+            "G1/2":   { drill: 19.00, pitch: 1.814 },
+            "G3/4":   { drill: 24.50, pitch: 1.814 },
+            "G1":     { drill: 30.75, pitch: 2.309 },
+            "G1-1/4": { drill: 39.50, pitch: 2.309 },
+            "G1-1/2": { drill: 45.25, pitch: 2.309 }
+        };
+
+        // Tilgjengelige stigninger per M-dimensjon (første verdi i listen er standard grovgjenge)
+        const metriskeStigninger = {
+            "3":  [0.5, 0.35],
+            "4":  [0.7, 0.5],
+            "5":  [0.8, 0.5],
+            "6":  [1.0, 0.75, 0.5],
+            "8":  [1.25, 1.0, 0.75],
+            "10": [1.5, 1.25, 1.0, 0.75],
+            "12": [1.75, 1.5, 1.25, 1.0],
+            "14": [2.0, 1.5, 1.25, 1.0],
+            "16": [2.0, 1.5, 1.0],
+            "18": [2.5, 2.0, 1.5, 1.0],
+            "20": [2.5, 2.0, 1.5, 1.0],
+            "22": [2.5, 2.0, 1.5, 1.0],
+            "24": [3.0, 2.0, 1.5, 1.0],
+            "27": [3.0, 2.0, 1.5, 1.0],
+            "30": [3.5, 3.0, 2.0, 1.5],
+            "33": [3.5, 3.0, 2.0, 1.5],
+            "36": [4.0, 3.0, 2.0, 1.5]
+        };
+
         function oppdaterGjengeTabell() {
             const val = document.getElementById('tap-select').value;
-            let drill=8.5, pitch=1.5;
-            if(val==="M3"){ drill=2.5; pitch=0.5; } else if(val==="M4"){ drill=3.3; pitch=0.7; }
-            else if(val==="M5"){ drill=4.2; pitch=0.8; } else if(val==="M6"){ drill=5.0; pitch=1.0; }
-            else if(val==="M8"){ drill=6.8; pitch=1.25; } else if(val==="M10"){ drill=8.5; pitch=1.5; }
-            else if(val==="M12"){ drill=10.2; pitch=1.75; } else if(val==="M16"){ drill=14.0; pitch=2.0; }
-            else if(val==="M20"){ drill=17.5; pitch=2.5; }
-            else if(val==="G1/8"){ drill=8.8; pitch=0.907; } else if(val==="G1/4"){ drill=11.8; pitch=1.337; }
-            else if(val==="G3/8"){ drill=15.25; pitch=1.337; } else if(val==="G1/2"){ drill=19.0; pitch=1.814; }
-            else if(val==="G3/4"){ drill=24.5; pitch=1.814; } else if(val==="G1"){ drill=30.75; pitch=2.309; }
+            let drill = 8.5, pitch = 1.5, form = 9.3;
+            let showForm = true;
+            let visningsNavn = val;
+
+            if (val.startsWith("M")) {
+                const deler = val.substring(1).split("x");
+                const d = parseFloat(deler[0]);
+                pitch = parseFloat(deler[1]);
+                // Kjernebor skjæretapp: D - P (ISO standard tommelfingerregel/tabell)
+                drill = d - pitch;
+                // Kjernebor formtapp (rulletapp): D - (0.45 * P)
+                form = d - (0.45 * pitch);
+                visningsNavn = `M${d}×${pitch}`;
+            } else if (bspTabell[val]) {
+                showForm = false;
+                drill = bspTabell[val].drill;
+                pitch = bspTabell[val].pitch;
+            }
             
-            document.getElementById('tap-res-drill').innerText = drill.toFixed(1) + " mm";
-            document.getElementById('tap-res-pitch').innerText = pitch.toFixed(2) + " mm";
+            document.getElementById('tap-res-drill').innerText = drill.toFixed(2).replace(/\.00$/, '.0') + " mm";
+            document.getElementById('tap-res-pitch').innerText = pitch.toFixed(3).replace(/\.?0+$/, '') + " mm";
+            
+            const formEl = document.getElementById('tap-row-form');
+            if (showForm) {
+                document.getElementById('tap-res-form').innerText = form.toFixed(2).replace(/\.00$/, '.0') + " mm";
+                formEl.style.display = 'flex';
+            } else {
+                formEl.style.display = 'none';
+            }
+
+            const borTekst = drill.toFixed(2).replace(/\.?0+$/, '');
+            const formTekst = showForm ? ` (Form: Ø${form.toFixed(2).replace(/\.?0+$/, '')})` : '';
+            oppdaterSisteCncKpi(`${visningsNavn} → Ø${borTekst}`, `Kjernebor${formTekst}`, 'tools', 'threads');
+
+            const dashThread = document.getElementById('dash-kpi-thread');
+            const dashThreadSub = document.getElementById('dash-kpi-thread-sub');
+            if (dashThread) dashThread.innerText = `${visningsNavn} → Ø${borTekst}`;
+            if (dashThreadSub) {
+                dashThreadSub.innerText = showForm
+                    ? `Formtapp: Ø${form.toFixed(2).replace(/\.?0+$/, '')} mm · P=${pitch}`
+                    : `Rørgjenge BSP · P=${pitch.toFixed(3)} mm`;
+            }
+        }
+
+        function oppdaterToleranseStigninger() {
+            const dStr = document.getElementById('ttol-select').value;
+            const pitchSelect = document.getElementById('ttol-pitch');
+            if (!pitchSelect) return;
+
+            const stigninger = metriskeStigninger[dStr] || [1.5];
+            pitchSelect.innerHTML = "";
+            stigninger.forEach((p, idx) => {
+                const opt = document.createElement('option');
+                opt.value = p;
+                opt.text = idx === 0 ? `${p} mm (Std)` : `${p} mm (Fin)`;
+                if (idx === 0) opt.selected = true;
+                pitchSelect.appendChild(opt);
+            });
+            beregnGjengeToleranse();
         }
         
         function beregnGjengeToleranse() {
-            const s = document.getElementById('ttol-select').value;
-            const f = document.getElementById('ttol-fit').value;
-            let maj = "10.000–10.420", min = "8.376–8.676"; // Default M10 6H
-            
-            if(s==="M10" && f==="6g") { maj = "9.732–9.968"; min = "8.001–8.203"; }
-            else if(s==="M12" && f==="6H") { maj = "12.000–12.450"; min = "10.106–10.441"; }
-            else if(s==="M12" && f==="6g") { maj = "11.701–11.966"; min = "9.680–9.893"; }
-            else if(s==="M16" && f==="6H") { maj = "16.000–16.500"; min = "13.835–14.210"; }
-            else if(s==="M16" && f==="6g") { maj = "15.682–15.962"; min = "13.354–13.596"; }
-            
-            document.getElementById('ttol-res-major').innerText = maj;
-            document.getElementById('ttol-res-minor').innerText = min;
+            const d = parseFloat(document.getElementById('ttol-select').value) || 10;
+            const p = parseFloat(document.getElementById('ttol-pitch')?.value) || 1.5;
+            const fit = document.getElementById('ttol-fit').value;
+
+            // Grunnleggende profilhøyde H = (sqrt(3)/2) * P = 0.8660254 * P
+            // d2 = D2 = d - 0.649519 * P
+            // d1 = D1 = d - 1.082532 * P
+            const basicPitchDia = d - 0.649519 * p;
+            const basicMinorDia = d - 1.082532 * p;
+
+            // ISO 965-1 oppslagsverdier i mikrometer (µm) basert på stigning P
+            // es(g): grunn-avvik for utvendig g-pasning
+            const esMap = { 0.35: 19, 0.5: 20, 0.7: 22, 0.75: 22, 0.8: 24, 1.0: 26, 1.25: 28, 1.5: 32, 1.75: 34, 2.0: 38, 2.5: 42, 3.0: 48, 3.5: 53, 4.0: 60 };
+            // Td(6): toleranse på utvendig store diameter d
+            const tdMap = { 0.35: 85, 0.5: 106, 0.7: 140, 0.75: 140, 0.8: 150, 1.0: 180, 1.25: 212, 1.5: 236, 1.75: 265, 2.0: 280, 2.5: 335, 3.0: 375, 3.5: 425, 4.0: 475 };
+            // TD1(6): toleranse på innvendig lille diameter D1 (mutter 6H)
+            const td1Map = { 0.35: 100, 0.5: 140, 0.7: 190, 0.75: 190, 0.8: 200, 1.0: 236, 1.25: 265, 1.5: 300, 1.75: 335, 2.0: 375, 2.5: 450, 3.0: 500, 3.5: 560, 4.0: 600 };
+
+            const es = (esMap[p] || 32) / 1000;
+            const td = (tdMap[p] || 236) / 1000;
+            const td1 = (td1Map[p] || 300) / 1000;
+
+            // Flankediameter-toleranse etter ISO 965 formel: Td2(6) = 90 * P^0.4 * d^0.1 (i µm)
+            const td2 = (90 * Math.pow(p, 0.4) * Math.pow(d, 0.1)) / 1000;
+            const TD2 = td2 * 1.32; // Innvendig 6H flankediameter-toleranse er 1.32 * Td2(6)
+
+            if (fit === "6H") {
+                document.getElementById('ttol-lbl-major').innerText = "Store dia (D):";
+                document.getElementById('ttol-lbl-pitch').innerText = "Flankedia (D2):";
+                document.getElementById('ttol-lbl-minor').innerText = "Lille dia (D1):";
+
+                const minD2 = basicPitchDia;
+                const maxD2 = basicPitchDia + TD2;
+                const minD1 = basicMinorDia;
+                const maxD1 = basicMinorDia + td1;
+
+                document.getElementById('ttol-res-major').innerText = `Min ${d.toFixed(3)} mm`;
+                document.getElementById('ttol-res-pitch').innerText = `${minD2.toFixed(3)} – ${maxD2.toFixed(3)} mm`;
+                document.getElementById('ttol-res-minor').innerText = `${minD1.toFixed(3)} – ${maxD1.toFixed(3)} mm`;
+            } else {
+                document.getElementById('ttol-lbl-major').innerText = "Store dia (d):";
+                document.getElementById('ttol-lbl-pitch').innerText = "Flankedia (d2):";
+                document.getElementById('ttol-lbl-minor').innerText = "Lille dia (d3):";
+
+                const max_d = d - es;
+                const min_d = max_d - td;
+                const max_d2 = basicPitchDia - es;
+                const min_d2 = max_d2 - td2;
+                // Utvendig kjerneradius d3 = d - 1.226869 * P
+                const basic_d3 = d - 1.226869 * p;
+                const max_d3 = basic_d3 - es;
+                const min_d3 = max_d3 - (td2 * 1.25);
+
+                document.getElementById('ttol-res-major').innerText = `${min_d.toFixed(3)} – ${max_d.toFixed(3)} mm`;
+                document.getElementById('ttol-res-pitch').innerText = `${min_d2.toFixed(3)} – ${max_d2.toFixed(3)} mm`;
+                document.getElementById('ttol-res-minor').innerText = `${min_d3.toFixed(3)} – ${max_d3.toFixed(3)} mm`;
+            }
         }
 
         function beregnIso() {
             const d = parseFloat(document.getElementById('iso-dia').value) || 40;
             const c = document.getElementById('iso-class').value;
-            let res = "+25 / 0";
-            if (c === "H7") {
-                if(d<=3) res = "+10 / 0"; else if(d<=6) res = "+12 / 0"; else if(d<=10) res = "+15 / 0";
-                else if(d<=18) res = "+18 / 0"; else if(d<=30) res = "+21 / 0"; else if(d<=50) res = "+25 / 0";
-                else if(d<=80) res = "+30 / 0"; else if(d<=120) res = "+35 / 0"; else res = "+40 / 0";
-            } else if (c === "g6") {
-                if(d<=3) res = "-2 / -8"; else if(d<=6) res = "-4 / -12"; else if(d<=10) res = "-5 / -14";
-                else if(d<=18) res = "-6 / -17"; else if(d<=30) res = "-7 / -20"; else if(d<=50) res = "-9 / -25";
-                else if(d<=80) res = "-10 / -29"; else if(d<=120) res = "-12 / -34"; else res = "-14 / -39";
-            }
-            document.getElementById('iso-res').innerText = res;
+            let upper = 25, lower = 0;
+
+            // Bestem diametergruppe etter ISO 286 (opp til 400 mm)
+            const bandIdx = d <= 3 ? 0 : d <= 6 ? 1 : d <= 10 ? 2 : d <= 18 ? 3 : d <= 30 ? 4 : d <= 50 ? 5 : d <= 80 ? 6 : d <= 120 ? 7 : d <= 180 ? 8 : d <= 250 ? 9 : d <= 315 ? 10 : 11;
+
+            const isoBands = {
+                H7: [ [10,0], [12,0], [15,0], [18,0], [21,0], [25,0], [30,0], [35,0], [40,0], [46,0], [52,0], [57,0] ],
+                H8: [ [14,0], [18,0], [22,0], [27,0], [33,0], [39,0], [46,0], [54,0], [63,0], [72,0], [81,0], [89,0] ],
+                g6: [ [-2,-8], [-4,-12], [-5,-14], [-6,-17], [-7,-20], [-9,-25], [-10,-29], [-12,-34], [-14,-39], [-15,-44], [-17,-49], [-18,-54] ],
+                h6: [ [0,-6], [0,-8], [0,-9], [0,-11], [0,-13], [0,-16], [0,-19], [0,-22], [0,-25], [0,-29], [0,-32], [0,-36] ],
+                f7: [ [-6,-16], [-10,-22], [-13,-28], [-16,-34], [-20,-41], [-25,-50], [-30,-60], [-36,-71], [-43,-83], [-50,-96], [-56,-108], [-62,-119] ],
+                m6: [ [8,2], [12,4], [15,6], [17,6], [20,7], [25,9], [30,11], [35,13], [40,15], [46,17], [52,20], [57,21] ]
+            };
+
+            const valgt = (isoBands[c] || isoBands.H7)[bandIdx];
+            upper = valgt[0];
+            lower = valgt[1];
+
+            const minMm = (d + lower / 1000).toFixed(3);
+            const maxMm = (d + upper / 1000).toFixed(3);
+            const uStr = upper > 0 ? `+${upper}` : `${upper}`;
+            const lStr = lower > 0 ? `+${lower}` : `${lower}`;
+
+            document.getElementById('iso-res').innerText = `${uStr} / ${lStr} µm (${minMm}–${maxMm})`;
         }
         
         function byttVektForm() {
@@ -1587,16 +2434,136 @@
         }
         
         function beregnTrekant() {
-            let a = parseFloat(document.getElementById('tri-a').value), b = parseFloat(document.getElementById('tri-b').value);
-            if (!isNaN(a) && !isNaN(b)) {
-                let resC = Math.sqrt(a*a + b*b);
-                let degResA = Math.atan(a/b)*(180/Math.PI);
-                document.getElementById('tri-res-c').innerText = `${resC.toFixed(2)} mm`; 
-                document.getElementById('tri-res-angles').innerText = `A = ${degResA.toFixed(2)}° | B = ${(90-degResA).toFixed(2)}°`;
+            const aIn = parseFloat(document.getElementById('tri-a').value);
+            const bIn = parseFloat(document.getElementById('tri-b').value);
+            const cIn = parseFloat(document.getElementById('tri-c').value);
+            const degIn = parseFloat(document.getElementById('tri-deg').value);
+
+            let a = !isNaN(aIn) && aIn > 0 ? aIn : null;
+            let b = !isNaN(bIn) && bIn > 0 ? bIn : null;
+            let c = !isNaN(cIn) && cIn > 0 ? cIn : null;
+            let degA = !isNaN(degIn) && degIn > 0 && degIn < 90 ? degIn : null;
+
+            const rad = d => d * (Math.PI / 180);
+            const deg = r => r * (180 / Math.PI);
+
+            if (a !== null && b !== null) {
+                c = Math.sqrt(a * a + b * b);
+                degA = deg(Math.atan(a / b));
+            } else if (a !== null && c !== null && c > a) {
+                b = Math.sqrt(c * c - a * a);
+                degA = deg(Math.asin(a / c));
+            } else if (b !== null && c !== null && c > b) {
+                a = Math.sqrt(c * c - b * b);
+                degA = deg(Math.acos(b / c));
+            } else if (a !== null && degA !== null) {
+                b = a / Math.tan(rad(degA));
+                c = a / Math.sin(rad(degA));
+            } else if (b !== null && degA !== null) {
+                a = b * Math.tan(rad(degA));
+                c = b / Math.cos(rad(degA));
+            } else if (c !== null && degA !== null) {
+                a = c * Math.sin(rad(degA));
+                b = c * Math.cos(rad(degA));
+            } else {
+                document.getElementById('tri-res-c').innerText = "Fyll inn minst 2 gyldige verdier";
+                document.getElementById('tri-res-angles').innerText = "A = 0° | B = 0°";
+                return;
             }
+
+            const degB = 90 - degA;
+            document.getElementById('tri-res-c').innerText = `c: ${c.toFixed(2)} (a: ${a.toFixed(2)} | b: ${b.toFixed(2)})`;
+            document.getElementById('tri-res-angles').innerText = `A = ${degA.toFixed(2)}° | B = ${degB.toFixed(2)}°`;
         }
 
-        // --- EV CALC LOGIC ---
+        // --- ENHETSKONVERTERER LOGIC ---
+        function byttTommeFraksjon() {
+            const val = document.getElementById('conv-frac').value;
+            document.getElementById('conv-inch').value = val;
+            beregnFraTommer();
+        }
+
+        function beregnFraTommer() {
+            const inch = parseFloat(document.getElementById('conv-inch').value) || 0;
+            const mm = inch * 25.4;
+            document.getElementById('conv-mm').value = mm.toFixed(3);
+        }
+
+        function beregnFraMm() {
+            const mm = parseFloat(document.getElementById('conv-mm').value) || 0;
+            const inch = mm / 25.4;
+            document.getElementById('conv-inch').value = inch.toFixed(4);
+        }
+
+        function beregnTrykkVekt() {
+            const psi = parseFloat(document.getElementById('conv-psi').value) || 0;
+            const lbs = parseFloat(document.getElementById('conv-lbs').value) || 0;
+            const f = parseFloat(document.getElementById('conv-f').value) || 0;
+
+            const bar = psi * 0.0689476;
+            const mpa = bar / 10;
+            const kg = lbs * 0.453592;
+            const c = (f - 32) * (5 / 9);
+
+            document.getElementById('res-bar').innerText = `${bar.toFixed(1)} Bar (${mpa.toFixed(2)} MPa)`;
+            document.getElementById('res-kg').innerText = `${kg.toFixed(2)} kg`;
+            document.getElementById('res-c').innerText = `${c.toFixed(1)} °C`;
+        }
+
+        // --- EV & STRØM CALC LOGIC ---
+        function settElbilProfil(kwh, forbruk, wltp) {
+            document.getElementById('charge-battery').value = kwh;
+            document.getElementById('charge-consumption').value = forbruk;
+            document.getElementById('save-ev-cons').value = (forbruk / 10).toFixed(2);
+            document.getElementById('winter-wltp').value = wltp;
+            beregnLadetid();
+            beregnBesparelse();
+            beregnVinter();
+            visToast(`Bilprofil (${kwh} kWh) aktivert`);
+        }
+
+        function syncStrømPris(source) {
+            const appPrice = document.getElementById('app-price');
+            const chargePrice = document.getElementById('charge-price');
+            const savePrice = document.getElementById('save-elek-price');
+            
+            let val = 1.30;
+            if(source === 'app') val = appPrice.value;
+            if(source === 'charge') val = chargePrice.value;
+            if(source === 'save') val = savePrice.value;
+
+            appPrice.value = val;
+            chargePrice.value = val;
+            savePrice.value = val;
+
+            const dashPower = document.getElementById('dash-kpi-power');
+            if (dashPower) dashPower.innerText = `${parseFloat(val || 0).toFixed(2).replace('.', ',')} kr/kWh`;
+
+            beregnLadetid();
+            beregnBesparelse();
+            beregnApparat();
+        }
+
+        function byttApparat() {
+            document.getElementById('app-watt').value = document.getElementById('app-quick').value;
+            beregnApparat();
+        }
+
+        function beregnApparat() {
+            const watt = parseFloat(document.getElementById('app-watt').value) || 0;
+            const hours = parseFloat(document.getElementById('app-hours').value) || 0;
+            const price = parseFloat(document.getElementById('app-price').value) || 0;
+
+            const kw = watt / 1000;
+            const costPerHour = kw * price;
+            const costPerDay = costPerHour * hours;
+            const costPerMonth = costPerDay * 30;
+
+            document.getElementById('res-app-hour').innerText = costPerHour.toFixed(2).replace('.', ',') + " kr";
+            document.getElementById('res-app-day').innerText = costPerDay.toFixed(2).replace('.', ',') + " kr";
+            document.getElementById('res-app-month').innerText = costPerMonth.toFixed(2).replace('.', ',') + " kr";
+        }
+
         function beregnLadetid() {
             const bat = parseFloat(document.getElementById('charge-battery').value) || 77;
             const kw = parseFloat(document.getElementById('charge-type').value) || 7.4;
@@ -1608,7 +2575,6 @@
             const neededPct = Math.max(0, targetPct - startPct);
             const neededKwh = bat * (neededPct / 100);
 
-            // Effektivitetsfaktor for hurtiglading over 80%
             let effKw = kw;
             if (kw > 50 && targetPct > 80) effKw = kw * 0.75;
 
@@ -1623,6 +2589,11 @@
             document.getElementById('res-charge-time').innerText = `${h}t ${m}m`;
             document.getElementById('res-charge-range').innerText = `+ ${addedRange} km`;
             document.getElementById('res-charge-cost').innerText = totalCost.toFixed(2).replace('.', ',') + " kr";
+
+            const dashPower = document.getElementById('dash-kpi-power');
+            const dashPowerSub = document.getElementById('dash-kpi-power-sub');
+            if (dashPower) dashPower.innerText = `${price.toFixed(2).replace('.', ',')} kr/kWh`;
+            if (dashPowerSub) dashPowerSub.innerText = `Lading: ${h}t ${m}m (+${addedRange} km · ${Math.round(totalCost)} kr)`;
         }
 
         function beregnBesparelse() {
@@ -1668,10 +2639,15 @@
         window.onload = function() {
             lastInnstillinger();
             beregnSirkulaerMating(); beregnGjengerInnvendig(); beregnGjengerUtvendig();
-            beregnFinnVc(); beregnFinnRpm(); beregnFinnMmMin(); beregnGraderPrMin();
-            oppdaterMaterialeData(); beregnBoredybde(); oppdaterGjengeTabell(); beregnGjengeToleranse(); beregnIso();
+            beregnFinnVc(); beregnFinnRpm(); beregnFinnMmMin(); beregnGraderPrMin(); beregnChipThinning();
+            oppdaterMaterialeData(); beregnBoredybde(); beregnKjolevaeske(); beregnOverflate();
+            oppdaterGjengeTabell(); oppdaterToleranseStigninger(); beregnIso();
             beregnVekt(); beregnPcd(); beregnTrekant();
-            beregnLadetid(); beregnBesparelse(); beregnVinter();
+            
+            // Konverterer & Strøm
+            beregnFraTommer(); beregnTrykkVekt();
+            beregnLadetid(); beregnBesparelse(); beregnVinter(); beregnApparat();
+            aktiverHurtigKopiering();
         }
     </script>
 </body>
