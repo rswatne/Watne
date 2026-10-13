@@ -10,7 +10,7 @@
     <meta http-equiv="Expires" content="0">
 
     <script>
-        const APP_BUILD_VER = "v9000.0-HurtigVaktAndTabDisplayFix";
+        const APP_BUILD_VER = "v10000.0-AbsoluteBulletproof";
         if (localStorage.getItem('app_build_v') !== APP_BUILD_VER) {
             localStorage.setItem('app_build_v', APP_BUILD_VER);
             if ('serviceWorker' in navigator) {
@@ -810,7 +810,11 @@
             mainPages.forEach(id => {
                 const el = document.getElementById('page-' + id);
                 if (el) {
-                    el.style.setProperty('display', (id === tabId) ? 'block' : 'none', 'important');
+                    if (id === tabId) {
+                        el.style.cssText = "display: block !important; opacity: 1 !important;";
+                    } else {
+                        el.style.cssText = "display: none !important; opacity: 0 !important;";
+                    }
                 }
             });
 
@@ -837,7 +841,11 @@
             subPages.forEach(id => {
                 const el = document.getElementById('sal-sub-' + id);
                 if (el) {
-                    el.style.setProperty('display', (id === subId) ? 'block' : 'none', 'important');
+                    if (id === subId) {
+                        el.style.cssText = "display: block !important; opacity: 1 !important;";
+                    } else {
+                        el.style.cssText = "display: none !important; opacity: 0 !important;";
+                    }
                 }
             });
 
