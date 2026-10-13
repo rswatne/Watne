@@ -1206,12 +1206,15 @@
             const feriepengerOpptjent = Math.max(0, totalBruttoMnd * 0.12);
             if (document.getElementById('vis-feriepenger')) document.getElementById('vis-feriepenger').innerText = Math.round(feriepengerOpptjent).toLocaleString('no-NB') + " kr";
 
-            const fastAarssats = harFast ? ((5 * timerPrDag) * timelonn * 47) * 1.12 : 0;
-            const vaktAarssats = (sumVaktBrutto * 12) * 1.12;
-            const totalAarssats = fastAarssats + vaktAarssats;
+            const fastAarBrutto = harFast ? ((5 * timerPrDag) * timelonn * 47 * (realDays / realDays)) : 0;
+            const ukerMnd = realDays / 5;
+            const tilleggAar = ukerMnd > 0 ? (sumVaktBrutto / ukerMnd) * 47 : 0;
 
-            if (document.getElementById('vis-aarslonn-fast')) document.getElementById('vis-aarslonn-fast').innerText = Math.round(fastAarssats).toLocaleString('no-NB') + " kr";
-            if (document.getElementById('vis-aarslonn-tot')) document.getElementById('vis-aarslonn-tot').innerText = Math.round(totalAarssats).toLocaleString('no-NB') + " kr";
+            const fastAarMedFeriepenger = fastAarBrutto * 1.12;
+            const totalAarMedFeriepenger = (fastAarBrutto + tilleggAar) * 1.12;
+
+            if (document.getElementById('vis-aarslonn-fast')) document.getElementById('vis-aarslonn-fast').innerText = Math.round(fastAarMedFeriepenger).toLocaleString('no-NB') + " kr";
+            if (document.getElementById('vis-aarslonn-tot')) document.getElementById('vis-aarslonn-tot').innerText = Math.round(totalAarMedFeriepenger).toLocaleString('no-NB') + " kr";
         }
 
         function calcCircularFeed() {
