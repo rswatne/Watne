@@ -10,7 +10,7 @@
     <meta http-equiv="Expires" content="0">
 
     <script>
-        const APP_BUILD_VER = "v2100.0-AccordionFix";
+        const APP_BUILD_VER = "v2200.0-SubTabDisplayFix";
         if (localStorage.getItem('app_build_v') !== APP_BUILD_VER) {
             localStorage.setItem('app_build_v', APP_BUILD_VER);
             if ('serviceWorker' in navigator) {
@@ -1060,7 +1060,7 @@
     function switchSalarySub(subId) {
         document.querySelectorAll('.sub-tab-content').forEach(el => {
             el.classList.remove('active');
-            el.style.display = 'none';
+            el.style.setProperty('display', 'none', 'important');
         });
 
         document.querySelectorAll('.sub-tab-btn').forEach(el => {
@@ -1069,7 +1069,7 @@
 
         const targetSub = document.getElementById(`s-subtab-${subId}`);
         if (targetSub) {
-            targetSub.style.display = 'block';
+            targetSub.style.setProperty('display', 'block', 'important');
             targetSub.classList.add('active');
         }
 
@@ -1082,7 +1082,7 @@
     function switchNav(pageId) {
         document.querySelectorAll('.tab-page').forEach(el => {
             el.classList.remove('active');
-            el.style.display = 'none';
+            el.style.setProperty('display', 'none', 'important');
         });
 
         document.querySelectorAll('nav button').forEach(el => {
@@ -1091,7 +1091,7 @@
 
         const targetPage = document.getElementById(`page-${pageId}`);
         if (targetPage) {
-            targetPage.style.display = 'block';
+            targetPage.style.setProperty('display', 'block', 'important');
             targetPage.classList.add('active');
         }
 
