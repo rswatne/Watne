@@ -553,61 +553,37 @@
     </aside>
 
     <!-- MOBILE TOP HEADER -->
-    <div id="mobile-header" class="md:hidden fixed top-0 left-0 right-0 h-14 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-4 z-50 transition-colors">
-        <div class="flex items-center gap-2">
-            <div class="w-7 h-7 rounded-lg bg-brand-500 flex items-center justify-center text-slate-950">
+    <div id="mobile-header" class="md:hidden fixed top-0 left-0 right-0 h-14 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-3 z-50 transition-colors">
+        <div class="flex items-center gap-1.5">
+            <div class="w-7 h-7 rounded-lg bg-brand-500 flex items-center justify-center text-slate-950 shrink-0">
                 <i data-lucide="wrench" class="w-4 h-4 stroke-[2.5]"></i>
             </div>
             <div>
-                <h1 class="text-sm font-extrabold text-slate-900 dark:text-white leading-tight">Verksteds<span class="text-brand-500">Portal</span></h1>
-                <p id="live-clock-mobile" class="font-mono text-[10px] font-bold text-brand-600 dark:text-brand-400">00:00:00</p>
+                <h1 class="text-xs font-extrabold text-slate-900 dark:text-white leading-tight truncate max-w-[100px]">Verksted</h1>
+                <p id="live-clock-mobile" class="font-mono text-[9px] font-bold text-brand-600 dark:text-brand-400">00:00</p>
             </div>
         </div>
-        <div class="flex items-center gap-1.5">
-            <button onclick="apneNotatSkuff()" class="relative p-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300" title="Notater & Sjekkliste">
+        <div class="flex items-center gap-1">
+            <button onclick="apneNotatSkuff()" class="relative p-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300" title="Notater & Sjekkliste">
                 <i data-lucide="clipboard-list" class="w-4 h-4 text-brand-500"></i>
                 <span id="notes-badge-mobile" class="hidden absolute -top-1 -right-1 w-4 h-4 rounded-full bg-brand-500 text-slate-950 text-[9px] font-mono font-extrabold items-center justify-center">0</span>
             </button>
-            <button onclick="apneSokModal()" class="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300" title="Søk">
+            <button onclick="apneSokModal()" class="p-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300" title="Søk">
                 <i data-lucide="search" class="w-4 h-4 text-brand-500"></i>
             </button>
-            <button onclick="toggleLanguage()" id="lang-btn-mobile" class="px-2.5 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 font-mono font-extrabold text-xs" title="Switch language (NO/EN)">
+            <button onclick="toggleLanguage()" id="lang-btn-mobile" class="px-2 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 font-mono font-extrabold text-xs" title="Switch language">
                 <span id="lang-label-mobile">EN</span>
             </button>
-            <button id="pwa-install-btn-mobile" onclick="apnePwaModal()" class="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-brand-500 text-slate-950 font-extrabold text-xs shadow-sm">
+            <button id="pwa-install-btn-mobile" onclick="apnePwaModal()" class="flex items-center gap-1 px-2 py-1.5 rounded-xl bg-brand-500 text-slate-950 font-extrabold text-xs shadow-sm">
                 <i data-lucide="download" class="w-3.5 h-3.5 stroke-[2.5]"></i>
                 <span>App</span>
             </button>
-            <button onclick="toggleTheme()" class="text-slate-600 dark:text-slate-300 focus:outline-none p-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+            <button onclick="toggleTheme()" class="text-slate-600 dark:text-slate-300 focus:outline-none p-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shrink-0">
                 <i data-lucide="sun" class="w-4 h-4 hidden dark:block text-brand-400"></i>
                 <i data-lucide="moon" class="w-4 h-4 block dark:hidden text-indigo-500"></i>
             </button>
         </div>
     </div>
-
-    <!-- MOBILE BOTTOM DOCK -->
-    <nav id="mobile-bottom-nav" class="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-t border-slate-200 dark:border-slate-800 flex items-center justify-around px-1 z-50 shadow-[0_-4px_20px_rgba(0,0,0,0.1)]">
-        <button onclick="switchTab('dashboard')" id="mnav-dashboard" class="mnav-btn flex flex-col items-center justify-center w-full h-full text-brand-500 font-bold text-[10px] gap-1 transition-colors">
-            <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
-            <span>Oversikt</span>
-        </button>
-        <button onclick="switchTab('salary')" id="mnav-salary" class="mnav-btn flex flex-col items-center justify-center w-full h-full text-slate-400 dark:text-slate-500 font-medium text-[10px] gap-1 transition-colors">
-            <i data-lucide="calculator" class="w-5 h-5"></i>
-            <span>Lønn</span>
-        </button>
-        <button onclick="switchTab('cnc')" id="mnav-cnc" class="mnav-btn flex flex-col items-center justify-center w-full h-full text-slate-400 dark:text-slate-500 font-medium text-[10px] gap-1 transition-colors">
-            <i data-lucide="cpu" class="w-5 h-5"></i>
-            <span>CNC</span>
-        </button>
-        <button onclick="switchTab('tools')" id="mnav-tools" class="mnav-btn flex flex-col items-center justify-center w-full h-full text-slate-400 dark:text-slate-500 font-medium text-[10px] gap-1 transition-colors">
-            <i data-lucide="ruler" class="w-5 h-5"></i>
-            <span>Tabeller</span>
-        </button>
-        <button onclick="switchTab('ev')" id="mnav-ev" class="mnav-btn flex flex-col items-center justify-center w-full h-full text-slate-400 dark:text-slate-500 font-medium text-[10px] gap-1 transition-colors">
-            <i data-lucide="zap" class="w-5 h-5"></i>
-            <span>Strøm</span>
-        </button>
-    </nav>
 
     <!-- MAIN CONTENT AREA -->
     <main class="flex-1 overflow-y-auto pt-16 md:pt-0 relative z-10 transition-colors pb-24 md:pb-12">
