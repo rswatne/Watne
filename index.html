@@ -543,6 +543,13 @@
                                         </div>
                                         <span id="vis-fastlonn" class="font-mono text-slate-900 dark:text-white">0,00 kr</span>
                                     </div>
+                                    <div id="rad-formann" class="line-row border-b border-slate-100 dark:border-slate-800/50 pb-2" style="display: none;">
+                                        <div>
+                                            <span class="block text-amber-700 dark:text-amber-400 font-bold">Formannstillegg (20% av grunnlønn)</span>
+                                            <span id="vis-formann-sub" class="block text-[10px] font-mono text-slate-400 dark:text-slate-500 mt-0.5">Kun ordinære timer (uten overtid)</span>
+                                        </div>
+                                        <span id="vis-formann" class="font-mono text-amber-700 dark:text-amber-400 font-bold">0,00 kr</span>
+                                    </div>
                                     <div id="rad-ferietrekk" class="line-row border-b border-slate-100 dark:border-slate-800/50 pb-2" style="display: none;">
                                         <span class="text-loss-600 dark:text-loss-400 font-bold">Lønnstrekk ferie (brutto)</span>
                                         <span id="vis-ferietrekk" class="font-mono text-loss-600 dark:text-loss-400 font-bold">− 0,00 kr</span>
@@ -658,9 +665,19 @@
                             <i data-lucide="settings" class="w-6 h-6 mr-3 text-brand-500"></i> Basisinnstillinger
                         </h3>
                         
-                        <label class="flex items-center gap-4 p-4 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/50 rounded-2xl mb-6 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
-                            <input type="checkbox" id="inkluder-fastlonn" checked onchange="beregnAlt(); lagreInnstillinger();" class="custom-checkbox text-brand-500 border-slate-300 dark:border-slate-500">
+                        <label class="flex items-center gap-4 p-4 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/50 rounded-2xl mb-4 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                            <input type="checkbox" id="inkluder-fastlonn" checked onchange="beregnAlt(); lagreAltState();" class="custom-checkbox text-brand-500 border-slate-300 dark:border-slate-500">
                             <span class="text-sm font-bold text-slate-900 dark:text-white">Inkluder fastlønn (beregn for hel måned)</span>
+                        </label>
+
+                        <label class="flex items-start gap-4 p-4 bg-amber-50/80 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700/50 rounded-2xl mb-6 cursor-pointer hover:bg-amber-100/80 dark:hover:bg-amber-900/30 transition-colors">
+                            <div class="relative flex items-center mt-0.5">
+                                <input type="checkbox" id="inkluder-formann" onchange="beregnAlt(); lagreAltState();" class="custom-checkbox text-amber-500 border-amber-400 dark:border-amber-500">
+                            </div>
+                            <div>
+                                <span class="block text-sm font-bold text-slate-900 dark:text-white">Inkluder Formannstillegg (+20%)</span>
+                                <span class="block text-xs text-slate-600 dark:text-slate-400 mt-0.5">Beregnes kun av grunntimelønn på ordinære timer (ikke overtid).</span>
+                            </div>
                         </label>
                         
                         <div class="grid grid-cols-2 gap-5 mb-4">
@@ -1781,12 +1798,17 @@
             let dager = (!isNaN(overstyrt) && overstyrt > 0) ? overstyrt : realDays;
 
             const harFastlonn = document.getElementById('inkluder-fastlonn').checked;
+            const harFormann = document.getElementById('inkluder-formann')?.checked || false;
             const timelonn = parseFloat(document.getElementById('timelonn').value) || 316.5;
             const timerPrDag = parseFloat(document.getElementById('timer-dag').value) || 7.5;
             const feriedager = parseInt(document.getElementById('feriedager').value) || 0;
 
             const fastlBrunto = harFastlonn ? (dager * timerPrDag * timelonn) : 0;
             const ferieTrekk = harFastlonn ? (feriedager * timerPrDag * timelonn) : 0;
+            const ordinareTimer = harFastlonn ? Math.max(0, (dager - feriedager) * timerPrDag) : 0;
+
+            const formannSatsPrTime = timelonn * 0.20;
+            const formannBrutto = (harFastlonn && harFormann) ? (ordinareTimer * formannSatsPrTime) : 0;
 
             const radFastlonn = document.getElementById('rad-fastlonn');
             if (harFastlonn) {
@@ -1794,6 +1816,17 @@
                 document.getElementById('vis-fastlonn-sub').innerText = `${dager} d × ${timerPrDag} t × ${timelonn} kr`;
                 radFastlonn.style.display = 'flex';
             } else radFastlonn.style.display = 'none';
+
+            const radFormann = document.getElementById('rad-formann');
+            if (radFormann) {
+                if (harFastlonn && harFormann) {
+                    document.getElementById('vis-formann').innerText = "+ " + formannBrutto.toFixed(2).replace('.', ',') + " kr";
+                    document.getElementById('vis-formann-sub').innerText = `${ordinareTimer.toFixed(1).replace('.', ',')} t × ${formannSatsPrTime.toFixed(2).replace('.', ',')} kr/t (20% av ${timelonn} kr)`;
+                    radFormann.style.display = 'flex';
+                } else {
+                    radFormann.style.display = 'none';
+                }
+            }
 
             const radFerie = document.getElementById('rad-ferietrekk');
             if (harFastlonn && feriedager > 0) {
@@ -1808,6 +1841,7 @@
                     sumTimebankTimer -= v.desimalTimer;
                     return;
                 }
+                // Overtid beregnes kun av grunntimelønn (ikke formannstillegg)
                 const faktor = v.isTimebank ? (v.kind.includes('50') ? 0.5 : 1.0) : (v.kind.includes('50') ? 1.5 : 2.0);
                 const b = v.desimalTimer * (timelonn * faktor);
                 sumVaktBrutto += b;
@@ -1825,7 +1859,6 @@
             document.getElementById('vis-helg50').innerText = helg50.toFixed(2).replace('.', ',') + " kr";
             document.getElementById('vis-helg100').innerText = helg100.toFixed(2).replace('.', ',') + " kr";
 
-            const ordinareTimer = harFastlonn ? ((dager - feriedager) * timerPrDag) : 0;
             const totalTimer = ordinareTimer + sumVaktTimer + Math.max(0, sumTimebankTimer);
             const fortegnTb = sumTimebankTimer >= 0 ? "+ " : "− ";
 
@@ -1835,7 +1868,7 @@
             document.getElementById('vis-timebank-vakttimer').innerText = sumTimebankTimer.toFixed(1).replace('.', ',') + " t";
             document.getElementById('vis-timebank-saldo').innerText = fortegnTb + Math.abs(sumTimebankTimer).toFixed(1).replace('.', ',') + " t";
 
-            const fastBruttoEtterFerie = Math.max(0, fastlBrunto - ferieTrekk);
+            const fastBruttoEtterFerie = Math.max(0, fastlBrunto - ferieTrekk) + formannBrutto;
             const totalBrutto = fastBruttoEtterFerie + sumVaktBrutto;
             window.sisteBrutto = totalBrutto;
             document.getElementById('vis-brutto').innerText = totalBrutto.toFixed(2).replace('.', ',') + " kr";
@@ -1880,7 +1913,8 @@
             const feriepengerMnd = Math.max(0, totalBrutto * 0.12);
             document.getElementById('vis-feriepenger').innerText = feriepengerMnd.toFixed(2).replace('.', ',') + " kr";
 
-            const fastAarBrutto = harFastlonn ? ((5 * timerPrDag) * timelonn * 47 * (dager / realDays)) : 0;
+            const fastTimelonnInklFormann = harFormann ? (timelonn * 1.20) : timelonn;
+            const fastAarBrutto = harFastlonn ? ((5 * timerPrDag) * fastTimelonnInklFormann * 47 * (dager / realDays)) : 0;
             const totalAarMedFeriepenger = (fastAarBrutto + ((sumVaktBrutto / (dager/5)) * 47)) * 1.12;
             document.getElementById('vis-aarslonn-fast').innerText = (fastAarBrutto * 1.12).toFixed(2).replace('.', ',') + " kr";
             document.getElementById('vis-aarslonn-total').innerText = totalAarMedFeriepenger.toFixed(2).replace('.', ',') + " kr";
@@ -1944,11 +1978,16 @@
         }
 
         // --- LOCALSTORAGE & AUTO-SAVE (LAGRER ABSOLUTT ALT) ---
+        function lagreInnstillinger() {
+            lagreAltState();
+        }
+
         function lagreAltState() {
             try {
                 localStorage.setItem('lonn_year', document.getElementById('year')?.value || '');
                 localStorage.setItem('lonn_month', document.getElementById('month')?.value || '');
                 localStorage.setItem('lonn_inkl_fastlonn', document.getElementById('inkluder-fastlonn')?.checked ? '1' : '0');
+                localStorage.setItem('lonn_inkl_formann', document.getElementById('inkluder-formann')?.checked ? '1' : '0');
                 localStorage.setItem('lonn_timelonn', document.getElementById('timelonn')?.value || '');
                 localStorage.setItem('lonn_timer', document.getElementById('timer-dag')?.value || '');
                 localStorage.setItem('lonn_ferier', document.getElementById('feriedager')?.value || '');
@@ -1975,6 +2014,9 @@
                 if (localStorage.getItem('lonn_year')) document.getElementById('year').value = localStorage.getItem('lonn_year');
                 if (localStorage.getItem('lonn_month')) document.getElementById('month').value = localStorage.getItem('lonn_month');
                 if (localStorage.getItem('lonn_inkl_fastlonn') !== null) document.getElementById('inkluder-fastlonn').checked = localStorage.getItem('lonn_inkl_fastlonn') === '1';
+                if (localStorage.getItem('lonn_inkl_formann') !== null && document.getElementById('inkluder-formann')) {
+                    document.getElementById('inkluder-formann').checked = localStorage.getItem('lonn_inkl_formann') === '1';
+                }
                 if (localStorage.getItem('lonn_vakter_tabs_v26')) {
                     registrerteVakter = JSON.parse(localStorage.getItem('lonn_vakter_tabs_v26')) || [];
                 }
