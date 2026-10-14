@@ -5814,5 +5814,172 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 });
 </script>
+<script>
+window.addEventListener('DOMContentLoaded', () => {
+    // Finn innstillingsfanen under lønn for å legge til forklaringsboksen
+    const stabInnstillinger = document.getElementById('stab-innstillinger');
+    if (stabInnstillinger && !document.getElementById('forklaring-tabelltrekk-kort')) {
+        const koloner = stabInnstillinger.querySelector('.grid');
+        if (koloner) {
+            const forklaringsBoksHtml = `
+            <div id="forklaring-tabelltrekk-kort" class="pers-input bg-white/80 dark:bg-slate-900/60 backdrop-blur-md border border-slate-200 dark:border-slate-800 rounded-3xl p-6 lg:p-8 shadow-sm border-l-4 border-l-brand-500 lg:col-span-2 mt-6">
+                <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2 flex items-center">
+                    <i data-lucide="info" class="w-6 h-6 mr-3 text-brand-500"></i> Hvordan beregnes tabelltrekket?
+                </h3>
+                <p class="text-sm text-slate-500 dark:text-slate-400 mb-5 border-b border-slate-200 dark:border-slate-800 pb-4 font-medium">
+                    Prinsippet bak skattetrekk tabell (7100- og 8000-serien) i kalkulatoren:
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+                    <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-700/60 space-y-2">
+                        <p class="font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                            <span class="w-5 h-5 rounded-full bg-brand-500/20 text-brand-600 dark:text-brand-400 flex items-center justify-center text-xs font-mono">1</span>
+                            Årsgrunnlag & Omregning
+                        </p>
+                        <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                            Månedlig bruttolønn avrundes ned til nærmeste hundre og ganges opp med 12 for å finne <strong>estimert samlet årsinntekt</strong>.
+                        </p>
+                    </div>
+                    <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-700/60 space-y-2">
+                        <p class="font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                            <span class="w-5 h-5 rounded-full bg-brand-500/20 text-brand-600 dark:text-brand-400 flex items-center justify-center text-xs font-mono">2</span>
+                            Fradrag & Skattegrunnlag
+                        </p>
+                        <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                            Standard minstefradrag, personfradrag og det spesifikke tabellfradraget (f.eks. 0 kr for 8000-serien eller 4 000 kr pr. trinn for 7100-serien) trekkes fra for å finne <strong>alminnelig inntekt</strong>.
+                        </p>
+                    </div>
+                    <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-700/60 space-y-2">
+                        <p class="font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                            <span class="w-5 h-5 rounded-full bg-brand-500/20 text-brand-600 dark:text-brand-400 flex items-center justify-center text-xs font-mono">3</span>
+                            Skatter & Avgifter
+                        </p>
+                        <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                            Kalkulatoren summerer opp <strong>trygdeavgift</strong> (7.6%), <strong>fellesskatt</strong> (22% av alminnelig inntekt) og trinnskatt basert på inntektstrinnene.
+                        </p>
+                    </div>
+                    <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-700/60 space-y-2">
+                        <p class="font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                            <span class="w-5 h-5 rounded-full bg-brand-500/20 text-brand-600 dark:text-brand-400 flex items-center justify-center text-xs font-mono">4</span>
+                            Månedlig Fordeling (10,5 mnd)
+                        </p>
+                        <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                            Summen deles på <strong>10,5 måneder</strong> (siden det er skattefri juni og halv skatt i desember i Norge) for å finne det nøyaktige månedlige tabelltrekket.
+                        </p>
+                    </div>
+                </div>
+            </div>`;
+            koloner.insertAdjacentHTML('afterend', forklaringsBoksHtml);
+            if (typeof initIcons === 'function') initIcons();
+        }
+    }
+});
+</script>
+<script>
+window.addEventListener('DOMContentLoaded', () => {
+    const dynamiskIndeks = [];
+    
+    // 1. Skann alle standard kalkulatorkort på siden automatisk
+    document.querySelectorAll('.pers-input').forEach(card => {
+        const h3 = card.querySelector('h3');
+        if (!h3) return;
+        
+        const tittelSpan = h3.querySelector('span:first-child') || h3;
+        const tittel = tittelSpan.innerText.trim();
+        if (!tittel) return;
+
+        const mainSection = card.closest('section.tab-content');
+        const toolsSub = card.closest('.tools-tab-content');
+        const cncSub = card.closest('.cnc-tab-content');
+        const evSub = card.closest('.ev-tab-content');
+        const salarySub = card.closest('.salary-tab-content');
+
+        let tab = mainSection ? mainSection.id : 'dashboard';
+        let sub = '';
+
+        if (toolsSub) sub = toolsSub.id.replace('ttab-', '');
+        else if (cncSub) sub = cncSub.id.replace('ctab-', '');
+        else if (evSub) sub = evSub.id.replace('etab-', '');
+        else if (salarySub) sub = salarySub.id.replace('stab-', '');
+
+        let cardId = card.id;
+        if (!cardId) {
+            cardId = 'auto_card_' + tittel.toLowerCase().replace(/[^a-z0-9]/g, '_');
+            card.id = cardId;
+        }
+
+        const kortTekst = card.innerText.toLowerCase();
+        
+        dynamiskIndeks.push({
+            title: tittel,
+            keys: `${tittel.toLowerCase()} ${kortTekst}`,
+            tab: tab,
+            sub: sub,
+            card: cardId
+        });
+    });
+
+    // 2. Legg til spesifikke nøkkelkort manuelt for å sikre 100% treffsikkerhet
+    const ekstraElementer = [
+        { id: 'card-cnc-caxis', title: 'C-Akse Gradering', keys: 'c-akse grader omkrets dreiing c-axis degrees circumference rotary', tab: 'cnc', sub: 'milling' },
+        { id: 'pcd-koordinater-boks', title: 'Boltsirkel (PCD) & X/Y Koordinater', keys: 'pcd boltsirkel kordelengde x y koordinater hull', tab: 'tools', sub: 'math' }
+    ];
+
+    ekstraElementer.forEach(item => {
+        const el = document.getElementById(item.id);
+        if (el && !dynamiskIndeks.some(d => d.card === item.id || d.title === item.title)) {
+            const card = el.closest('.pers-input') || el;
+            if (!card.id) card.id = item.id;
+            
+            dynamiskIndeks.push({
+                title: item.title,
+                keys: `${item.keys} ${card.innerText.toLowerCase()}`,
+                tab: item.tab,
+                sub: item.sub,
+                card: card.id
+            });
+        }
+    });
+
+    // Oppdater den globale søkeindeksen
+    if (typeof verktoySokIndeks !== 'undefined') {
+        window.verktoySokIndeks = dynamiskIndeks;
+    }
+});
+
+// Robust navigasjonsfunksjon for søkeresultater
+window.gaaTilSokResultat = function(idx) {
+    if (typeof verktoySokIndeks === 'undefined' || !verktoySokIndeks[idx]) return;
+    const item = verktoySokIndeks[idx];
+    lukkSokModal();
+
+    // 1. Aktiver hovedfane
+    if (typeof switchTab === 'function') switchTab(item.tab);
+
+    // 2. Aktiver riktig underfane etter en liten tidsluke
+    setTimeout(() => {
+        if (item.tab === 'tools' && typeof switchToolsTab === 'function' && item.sub) switchToolsTab(item.sub);
+        if (item.tab === 'cnc' && typeof switchCncTab === 'function' && item.sub) switchCncTab(item.sub);
+        if (item.tab === 'ev' && typeof switchEvTab === 'function' && item.sub) switchEvTab(item.sub);
+        if (item.tab === 'salary' && typeof switchSalaryTab === 'function' && item.sub) switchSalaryTab(item.sub);
+
+        // 3. Finn elementet og rull til det med lyseffekt
+        setTimeout(() => {
+            let cardEl = document.getElementById(item.card);
+            if (!cardEl) {
+                // Fallback: søk etter tittel i h3 dersom ID feiler
+                const matchingH3 = Array.from(document.querySelectorAll('h3')).find(h => h.innerText.toLowerCase().includes(item.title.toLowerCase()));
+                if (matchingH3) cardEl = matchingH3.closest('.pers-input');
+            }
+
+            if (cardEl) {
+                cardEl.classList.remove('card-collapsed');
+                cardEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                cardEl.classList.add('card-search-highlight');
+                setTimeout(() => cardEl.classList.remove('card-search-highlight'), 2400);
+            }
+        }, 80);
+    }, 60);
+};
+</script>
 </body>
 </html>
