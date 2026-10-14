@@ -2185,6 +2185,30 @@
         <div class="h-24 md:h-12"></div>
     </main>
 
+    <!-- MOBILE BOTTOM NAVIGATION -->
+    <nav id="mobile-bottom-nav" class="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-t border-slate-200 dark:border-slate-800 grid grid-cols-5 items-center z-50 px-1 pb-[env(safe-area-inset-bottom)] shadow-[0_-4px_20px_rgba(0,0,0,0.06)] dark:shadow-[0_-4px_20px_rgba(0,0,0,0.4)] transition-colors">
+        <button type="button" onclick="switchTab('dashboard')" id="mnav-dashboard" class="mnav-btn flex flex-col items-center justify-center py-1.5 text-brand-500 font-bold transition-colors">
+            <i data-lucide="layout-dashboard" class="w-5 h-5 mb-0.5"></i>
+            <span class="text-[10px] tracking-tight">Oversikt</span>
+        </button>
+        <button type="button" onclick="switchTab('salary')" id="mnav-salary" class="mnav-btn flex flex-col items-center justify-center py-1.5 text-slate-400 dark:text-slate-500 font-medium transition-colors">
+            <i data-lucide="calculator" class="w-5 h-5 mb-0.5"></i>
+            <span class="text-[10px] tracking-tight">Lønn</span>
+        </button>
+        <button type="button" onclick="switchTab('cnc')" id="mnav-cnc" class="mnav-btn flex flex-col items-center justify-center py-1.5 text-slate-400 dark:text-slate-500 font-medium transition-colors">
+            <i data-lucide="cpu" class="w-5 h-5 mb-0.5"></i>
+            <span class="text-[10px] tracking-tight">Maskinering</span>
+        </button>
+        <button type="button" onclick="switchTab('tools')" id="mnav-tools" class="mnav-btn flex flex-col items-center justify-center py-1.5 text-slate-400 dark:text-slate-500 font-medium transition-colors">
+            <i data-lucide="ruler" class="w-5 h-5 mb-0.5"></i>
+            <span class="text-[10px] tracking-tight">Tabeller</span>
+        </button>
+        <button type="button" onclick="switchTab('ev')" id="mnav-ev" class="mnav-btn flex flex-col items-center justify-center py-1.5 text-slate-400 dark:text-slate-500 font-medium transition-colors">
+            <i data-lucide="zap" class="w-5 h-5 mb-0.5"></i>
+            <span class="text-[10px] tracking-tight">Strøm</span>
+        </button>
+    </nav>
+
     <!-- MAIN JAVASCRIPT -->
     <script>
         // INIT ICONS
