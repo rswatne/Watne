@@ -2315,11 +2315,18 @@
                     const parsed = JSON.parse(savedInputs);
                     Object.keys(parsed).forEach(id => {
                         const el = document.getElementById(id);
-                        if (el) {
+                        if (el && id !== 'ttol-pitch') {
                             if (el.type === 'checkbox') el.checked = parsed[id];
                             else el.value = parsed[id];
                         }
                     });
+                    // Bygg stigningsmeny for valgt M-størrelse først, og sett deretter lagret stigning
+                    oppdaterToleranseStigninger();
+                    if (parsed['ttol-pitch'] && document.getElementById('ttol-pitch')) {
+                        document.getElementById('ttol-pitch').value = parsed['ttol-pitch'];
+                    }
+                } else {
+                    oppdaterToleranseStigninger();
                 }
 
                 if (localStorage.getItem('siste_cnc_val')) {
@@ -2579,15 +2586,19 @@
             const dStr = document.getElementById('ttol-select').value;
             const pitchSelect = document.getElementById('ttol-pitch');
             if (!pitchSelect) return;
+            const forrigeVerdi = pitchSelect.value;
             const stigninger = metriskeStigninger[dStr] || [1.5];
             pitchSelect.innerHTML = "";
             stigninger.forEach((p, idx) => {
                 const opt = document.createElement('option');
                 opt.value = p; opt.text = `${p} mm`;
-                if (idx === 0) opt.selected = true;
+                if (String(p) === String(forrigeVerdi) || (idx === 0 && !stigninger.map(String).includes(String(forrigeVerdi)))) {
+                    opt.selected = true;
+                }
                 pitchSelect.appendChild(opt);
             });
             beregnGjengeToleranse();
+            lagreAltState();
         }
         function beregnGjengeToleranse() {
             const d = parseFloat(document.getElementById('ttol-select').value) || 10;
@@ -2789,6 +2800,7 @@
             document.getElementById('charge-consumption').value = forbruk;
             document.getElementById('winter-wltp').value = wltp;
             beregnLadetid(); beregnVinter();
+            lagreAltState();
         }
         function beregnLadetid() {
             const bat = parseFloat(document.getElementById('charge-battery').value) || 77;
@@ -2838,7 +2850,7 @@
             beregnSirkulaerMating(); beregnGjengerInnvendig(); beregnGjengerUtvendig();
             beregnFinnVc(); beregnFinnRpm(); beregnFinnMmMin(); beregnGraderPrMin(); beregnChipThinning();
             oppdaterMaterialeData(); beregnBoredybde(); beregnKjolevaeske(); beregnOverflate();
-            oppdaterGjengeTabell(); oppdaterToleranseStigninger(); beregnIso();
+            oppdaterGjengeTabell(); beregnGjengeToleranse(); beregnIso();
             beregnVekt(); beregnPcd(); beregnTrekant();
             beregnFraTommer(); beregnTrykkVekt();
             beregnLadetid(); beregnBesparelse(); beregnVinter(); beregnApparat();
