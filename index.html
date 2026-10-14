@@ -298,6 +298,31 @@
         </div>
     </aside>
 
+    <!-- WIDGET CUSTOMIZER MODAL -->
+    <div id="widget-modal" class="fixed inset-0 z-[95] hidden items-center justify-center bg-slate-950/75 backdrop-blur-sm p-4">
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-3xl max-w-lg w-full p-6 shadow-2xl animate-fadeIn flex flex-col max-h-[85vh]">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-2xl bg-brand-500/15 text-brand-500 flex items-center justify-center border border-brand-500/30">
+                        <i data-lucide="sliders-horizontal" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-extrabold text-slate-900 dark:text-white leading-tight">Tilpass Oversikt</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Velg hvilke kort som skal vises og endre rekkefølge</p>
+                    </div>
+                </div>
+                <button onclick="lukkWidgetModal()" class="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-800 dark:hover:text-white">✕</button>
+            </div>
+
+            <div id="widget-config-list" class="flex-1 overflow-y-auto space-y-2 pr-1 mb-5"></div>
+
+            <div class="flex gap-3 pt-3 border-t border-slate-200 dark:border-slate-800">
+                <button onclick="tilbakestillWidgets()" class="py-2.5 px-4 rounded-xl font-bold text-xs bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-colors">Tilbakestill</button>
+                <button onclick="lukkWidgetModal()" class="flex-1 py-2.5 px-4 rounded-xl font-bold text-sm bg-brand-500 hover:bg-brand-600 text-slate-950 transition-colors shadow-md shadow-brand-500/20">Ferdig</button>
+            </div>
+        </div>
+    </div>
+
     <!-- MOBILE TOP HEADER -->
     <div id="mobile-header" class="md:hidden fixed top-0 left-0 right-0 h-14 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-4 z-50 transition-colors">
         <div class="flex items-center gap-2">
@@ -350,9 +375,20 @@
         
         <!-- ================= DASHBOARD ================= -->
         <section id="dashboard" class="tab-content active p-4 sm:p-6 lg:p-10 max-w-7xl mx-auto">
-            <!-- 6 SANNTIDSKORT -->
-            <div class="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 mb-8">
-                <div onclick="switchTab('salary')" class="bg-white/90 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200/90 dark:border-slate-800 rounded-2xl p-4 cursor-pointer hover:border-brand-500 transition-all group">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-brand-500"></span>
+                    <h2 class="text-xs font-mono font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">Sanntidskort (Widgets)</h2>
+                </div>
+                <button onclick="apneWidgetModal()" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-white/90 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-brand-500 dark:hover:border-brand-500 transition-all shadow-sm">
+                    <i data-lucide="sliders-horizontal" class="w-3.5 h-3.5 text-brand-500"></i>
+                    <span>Tilpass oversikt</span>
+                </button>
+            </div>
+
+            <!-- DYNAMISK SANNTIDSKORT-CONTAINER -->
+            <div id="dash-widgets-grid" class="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 mb-8">
+                <div id="widget-netto" data-widget-id="netto" onclick="switchTab('salary')" class="dash-widget bg-white/90 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200/90 dark:border-slate-800 rounded-2xl p-4 cursor-pointer hover:border-brand-500 transition-all group">
                     <div class="flex items-center justify-between text-xs font-mono text-slate-400 mb-1">
                         <span>NETTO UTBETALT</span>
                         <i data-lucide="wallet" class="w-4 h-4 text-brand-500 group-hover:scale-110 transition-transform"></i>
@@ -361,7 +397,7 @@
                     <p id="dash-kpi-periode" class="text-[11px] text-brand-600 dark:text-brand-400 font-medium mt-1 truncate">Herav overtid: + 0 kr</p>
                 </div>
 
-                <div onclick="switchTab('salary'); switchSalaryTab('vakter');" class="bg-white/90 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200/90 dark:border-slate-800 rounded-2xl p-4 cursor-pointer hover:border-indigo-500 transition-all group">
+                <div id="widget-timebank" data-widget-id="timebank" onclick="switchTab('salary'); switchSalaryTab('vakter');" class="dash-widget bg-white/90 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200/90 dark:border-slate-800 rounded-2xl p-4 cursor-pointer hover:border-indigo-500 transition-all group">
                     <div class="flex items-center justify-between text-xs font-mono text-slate-400 mb-1">
                         <span>TIMEBANK SALDO</span>
                         <i data-lucide="clock" class="w-4 h-4 text-indigo-500 group-hover:scale-110 transition-transform"></i>
@@ -370,7 +406,7 @@
                     <p id="dash-kpi-vakter" class="text-[11px] text-slate-500 dark:text-slate-400 font-medium mt-1 truncate">0 vakter denne mnd</p>
                 </div>
 
-                <div onclick="switchTab('salary')" class="bg-white/90 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200/90 dark:border-slate-800 rounded-2xl p-4 cursor-pointer hover:border-emerald-500 transition-all group">
+                <div id="widget-week" data-widget-id="week" onclick="switchTab('salary')" class="dash-widget bg-white/90 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200/90 dark:border-slate-800 rounded-2xl p-4 cursor-pointer hover:border-emerald-500 transition-all group">
                     <div class="flex items-center justify-between text-xs font-mono text-slate-400 mb-1">
                         <span>UKENUMMER & DAGER</span>
                         <i data-lucide="calendar-days" class="w-4 h-4 text-emerald-500 group-hover:scale-110 transition-transform"></i>
@@ -379,7 +415,7 @@
                     <p id="dash-kpi-workdays" class="text-[11px] text-slate-500 dark:text-slate-400 font-medium mt-1 truncate">Beregner arbeidsdager...</p>
                 </div>
 
-                <div id="dash-card-cnc" onclick="apneSisteCnc()" class="bg-white/90 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200/90 dark:border-slate-800 rounded-2xl p-4 cursor-pointer hover:border-blue-500 transition-all group">
+                <div id="widget-cnc" data-widget-id="cnc" onclick="apneSisteCnc()" class="dash-widget bg-white/90 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200/90 dark:border-slate-800 rounded-2xl p-4 cursor-pointer hover:border-blue-500 transition-all group">
                     <div class="flex items-center justify-between text-xs font-mono text-slate-400 mb-1">
                         <span>SISTE CNC-UTREGNING</span>
                         <i data-lucide="cpu" class="w-4 h-4 text-blue-500 group-hover:scale-110 transition-transform"></i>
@@ -388,7 +424,7 @@
                     <p id="dash-kpi-cnc-sub" class="text-[11px] text-slate-500 dark:text-slate-400 font-medium mt-1 truncate">Skjæredata: Ø12 mm (z=4)</p>
                 </div>
 
-                <div onclick="switchTab('tools'); switchToolsTab('threads');" class="bg-white/90 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200/90 dark:border-slate-800 rounded-2xl p-4 cursor-pointer hover:border-amber-500 transition-all group">
+                <div id="widget-thread" data-widget-id="thread" onclick="switchTab('tools'); switchToolsTab('threads');" class="dash-widget bg-white/90 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200/90 dark:border-slate-800 rounded-2xl p-4 cursor-pointer hover:border-amber-500 transition-all group">
                     <div class="flex items-center justify-between text-xs font-mono text-slate-400 mb-1">
                         <span>AKTIV GJENGE</span>
                         <i data-lucide="settings-2" class="w-4 h-4 text-amber-500 group-hover:scale-110 transition-transform"></i>
@@ -397,13 +433,50 @@
                     <p id="dash-kpi-thread-sub" class="text-[11px] text-slate-500 dark:text-slate-400 font-medium mt-1 truncate">Formtapp: Ø9.3 mm · P=1.5</p>
                 </div>
 
-                <div onclick="switchTab('ev')" class="bg-white/90 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200/90 dark:border-slate-800 rounded-2xl p-4 cursor-pointer hover:border-teal-500 transition-all group">
+                <div id="widget-isofit" data-widget-id="isofit" onclick="switchTab('tools'); switchToolsTab('threads');" class="dash-widget bg-white/90 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200/90 dark:border-slate-800 rounded-2xl p-4 cursor-pointer hover:border-emerald-500 transition-all group">
+                    <div class="flex items-center justify-between text-xs font-mono text-slate-400 mb-1">
+                        <span>ISO-PASNING (SIKTEMÅL)</span>
+                        <i data-lucide="maximize-2" class="w-4 h-4 text-emerald-500 group-hover:scale-110 transition-transform"></i>
+                    </div>
+                    <p id="dash-kpi-isofit" class="text-xl sm:text-2xl font-mono font-extrabold text-emerald-600 dark:text-emerald-400 truncate">Ø40 H7 → 40.0125</p>
+                    <p id="dash-kpi-isofit-sub" class="text-[11px] text-slate-500 dark:text-slate-400 font-medium mt-1 truncate">40.000–40.025 mm (+25/0 µm)</p>
+                </div>
+
+                <div id="widget-power" data-widget-id="power" onclick="switchTab('ev')" class="dash-widget bg-white/90 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200/90 dark:border-slate-800 rounded-2xl p-4 cursor-pointer hover:border-teal-500 transition-all group">
                     <div class="flex items-center justify-between text-xs font-mono text-slate-400 mb-1">
                         <span>STRØMSATS & ELBIL</span>
                         <i data-lucide="zap" class="w-4 h-4 text-teal-500 group-hover:scale-110 transition-transform"></i>
                     </div>
                     <p id="dash-kpi-power" class="text-xl sm:text-2xl font-mono font-extrabold text-teal-600 dark:text-teal-400 truncate">1,30 kr/kWh</p>
                     <p id="dash-kpi-power-sub" class="text-[11px] text-slate-500 dark:text-slate-400 font-medium mt-1 truncate">Lading: 7t 18m (+299 km)</p>
+                </div>
+
+                <!-- EKSTRA VALGFRIE SANNTIDSKORT -->
+                <div id="widget-overtime" data-widget-id="overtime" onclick="switchTab('salary'); switchSalaryTab('vakter');" class="dash-widget bg-white/90 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200/90 dark:border-slate-800 rounded-2xl p-4 cursor-pointer hover:border-rose-500 transition-all group">
+                    <div class="flex items-center justify-between text-xs font-mono text-slate-400 mb-1">
+                        <span>OVERTID DENNE MND</span>
+                        <i data-lucide="flame" class="w-4 h-4 text-rose-500 group-hover:scale-110 transition-transform"></i>
+                    </div>
+                    <p id="dash-kpi-ot-brutto" class="text-xl sm:text-2xl font-mono font-extrabold text-rose-600 dark:text-rose-400 truncate">0,00 kr</p>
+                    <p id="dash-kpi-ot-hours" class="text-[11px] text-slate-500 dark:text-slate-400 font-medium mt-1 truncate">0,0 timer utbetalt</p>
+                </div>
+
+                <div id="widget-coolant" data-widget-id="coolant" onclick="switchTab('tools'); switchToolsTab('data');" class="dash-widget bg-white/90 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200/90 dark:border-slate-800 rounded-2xl p-4 cursor-pointer hover:border-cyan-500 transition-all group">
+                    <div class="flex items-center justify-between text-xs font-mono text-slate-400 mb-1">
+                        <span>KJØLEVÆSKE (BRIX)</span>
+                        <i data-lucide="droplets" class="w-4 h-4 text-cyan-500 group-hover:scale-110 transition-transform"></i>
+                    </div>
+                    <p id="dash-kpi-coolant" class="text-xl sm:text-2xl font-mono font-extrabold text-cyan-600 dark:text-cyan-400 truncate">4.9 %</p>
+                    <p id="dash-kpi-coolant-sub" class="text-[11px] text-slate-500 dark:text-slate-400 font-medium mt-1 truncate">Etterfyll: + 7.75 Liter</p>
+                </div>
+
+                <div id="widget-note" data-widget-id="note" class="dash-widget bg-white/90 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200/90 dark:border-slate-800 rounded-2xl p-4 hover:border-brand-500 transition-all">
+                    <div class="flex items-center justify-between text-xs font-mono text-slate-400 mb-1.5">
+                        <span>MASKIN-HUSKELAPP</span>
+                        <i data-lucide="sticky-note" class="w-4 h-4 text-brand-500"></i>
+                    </div>
+                    <input id="dash-quick-note" type="text" placeholder="Skriv Z-nullpunkt / notat..." oninput="lagreAltState()" class="w-full bg-slate-100/90 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-2.5 py-1.5 text-xs font-mono font-bold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500">
+                    <p class="text-[10px] text-slate-400 mt-1 truncate">Lagres automatisk i nettleseren</p>
                 </div>
             </div>
 
@@ -1018,8 +1091,8 @@
                     </div>
                     
                     <div class="pers-input bg-white/80 dark:bg-slate-900/60 backdrop-blur-md border border-slate-200 dark:border-slate-800 rounded-3xl p-6 lg:p-8 shadow-sm relative overflow-hidden transition-colors border-l-4 border-l-brand-500">
-                        <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2 flex items-center"><i data-lucide="scan-line" class="w-6 h-6 mr-3 text-brand-500"></i> Gjenge & ISO-Toleranser</h3>
-                        <p class="text-sm text-slate-500 dark:text-slate-400 mb-6 border-b border-slate-200 dark:border-slate-800 pb-4 font-medium">Mål for 6H og 6g fra M3 til M36.</p>
+                        <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2 flex items-center"><i data-lucide="scan-line" class="w-6 h-6 mr-3 text-brand-500"></i> Gjengetoleranser (6H / 6g)</h3>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mb-6 border-b border-slate-200 dark:border-slate-800 pb-4 font-medium">Mål for innvendig (6H) og utvendig (6g) gjenge fra M3 til M36.</p>
                         <div class="grid grid-cols-3 gap-3 mb-6">
                             <div>
                                 <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Størrelse</label>
@@ -1045,13 +1118,106 @@
                             <div class="flex justify-between items-center"><span class="text-brand-800 dark:text-brand-300 font-bold text-sm" id="ttol-lbl-pitch">Flankedia:</span><span class="font-mono text-brand-700 dark:text-brand-400 text-base font-bold" id="ttol-res-pitch">9.026 mm</span></div>
                             <div class="flex justify-between items-center border-t border-brand-200 dark:border-brand-800/50 pt-2.5"><span class="text-brand-800 dark:text-brand-300 font-bold text-sm" id="ttol-lbl-minor">Lille dia:</span><span class="font-mono text-brand-600 dark:text-brand-400 text-base font-extrabold" id="ttol-res-minor">8.376 mm</span></div>
                         </div>
-                        
-                        <h4 class="text-sm font-bold text-brand-600 dark:text-brand-400 mb-3 mt-6 uppercase tracking-wider border-t border-slate-200 dark:border-slate-800 pt-5">ISO Aksling/Hull</h4>
-                        <div class="grid grid-cols-2 gap-4 mb-4">
-                            <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Mål (mm)</label><input type="number" id="iso-dia" value="40" class="glass-input glass-input-brand" oninput="beregnIso()"></div>
-                            <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Klasse</label><select id="iso-class" class="glass-input glass-input-brand" onchange="beregnIso()"><option value="H7" selected>H7</option><option value="g6">g6</option><option value="h6">h6</option><option value="f7">f7</option></select></div>
+                    </div>
+
+                    <div class="pers-input bg-white/80 dark:bg-slate-900/60 backdrop-blur-md border border-slate-200 dark:border-slate-800 rounded-3xl p-6 lg:p-8 shadow-sm relative overflow-hidden transition-colors border-l-4 border-l-emerald-500 lg:col-span-2">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+                            <h3 class="text-xl font-bold text-slate-900 dark:text-white flex items-center"><i data-lucide="maximize-2" class="w-6 h-6 mr-3 text-emerald-500"></i> ISO 286 Pasninger – Aksling & Hull (Ø1–500 mm)</h3>
+                            <span id="iso-fit-badge" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-mono font-bold bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 w-fit">Standard pasningshull</span>
                         </div>
-                        <div class="bg-brand-50/80 dark:bg-brand-900/30 p-4 rounded-xl border-l-4 border-brand-500 flex justify-between items-center shadow-inner"><span class="text-brand-800 dark:text-brand-300 font-bold text-sm">Avvik & mål:</span><span class="font-mono font-bold text-brand-600 dark:text-brand-400 text-sm" id="iso-res">+25 / 0 µm</span></div>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mb-5 border-b border-slate-200 dark:border-slate-800 pb-4 font-medium">Komplett oppslagsverk for klaring-, overgang- og presspasninger med automatisk CNC-midtmål.</p>
+
+                        <!-- Hurtigvalg-knapper for de vanligste verkstedpasningene -->
+                        <div class="mb-5">
+                            <span class="block text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 mb-2">Hurtigvalg pasningsklasse</span>
+                            <div class="flex flex-wrap gap-1.5">
+                                <button type="button" onclick="settIsoHurtig('H7')" class="px-2.5 py-1.5 rounded-xl text-xs font-mono font-bold bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30 transition-all">H7</button>
+                                <button type="button" onclick="settIsoHurtig('H8')" class="px-2.5 py-1.5 rounded-xl text-xs font-mono font-bold bg-slate-100 dark:bg-slate-800 hover:border-emerald-500 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 transition-all">H8</button>
+                                <button type="button" onclick="settIsoHurtig('G7')" class="px-2.5 py-1.5 rounded-xl text-xs font-mono font-bold bg-slate-100 dark:bg-slate-800 hover:border-emerald-500 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 transition-all">G7</button>
+                                <button type="button" onclick="settIsoHurtig('K7')" class="px-2.5 py-1.5 rounded-xl text-xs font-mono font-bold bg-slate-100 dark:bg-slate-800 hover:border-emerald-500 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 transition-all">K7</button>
+                                <button type="button" onclick="settIsoHurtig('M7')" class="px-2.5 py-1.5 rounded-xl text-xs font-mono font-bold bg-slate-100 dark:bg-slate-800 hover:border-emerald-500 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 transition-all">M7</button>
+                                <button type="button" onclick="settIsoHurtig('P7')" class="px-2.5 py-1.5 rounded-xl text-xs font-mono font-bold bg-slate-100 dark:bg-slate-800 hover:border-emerald-500 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 transition-all">P7</button>
+                                <span class="mx-1 text-slate-300 dark:text-slate-700 self-center">|</span>
+                                <button type="button" onclick="settIsoHurtig('g6')" class="px-2.5 py-1.5 rounded-xl text-xs font-mono font-bold bg-blue-500/10 hover:bg-blue-500/20 text-blue-700 dark:text-blue-300 border border-blue-500/30 transition-all">g6</button>
+                                <button type="button" onclick="settIsoHurtig('f7')" class="px-2.5 py-1.5 rounded-xl text-xs font-mono font-bold bg-slate-100 dark:bg-slate-800 hover:border-blue-500 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 transition-all">f7</button>
+                                <button type="button" onclick="settIsoHurtig('h6')" class="px-2.5 py-1.5 rounded-xl text-xs font-mono font-bold bg-slate-100 dark:bg-slate-800 hover:border-blue-500 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 transition-all">h6</button>
+                                <button type="button" onclick="settIsoHurtig('h7')" class="px-2.5 py-1.5 rounded-xl text-xs font-mono font-bold bg-slate-100 dark:bg-slate-800 hover:border-blue-500 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 transition-all">h7</button>
+                                <button type="button" onclick="settIsoHurtig('js6')" class="px-2.5 py-1.5 rounded-xl text-xs font-mono font-bold bg-slate-100 dark:bg-slate-800 hover:border-blue-500 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 transition-all">js6</button>
+                                <button type="button" onclick="settIsoHurtig('k6')" class="px-2.5 py-1.5 rounded-xl text-xs font-mono font-bold bg-slate-100 dark:bg-slate-800 hover:border-blue-500 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 transition-all">k6</button>
+                                <button type="button" onclick="settIsoHurtig('m6')" class="px-2.5 py-1.5 rounded-xl text-xs font-mono font-bold bg-slate-100 dark:bg-slate-800 hover:border-blue-500 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 transition-all">m6</button>
+                                <button type="button" onclick="settIsoHurtig('n6')" class="px-2.5 py-1.5 rounded-xl text-xs font-mono font-bold bg-slate-100 dark:bg-slate-800 hover:border-blue-500 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 transition-all">n6</button>
+                                <button type="button" onclick="settIsoHurtig('p6')" class="px-2.5 py-1.5 rounded-xl text-xs font-mono font-bold bg-slate-100 dark:bg-slate-800 hover:border-blue-500 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 transition-all">p6</button>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Nominell Diameter (mm)</label>
+                                <input type="number" step="0.01" min="1" max="500" id="iso-dia" value="40" class="glass-input glass-input-emerald" oninput="beregnIso()">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Velg Toleranseklasse (Hull / Aksling)</label>
+                                <select id="iso-class" class="glass-input glass-input-emerald" onchange="beregnIso()">
+                                    <optgroup label="Hull – Standard (H-rekke)">
+                                        <option value="H6">H6 (Fin styring)</option>
+                                        <option value="H7" selected>H7 (Standard pasningshull)</option>
+                                        <option value="H8">H8 (Normalt lager/foring)</option>
+                                        <option value="H9">H9 (Romslig styring / kilespor)</option>
+                                        <option value="H10">H10 (Grov styring)</option>
+                                        <option value="H11">H11 (Frimål / grov)</option>
+                                    </optgroup>
+                                    <optgroup label="Hull – Klaring / Overgang / Press">
+                                        <option value="F7">F7 (Klaring / glidelager)</option>
+                                        <option value="F8">F8 (Romslig klaring)</option>
+                                        <option value="G6">G6 (Snevret klaring)</option>
+                                        <option value="G7">G7 (Fin glidepasning)</option>
+                                        <option value="JS7">JS7 (± Symmetrisk lagerhull)</option>
+                                        <option value="K7">K7 (Overgangspasning)</option>
+                                        <option value="M7">M7 (Fast overgangspasning)</option>
+                                        <option value="N7">N7 (Lett presspasning)</option>
+                                        <option value="P7">P7 (Presspasning)</option>
+                                    </optgroup>
+                                    <optgroup label="Aksling – Klaringspasning (c–h)">
+                                        <option value="c11">c11 (Stor klaring)</option>
+                                        <option value="d9">d9 (Romslig løpepasning)</option>
+                                        <option value="e8">e8 (Løpepasning)</option>
+                                        <option value="f7">f7 (Glidelager / rotasjon)</option>
+                                        <option value="f8">f8 (Normal glideløp)</option>
+                                        <option value="g6">g6 (Presis glidepasning)</option>
+                                        <option value="h5">h5 (Slipt presisjonsaksel)</option>
+                                        <option value="h6">h6 (Standard presisjonsaksel)</option>
+                                        <option value="h7">h7 (Normal aksel / styring)</option>
+                                        <option value="h8">h8 (Kaldtrukket / grov aksel)</option>
+                                        <option value="h9">h9 (Kilespor / bredde)</option>
+                                        <option value="h11">h11 (Frimål aksel)</option>
+                                    </optgroup>
+                                    <optgroup label="Aksling – Overgang & Press (js–s)">
+                                        <option value="js6">js6 (± Symmetrisk lageraksel)</option>
+                                        <option value="k6">k6 (Overgang / kulelager)</option>
+                                        <option value="m6">m6 (Fast overgangspasning)</option>
+                                        <option value="n6">n6 (Lett presspasning)</option>
+                                        <option value="p6">p6 (Standard presspasning)</option>
+                                        <option value="r6">r6 (Kraftig presspasning)</option>
+                                        <option value="s6">s6 (Krympepasning)</option>
+                                    </optgroup>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="bg-emerald-50/80 dark:bg-emerald-900/30 p-5 rounded-2xl border-l-4 border-emerald-500 grid grid-cols-1 md:grid-cols-3 gap-4 shadow-inner">
+                            <div class="flex justify-between items-center md:flex-col md:items-start md:border-r md:border-emerald-200 md:dark:border-emerald-800">
+                                <span class="text-emerald-800 dark:text-emerald-300 font-bold text-sm md:mb-1" id="iso-lbl-type">Hull H7 (Avvik):</span>
+                                <span class="font-mono font-bold text-base text-emerald-700 dark:text-emerald-400" id="iso-res">+25 / 0 µm</span>
+                            </div>
+                            <div class="flex justify-between items-center md:flex-col md:items-start md:border-r md:border-emerald-200 md:dark:border-emerald-800 md:pl-4">
+                                <span class="text-emerald-800 dark:text-emerald-300 font-bold text-sm md:mb-1">Min / Maks mål:</span>
+                                <span class="font-mono font-bold text-base text-slate-800 dark:text-slate-200" id="iso-res-minmax">40.000 – 40.025 mm</span>
+                            </div>
+                            <div class="flex justify-between items-center md:flex-col md:items-start md:pl-4">
+                                <span class="text-emerald-900 dark:text-emerald-200 font-bold text-sm md:mb-1">🎯 Midtmål (CNC siktemål):</span>
+                                <span class="font-mono text-xl font-extrabold text-emerald-600 dark:text-emerald-400 copy-val" id="iso-res-mid" onclick="kopierTekst(this.innerText.trim(), 'Midtmål')">40.0125 mm</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1925,12 +2091,135 @@
             const kpiPeriode = document.getElementById('dash-kpi-periode');
             const kpiTb = document.getElementById('dash-kpi-timebank');
             const kpiVakter = document.getElementById('dash-kpi-vakter');
+            const kpiOtBrutto = document.getElementById('dash-kpi-ot-brutto');
+            const kpiOtHours = document.getElementById('dash-kpi-ot-hours');
+
             if (kpiNetto) kpiNetto.innerText = netto.toFixed(2).replace('.', ',') + " kr";
             if (kpiPeriode) kpiPeriode.innerText = sumVaktBrutto > 0 ? `Overtid ut: + ${Math.round(vaktNetto).toLocaleString('no-NO')} kr` : `Ingen overtid ennå`;
             if (kpiTb) kpiTb.innerText = fortegnTb + Math.abs(sumTimebankTimer).toFixed(1).replace('.', ',') + " t";
             if (kpiVakter) kpiVakter.innerText = `${aktive.length} vakt${aktive.length === 1 ? '' : 'er'} denne mnd`;
+            if (kpiOtBrutto) kpiOtBrutto.innerText = "+ " + Math.round(sumVaktBrutto).toLocaleString('no-NO') + " kr";
+            if (kpiOtHours) kpiOtHours.innerText = `${sumVaktTimer.toFixed(1).replace('.', ',')} t utbetalt (Netto: +${Math.round(vaktNetto)} kr)`;
 
             oppdaterUkeOgArbeidsdagerKpi();
+        }
+
+        const standardWidgetListe = [
+            { id: 'netto', title: 'Netto utbetalt', desc: 'Ferdig nettolønn inkl. overtid etter skatt', enabled: true },
+            { id: 'timebank', title: 'Timebank saldo', desc: 'Timer til gode og antall vakter denne mnd', enabled: true },
+            { id: 'week', title: 'Ukenummer & Arbeidsdager', desc: 'ISO-ukenummer og gjenværende arbeidsdager', enabled: true },
+            { id: 'cnc', title: 'Siste CNC-utregning', desc: 'Siste beregnede RPM / mating med hurtiglenke', enabled: true },
+            { id: 'thread', title: 'Aktiv Gjenge & Kjernebor', desc: 'Valgt gjenge med skjære- og formtappbor', enabled: true },
+            { id: 'isofit', title: 'ISO-Pasning & Midtmål', desc: 'Valgt pasningsklasse (Hull/Aksling) med CNC siktemål', enabled: true },
+            { id: 'power', title: 'Strømsats & Elbil', desc: 'Strømpris og beregnet ladetid/rekkevidde', enabled: true },
+            { id: 'overtime', title: 'Overtid denne måneden', desc: 'Brutto/netto overtidsbeløp og timer', enabled: false },
+            { id: 'coolant', title: 'Kjølevæske (Brix)', desc: 'Faktisk konsentrasjon og liter etterfylling', enabled: false },
+            { id: 'note', title: 'Maskin-huskelapp', desc: 'Hurtignotat for Z-nullpunkt, verktøy eller mål', enabled: false }
+        ];
+
+        let brukerWidgets = [];
+
+        function hentWidgetKonfig() {
+            try {
+                const lagret = localStorage.getItem('verksted_widgets_v1');
+                if (lagret) {
+                    const parsed = JSON.parse(lagret);
+                    const eksisterendeIds = new Set(parsed.map(w => w.id));
+                    standardWidgetListe.forEach(std => {
+                        if (!eksisterendeIds.has(std.id)) parsed.push({ ...std });
+                    });
+                    brukerWidgets = parsed;
+                    return;
+                }
+            } catch (e) {}
+            brukerWidgets = JSON.parse(JSON.stringify(standardWidgetListe));
+        }
+
+        function lagreWidgetKonfig() {
+            try {
+                localStorage.setItem('verksted_widgets_v1', JSON.stringify(brukerWidgets));
+            } catch (e) {}
+        }
+
+        function brukWidgetOppsett() {
+            const grid = document.getElementById('dash-widgets-grid');
+            if (!grid) return;
+            brukerWidgets.forEach(w => {
+                const el = document.getElementById('widget-' + w.id);
+                if (el) {
+                    el.style.display = w.enabled ? '' : 'none';
+                    grid.appendChild(el);
+                }
+            });
+        }
+
+        function apneWidgetModal() {
+            byggWidgetModalListe();
+            const modal = document.getElementById('widget-modal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
+        }
+
+        function lukkWidgetModal() {
+            const modal = document.getElementById('widget-modal');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        }
+
+        function byggWidgetModalListe() {
+            const container = document.getElementById('widget-config-list');
+            if (!container) return;
+            let html = '';
+            brukerWidgets.forEach((w, idx) => {
+                html += `
+                <div class="flex items-center justify-between gap-3 p-3 rounded-2xl border ${w.enabled ? 'bg-slate-50 dark:bg-slate-800/80 border-brand-500/40' : 'bg-slate-100/50 dark:bg-slate-900/40 border-slate-200 dark:border-slate-800 opacity-60'} transition-all">
+                    <label class="flex items-center gap-3 flex-1 cursor-pointer min-w-0">
+                        <input type="checkbox" ${w.enabled ? 'checked' : ''} onchange="veksleWidget('${w.id}', this.checked)" class="custom-checkbox text-brand-500 border-slate-400 dark:border-slate-500 shrink-0">
+                        <div class="min-w-0">
+                            <p class="text-sm font-bold text-slate-900 dark:text-white truncate">${w.title}</p>
+                            <p class="text-[11px] text-slate-500 dark:text-slate-400 truncate">${w.desc}</p>
+                        </div>
+                    </label>
+                    <div class="flex items-center gap-1 shrink-0">
+                        <button type="button" onclick="flyttWidget(${idx}, -1)" ${idx === 0 ? 'disabled' : ''} class="w-8 h-8 rounded-xl bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 flex items-center justify-center text-xs font-bold hover:border-brand-500 disabled:opacity-30">↑</button>
+                        <button type="button" onclick="flyttWidget(${idx}, 1)" ${idx === brukerWidgets.length - 1 ? 'disabled' : ''} class="w-8 h-8 rounded-xl bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 flex items-center justify-center text-xs font-bold hover:border-brand-500 disabled:opacity-30">↓</button>
+                    </div>
+                </div>`;
+            });
+            container.innerHTML = html;
+        }
+
+        function veksleWidget(id, aktiv) {
+            const item = brukerWidgets.find(w => w.id === id);
+            if (item) {
+                item.enabled = aktiv;
+                lagreWidgetKonfig();
+                brukWidgetOppsett();
+                byggWidgetModalListe();
+            }
+        }
+
+        function flyttWidget(index, retning) {
+            const nyIndex = index + retning;
+            if (nyIndex < 0 || nyIndex >= brukerWidgets.length) return;
+            const temp = brukerWidgets[index];
+            brukerWidgets[index] = brukerWidgets[nyIndex];
+            brukerWidgets[nyIndex] = temp;
+            lagreWidgetKonfig();
+            brukWidgetOppsett();
+            byggWidgetModalListe();
+        }
+
+        function tilbakestillWidgets() {
+            brukerWidgets = JSON.parse(JSON.stringify(standardWidgetListe));
+            lagreWidgetKonfig();
+            brukWidgetOppsett();
+            byggWidgetModalListe();
+            visToast("Oversikt tilbakestilt!");
         }
 
         function hentIsoUkenummer(dato) {
@@ -2232,8 +2521,14 @@
             const target = parseFloat(document.getElementById('cool-target')?.value) || 8.0;
             const actual = brix * factor;
             const literAdd = ((Math.max(0, target - actual)) / 100) * vol;
+            const addText = literAdd > 0 ? `+ ${literAdd.toFixed(2)} Liter` : `Nivå OK`;
             document.getElementById('cool-res-actual').innerText = `${actual.toFixed(1)} %`;
-            document.getElementById('cool-res-add').innerText = literAdd > 0 ? `+ ${literAdd.toFixed(2)} Liter` : `Nivå OK`;
+            document.getElementById('cool-res-add').innerText = addText;
+
+            const kpiCool = document.getElementById('dash-kpi-coolant');
+            const kpiCoolSub = document.getElementById('dash-kpi-coolant-sub');
+            if (kpiCool) kpiCool.innerText = `${actual.toFixed(1)} %`;
+            if (kpiCoolSub) kpiCoolSub.innerText = literAdd > 0 ? `Etterfyll: ${addText}` : `Konsentrasjon er OK (${target}%)`;
         }
         function beregnOverflate(mode = 'fn') {
             const re = parseFloat(document.getElementById('ra-re')?.value) || 0.8;
@@ -2304,10 +2599,123 @@
             document.getElementById('ttol-res-pitch').innerText = `${basicPitchDia.toFixed(3)} mm`;
             document.getElementById('ttol-res-minor').innerText = `${basicMinorDia.toFixed(3)} mm`;
         }
+        const isoSteps = [3, 6, 10, 18, 30, 50, 80, 120, 180, 250, 315, 400, 500];
+        const isoIT = {
+            5:  [4, 5, 6, 8, 9, 11, 13, 15, 18, 20, 23, 25, 27],
+            6:  [6, 8, 9, 11, 13, 16, 19, 22, 25, 29, 32, 36, 40],
+            7:  [10, 12, 15, 18, 21, 25, 30, 35, 40, 46, 52, 57, 63],
+            8:  [14, 18, 22, 27, 33, 39, 46, 54, 63, 72, 81, 89, 97],
+            9:  [25, 30, 36, 43, 52, 62, 74, 87, 100, 115, 130, 140, 155],
+            10: [40, 48, 58, 70, 84, 100, 120, 140, 160, 185, 210, 230, 250],
+            11: [60, 75, 90, 110, 130, 160, 190, 220, 250, 290, 320, 360, 400]
+        };
+        const isoShaftDev = {
+            // Øvre avvik (es) for akslinger a-h i µm
+            c: { type: 'es', vals: [-60, -70, -80, -95, -110, -125, -145, -170, -200, -230, -260, -290, -320] },
+            d: { type: 'es', vals: [-20, -30, -40, -50, -65, -80, -100, -120, -145, -170, -190, -210, -230] },
+            e: { type: 'es', vals: [-14, -20, -25, -32, -40, -50, -60, -72, -85, -100, -110, -125, -135] },
+            f: { type: 'es', vals: [-6, -10, -13, -16, -20, -25, -30, -36, -43, -50, -56, -62, -68] },
+            g: { type: 'es', vals: [-2, -4, -5, -6, -7, -9, -10, -12, -14, -15, -17, -18, -20] },
+            h: { type: 'es', vals: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] },
+            // Nedre avvik (ei) for akslinger k-s i µm
+            k: { type: 'ei', vals: [0, 1, 1, 1, 2, 2, 2, 3, 3, 4, 4, 4, 5] },
+            m: { type: 'ei', vals: [2, 4, 6, 7, 8, 9, 11, 13, 15, 17, 20, 21, 23] },
+            n: { type: 'ei', vals: [4, 8, 10, 12, 15, 17, 20, 23, 27, 31, 34, 37, 40] },
+            p: { type: 'ei', vals: [6, 12, 15, 18, 22, 26, 32, 37, 43, 50, 56, 62, 68] },
+            r: { type: 'ei', vals: [10, 15, 19, 23, 28, 34, 41, 48, 55, 63, 75, 87, 98] },
+            s: { type: 'ei', vals: [14, 19, 23, 28, 35, 43, 53, 71, 92, 122, 150, 180, 210] }
+        };
+
+        const isoHoleDev = {
+            // Nedre avvik (EI) for hull F-H i µm
+            F: { type: 'EI', vals: [6, 10, 13, 16, 20, 25, 30, 36, 43, 50, 56, 62, 68] },
+            G: { type: 'EI', vals: [2, 4, 5, 6, 7, 9, 10, 12, 14, 15, 17, 18, 20] },
+            H: { type: 'EI', vals: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] },
+            // Øvre avvik (ES) for hull K-P i µm (IT7)
+            K: { type: 'ES', vals: [0, 3, 5, 6, 6, 7, 9, 10, 12, 13, 16, 17, 18] },
+            M: { type: 'ES', vals: [-2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] },
+            N: { type: 'ES', vals: [-4, -4, -4, -5, -7, -8, -9, -10, -12, -14, -14, -16, -17] },
+            P: { type: 'ES', vals: [-6, -9, -11, -14, -17, -21, -24, -28, -33, -36, -41, -45, -51] }
+        };
+
+        function settIsoHurtig(klasse) {
+            const sel = document.getElementById('iso-class');
+            if (sel) {
+                sel.value = klasse;
+                beregnIso();
+                lagreAltState();
+            }
+        }
+
         function beregnIso() {
-            const d = parseFloat(document.getElementById('iso-dia').value) || 40;
-            const c = document.getElementById('iso-class').value;
-            document.getElementById('iso-res').innerText = c === "H7" ? `+25 / 0 µm (${d.toFixed(3)}–${(d+0.025).toFixed(3)})` : `-6 / -17 µm`;
+            const dRaw = parseFloat(document.getElementById('iso-dia')?.value) || 40;
+            const d = Math.max(1, Math.min(500, dRaw));
+            const cls = document.getElementById('iso-class')?.value || 'H7';
+
+            let stepIdx = isoSteps.findIndex(limit => d <= limit);
+            if (stepIdx === -1) stepIdx = isoSteps.length - 1;
+
+            const match = cls.match(/^([A-Za-z]+)(\d+)$/);
+            if (!match) return;
+            const letter = match[1];
+            const grade = parseInt(match[2]);
+            const itVal = (isoIT[grade] || isoIT[7])[stepIdx];
+
+            const isHole = letter === letter.toUpperCase();
+            let upperUm = 0, lowerUm = 0;
+
+            if (letter.toUpperCase() === 'JS') {
+                upperUm = itVal / 2;
+                lowerUm = -itVal / 2;
+            } else if (isHole) {
+                const hData = isoHoleDev[letter] || isoHoleDev.H;
+                const dev = hData.vals[stepIdx];
+                if (hData.type === 'EI') {
+                    lowerUm = dev;
+                    upperUm = dev + itVal;
+                } else {
+                    upperUm = dev;
+                    lowerUm = dev - itVal;
+                }
+            } else {
+                const sData = isoShaftDev[letter] || isoShaftDev.h;
+                const dev = sData.vals[stepIdx];
+                if (sData.type === 'es') {
+                    upperUm = dev;
+                    lowerUm = dev - itVal;
+                } else {
+                    lowerUm = dev;
+                    upperUm = dev + itVal;
+                }
+            }
+
+            const fmtUm = (v) => (v > 0 ? `+${v}` : `${v}`);
+            const minMm = d + (lowerUm / 1000);
+            const maxMm = d + (upperUm / 1000);
+            const midMm = (minMm + maxMm) / 2;
+
+            const lblType = document.getElementById('iso-lbl-type');
+            const resEl = document.getElementById('iso-res');
+            const minMaxEl = document.getElementById('iso-res-minmax');
+            const midEl = document.getElementById('iso-res-mid');
+            const badgeEl = document.getElementById('iso-fit-badge');
+
+            if (lblType) lblType.innerText = isHole ? `Hull ${cls} (Avvik):` : `Aksling ${cls} (Avvik):`;
+            if (resEl) resEl.innerText = `${fmtUm(upperUm)} / ${fmtUm(lowerUm)} µm (IT=${itVal} µm)`;
+            if (minMaxEl) minMaxEl.innerText = `${minMm.toFixed(3)} – ${maxMm.toFixed(3)} mm`;
+            if (midEl) midEl.innerText = `${midMm.toFixed(4)} mm`;
+
+            if (badgeEl) {
+                const selOpt = document.getElementById('iso-class')?.selectedOptions?.[0]?.text || cls;
+                badgeEl.innerText = selOpt;
+            }
+
+            const dashIso = document.getElementById('dash-kpi-isofit');
+            const dashIsoSub = document.getElementById('dash-kpi-isofit-sub');
+            if (dashIso) dashIso.innerText = `Ø${d} ${cls} → ${midMm.toFixed(3)}`;
+            if (dashIsoSub) dashIsoSub.innerText = `${minMm.toFixed(3)}–${maxMm.toFixed(3)} mm (${fmtUm(upperUm)}/${fmtUm(lowerUm)} µm)`;
+
+            oppdaterSisteCncKpi(`Ø${d} ${cls} → ${midMm.toFixed(3)}`, `${minMm.toFixed(3)}–${maxMm.toFixed(3)} mm (${fmtUm(upperUm)}/${fmtUm(lowerUm)} µm)`, 'tools', 'threads');
         }
         function byttVektForm() {
             const type = document.getElementById('w-type').value;
@@ -2424,6 +2832,8 @@
         }
 
         window.onload = function() {
+            hentWidgetKonfig();
+            brukWidgetOppsett();
             lastInnAltState();
             beregnSirkulaerMating(); beregnGjengerInnvendig(); beregnGjengerUtvendig();
             beregnFinnVc(); beregnFinnRpm(); beregnFinnMmMin(); beregnGraderPrMin(); beregnChipThinning();
