@@ -230,10 +230,14 @@
             @apply opacity-70;
         }
 
+        /* Skjul eventuell Google Translate toppbar */
+        .goog-te-banner-frame.skiptranslate, .goog-te-gadget-icon { display: none !important; }
+        body { top: 0px !important; }
+
         /* Print-optimalisering */
         @media print {
             body { height: auto !important; overflow: visible !important; background: white !important; color: black !important; }
-            aside, #mobile-header, #mobile-bottom-nav, .animate-blob, #toast-container, #confirm-modal, #pwa-modal { display: none !important; }
+            aside, #mobile-header, #mobile-bottom-nav, .animate-blob, #toast-container, #confirm-modal, #pwa-modal, #notes-drawer-backdrop, #notes-drawer { display: none !important; }
             main { overflow: visible !important; padding: 0 !important; }
         }
     </style>
@@ -350,15 +354,20 @@
                 <span id="live-week-desktop" class="text-[10px] font-mono font-extrabold px-2 py-0.5 rounded-md bg-brand-500/15 text-brand-600 dark:text-brand-400 border border-brand-500/30">Uke --</span>
             </div>
             <div class="mt-1 flex items-center justify-between text-[11px] font-medium text-slate-500 dark:text-slate-400 pl-6">
-                <span id="live-date-desktop">---</span>
+                <span id="live-date-desktop">--- --. ---</span>
+                <span class="font-mono text-[10px] text-emerald-600 dark:text-emerald-400">● Klar</span>
             </div>
         </div>
 
-        <!-- Globalt Hurtigsøk Knapp (Desktop) -->
-        <div class="px-4 mt-3">
+        <!-- Globalt Hurtigsøk & Notat Knapper (Desktop) -->
+        <div class="px-4 mt-3 space-y-2">
             <button onclick="apneSokModal()" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200/80 dark:bg-slate-800/80 dark:hover:bg-slate-800 border border-slate-200/80 dark:border-slate-700/70 text-xs font-semibold text-slate-500 dark:text-slate-400 transition-all shadow-inner">
                 <span class="flex items-center gap-2"><i data-lucide="search" class="w-4 h-4 text-brand-500"></i> Hurtigsøk verktøy...</span>
                 <kbd class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-white dark:bg-slate-900 text-slate-400 border border-slate-200 dark:border-slate-700">Ctrl K</kbd>
+            </button>
+            <button onclick="apneNotatSkuff()" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-brand-500/10 hover:bg-brand-500/20 border border-brand-500/30 text-xs font-bold text-slate-800 dark:text-slate-200 transition-all">
+                <span class="flex items-center gap-2"><i data-lucide="clipboard-list" class="w-4 h-4 text-brand-500"></i> Notater & Sjekkliste</span>
+                <span id="notes-badge-desktop" class="text-[10px] font-mono font-extrabold px-2 py-0.5 rounded-full bg-brand-500 text-slate-950">0</span>
             </button>
         </div>
 
@@ -390,12 +399,18 @@
                 <i data-lucide="download" class="w-4 h-4 mr-2 stroke-[2.5]"></i>
                 <span>Installer som App</span>
             </button>
-            <button onclick="toggleTheme()" class="w-full flex items-center justify-center px-4 py-2.5 text-sm font-semibold rounded-xl text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all border border-slate-200 dark:border-slate-700 shadow-sm">
-                <i data-lucide="sun" class="w-4 h-4 mr-2 hidden dark:block text-brand-400"></i>
-                <i data-lucide="moon" class="w-4 h-4 mr-2 block dark:hidden text-indigo-500"></i>
-                <span class="dark:hidden">Bytt til Mørk HMI</span>
-                <span class="hidden dark:block">Bytt til Lys HMI</span>
-            </button>
+            <div class="grid grid-cols-2 gap-2">
+                <button onclick="toggleLanguage()" id="lang-btn-desktop" class="flex items-center justify-center px-3 py-2.5 text-xs font-extrabold rounded-xl text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all border border-slate-200 dark:border-slate-700 shadow-sm">
+                    <i data-lucide="languages" class="w-4 h-4 mr-1.5 text-brand-500"></i>
+                    <span id="lang-label-desktop">EN / English</span>
+                </button>
+                <button onclick="toggleTheme()" class="flex items-center justify-center px-3 py-2.5 text-xs font-semibold rounded-xl text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all border border-slate-200 dark:border-slate-700 shadow-sm">
+                    <i data-lucide="sun" class="w-4 h-4 mr-1.5 hidden dark:block text-brand-400"></i>
+                    <i data-lucide="moon" class="w-4 h-4 mr-1.5 block dark:hidden text-indigo-500"></i>
+                    <span class="dark:hidden">Mørk</span>
+                    <span class="hidden dark:block">Lys</span>
+                </button>
+            </div>
         </div>
     </aside>
 
@@ -465,6 +480,78 @@
         </div>
     </div>
 
+    <!-- GLOBAL UTGLIDENDE NOTAT- OG SJEKKLISTESKUFF (Alt + N) -->
+    <div id="notes-drawer-backdrop" onclick="lukkNotatSkuff()" class="fixed inset-0 z-[96] hidden bg-slate-950/60 backdrop-blur-sm transition-opacity"></div>
+    <aside id="notes-drawer" class="fixed top-0 right-0 bottom-0 z-[97] w-full max-w-md bg-white dark:bg-slate-900 border-l border-slate-200 dark:border-slate-800 shadow-2xl transform translate-x-full transition-transform duration-300 ease-out flex flex-col">
+        <!-- Header -->
+        <div class="p-5 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50/70 dark:bg-slate-900/60">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-2xl bg-brand-500/15 border border-brand-500/30 text-brand-500 flex items-center justify-center">
+                    <i data-lucide="clipboard-list" class="w-5 h-5"></i>
+                </div>
+                <div>
+                    <h3 class="text-base font-extrabold text-slate-900 dark:text-white leading-tight">Verkstednotat & Sjekkliste</h3>
+                    <p class="text-[11px] font-mono text-slate-500 dark:text-slate-400">Lagres automatisk · Snarvei: Alt + N</p>
+                </div>
+            </div>
+            <button onclick="lukkNotatSkuff()" class="p-2 rounded-xl bg-slate-200/70 dark:bg-slate-800 text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors">✕</button>
+        </div>
+
+        <!-- Modusvelger (Valg av funksjon) -->
+        <div class="p-4 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+            <div class="grid grid-cols-2 gap-2 p-1 rounded-2xl bg-slate-100 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700/60">
+                <button type="button" id="btn-notes-mode-todo" onclick="byttNotatModus('todo')" class="py-2.5 px-3 rounded-xl text-xs font-extrabold transition-all flex items-center justify-center gap-2 bg-brand-500 text-slate-950 shadow-sm">
+                    <i data-lucide="check-square" class="w-4 h-4"></i>
+                    <span>Sjekkliste</span>
+                    <span id="notes-todo-count-pill" class="px-1.5 py-0.2 rounded-full text-[10px] font-mono bg-slate-950/15">0</span>
+                </button>
+                <button type="button" id="btn-notes-mode-text" onclick="byttNotatModus('text')" class="py-2.5 px-3 rounded-xl text-xs font-extrabold transition-all flex items-center justify-center gap-2 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white">
+                    <i data-lucide="file-text" class="w-4 h-4"></i>
+                    <span>Fritekst / Logg</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Funksjon 1: Sjekkliste (To-Do) -->
+        <div id="notes-panel-todo" class="flex-1 flex flex-col overflow-hidden p-5">
+            <form onsubmit="leggTilSjekklistePunkt(event)" class="flex gap-2 mb-4">
+                <input type="text" id="notes-todo-input" placeholder="Ny oppgave (f.eks. Bytt skjær T04, Mål Ø40 H7)..." class="glass-input glass-input-brand !py-2.5 text-xs flex-1">
+                <button type="submit" class="px-4 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-400 text-slate-950 font-extrabold text-xs shrink-0 shadow-md shadow-brand-500/20 transition-all">+ Legg til</button>
+            </form>
+
+            <!-- Hurtigforslag -->
+            <div class="flex flex-wrap gap-1.5 mb-4">
+                <button type="button" onclick="hurtigSjekkliste('Sjekk Brix kjølevæske')" class="px-2.5 py-1 rounded-lg text-[11px] font-mono font-semibold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-colors">+ Brix kjølevæske</button>
+                <button type="button" onclick="hurtigSjekkliste('Bestill vendeskjær')" class="px-2.5 py-1 rounded-lg text-[11px] font-mono font-semibold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-colors">+ Bestill skjær</button>
+                <button type="button" onclick="hurtigSjekkliste('Kontroller Z-nullpunkt')" class="px-2.5 py-1 rounded-lg text-[11px] font-mono font-semibold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-colors">+ Sjekk Z-nullpunkt</button>
+            </div>
+
+            <div id="notes-todo-list" class="flex-1 overflow-y-auto space-y-2 pr-1"></div>
+
+            <div class="pt-4 mt-4 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between gap-2">
+                <button type="button" onclick="fjernFullforteSjekkliste()" class="py-2 px-3 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-colors">🧹 Fjern fullførte</button>
+                <button type="button" onclick="kopierSjekkliste()" class="py-2 px-3 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-colors">📋 Kopier liste</button>
+            </div>
+        </div>
+
+        <!-- Funksjon 2: Fritekst / Maskinlogg -->
+        <div id="notes-panel-text" class="flex-1 hidden flex-col overflow-hidden p-5">
+            <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-bold text-slate-500 dark:text-slate-400">Maskinlogg / Z-nullpunkt / Skiftbeskjed</span>
+                <span id="notes-char-count" class="text-[11px] font-mono text-slate-400">0 tegn</span>
+            </div>
+            <textarea id="notes-text-area" oninput="oppdaterFritekstNotat(this.value)" placeholder="Skriv inn mål, verktøylengder, G54 Z-nullpunkt, ordrenummer eller beskjed til neste skift..." class="flex-1 w-full bg-slate-50 dark:bg-slate-950/70 border border-slate-300 dark:border-slate-700 rounded-2xl p-4 text-sm font-mono text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500 resize-none leading-relaxed shadow-inner"></textarea>
+            
+            <div class="pt-4 mt-4 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between gap-2">
+                <button type="button" onclick="settInnTidsstempelNotat()" class="py-2 px-3 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-colors">🕒 + Tidspunkt</button>
+                <div class="flex gap-2">
+                    <button type="button" onclick="tomFritekstNotat()" class="py-2 px-3 rounded-xl text-xs font-bold bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 transition-colors">Tøm</button>
+                    <button type="button" onclick="kopierTekst(document.getElementById('notes-text-area').value, 'Notat')" class="py-2 px-3 rounded-xl text-xs font-bold bg-brand-500 hover:bg-brand-400 text-slate-950 transition-colors">📋 Kopier</button>
+                </div>
+            </div>
+        </div>
+    </aside>
+
     <!-- MOBILE TOP HEADER -->
     <div id="mobile-header" class="md:hidden fixed top-0 left-0 right-0 h-14 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-4 z-50 transition-colors">
         <div class="flex items-center gap-2">
@@ -477,8 +564,15 @@
             </div>
         </div>
         <div class="flex items-center gap-1.5">
+            <button onclick="apneNotatSkuff()" class="relative p-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300" title="Notater & Sjekkliste">
+                <i data-lucide="clipboard-list" class="w-4 h-4 text-brand-500"></i>
+                <span id="notes-badge-mobile" class="hidden absolute -top-1 -right-1 w-4 h-4 rounded-full bg-brand-500 text-slate-950 text-[9px] font-mono font-extrabold items-center justify-center">0</span>
+            </button>
             <button onclick="apneSokModal()" class="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300" title="Søk">
                 <i data-lucide="search" class="w-4 h-4 text-brand-500"></i>
+            </button>
+            <button onclick="toggleLanguage()" id="lang-btn-mobile" class="px-2.5 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 font-mono font-extrabold text-xs" title="Switch language (NO/EN)">
+                <span id="lang-label-mobile">EN</span>
             </button>
             <button id="pwa-install-btn-mobile" onclick="apnePwaModal()" class="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-brand-500 text-slate-950 font-extrabold text-xs shadow-sm">
                 <i data-lucide="download" class="w-3.5 h-3.5 stroke-[2.5]"></i>
@@ -526,6 +620,10 @@
                     <h2 class="text-xs font-mono font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">Sanntidskort (Widgets)</h2>
                 </div>
                 <div class="flex items-center gap-2">
+                    <button onclick="apneNotatSkuff()" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-brand-500/15 border border-brand-500/40 text-brand-700 dark:text-brand-300 hover:bg-brand-500 hover:text-slate-950 transition-all shadow-sm">
+                        <i data-lucide="clipboard-list" class="w-3.5 h-3.5"></i>
+                        <span>Notater & Sjekkliste</span>
+                    </button>
                     <button onclick="apneSokModal()" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-white/90 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-brand-500 transition-all shadow-sm">
                         <i data-lucide="search" class="w-3.5 h-3.5 text-brand-500"></i>
                         <span>Hurtigsøk</span>
@@ -621,13 +719,14 @@
                     <p id="dash-kpi-coolant-sub" class="text-[11px] text-slate-500 dark:text-slate-400 font-medium mt-1 truncate">Etterfyll: + 7.75 Liter</p>
                 </div>
 
-                <div id="widget-note" data-widget-id="note" class="dash-widget bg-white/90 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200/90 dark:border-slate-800 rounded-2xl p-4 hover:border-brand-500 transition-all">
-                    <div class="flex items-center justify-between text-xs font-mono text-slate-400 mb-1.5">
-                        <span>MASKIN-HUSKELAPP</span>
-                        <i data-lucide="sticky-note" class="w-4 h-4 text-brand-500"></i>
+                <div id="widget-note" data-widget-id="note" onclick="apneNotatSkuff()" class="dash-widget bg-white/90 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200/90 dark:border-slate-800 rounded-2xl p-4 cursor-pointer hover:border-brand-500 transition-all group">
+                    <div class="flex items-center justify-between text-xs font-mono text-slate-400 mb-1">
+                        <span id="dash-note-widget-title">SJEKKLISTE & NOTAT</span>
+                        <i data-lucide="clipboard-list" class="w-4 h-4 text-brand-500 group-hover:scale-110 transition-transform"></i>
                     </div>
-                    <input id="dash-quick-note" type="text" placeholder="Skriv Z-nullpunkt / notat..." oninput="lagreAltState()" class="w-full bg-slate-100/90 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-2.5 py-1.5 text-xs font-mono font-bold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500">
-                    <p class="text-[10px] text-slate-400 mt-1 truncate">Lagres automatisk i nettleseren</p>
+                    <p id="dash-kpi-note-main" class="text-base sm:text-lg font-mono font-extrabold text-slate-900 dark:text-white truncate">Ingen åpne oppgaver</p>
+                    <p id="dash-kpi-note-sub" class="text-[11px] text-brand-600 dark:text-brand-400 font-medium mt-1 truncate">Klikk for å åpne sjekkliste / logg →</p>
+                    <input id="dash-quick-note" type="hidden">
                 </div>
             </div>
 
@@ -2266,14 +2365,559 @@
             localStorage.theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
         }
 
+        // --- KOMPLETT OVERSETTELSESMOTOR (NO <-> EN) ---
+        let currentLang = localStorage.getItem('verksted_lang') || 'no';
+
+        const noToEnDict = {
+            // Hovednavigasjon & Header
+            "Oversikt": "Overview",
+            "Lønnskalkulator": "Salary Calculator",
+            "Maskinering": "Machining",
+            "Verktøytabeller": "Tool Tables",
+            "Strøm & Elbil": "Power & EV",
+            "Lønn": "Salary",
+            "Tabeller": "Tables",
+            "Strøm": "Power",
+            "● Klar": "● Ready",
+            "Hurtigsøk verktøy...": "Quick search tools...",
+            "Notater & Sjekkliste": "Notes & Checklist",
+            "Installer som App": "Install as App",
+            "Mørk": "Dark",
+            "Lys": "Light",
+            "Bytt til Mørk HMI": "Switch to Dark HMI",
+            "Bytt til Lys HMI": "Switch to Light HMI",
+
+            // Dashboard & Widgets
+            "Sanntidskort (Widgets)": "Live Widgets",
+            "Hurtigsøk": "Quick Search",
+            "Tilpass oversikt": "Customize",
+            "NETTO UTBETALT": "NET PAYOUT",
+            "TIMEBANK SALDO": "TIMEBANK BALANCE",
+            "UKENUMMER & DAGER": "WEEK & WORKDAYS",
+            "SISTE CNC-UTREGNING": "LAST CNC CALC",
+            "AKTIV GJENGE": "ACTIVE THREAD",
+            "ISO-PASNING (SIKTEMÅL)": "ISO FIT (TARGET)",
+            "STRØMSATS & ELBIL": "POWER RATE & EV",
+            "OVERTID DENNE MND": "OVERTIME THIS MONTH",
+            "KJØLEVÆSKE (BRIX)": "COOLANT (BRIX)",
+            "SJEKKLISTE & NOTAT": "CHECKLIST & NOTE",
+            "VERKSTED SJEKKLISTE": "WORKSHOP CHECKLIST",
+            "MASKINLOGG (FRITEKST)": "MACHINE LOG (NOTES)",
+            "Ingen åpne oppgaver": "No open tasks",
+            "✅ Alt utført!": "✅ All done!",
+            "Tom logg...": "Empty log...",
+            "Klikk for å åpne sjekkliste / logg →": "Click to open checklist / log →",
+            "Klikk for å skrive Z-nullpunkt / notat →": "Click to write Z-zero / note →",
+            "Hovedmoduler": "Main Modules",
+            "Bytt til store kort": "Switch to large cards",
+            "Bytt til store kort (Klassisk)": "Switch to large cards (Classic)",
+            "Bytt til kompakte knapper": "Switch to compact buttons",
+            "Lønn & Timebank": "Salary & Timebank",
+            "Skatt, overtid, vakter": "Tax, overtime, shifts",
+            "Maskinering (CNC)": "Machining (CNC)",
+            "Mating, konus, G-koder": "Feed, taper, G-codes",
+            "Gjenger, ISO, kilespor": "Threads, ISO, keyways",
+            "Ladetid, besparelse": "Charging time, savings",
+            "Lønn, Skift & Timebank": "Salary, Shifts & Timebank",
+            "Full kontroll på fastlønn, overtid, avspasering, fagforening og skatt.": "Full control of base salary, overtime, time off, union deduction and tax.",
+            "Sentermating ved sirkulærfresing, gjengediameter, Vc/RPM, tynn spon og C-akse.": "Center feed for circular milling, thread diameter, Vc/RPM, chip thinning and C-axis.",
+            "Verktøytabeller & Matte": "Tool Tables & Math",
+            "Materialdatabank, kjernebor M3–M36, ISO-pasninger, Brix kjølevæske, PCD og trigonometri.": "Material database, tap drills M3–M36, ISO fits, Brix coolant, PCD and trigonometry.",
+            "Apparatkostnader, ladetid, drivstoffbesparelse og vintertap.": "Appliance power cost, charging time, fuel savings and winter range loss.",
+
+            // Modaler & Notatskuff
+            "Verkstednotat & Sjekkliste": "Workshop Notes & Checklist",
+            "Lagres automatisk · Snarvei: Alt + N": "Auto-saved · Shortcut: Alt + N",
+            "Sjekkliste": "Checklist",
+            "Fritekst / Logg": "Free Text / Log",
+            "+ Legg til": "+ Add",
+            "+ Brix kjølevæske": "+ Brix coolant",
+            "+ Bestill skjær": "+ Order inserts",
+            "+ Sjekk Z-nullpunkt": "+ Check Z-zero",
+            "🧹 Fjern fullførte": "🧹 Clear completed",
+            "📋 Kopier liste": "📋 Copy list",
+            "Maskinlogg / Z-nullpunkt / Skiftbeskjed": "Machine Log / Z-zero / Shift Handover",
+            "🕒 + Tidspunkt": "🕒 + Timestamp",
+            "Tøm": "Clear",
+            "📋 Kopier": "📋 Copy",
+            "+ Notat": "+ Note",
+            "Lagre utregning i Notater / Sjekkliste": "Save calculation to Notes / Checklist",
+            "Tilpass Oversikt & Layout": "Customize Overview & Layout",
+            "Skreddersy kort, kompakthet og visningsmodus": "Tailor widgets, compactness and view mode",
+            "Hovedmoduler nederst på Oversikt": "Main modules at bottom of Overview",
+            "Velg størrelse på de 4 modulboksene": "Choose size of the 4 module cards",
+            "Kompakte knapper (Ryddig)": "Compact buttons (Clean)",
+            "Store kort (Klassisk)": "Large cards (Classic)",
+            "Skjul helt": "Hide completely",
+            "Kompakt HMI-modus": "Compact HMI Mode",
+            "Mindre luft og skjulte hjelpetekster på kort": "Tighter spacing and hidden descriptions on cards",
+            "Klassisk lang-visning (Angre oppdeling)": "Classic Long View (Show all subtabs)",
+            "Vis alle CNC/Tabell-kort på én lang side som før": "Display all CNC/Table cards on one page",
+            "Tilbakestill": "Reset",
+            "Ferdig": "Done",
+            "Lukk vindu": "Close window",
+            "Avbryt": "Cancel",
+            "Ja, nullstill": "Yes, reset",
+            "Nullstill lønnskalkulator?": "Reset salary calculator?",
+            "Er du sikker på at du vil slette alle registrerte vakter og tilbakestille lønnsinnstillingene?": "Are you sure you want to delete all registered shifts and reset salary settings?",
+
+            // Lønnskalkulator
+            "Brutto, Netto & Timebank": "Gross, Net & Timebank",
+            "Sveip for flere faner": "Swipe for more tabs",
+            "📊 Oversikt": "📊 Overview",
+            "⏱️ Vakter & Timebank": "⏱️ Shifts & Timebank",
+            "⚙️ Innstillinger": "⚙️ Settings",
+            "Periode": "Period",
+            "År": "Year",
+            "Måned": "Month",
+            "Timeoversikt": "Hours Summary",
+            "Ordinære timer (fastlønn)": "Regular hours (base salary)",
+            "Vaktimer (utbetales)": "Overtime hours (paid out)",
+            "Vaktimer (til timebank)": "Overtime hours (to timebank)",
+            "Totalt arbeidstimer": "Total working hours",
+            "Netto Utbetalt": "Net Payout",
+            "✨ Sum tilleggsvakter (brutto)": "✨ Total extra shifts (gross)",
+            "💰 Netto utbetalt fra vakter": "💰 Net payout from extra shifts",
+            "🏦 Timebank (timer til gode)": "🏦 Timebank (hours saved)",
+            "Kun 50%/100% tillegget utbetales.": "Only the 50%/100% bonus is paid out.",
+            "Fastlønn (brutto full mnd)": "Base salary (gross full month)",
+            "Formannstillegg (20% av grunnlønn)": "Foreman bonus (20% of base pay)",
+            "Kun ordinære timer (uten overtid)": "Regular hours only (excl. overtime)",
+            "Lønnstrekk ferie (brutto)": "Unpaid vacation deduction (gross)",
+            "Hverdag 50%": "Weekday 50%",
+            "Hverdag 100%": "Weekday 100%",
+            "Helg 50%": "Weekend 50%",
+            "Helg 100%": "Weekend 100%",
+            "Total Brutto": "Total Gross",
+            "Fagforeningtrekk": "Union deduction",
+            "Estimerte feriepenger (12 % av brutto)": "Estimated holiday pay (12% of gross)",
+            "Årsprognose": "Annual Forecast",
+            "Fast årslønn (47 uker + 12 %)": "Base annual salary (47 wks + 12%)",
+            "Årslønn estimert m/tillegg": "Estimated annual salary incl. overtime",
+            "Kontingent LO pr. år": "Union fee per year",
+            "Registrer Tilleggsvakt": "Register Extra Shift",
+            "Hurtigvalg": "Quick Presets",
+            "⚡ 7.5t Hverdag 50%": "⚡ 7.5h Weekday 50%",
+            "🏦 1t Timebank (+50% ut)": "🏦 1h Timebank (+50% paid)",
+            "⚡ 4t Helg 50%": "⚡ 4h Weekend 50%",
+            "🏖️ -7.5t Uttak Timebank": "🏖️ -7.5h Use Timebank",
+            "Dato for vakt": "Shift Date",
+            "Timer": "Hours",
+            "Minutter": "Minutes",
+            "Type tillegg": "Overtime Type",
+            "Hverdag 50% (T.lønn x 1.5)": "Weekday 50% (Hourly x 1.5)",
+            "Hverdag 100% (T.lønn x 2.0)": "Weekday 100% (Hourly x 2.0)",
+            "Helg 50% (T.lønn x 1.5)": "Weekend 50% (Hourly x 1.5)",
+            "Helg 100% (T.lønn x 2.0)": "Weekend 100% (Hourly x 2.0)",
+            "🏖️ Uttak avspasering (Trekker fra Timebank)": "🏖️ Time off (Deducts from Timebank)",
+            "🏦 Send til Timebank (Avspasering)": "🏦 Send to Timebank (Time off)",
+            "100% av timen lagres som avspasering. Kun tillegget (eks. 50%) utbetales på lønn.": "100% of the hour is saved as time off. Only the overtime bonus (e.g. 50%) is paid out.",
+            "Legg til vakt": "Add Shift",
+            "Registrerte Vakter": "Registered Shifts",
+            "Ingen vakter registrert i denne måneden.": "No shifts registered in this month.",
+            "📊 Eksporter til Excel (.CSV)": "📊 Export to Excel (.CSV)",
+            "🖨️ Skriv ut": "🖨️ Print",
+            "Basisinnstillinger": "Base Settings",
+            "Inkluder fastlønn (beregn for hel måned)": "Include base salary (full month)",
+            "Inkluder Formannstillegg (+20%)": "Include Foreman Bonus (+20%)",
+            "Beregnes kun av grunntimelønn på ordinære timer (ikke overtid).": "Calculated on base hourly rate for regular hours only (excl. overtime).",
+            "Timelønn (Kr)": "Hourly Rate (NOK)",
+            "Timer pr. dag": "Hours per day",
+            "Trekk i dager (ferie/perm)": "Deduct days (unpaid leave)",
+            "Overstyr arb.dager (valgfritt)": "Override workdays (optional)",
+            "Fagforening (LO / Fellesforbundet)": "Labor Union (LO / Fellesforbundet)",
+            "Trekk i % av brutto": "Deduction % of gross",
+            "Eller skriv kr trukket (regner om)": "Or enter NOK deducted (auto-converts)",
+            "Skatt & Datahåndtering": "Tax & Data Management",
+            "Skattemetode": "Tax Method",
+            "Tabelltrekk på fastlønn + % på overtid (Standard)": "Tax table on base pay + % on overtime (Default)",
+            "Kun Tabelltrekk på alt": "Tax table on everything",
+            "Kun Prosenttrekk på alt": "Percentage tax on everything",
+            "Skattetabell (8000 / 7100-serien)": "Tax Table (8000 / 7100 series)",
+            "Skatteprosent på overtid (%)": "Overtime tax rate (%)",
+            "Fast skatteprosent på alt (%)": "Flat tax percentage on all (%)",
+            "💾 Last ned Backup": "💾 Download Backup",
+            "🗑️ Nullstill lønnskalkulator": "🗑️ Reset salary calculator",
+
+            // Maskinering (CNC)
+            "Maskineringskalkulator": "Machining Calculator",
+            "Skjæredata, Dreiing, Konus & G-koder": "Cutting Data, Turning, Taper & G-codes",
+            "📑 Vis alle på én side": "📑 Show all on one page",
+            "📑 Vis alle på én side (Klassisk)": "📑 Show all on one page (Classic)",
+            "🗂️ Bruk ryddige underfaner": "🗂️ Use organized subtabs",
+            "⚡ Fresing & Skjæredata": "⚡ Milling & Cutting Data",
+            "📐 Dreiing, Gjenger & Konus": "📐 Turning, Threads & Taper",
+            "💻 G- & M-koder": "💻 G & M Codes",
+            "Sirkulær Mating": "Circular Interpolation Feed",
+            "Regn om bordmating til effektiv sentermating.": "Convert linear feed to effective toolpath center feed.",
+            "Bearbeidingstype": "Machining Mode",
+            "Innvendig fresing (Hull / Lomme)": "Internal Milling (Hole / Pocket)",
+            "Utvendig fresing (Aksling / Tapp)": "External Milling (Boss / Stud)",
+            "Skjær (z)": "Flutes (z)",
+            "Dia Fres": "Cutter Ø",
+            "Dia Hull / Aksling": "Hole / Boss Ø",
+            "Spindel (n):": "Spindle (n):",
+            "Sirkulær mating (Senter):": "Circular Feed (Center):",
+            "Skjæredata Hurtigkalkulator": "Cutting Data Quick Calc",
+            "Kryss-kalkuler Vc, RPM og bordmating.": "Cross-calculate Vc, RPM and table feed.",
+            "1. Finne Vc ut fra RPM": "1. Find Vc from RPM",
+            "2. Finne RPM ut fra Vc": "2. Find RPM from Vc",
+            "3. Bordmating (Vf) ut fra fz": "3. Table Feed (Vf) from fz",
+            "Vf (Mating):": "Vf (Feed):",
+            "Tynn Spon-kompensasjon (Radial Chip Thinning)": "Radial Chip Thinning (RCT)",
+            "Tilpass matingen ved lite sideinngrep ($a_e$).": "Compensate feed rate at low radial engagement (ae).",
+            "Fres Dia (D)": "Cutter Ø (D)",
+            "Sideinngrep (ae)": "Radial stepover (ae)",
+            "Ønsket hm (mm)": "Target chip thickness hm",
+            "Spindel (RPM)": "Spindle (RPM)",
+            "Inngrepsprosent:": "Engagement %:",
+            "Kompensert fz:": "Compensated fz:",
+            "Ny Bordmating (Vf):": "New Table Feed (Vf):",
+            "Innv/Utv Gjenger (Gibbs)": "Int/Ext Threads (Gibbs)",
+            "Beregning av oppgitt diameter for Gibbs.": "Calculate programmed thread diameter for GibbsCAM.",
+            "1. Innvendige gjenger": "1. Internal Threads",
+            "2. Utvendige gjenger": "2. External Threads",
+            "Store dia (mm)": "Major Ø (mm)",
+            "Stigning (mm)": "Pitch (mm)",
+            "Justeringfaktor": "Adjustment Factor",
+            "Gibbs dia:": "Gibbs Ø:",
+            "Konus- & Fase-kalkulator": "Taper & Chamfer Calculator",
+            "Beregn vinkler, diametre eller lengde ved dreiing og fresing.": "Calculate angles, diameters or length for turning and milling.",
+            "Hurtigvalg vinkel / konus": "Quick Angle / Taper Presets",
+            "45° Fase": "45° Chamfer",
+            "30° Fase": "30° Chamfer",
+            "Konus 1:10": "Taper 1:10",
+            "Konus 1:20": "Taper 1:20",
+            "Hva vil du beregne?": "What do you want to calculate?",
+            "Finn Vinkel & Forhold (ut fra D1, D2, L)": "Find Angle & Ratio (from D1, D2, L)",
+            "Finn Store Dia D1 (ut fra D2, L, halve vinkel)": "Find Major Ø D1 (from D2, L, half angle)",
+            "Finn Lille Dia D2 (ut fra D1, L, halve vinkel)": "Find Minor Ø D2 (from D1, L, half angle)",
+            "Finn Lengde Z (ut fra D1, D2, halve vinkel)": "Find Length Z (from D1, D2, half angle)",
+            "Store Dia D1 (mm)": "Major Ø D1 (mm)",
+            "Lille Dia D2 (mm)": "Minor Ø D2 (mm)",
+            "Lengde Z (mm)": "Length Z (mm)",
+            "Halv vinkel α/2 (°)": "Half Angle α/2 (°)",
+            "Halv vinkel (Dreievinkel α/2):": "Half Angle (Turning angle α/2):",
+            "Total konusvinkel (α):": "Included Taper Angle (α):",
+            "Beregnet mål / Konus:": "Calculated Dim / Taper:",
+            "C-Akse Gradering": "C-Axis Rotary Feed",
+            "Omregning fra lineær mating til grader/min.": "Convert linear feed (mm/min) to rotary feed (deg/min).",
+            "Mating mm/min (Vf)": "Linear Feed mm/min (Vf)",
+            "Emnediameter": "Workpiece Ø",
+            "Omkrets:": "Circumference:",
+            "1 Grad:": "1 Degree:",
+            "Grader/MIN:": "Degrees/MIN:",
+            "Omdr/min:": "Rev/min:",
+            "G- & M-kode Oppslagsverk": "G & M Code Reference",
+            "Hurtigsøk i standard ISO / Fanuc / Mazak / Heidenhain koder. Klikk på en kode for å kopiere.": "Quick search in standard ISO / Fanuc / Mazak codes. Click any code to copy.",
+            "Alle koder": "All Codes",
+            "Bevegelse & Komp": "Motion & Compensation",
+            "Bore- & Dreiesykluser": "Drilling & Turning Cycles",
+            "M-koder (Maskin)": "M-Codes (Machine)",
+
+            // Verktøytabeller
+            "Materialdata, Gjenger, Pasninger, Vekt & Geometri": "Materials, Threads, Fits, Weight & Geometry",
+            "⚡ Skjæredata & Kjøling": "⚡ Cutting Data & Coolant",
+            "🔩 Gjenger & Bolter": "🔩 Threads & Bolts",
+            "🎯 Pasninger & Kilespor": "🎯 ISO Fits & Keyways",
+            "⚖️ Vektkalkulator": "⚖️ Weight Calculator",
+            "📐 PCD & Trigonometri": "📐 PCD & Trigonometry",
+            "🔄 Konverterer & Hardhet": "🔄 Converter & Hardness",
+            "Materialdatabank (HM Verktøy)": "Material Database (Carbide Tools)",
+            "Anbefalte startverdier for skjærehastighet (Vc) og mating.": "Recommended starting values for cutting speed (Vc) and feed.",
+            "Materiale": "Material",
+            "Konstruksjonsstål (S355 / St52)": "Structural Steel (S355 / St52)",
+            "Seigherdet / Karbonstål (C45 / 42CrMo4)": "Alloy / Carbon Steel (C45 / 4140)",
+            "Rustfritt / Syrefast (AISI 304 / 316L)": "Stainless Steel (AISI 304 / 316L)",
+            "Duplex / Super Duplex": "Duplex / Super Duplex",
+            "Aluminium (6082 / 7075)": "Aluminum (6082 / 7075)",
+            "Messing / Bronse": "Brass / Bronze",
+            "Støpejern (GG25 / GGG40)": "Cast Iron (GG25 / GGG40)",
+            "Operasjon": "Operation",
+            "Fresing – Grov (Roughing)": "Milling – Roughing",
+            "Fresing – Slett (Finishing)": "Milling – Finishing",
+            "Dreiing – Grov": "Turning – Roughing",
+            "Dreiing – Slett": "Turning – Finishing",
+            "Verktøy Dia (mm)": "Tool Ø (mm)",
+            "Antall skjær (z)": "Number of flutes (z)",
+            "Anbefalt Vc:": "Recommended Vc:",
+            "Spindelturtall (n):": "Spindle Speed (n):",
+            "Bordmating (Vf):": "Table Feed (Vf):",
+            "Borespiss-kompensasjon": "Drill Point Compensation",
+            "Finn total Z-dybde inkludert borespiss for full sylindrisk dybde.": "Find total Z-depth including drill point cone for full cylindrical depth.",
+            "Bor Ø (mm)": "Drill Ø (mm)",
+            "Spissvinkel": "Point Angle",
+            "Ønsket dybde": "Cylindrical Depth",
+            "Spisshøyde (h):": "Point Cone Height (h):",
+            "Total Z-dybde:": "Total Z-Depth:",
+            "Kjølevæske & Refraktometer (Brix)": "Coolant & Refractometer (Brix)",
+            "Beregn faktisk konsentrasjon og hvor mye ren olje som må etterfylles.": "Calculate actual concentration and how much pure oil to top up.",
+            "Tankvolum (Liter)": "Sump Volume (Liters)",
+            "Refraktometer-faktor": "Refractometer Factor",
+            "Avlest Brix (%)": "Measured Brix (%)",
+            "Ønsket mål (%)": "Target Concentration (%)",
+            "Faktisk konsentrasjon:": "Actual Concentration:",
+            "Etterfyll ren olje:": "Add Pure Oil Concentrate:",
+            "Teoretisk Overflateruhet (Ra / Rz)": "Theoretical Surface Roughness (Ra)",
+            "Beregn oppnådd Ra ved dreiing ut fra neseradius ($r_\\varepsilon$) og mating ($f_n$).": "Calculate theoretical Ra in turning from nose radius (re) and feed (fn).",
+            "Neseradius (mm)": "Nose Radius (mm)",
+            "Mating fn (mm/o)": "Feed fn (mm/rev)",
+            "Krav Ra (µm)": "Target Ra (µm)",
+            "Beregnet ruhet:": "Calculated Roughness:",
+            "Maks mating for krav:": "Max Feed for Target Ra:",
+            "Gjenge- & Kjernebor-tabell": "Thread & Tap Drill Table",
+            "Borstørrelse for både skjæretapp og formtapp (rulletapp).": "Pre-drill diameters for both cutting taps and roll form taps.",
+            "Velg Gjengedimensjon": "Select Thread Size",
+            "Kjernebor (Skjæretapp):": "Tap Drill (Cutting Tap):",
+            "Kjernebor (Formtapp / Rulle):": "Tap Drill (Roll Form Tap):",
+            "Stigning (P):": "Pitch (P):",
+            "Metriske Gjengetoleranser (6H / 6g)": "Metric Thread Tolerances (6H / 6g)",
+            "Nominelle mål for ytter-, mellom- og kjernediameter.": "Nominal major, pitch and minor diameters.",
+            "M-størrelse": "M-Size",
+            "Stigning (P)": "Pitch (P)",
+            "Toleranse": "Tolerance",
+            "6H (Innvendig)": "6H (Internal)",
+            "6g (Utvendig)": "6g (External)",
+            "Ytterdiameter (D / d):": "Major Diameter (D / d):",
+            "Mellomdiameter (D2 / d2):": "Pitch Diameter (D2 / d2):",
+            "Kjernediameter (D1 / d3):": "Minor Diameter (D1 / d3):",
+            "Tiltrekkingsmoment & Nøkkelvidde for Bolter (M4–M36)": "Bolt Tightening Torque & Wrench Size (M4–M36)",
+            "Anbefalt moment (Nm), forspenningskraft og nøkkelvidde (NV / Unbrako).": "Recommended torque (Nm), hex socket / wrench size and clearance hole.",
+            "Boltdimensjon": "Bolt Size",
+            "Fasthetsklasse": "Property Class / Grade",
+            "8.8 (Standard stålbolt)": "8.8 (Standard Steel)",
+            "10.9 (Høyfast bolt)": "10.9 (High Tensile)",
+            "12.9 (Unbrako / Maskinbolt)": "12.9 (Alloy Socket Head)",
+            "A4-70 / A2-70 (Syrefast/Rustfri)": "A4-70 / A2-70 (Stainless)",
+            "A4-80 (Høyfast Syrefast)": "A4-80 (High Strength Stainless)",
+            "Friksjon / Smøring": "Friction / Lubrication",
+            "µ = 0.14 (Tørr / lett oljet standard)": "µ = 0.14 (Dry / Lightly Oiled)",
+            "µ = 0.12 (Smurt / oljet)": "µ = 0.12 (Lubricated / Oiled)",
+            "µ = 0.10 (MoS2 / Gjengepasta)": "µ = 0.10 (MoS2 / Thread Paste)",
+            "🔧 Tiltrekkingsmoment:": "🔧 Tightening Torque:",
+            "Nøkkelvidde (Sekskant / Unbrako):": "Wrench / Hex Key Size:",
+            "Klaring- & Forsenkerhull:": "Clearance & Counterbore:",
+            "ISO 286 Pasninger – Aksling & Hull (Ø1 – 500 mm)": "ISO 286 Fits – Shaft & Hole (Ø1 – 500 mm)",
+            "Beregn over-/undermål i mikrometer (µm), grensemål og ferdig CNC-midtmål.": "Calculate deviations in micrometers (µm), limits and CNC target mean size.",
+            "Hurtigvalg pasningsklasse": "Quick Fit Class Presets",
+            "Nominell Diameter Ø (1 – 500 mm)": "Nominal Diameter Ø (1 – 500 mm)",
+            "Toleranseklasse (Hull / Aksling)": "Tolerance Class (Hole / Shaft)",
+            "Min / Maks mål:": "Min / Max Limits:",
+            "🎯 Midtmål (CNC siktemål):": "🎯 Mean Size (CNC Target):",
+            "Generelle Toleranser (ISO 2768)": "General Tolerances (ISO 2768)",
+            "Frie mål for lengder, faser/radier og vinkler på tegning.": "General tolerances for linear dimensions and chamfers/radii.",
+            "Nominelt mål (mm)": "Nominal Dimension (mm)",
+            "Toleranseklasse": "Tolerance Class",
+            "f – Fin (Fine)": "f – Fine",
+            "m – Middels (Medium - Standard)": "m – Medium (Standard)",
+            "c – Grov (Coarse)": "c – Coarse",
+            "v – Meget grov (Very coarse)": "v – Very Coarse",
+            "Lineært avvik (Lengdemål):": "Linear Tolerance:",
+            "Tillatt min / maks:": "Allowed Min / Max:",
+            "Utvendig radie / fase (tilsvarer mål):": "Broken Edges (Radius / Chamfer):",
+            "Kilespor-tabell (DIN 6885-1)": "Keyway Dimensions (DIN 6885-1)",
+            "Standard kilebredde (b), kilehøyde (h) og spordybde i aksel (t1) og nav (t2).": "Standard key width (b), height (h), shaft depth (t1) and hub depth (t2).",
+            "Aksel- / Hulldiameter Ø (6 – 230 mm)": "Shaft / Bore Diameter Ø (6 – 230 mm)",
+            "Kiledimensjon (b × h):": "Key Size (b × h):",
+            "Spordybde Aksel (t1):": "Shaft Groove Depth (t1):",
+            "Spordybde Nav / Hull (t2):": "Hub Groove Depth (t2):",
+            "Emne- & Materialvekt": "Stock & Material Weight",
+            "Beregn vekt på bolt/aksling, rør eller plate før løft og maskinering.": "Calculate weight of round bar, pipe/tube or plate before lifting and machining.",
+            "Geometri": "Shape / Geometry",
+            "Rundstang / Aksling": "Round Bar / Shaft",
+            "Rør / Emnerør": "Pipe / Hollow Bar",
+            "Plate / Firkant": "Plate / Flat Bar",
+            "Materialtetthet": "Material Density",
+            "Stål (7.85 g/cm³)": "Steel (7.85 g/cm³)",
+            "Rustfritt 316 (8.00 g/cm³)": "Stainless 316 (8.00 g/cm³)",
+            "Aluminium (2.70 g/cm³)": "Aluminum (2.70 g/cm³)",
+            "Messing / Bronse (8.50 g/cm³)": "Brass / Bronze (8.50 g/cm³)",
+            "Titan (4.50 g/cm³)": "Titanium (4.50 g/cm³)",
+            "POM / Plast (1.41 g/cm³)": "POM / Acetal (1.41 g/cm³)",
+            "Diameter Ø (mm)": "Diameter Ø (mm)",
+            "Lengde L (mm)": "Length L (mm)",
+            "Ytre Ø (mm)": "Outer Ø (mm)",
+            "Indre Ø (mm)": "Inner Ø (mm)",
+            "Lengde (mm)": "Length (mm)",
+            "Bredde (mm)": "Width (mm)",
+            "Tykkelse (mm)": "Thickness (mm)",
+            "Beregnet Vekt:": "Calculated Weight:",
+            "Boltsirkel (PCD) & Kordelengde": "Bolt Circle (PCD) & Chord Length",
+            "Finn senteravstand mellom nabohull på en flens.": "Find center-to-center distance between adjacent holes on a flange.",
+            "Boltsirkel Ø (PCD)": "Bolt Circle Ø (PCD)",
+            "Antall hull": "Number of Holes",
+            "Kordelengde (c-c nabohull):": "Chord Length (adjacent c-c):",
+            "Rettvinklet Trekant (Pythagoras)": "Right Triangle (Pythagoras)",
+            "Beregn hypotenus (c) og vinkler ut fra katet a og b.": "Calculate hypotenuse (c) and angles from sides a and b.",
+            "Katet a (Høyde)": "Side a (Height)",
+            "Katet b (Lengde)": "Side b (Base)",
+            "Hypotenus (c):": "Hypotenuse (c):",
+            "Vinkler:": "Angles:",
+            "Tommer ↔ Millimeter": "Inches ↔ Millimeters",
+            "Konverter mellom brøktommer, desimaltommer og millimeter.": "Convert between fractional inches, decimal inches and millimeters.",
+            "Hurtigvalg Brøktomme": "Quick Fractional Inch",
+            "Tommer (inch)": "Inches (in)",
+            "Trykk, Vekt & Temperatur": "Pressure, Weight & Temperature",
+            "PSI til Bar, Pund (lbs) til kg og Fahrenheit til Celsius.": "PSI to Bar, Pounds (lbs) to kg and Fahrenheit to Celsius.",
+            "Trykk (PSI)": "Pressure (PSI)",
+            "Pund (lbs)": "Pounds (lbs)",
+            "Hardhetskonverterer (HRC ↔ HB ↔ HV ↔ Strekkfasthet Rm)": "Hardness Converter (HRC ↔ HB ↔ HV ↔ Tensile Rm)",
+            "Konverter mellom Rockwell C (HRC), Brinell (HB), Vickers (HV) og strekkfasthet (MPa / N/mm²) iht. ISO 18265.": "Convert between Rockwell C (HRC), Brinell (HB), Vickers (HV) and Tensile Strength (MPa) per ISO 18265.",
+            "Strekkfasthet (MPa)": "Tensile Strength (MPa)",
+            "Bearbeidbarhetsvurdering": "Machinability Assessment",
+
+            // Strøm & Elbil
+            "Ladetid, Norgespris, Effekttariff, Dekkalkulator & Besparelse": "Charging Time, Grid Tariff, Tire Calculator & Fuel Savings",
+            "🔋 Lading & Rekkevidde": "🔋 Charging & Range",
+            "⚡ Norgespris, Nettleie & Forbruk": "⚡ Power Tariff & Consumption",
+            "🛞 Dekk, Speedometer & Økonomi": "🛞 Tires, Speedometer & Savings",
+            "Elbil Ladetid & Kostnad": "EV Charging Time & Cost",
+            "Beregn ladetid, pris og ekstra rekkevidde.": "Calculate charging time, cost and added driving range.",
+            "Batteri (kWh)": "Battery (kWh)",
+            "Ladeeffekt (kW)": "Charging Power (kW)",
+            "Start %": "Start %",
+            "Mål %": "Target %",
+            "Strømpris (kr/kWh)": "Power Price (NOK/kWh)",
+            "Forbruk (kWh/100km)": "Consumption (kWh/100km)",
+            "Ladetid:": "Charging Time:",
+            "Tilført rekkevidde:": "Added Range:",
+            "Ladekostnad:": "Charging Cost:",
+            "Vinterrekkevidde-kalkulator": "Winter Range Calculator",
+            "Estimer reell rekkevidde ved kuldegrader og vinterføre.": "Estimate real-world EV range in cold winter conditions.",
+            "WLTP Rekkevidde (km)": "WLTP Range (km)",
+            "Temperatur / Føre": "Temperature / Conditions",
+            "20°C Sommer (0% tap)": "20°C Summer (0% loss)",
+            "5°C Høst / Vår (-10%)": "5°C Autumn / Spring (-10%)",
+            "0°C til -5°C Vinter (-20%)": "0°C to -5°C Winter (-20%)",
+            "-10°C til -15°C Kaldt (-30%)": "-10°C to -15°C Cold (-30%)",
+            "-20°C Sprenkulde (-40%)": "-20°C Extreme Cold (-40%)",
+            "Estimerte vinter-km:": "Estimated Winter Range:",
+            "Rekkeviddetap:": "Range Loss:",
+            "Norgespris / Strømstøtte & Effekttariff": "Power Support & Grid Capacity Tariff",
+            "Regn ut reell kWh-pris inkludert nettleie og finn maks ladeeffekt for å unngå dyrere kapasitetstrinn.": "Calculate real kWh price incl. grid fee and find max charging power to stay below costly capacity steps.",
+            "Strømordning": "Electricity Scheme",
+            "Spotpris m/ 90% Strømstøtte (over 93,75 øre inkl. mva)": "Spot Price w/ 90% Gov Support (>0.9375 NOK)",
+            "Norgespris fastpris (50 øre/kWh inkl. mva)": "Norgespris Fixed Rate (0.50 NOK/kWh)",
+            "Spotpris uten støtte (Hytte / Næring)": "Spot Price without Support (Cabin / Commercial)",
+            "Spotpris inkl. mva (kr/kWh)": "Spot Price incl. VAT (NOK/kWh)",
+            "Energiledd nettleie (kr/kWh)": "Grid Energy Fee (NOK/kWh)",
+            "Ønsket Kapasitetstrinn (Maks)": "Target Grid Capacity Step (Max)",
+            "Husets øvrige trekk (kW)": "House Base Load (kW)",
+            "Strømstøtte / Rabatt:": "Power Subsidy / Discount:",
+            "Faktisk totalpris (inkl. nettleie):": "Actual Total Price (incl. grid):",
+            "⚡ Anbefalt maks lading (under trinn):": "⚡ Recommended Max Charging:",
+            "🔄 Bruk denne kWh-prisen i alle elbil- og strømkalkulatorer": "🔄 Apply this kWh price to all EV & power calculators",
+            "Strømforbruk Apparat / Maskin": "Appliance / Machine Power Cost",
+            "Regn ut hva varmepumpe, kompressor eller varmeovn koster i drift.": "Calculate running cost of heat pump, compressor or heater.",
+            "Hurtigvalg apparat": "Quick Appliance Preset",
+            "Varmeovn / Vifteovn (2000 W)": "Space Heater / Fan (2000 W)",
+            "Varmepumpe snitt (1200 W)": "Heat Pump Average (1200 W)",
+            "Verkstedkompressor (3500 W)": "Workshop Compressor (3500 W)",
+            "CNC Maskin i drift (15 000 W)": "CNC Machine Running (15 000 W)",
+            "Effekt (Watt)": "Power (Watts)",
+            "Timer pr. døgn": "Hours per Day",
+            "Pris pr. time:": "Cost per Hour:",
+            "Pris pr. døgn:": "Cost per Day:",
+            "Pris pr. måned (30 d):": "Cost per Month (30 d):",
+            "Dekkdimensjon & Speedometer": "Tire Size & Speedometer Calculator",
+            "Sammenlign originaldimensjon (f.eks. sommerhjul) mot ny dimensjon (vinterhjul). Krav i Norge er maks ±5 % endring i rulleomkrets.": "Compare stock tire size against new size. Max legal circumference change in Norway is ±5%.",
+            "1. Originalt hjul (Vognkort)": "1. Stock Tire Size",
+            "2. Nytt hjul (Sammenligning)": "2. New Tire Size (Comparison)",
+            "Profil (%)": "Aspect Ratio (%)",
+            "Felg (Tommer)": "Rim (Inches)",
+            "Endring rulleomkrets:": "Circumference Change:",
+            "Diameter (Orig → Ny) / Bakkeklaring:": "Diameter (Stock → New) / Ride Height:",
+            "Når speedometeret viser 80 km/t:": "When Speedometer Shows 80 km/h:",
+            "Elbil vs Bensin/Diesel": "EV vs Gasoline / Diesel",
+            "Sammenlign årlig drivstoffkostnad mot elbillading.": "Compare annual fossil fuel cost against EV charging.",
+            "Kjørelengde pr. år (km)": "Annual Mileage (km)",
+            "Drivstoffpris (kr/l)": "Fuel Price (NOK/L)",
+            "Forbruk (liter/mil)": "Fuel Consumption (L/10km)",
+            "Elbil (kWh/mil)": "EV Consumption (kWh/10km)",
+            "Spart pr. måned:": "Saved per Month:",
+            "Spart pr. år:": "Saved per Year:",
+            "Spart over 5 år:": "Saved over 5 Years:"
+        };
+
+        // Bygg revers-ordbok (EN -> NO) automatisk
+        const enToNoDict = {};
+        Object.keys(noToEnDict).forEach(noKey => {
+            enToNoDict[noToEnDict[noKey]] = noKey;
+        });
+
+        function tr(noStr, enStr) {
+            return currentLang === 'en' ? enStr : noStr;
+        }
+
+        function oversettDomTekstNoder() {
+            const dict = currentLang === 'en' ? noToEnDict : enToNoDict;
+            const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
+            let node;
+            while ((node = walker.nextNode())) {
+                const parentTag = node.parentElement?.tagName;
+                if (parentTag === 'SCRIPT' || parentTag === 'STYLE') continue;
+                const trimmed = node.nodeValue.trim();
+                if (trimmed && dict[trimmed]) {
+                    node.nodeValue = node.nodeValue.replace(trimmed, dict[trimmed]);
+                }
+            }
+
+            // Oversett placeholders
+            const phMap = [
+                { id: 'global-search-input', no: 'Søk etter verktøy (f.eks. kilespor, H7, G76, konus, brix, moment, formann)...', en: 'Search tools (e.g. keyway, H7, G76, taper, brix, torque, foreman)...' },
+                { id: 'notes-todo-input', no: 'Ny oppgave (f.eks. Bytt skjær T04, Mål Ø40 H7)...', en: 'New task (e.g. Change insert T04, Measure Ø40 H7)...' },
+                { id: 'notes-text-area', no: 'Skriv inn mål, verktøylengder, G54 Z-nullpunkt, ordrenummer eller beskjed til neste skift...', en: 'Enter dimensions, tool lengths, G54 Z-zero, order number or shift handover notes...' },
+                { id: 'gcode-search', no: 'Søk på kode (f.eks. G76, G41, M08, gjenge)...', en: 'Search code (e.g. G76, G41, M08, thread)...' },
+                { id: 'overstyr-dager', no: 'Auto (man-fre)', en: 'Auto (Mon-Fri)' }
+            ];
+            phMap.forEach(item => {
+                const el = document.getElementById(item.id);
+                if (el) el.placeholder = currentLang === 'en' ? item.en : item.no;
+            });
+
+            // Oppdater språk-knappene
+            const lblDesk = document.getElementById('lang-label-desktop');
+            const lblMob = document.getElementById('lang-label-mobile');
+            if (lblDesk) lblDesk.innerText = currentLang === 'en' ? 'NO / Norsk' : 'EN / English';
+            if (lblMob) lblMob.innerText = currentLang === 'en' ? 'NO' : 'EN';
+            document.documentElement.lang = currentLang === 'en' ? 'en' : 'no';
+        }
+
+        function brukSprak() {
+            oversettDomTekstNoder();
+            oppdaterLiveKlokke();
+            brukLayoutPreferanser();
+            oppdaterNotatTellereOgWidget();
+            oppdaterAarOgMaaned();
+            filtrerGKoder();
+            oppdaterSokResultater();
+            beregnIso();
+            konverterHardhet('hrc');
+            beregnStromTariff();
+            beregnDekkDimensjon();
+        }
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'no' ? 'en' : 'no';
+            localStorage.setItem('verksted_lang', currentLang);
+            brukSprak();
+            visToast(currentLang === 'en' ? 'Language switched to English 🇬🇧' : 'Språk byttet til Norsk 🇳🇴');
+        }
+
         document.addEventListener('keydown', (e) => {
             if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
                 e.preventDefault();
                 apneSokModal();
                 return;
             }
+            if (e.altKey && e.key.toLowerCase() === 'n') {
+                e.preventDefault();
+                veksleNotatSkuff();
+                return;
+            }
             if (e.key === 'Escape') {
                 lukkSokModal();
+                lukkNotatSkuff();
                 return;
             }
             if (['INPUT', 'SELECT', 'TEXTAREA'].includes(document.activeElement?.tagName)) return;
@@ -2281,37 +2925,295 @@
             if (map[e.key]) switchTab(map[e.key]);
         });
 
+        // --- GLOBAL NOTAT- OG SJEKKLISTESKUFF (KOMBINERT NR. 4 + NR. 2) ---
+        let verkstedSjekkliste = [];
+        let aktivNotatModus = 'todo'; // 'todo' eller 'text'
+
+        function lastInnNotaterOgSjekkliste() {
+            try {
+                const lagretTodo = localStorage.getItem('verksted_todos_v1');
+                if (lagretTodo) {
+                    verkstedSjekkliste = JSON.parse(lagretTodo) || [];
+                } else {
+                    verkstedSjekkliste = [
+                        { id: 't1', text: 'Kontroller Z-nullpunkt før oppstart', done: false },
+                        { id: 't2', text: 'Sjekk Brix-verdi på kjølevæske', done: false }
+                    ];
+                }
+                aktivNotatModus = localStorage.getItem('verksted_notes_mode') || 'todo';
+                const lagretTekst = localStorage.getItem('verksted_freetext_note') || localStorage.getItem('dash-quick-note') || '';
+                const txtArea = document.getElementById('notes-text-area');
+                if (txtArea) txtArea.value = lagretTekst;
+            } catch (e) {
+                verkstedSjekkliste = [];
+            }
+            byttNotatModus(aktivNotatModus, false);
+            byggSjekklisteVisning();
+            oppdaterNotatTellereOgWidget();
+        }
+
+        function lagreNotatData() {
+            try {
+                localStorage.setItem('verksted_todos_v1', JSON.stringify(verkstedSjekkliste));
+                localStorage.setItem('verksted_notes_mode', aktivNotatModus);
+                const txtArea = document.getElementById('notes-text-area');
+                if (txtArea) {
+                    localStorage.setItem('verksted_freetext_note', txtArea.value);
+                }
+            } catch (e) {}
+            oppdaterNotatTellereOgWidget();
+        }
+
+        function apneNotatSkuff() {
+            const drawer = document.getElementById('notes-drawer');
+            const backdrop = document.getElementById('notes-drawer-backdrop');
+            if (!drawer || !backdrop) return;
+            backdrop.classList.remove('hidden');
+            drawer.classList.remove('translate-x-full');
+            if (aktivNotatModus === 'todo') {
+                setTimeout(() => document.getElementById('notes-todo-input')?.focus(), 120);
+            } else {
+                setTimeout(() => document.getElementById('notes-text-area')?.focus(), 120);
+            }
+        }
+
+        function lukkNotatSkuff() {
+            const drawer = document.getElementById('notes-drawer');
+            const backdrop = document.getElementById('notes-drawer-backdrop');
+            if (!drawer || !backdrop) return;
+            drawer.classList.add('translate-x-full');
+            backdrop.classList.add('hidden');
+        }
+
+        function veksleNotatSkuff() {
+            const drawer = document.getElementById('notes-drawer');
+            if (!drawer) return;
+            if (drawer.classList.contains('translate-x-full')) apneNotatSkuff();
+            else lukkNotatSkuff();
+        }
+
+        function byttNotatModus(modus, lagre = true) {
+            aktivNotatModus = modus === 'text' ? 'text' : 'todo';
+            const pTodo = document.getElementById('notes-panel-todo');
+            const pText = document.getElementById('notes-panel-text');
+            const bTodo = document.getElementById('btn-notes-mode-todo');
+            const bText = document.getElementById('btn-notes-mode-text');
+
+            if (pTodo && pText && bTodo && bText) {
+                if (aktivNotatModus === 'todo') {
+                    pTodo.classList.remove('hidden');
+                    pTodo.classList.add('flex');
+                    pText.classList.add('hidden');
+                    pText.classList.remove('flex');
+
+                    bTodo.className = 'py-2.5 px-3 rounded-xl text-xs font-extrabold transition-all flex items-center justify-center gap-2 bg-brand-500 text-slate-950 shadow-sm';
+                    bText.className = 'py-2.5 px-3 rounded-xl text-xs font-extrabold transition-all flex items-center justify-center gap-2 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white';
+                } else {
+                    pText.classList.remove('hidden');
+                    pText.classList.add('flex');
+                    pTodo.classList.add('hidden');
+                    pTodo.classList.remove('flex');
+
+                    bText.className = 'py-2.5 px-3 rounded-xl text-xs font-extrabold transition-all flex items-center justify-center gap-2 bg-brand-500 text-slate-950 shadow-sm';
+                    bTodo.className = 'py-2.5 px-3 rounded-xl text-xs font-extrabold transition-all flex items-center justify-center gap-2 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white';
+                }
+            }
+            if (lagre) lagreNotatData();
+        }
+
+        function leggTilSjekklistePunkt(e) {
+            if (e) e.preventDefault();
+            const inp = document.getElementById('notes-todo-input');
+            if (!inp) return;
+            const tekst = inp.value.trim();
+            if (!tekst) return;
+            verkstedSjekkliste.unshift({
+                id: 'td_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+                text: tekst,
+                done: false
+            });
+            inp.value = '';
+            byggSjekklisteVisning();
+            lagreNotatData();
+        }
+
+        function hurtigSjekkliste(tekst) {
+            verkstedSjekkliste.unshift({
+                id: 'td_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+                text: tekst,
+                done: false
+            });
+            byggSjekklisteVisning();
+            lagreNotatData();
+            visToast(`Lagt til: ${tekst}`);
+        }
+
+        function veksleSjekklistePunkt(id) {
+            const item = verkstedSjekkliste.find(t => t.id === id);
+            if (item) {
+                item.done = !item.done;
+                // Sorter slik at åpne oppgaver ligger øverst
+                verkstedSjekkliste.sort((a, b) => Number(a.done) - Number(b.done));
+                byggSjekklisteVisning();
+                lagreNotatData();
+            }
+        }
+
+        function slettSjekklistePunkt(id) {
+            verkstedSjekkliste = verkstedSjekkliste.filter(t => t.id !== id);
+            byggSjekklisteVisning();
+            lagreNotatData();
+        }
+
+        function fjernFullforteSjekkliste() {
+            const forAntall = verkstedSjekkliste.length;
+            verkstedSjekkliste = verkstedSjekkliste.filter(t => !t.done);
+            if (verkstedSjekkliste.length < forAntall) {
+                byggSjekklisteVisning();
+                lagreNotatData();
+                visToast('Fullførte oppgaver fjernet');
+            } else {
+                visToast('Ingen fullførte oppgaver å fjerne');
+            }
+        }
+
+        function kopierSjekkliste() {
+            if (verkstedSjekkliste.length === 0) {
+                visToast('Sjekklisten er tom', 'error');
+                return;
+            }
+            const txt = verkstedSjekkliste.map(t => `${t.done ? '[x]' : '[ ]'} ${t.text}`).join('\n');
+            kopierTekst(txt, 'Sjekkliste');
+        }
+
+        function byggSjekklisteVisning() {
+            const container = document.getElementById('notes-todo-list');
+            if (!container) return;
+            if (verkstedSjekkliste.length === 0) {
+                container.innerHTML = `<div class="border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-2xl p-8 text-center text-xs text-slate-400">Ingen gjøremål i listen. Skriv inn over eller bruk hurtigknappene!</div>`;
+                return;
+            }
+            container.innerHTML = verkstedSjekkliste.map(item => `
+                <div class="flex items-center justify-between gap-3 p-3 rounded-2xl border transition-all ${item.done ? 'bg-slate-100/60 dark:bg-slate-900/40 border-slate-200/60 dark:border-slate-800/60 opacity-60' : 'bg-slate-50 dark:bg-slate-800/70 border-slate-200 dark:border-slate-700/70'}">
+                    <label class="flex items-center gap-3 flex-1 min-w-0 cursor-pointer">
+                        <input type="checkbox" ${item.done ? 'checked' : ''} onchange="veksleSjekklistePunkt('${item.id}')" class="custom-checkbox shrink-0">
+                        <span class="text-xs font-semibold truncate ${item.done ? 'line-through text-slate-400 dark:text-slate-500' : 'text-slate-900 dark:text-white'}">${item.text.replace(/</g, '&lt;')}</span>
+                    </label>
+                    <button type="button" onclick="slettSjekklistePunkt('${item.id}')" class="w-7 h-7 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-500 flex items-center justify-center text-xs shrink-0" title="Slett">✕</button>
+                </div>
+            `).join('');
+        }
+
+        function oppdaterFritekstNotat(verdi) {
+            const countEl = document.getElementById('notes-char-count');
+            if (countEl) countEl.innerText = `${verdi.length} tegn`;
+            lagreNotatData();
+        }
+
+        function settInnTidsstempelNotat() {
+            const txtArea = document.getElementById('notes-text-area');
+            if (!txtArea) return;
+            const naa = new Date();
+            const tid = `[${String(naa.getDate()).padStart(2,'0')}.${String(naa.getMonth()+1).padStart(2,'0')} kl.${String(naa.getHours()).padStart(2,'0')}:${String(naa.getMinutes()).padStart(2,'0')}] `;
+            txtArea.value = (txtArea.value ? txtArea.value + '\n' : '') + tid;
+            oppdaterFritekstNotat(txtArea.value);
+            txtArea.focus();
+        }
+
+        function tomFritekstNotat() {
+            const txtArea = document.getElementById('notes-text-area');
+            if (!txtArea) return;
+            txtArea.value = '';
+            oppdaterFritekstNotat('');
+            visToast('Notatlogg tømt');
+        }
+
+        function oppdaterNotatTellereOgWidget() {
+            const apne = verkstedSjekkliste.filter(t => !t.done);
+            const antallApne = apne.length;
+
+            const bDesk = document.getElementById('notes-badge-desktop');
+            const bMob = document.getElementById('notes-badge-mobile');
+            const pill = document.getElementById('notes-todo-count-pill');
+
+            if (bDesk) bDesk.innerText = antallApne;
+            if (pill) pill.innerText = antallApne;
+            if (bMob) {
+                bMob.innerText = antallApne;
+                if (antallApne > 0) {
+                    bMob.classList.remove('hidden');
+                    bMob.classList.add('flex');
+                } else {
+                    bMob.classList.add('hidden');
+                    bMob.classList.remove('flex');
+                }
+            }
+
+            // Oppdater Dashboard-widgeten basert på valgt funksjon
+            const wTitle = document.getElementById('dash-note-widget-title');
+            const wMain = document.getElementById('dash-kpi-note-main');
+            const wSub = document.getElementById('dash-kpi-note-sub');
+            const txtVal = (document.getElementById('notes-text-area')?.value || '').trim();
+            const countEl = document.getElementById('notes-char-count');
+            if (countEl) countEl.innerText = `${txtVal.length} tegn`;
+
+            if (!wMain || !wSub) return;
+
+            if (aktivNotatModus === 'text') {
+                if (wTitle) wTitle.innerText = 'MASKINLOGG (FRITEKST)';
+                if (txtVal.length > 0) {
+                    const forsteLinje = txtVal.split('\n')[0];
+                    wMain.innerText = forsteLinje;
+                    wSub.innerText = `${txtVal.length} tegn lagret · Klikk for å redigere →`;
+                } else {
+                    wMain.innerText = 'Tom logg...';
+                    wSub.innerText = 'Klikk for å skrive Z-nullpunkt / notat →';
+                }
+            } else {
+                if (wTitle) wTitle.innerText = 'VERKSTED SJEKKLISTE';
+                if (antallApne > 0) {
+                    wMain.innerText = `☑️ ${apne[0].text}`;
+                    wSub.innerText = antallApne === 1
+                        ? `1 åpen oppgave · Klikk for sjekkliste →`
+                        : `${antallApne} åpne oppgaver (+${antallApne - 1} til) →`;
+                } else {
+                    wMain.innerText = '✅ Alt utført!';
+                    wSub.innerText = `${verkstedSjekkliste.length} fullført · Klikk for å legge til →`;
+                }
+            }
+        }
+
         // --- GLOBALT HURTIGSØK & SAMMENLEGGBARE KORT ---
         const verktoySokIndeks = [
-            { title: 'Lønnskalkulator & Netto oversikt', keys: 'lønn skatt netto brutto feriepenger', tab: 'salary', sub: 'oversikt' },
-            { title: 'Registrer Vakt & Timebank', keys: 'overtid vakt timebank avspasering 50% 100%', tab: 'salary', sub: 'vakter' },
-            { title: 'Formannstillegg & Skattetabell', keys: 'formann 20% timelønn tabelltrekk fagforening lo', tab: 'salary', sub: 'innstillinger' },
-            { title: 'Sirkulær Mating (Innvendig / Utvendig)', keys: 'sirkulær fresing hull lomme sentermating', tab: 'cnc', sub: 'milling', card: 'card-cnc-sirk' },
-            { title: 'Skjæredata Hurtigkalkulator (Vc / RPM / Vf)', keys: 'vc rpm bordmating spindel fz', tab: 'cnc', sub: 'milling', card: 'card-cnc-hurtig' },
-            { title: 'Tynn Spon-kompensasjon (Radial Chip Thinning)', keys: 'tynn spon rct ae hm sideinngrep', tab: 'cnc', sub: 'milling', card: 'card-cnc-rct' },
-            { title: 'Innvendige & Utvendige Gjenger (Gibbs)', keys: 'gibbs gjenger dreiing stigning', tab: 'cnc', sub: 'turning', card: 'card-cnc-gibbs' },
-            { title: 'Konus- & Fase-kalkulator', keys: 'konus fase vinkel dreiing 45 grader 1:10 1:20', tab: 'cnc', sub: 'turning', card: 'card-cnc-taper' },
-            { title: 'C-Akse Gradering (Grader/min)', keys: 'c-akse grader omkrets dreiing', tab: 'cnc', sub: 'turning', card: 'card-cnc-caxis' },
-            { title: 'G- & M-kode Oppslagsverk', keys: 'g-koder m-koder g76 g71 g81 g41 fanuc mazak heidenhain', tab: 'cnc', sub: 'gcodes', card: 'card-cnc-gcode' },
-            { title: 'Materialdatabank (HM Verktøy)', keys: 'materiale s355 rustfritt 316 duplex alu skjærehastighet', tab: 'tools', sub: 'data' },
-            { title: 'Borespiss-kompensasjon', keys: 'bor spissvinkel 140 118 boredybde z-dybde', tab: 'tools', sub: 'data' },
-            { title: 'Kjølevæske & Refraktometer (Brix)', keys: 'kjølevæske brix olje emulsjon refraktometer', tab: 'tools', sub: 'data' },
-            { title: 'Overflateruhet (Ra / Rz)', keys: 'ruhet ra rz neseradius slettdreiing', tab: 'tools', sub: 'data' },
-            { title: 'Gjenge- & Kjernebor-tabell (M3–M36 / BSP)', keys: 'gjenger kjernebor m10 m12 formtapp rulletapp bsp rørgjenger', tab: 'tools', sub: 'threads' },
-            { title: 'Metriske Gjengetoleranser (6H / 6g)', keys: '6h 6g mellomdiameter gjengetoleranse', tab: 'tools', sub: 'threads' },
-            { title: 'Tiltrekkingsmoment & Nøkkelvidde Bolter (M4–M36)', keys: 'moment nm bolt unbrako nøkkelvidde 8.8 10.9 12.9 a4', tab: 'tools', sub: 'threads', card: 'card-tools-torque' },
-            { title: 'ISO 286 Pasninger – Aksling & Hull', keys: 'iso 286 pasning h7 g6 k6 m6 p6 midtmål toleranse aksling hull', tab: 'tools', sub: 'fits', card: 'card-tools-iso286' },
-            { title: 'Generelle Toleranser (ISO 2768-m/f/c)', keys: 'iso 2768 frie mål generelle toleranser', tab: 'tools', sub: 'fits', card: 'card-tools-iso2768' },
-            { title: 'Kilespor-tabell (DIN 6885-1)', keys: 'kilespor kile din 6885 aksel nav t1 t2', tab: 'tools', sub: 'fits', card: 'card-tools-keyway' },
-            { title: 'Vektkalkulator (Aksling / Rør / Plate)', keys: 'vekt kg stål aluminium emne', tab: 'tools', sub: 'weight' },
-            { title: 'Boltsirkel (PCD) & Pythagoras Trekant', keys: 'pcd boltsirkel kordelengde trekant pythagoras katet', tab: 'tools', sub: 'math' },
-            { title: 'Tommer ↔ Millimeter & Trykk/Temp', keys: 'tommer inch mm psi bar fahrenheit', tab: 'tools', sub: 'conv' },
-            { title: 'Hardhetskonverterer (HRC ↔ HB ↔ HV ↔ MPa)', keys: 'hardhet hrc brinell hb vickers hv mpa strekkfasthet', tab: 'tools', sub: 'conv' },
-            { title: 'Elbil Ladetid & Vinterrekkevidde', keys: 'elbil strøm ladetid kwh vinterrekkevidde kulde', tab: 'ev', sub: 'charging', card: 'card-ev-charge' },
-            { title: 'Norgespris / Strømstøtte & Effekttariff (Nettleie)', keys: 'norgespris strømstøtte nettleie kapasitetstrinn effekttariff spotpris', tab: 'ev', sub: 'power', card: 'card-ev-tariff' },
-            { title: 'Strømforbruk Apparat / Maskin', keys: 'apparat varmepumpe kompressor watt kwh', tab: 'ev', sub: 'power', card: 'card-ev-app' },
-            { title: 'Dekkdimensjon & Speedometer-kalkulator', keys: 'dekk felg rulleomkrets speedometer vinterhjul sommerhjul 5%', tab: 'ev', sub: 'tires', card: 'card-ev-tires' },
-            { title: 'Elbil vs Bensin/Diesel Besparelse', keys: 'bensin diesel drivstoff besparelse spart', tab: 'ev', sub: 'tires', card: 'card-ev-save' }
+            { title: 'Lønnskalkulator & Netto oversikt', titleEn: 'Salary Calculator & Net Overview', keys: 'lønn skatt netto brutto feriepenger salary tax net gross holiday pay', tab: 'salary', sub: 'oversikt' },
+            { title: 'Registrer Vakt & Timebank', titleEn: 'Register Shift & Timebank', keys: 'overtid vakt timebank avspasering 50% 100% overtime shift time off', tab: 'salary', sub: 'vakter' },
+            { title: 'Formannstillegg & Skattetabell', titleEn: 'Foreman Bonus & Tax Table', keys: 'formann 20% timelønn tabelltrekk fagforening lo foreman hourly rate union tax', tab: 'salary', sub: 'innstillinger' },
+            { title: 'Sirkulær Mating (Innvendig / Utvendig)', titleEn: 'Circular Interpolation Feed (Int / Ext)', keys: 'sirkulær fresing hull lomme sentermating circular milling hole pocket center feed', tab: 'cnc', sub: 'milling', card: 'card-cnc-sirk' },
+            { title: 'Skjæredata Hurtigkalkulator (Vc / RPM / Vf)', titleEn: 'Cutting Data Quick Calc (Vc / RPM / Vf)', keys: 'vc rpm bordmating spindel fz cutting speed spindle table feed', tab: 'cnc', sub: 'milling', card: 'card-cnc-hurtig' },
+            { title: 'Tynn Spon-kompensasjon (Radial Chip Thinning)', titleEn: 'Radial Chip Thinning (RCT)', keys: 'tynn spon rct ae hm sideinngrep chip thinning stepover', tab: 'cnc', sub: 'milling', card: 'card-cnc-rct' },
+            { title: 'Innvendige & Utvendige Gjenger (Gibbs)', titleEn: 'Internal & External Threads (Gibbs)', keys: 'gibbs gjenger dreiing stigning threads turning pitch', tab: 'cnc', sub: 'turning', card: 'card-cnc-gibbs' },
+            { title: 'Konus- & Fase-kalkulator', titleEn: 'Taper & Chamfer Calculator', keys: 'konus fase vinkel dreiing 45 grader 1:10 1:20 taper chamfer angle turning', tab: 'cnc', sub: 'turning', card: 'card-cnc-taper' },
+            { title: 'C-Akse Gradering (Grader/min)', titleEn: 'C-Axis Rotary Feed (Deg/min)', keys: 'c-akse grader omkrets dreiing c-axis degrees circumference rotary', tab: 'cnc', sub: 'turning', card: 'card-cnc-caxis' },
+            { title: 'G- & M-kode Oppslagsverk', titleEn: 'G & M Code Reference', keys: 'g-koder m-koder g76 g71 g81 g41 fanuc mazak heidenhain g-codes m-codes', tab: 'cnc', sub: 'gcodes', card: 'card-cnc-gcode' },
+            { title: 'Materialdatabank (HM Verktøy)', titleEn: 'Material Database (Carbide Tools)', keys: 'materiale s355 rustfritt 316 duplex alu skjærehastighet material stainless aluminum', tab: 'tools', sub: 'data' },
+            { title: 'Borespiss-kompensasjon', titleEn: 'Drill Point Compensation', keys: 'bor spissvinkel 140 118 boredybde z-dybde drill point angle depth', tab: 'tools', sub: 'data' },
+            { title: 'Kjølevæske & Refraktometer (Brix)', titleEn: 'Coolant & Refractometer (Brix)', keys: 'kjølevæske brix olje emulsjon refraktometer coolant oil concentration', tab: 'tools', sub: 'data' },
+            { title: 'Overflateruhet (Ra / Rz)', titleEn: 'Theoretical Surface Roughness (Ra / Rz)', keys: 'ruhet ra rz neseradius slettdreiing surface roughness nose radius finish', tab: 'tools', sub: 'data' },
+            { title: 'Gjenge- & Kjernebor-tabell (M3–M36 / BSP)', titleEn: 'Thread & Tap Drill Table (M3–M36 / BSP)', keys: 'gjenger kjernebor m10 m12 formtapp rulletapp bsp rørgjenger tap drill roll form thread', tab: 'tools', sub: 'threads' },
+            { title: 'Metriske Gjengetoleranser (6H / 6g)', titleEn: 'Metric Thread Tolerances (6H / 6g)', keys: '6h 6g mellomdiameter gjengetoleranse pitch diameter thread tolerance', tab: 'tools', sub: 'threads' },
+            { title: 'Tiltrekkingsmoment & Nøkkelvidde Bolter (M4–M36)', titleEn: 'Bolt Tightening Torque & Wrench Size (M4–M36)', keys: 'moment nm bolt unbrako nøkkelvidde 8.8 10.9 12.9 a4 torque wrench hex socket', tab: 'tools', sub: 'threads', card: 'card-tools-torque' },
+            { title: 'ISO 286 Pasninger – Aksling & Hull', titleEn: 'ISO 286 Fits – Shaft & Hole', keys: 'iso 286 pasning h7 g6 k6 m6 p6 midtmål toleranse aksling hull fit shaft hole tolerance target', tab: 'tools', sub: 'fits', card: 'card-tools-iso286' },
+            { title: 'Generelle Toleranser (ISO 2768-m/f/c)', titleEn: 'General Tolerances (ISO 2768-m/f/c)', keys: 'iso 2768 frie mål generelle toleranser general tolerances linear', tab: 'tools', sub: 'fits', card: 'card-tools-iso2768' },
+            { title: 'Kilespor-tabell (DIN 6885-1)', titleEn: 'Keyway Dimensions (DIN 6885-1)', keys: 'kilespor kile din 6885 aksel nav t1 t2 keyway key groove shaft hub', tab: 'tools', sub: 'fits', card: 'card-tools-keyway' },
+            { title: 'Vektkalkulator (Aksling / Rør / Plate)', titleEn: 'Weight Calculator (Bar / Pipe / Plate)', keys: 'vekt kg stål aluminium emne weight steel aluminum bar pipe plate', tab: 'tools', sub: 'weight' },
+            { title: 'Boltsirkel (PCD) & Pythagoras Trekant', titleEn: 'Bolt Circle (PCD) & Right Triangle', keys: 'pcd boltsirkel kordelengde trekant pythagoras katet bolt circle chord triangle', tab: 'tools', sub: 'math' },
+            { title: 'Tommer ↔ Millimeter & Trykk/Temp', titleEn: 'Inches ↔ Millimeters & Pressure/Temp', keys: 'tommer inch mm psi bar fahrenheit converter', tab: 'tools', sub: 'conv' },
+            { title: 'Hardhetskonverterer (HRC ↔ HB ↔ HV ↔ MPa)', titleEn: 'Hardness Converter (HRC ↔ HB ↔ HV ↔ MPa)', keys: 'hardhet hrc brinell hb vickers hv mpa strekkfasthet hardness tensile strength', tab: 'tools', sub: 'conv' },
+            { title: 'Elbil Ladetid & Vinterrekkevidde', titleEn: 'EV Charging Time & Winter Range', keys: 'elbil strøm ladetid kwh vinterrekkevidde kulde ev charging winter range cold', tab: 'ev', sub: 'charging', card: 'card-ev-charge' },
+            { title: 'Norgespris / Strømstøtte & Effekttariff (Nettleie)', titleEn: 'Power Support & Grid Capacity Tariff', keys: 'norgespris strømstøtte nettleie kapasitetstrinn effekttariff spotpris grid tariff power support', tab: 'ev', sub: 'power', card: 'card-ev-tariff' },
+            { title: 'Strømforbruk Apparat / Maskin', titleEn: 'Appliance / Machine Power Cost', keys: 'apparat varmepumpe kompressor watt kwh appliance heat pump compressor power', tab: 'ev', sub: 'power', card: 'card-ev-app' },
+            { title: 'Dekkdimensjon & Speedometer-kalkulator', titleEn: 'Tire Size & Speedometer Calculator', keys: 'dekk felg rulleomkrets speedometer vinterhjul sommerhjul 5% tire rim circumference speed', tab: 'ev', sub: 'tires', card: 'card-ev-tires' },
+            { title: 'Elbil vs Bensin/Diesel Besparelse', titleEn: 'EV vs Gasoline/Diesel Savings', keys: 'bensin diesel drivstoff besparelse spart fuel gasoline savings', tab: 'ev', sub: 'tires', card: 'card-ev-save' }
         ];
 
         function apneSokModal() {
@@ -2337,20 +3239,49 @@
             const q = (document.getElementById('global-search-input')?.value || '').toLowerCase().trim();
             const container = document.getElementById('global-search-results');
             if (!container) return;
-            const treff = verktoySokIndeks.filter(item => !q || item.title.toLowerCase().includes(q) || item.keys.includes(q));
+            const treff = verktoySokIndeks.filter(item => !q || item.title.toLowerCase().includes(q) || (item.titleEn && item.titleEn.toLowerCase().includes(q)) || item.keys.includes(q));
             if (treff.length === 0) {
-                container.innerHTML = `<p class="text-center text-xs text-slate-400 py-6">Ingen verktøy matchet "${q}"</p>`;
+                const noMatchTxt = currentLang === 'en' ? `No tools matched "${q}"` : `Ingen verktøy matchet "${q}"`;
+                container.innerHTML = `<p class="text-center text-xs text-slate-400 py-6">${noMatchTxt}</p>`;
                 return;
             }
-            container.innerHTML = treff.map((item, i) => `
+            const tabNavnMap = {
+                salary: currentLang === 'en' ? 'SALARY' : 'LØNN',
+                cnc: 'CNC',
+                tools: currentLang === 'en' ? 'TABLES' : 'TABELLER',
+                ev: currentLang === 'en' ? 'POWER & EV' : 'STRØM & ELBIL'
+            };
+            const subNavnMap = {
+                oversikt: currentLang === 'en' ? 'overview' : 'oversikt',
+                vakter: currentLang === 'en' ? 'shifts' : 'vakter',
+                innstillinger: currentLang === 'en' ? 'settings' : 'innstillinger',
+                milling: currentLang === 'en' ? 'milling' : 'fresing',
+                turning: currentLang === 'en' ? 'turning' : 'dreiing',
+                gcodes: currentLang === 'en' ? 'g-codes' : 'g-koder',
+                data: currentLang === 'en' ? 'cutting data' : 'skjæredata',
+                threads: currentLang === 'en' ? 'threads' : 'gjenger',
+                fits: currentLang === 'en' ? 'fits & keyways' : 'pasninger',
+                weight: currentLang === 'en' ? 'weight' : 'vekt',
+                math: currentLang === 'en' ? 'math & pcd' : 'matte',
+                conv: currentLang === 'en' ? 'converter' : 'konverterer',
+                charging: currentLang === 'en' ? 'charging' : 'lading',
+                power: currentLang === 'en' ? 'power & grid' : 'strøm & nettleie',
+                tires: currentLang === 'en' ? 'tires & economy' : 'dekk & økonomi'
+            };
+            const openTxt = currentLang === 'en' ? 'Open →' : 'Åpne →';
+            container.innerHTML = treff.map((item) => {
+                const visTittel = currentLang === 'en' ? (item.titleEn || item.title) : item.title;
+                const visTab = tabNavnMap[item.tab] || item.tab.toUpperCase();
+                const visSub = item.sub ? (subNavnMap[item.sub] || item.sub) : '';
+                return `
                 <button type="button" onclick="gaaTilSokResultat(${verktoySokIndeks.indexOf(item)})" class="w-full text-left px-4 py-3 rounded-2xl bg-slate-50 hover:bg-brand-500/15 dark:bg-slate-800/70 dark:hover:bg-brand-500/20 border border-slate-200/70 dark:border-slate-700/60 hover:border-brand-500 transition-all flex items-center justify-between group">
                     <div>
-                        <p class="text-sm font-bold text-slate-900 dark:text-white group-hover:text-brand-600 dark:group-hover:text-brand-400">${item.title}</p>
-                        <p class="text-[11px] font-mono text-slate-400 uppercase">${item.tab.toUpperCase()}${item.sub ? ' → ' + item.sub : ''}</p>
+                        <p class="text-sm font-bold text-slate-900 dark:text-white group-hover:text-brand-600 dark:group-hover:text-brand-400">${visTittel}</p>
+                        <p class="text-[11px] font-mono text-slate-400 uppercase">${visTab}${visSub ? ' → ' + visSub : ''}</p>
                     </div>
-                    <span class="text-xs font-mono font-bold text-brand-500">Åpne →</span>
+                    <span class="text-xs font-mono font-bold text-brand-500">${openTxt}</span>
                 </button>
-            `).join('');
+            `}).join('');
         }
 
         function gaaTilSokResultat(idx) {
@@ -2376,14 +3307,23 @@
         }
 
         function initSammenleggbareKort() {
-            document.querySelectorAll('.pers-input > h3').forEach((h3, index) => {
+            document.querySelectorAll('.pers-input > h3').forEach((h3) => {
                 if (h3.dataset.collapseReady) return;
                 h3.dataset.collapseReady = '1';
-                h3.classList.add('cursor-pointer', 'select-none', 'justify-between');
+                h3.classList.add('cursor-pointer', 'select-none', 'justify-between', 'gap-2');
                 const titleContent = h3.innerHTML;
-                h3.innerHTML = `<span class="flex items-center">${titleContent}</span><span class="collapse-chevron text-xs font-mono px-2 py-0.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-400 hover:text-brand-500 ml-2" title="Klapp sammen / åpne kort">−</span>`;
+                const noteBtnLabel = currentLang === 'en' ? '+ Note' : '+ Notat';
+                const noteBtnTitle = currentLang === 'en' ? 'Save calculation to Notes / Checklist' : 'Lagre utregning i Notater / Sjekkliste';
+                h3.innerHTML = `
+                    <span class="flex items-center min-w-0">${titleContent}</span>
+                    <span class="flex items-center gap-1.5 shrink-0">
+                        <button type="button" onclick="lagreKortTilNotat(this, event)" class="card-note-btn text-[11px] font-mono font-bold px-2.5 py-1 rounded-xl bg-brand-500/15 hover:bg-brand-500 text-brand-600 dark:text-brand-400 hover:text-slate-950 border border-brand-500/30 transition-all shadow-sm flex items-center gap-1" title="${noteBtnTitle}">
+                            <span>📝</span><span class="card-note-btn-text">${noteBtnLabel}</span>
+                        </button>
+                        <span class="collapse-chevron text-xs font-mono px-2 py-1 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-400 hover:text-brand-500" title="Klapp sammen / åpne kort">−</span>
+                    </span>`;
                 h3.addEventListener('click', (e) => {
-                    if (['INPUT', 'SELECT', 'BUTTON'].includes(e.target.tagName)) return;
+                    if (['INPUT', 'SELECT', 'BUTTON'].includes(e.target.tagName) || e.target.closest('button')) return;
                     const card = h3.closest('.pers-input');
                     const chev = h3.querySelector('.collapse-chevron');
                     if (card) {
@@ -2392,6 +3332,94 @@
                     }
                 });
             });
+        }
+
+        function hentKortSammendrag(card) {
+            if (!card) return '';
+            const h3Span = card.querySelector('h3 > span:first-child');
+            const tittel = h3Span ? h3Span.innerText.trim() : 'Kalkulator';
+
+            // Samle inn viktige input/select-verdier i kortet
+            const inputs = [];
+            card.querySelectorAll('input:not([type="hidden"]):not(#gcode-search), select:not(#gcode-cat)').forEach(el => {
+                const parentBox = el.closest('div');
+                if (parentBox && parentBox.style.display === 'none') return;
+                const parentGrid = el.closest('.grid');
+                if (parentGrid && parentGrid.style.display === 'none') return;
+
+                let label = '';
+                const prevLbl = el.previousElementSibling;
+                if (prevLbl && prevLbl.tagName === 'LABEL') {
+                    label = prevLbl.innerText.trim().replace(/:$/, '');
+                }
+                let val = '';
+                if (el.tagName === 'SELECT') {
+                    val = el.options[el.selectedIndex]?.text?.split(' (')[0]?.trim() || el.value;
+                } else if (el.type === 'checkbox') {
+                    val = el.checked ? 'Ja' : 'Nei';
+                } else {
+                    val = el.value;
+                }
+                if (val !== '') {
+                    inputs.push(label ? `${label}: ${val}` : val);
+                }
+            });
+
+            // Samle inn utregnede resultatverdier fra kortet
+            const resultater = [];
+            card.querySelectorAll('[id*="-res-"], [id^="res-"], #iso-res, #iso-res-minmax, #iso-res-mid').forEach(resEl => {
+                const row = resEl.closest('div');
+                if (row && row.style.display === 'none') return;
+                const valTxt = resEl.innerText.trim();
+                if (!valTxt) return;
+
+                let lblTxt = '';
+                if (row) {
+                    const firstSpan = row.querySelector('span:first-child');
+                    if (firstSpan && firstSpan !== resEl) {
+                        lblTxt = firstSpan.innerText.trim().replace(/:$/, '');
+                    }
+                }
+                resultater.push(lblTxt ? `${lblTxt}: ${valTxt}` : valTxt);
+            });
+
+            const inputDel = inputs.slice(0, 4).join(', ');
+            const resDel = resultater.join(' | ');
+            if (resDel && inputDel) return `${tittel} (${inputDel}) ➔ ${resDel}`;
+            if (resDel) return `${tittel} ➔ ${resDel}`;
+            if (inputDel) return `${tittel}: ${inputDel}`;
+            return tittel;
+        }
+
+        function leggTilTekstINotatEllerSjekkliste(tekst) {
+            if (!tekst) return;
+            if (aktivNotatModus === 'text') {
+                const txtArea = document.getElementById('notes-text-area');
+                if (txtArea) {
+                    const naa = new Date();
+                    const tid = `[${String(naa.getHours()).padStart(2,'0')}:${String(naa.getMinutes()).padStart(2,'0')}] `;
+                    txtArea.value = (txtArea.value ? txtArea.value.trimEnd() + '\n' : '') + tid + tekst;
+                    oppdaterFritekstNotat(txtArea.value);
+                }
+                visToast(currentLang === 'en' ? 'Saved to Machine Log 📝' : 'Lagt til i Fritekst-logg 📝');
+            } else {
+                verkstedSjekkliste.unshift({
+                    id: 'td_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+                    text: tekst,
+                    done: false
+                });
+                byggSjekklisteVisning();
+                lagreNotatData();
+                visToast(currentLang === 'en' ? 'Added to Checklist ☑️' : 'Lagt til i Sjekkliste ☑️');
+            }
+        }
+
+        function lagreKortTilNotat(btnEl, event) {
+            if (event) event.stopPropagation();
+            const card = btnEl.closest('.pers-input');
+            if (!card) return;
+            const sammendrag = hentKortSammendrag(card);
+            leggTilTekstINotatEllerSjekkliste(sammendrag);
         }
 
         // --- LAYOUT & KLASSISK ANGRE-MODUS ---
@@ -3109,9 +4137,9 @@
             { id: 'thread', title: 'Aktiv Gjenge & Kjernebor', desc: 'Valgt gjenge med skjære- og formtappbor', enabled: true },
             { id: 'isofit', title: 'ISO-Pasning & Midtmål', desc: 'Valgt pasningsklasse (Hull/Aksling) med CNC siktemål', enabled: true },
             { id: 'power', title: 'Strømsats & Elbil', desc: 'Strømpris og beregnet ladetid/rekkevidde', enabled: true },
+            { id: 'note', title: 'Sjekkliste & Maskinnotat', desc: 'Viser neste gjøremål eller fritekst-logg og åpner sidepanelet', enabled: true },
             { id: 'overtime', title: 'Overtid denne måneden', desc: 'Brutto/netto overtidsbeløp og timer', enabled: false },
-            { id: 'coolant', title: 'Kjølevæske (Brix)', desc: 'Faktisk konsentrasjon og liter etterfylling', enabled: false },
-            { id: 'note', title: 'Maskin-huskelapp', desc: 'Hurtignotat for Z-nullpunkt, verktøy eller mål', enabled: false }
+            { id: 'coolant', title: 'Kjølevæske (Brix)', desc: 'Faktisk konsentrasjon og liter etterfylling', enabled: false }
         ];
 
         let brukerWidgets = [];
@@ -3918,34 +4946,34 @@
         }
 
         const gCodeDatabase = [
-            { code: 'G00', cat: 'move', title: 'Hurtiggang (Rapid)', desc: 'Posjonering i maks hastighet uten skjæring' },
-            { code: 'G01', cat: 'move', title: 'Lineær interpolasjon', desc: 'Rettlinjet arbeidsmating med programmert F' },
-            { code: 'G02', cat: 'move', title: 'Sirkulær medurs (CW)', desc: 'Buebevegelse med klokken (R eller I/J/K)' },
-            { code: 'G03', cat: 'move', title: 'Sirkulær moturs (CCW)', desc: 'Buebevegelse mot klokken (R eller I/J/K)' },
-            { code: 'G04', cat: 'move', title: 'Dveletid (Dwell)', desc: 'Pause i bunn av hull/spor (X/U eller P i ms)' },
-            { code: 'G17 / G18 / G19', cat: 'move', title: 'Planvalg XY / XZ / YZ', desc: 'G17=Fresing (XY), G18=Dreiing (XZ)' },
-            { code: 'G28', cat: 'move', title: 'Referansepunkt', desc: 'Gå til maskinens hjemposisjon (f.eks. G28 U0 W0)' },
-            { code: 'G40', cat: 'move', title: 'Avbryt radiekompensasjon', desc: 'Skrur av G41 / G42' },
-            { code: 'G41 / G42', cat: 'move', title: 'Radiekomp Venstre / Høyre', desc: 'G41 = venstre (medfresing), G42 = høyre' },
-            { code: 'G43', cat: 'move', title: 'Verktøylengdekompensasjon (+)', desc: 'Aktiverer H-lengde på fres (G43 H1 Z100)' },
-            { code: 'G50 / G92', cat: 'move', title: 'Maks spindelturtall (Dreiing)', desc: 'Låser maks RPM ved konstant skjærehastighet (G50 S2500)' },
-            { code: 'G54 – G59', cat: 'move', title: 'Nullpunkt-forskyvning', desc: 'Velger arbeidsstykkets koordinatsystem' },
-            { code: 'G70 / G71', cat: 'cycle', title: 'Slett- / Grovdreiesyklus', desc: 'G71 grovdreier profil, G70 kjører slettkutt' },
-            { code: 'G76', cat: 'cycle', title: 'Gjengedreiesyklus', desc: 'Automatisk fler-kutt gjengedreiing' },
-            { code: 'G80', cat: 'cycle', title: 'Avbryt fast syklus', desc: 'Kansellerer aktiv boresyklus (G81–G85)' },
-            { code: 'G81', cat: 'cycle', title: 'Standard boresyklus', desc: 'Borer ned til Z og går hurtig opp til R' },
-            { code: 'G83', cat: 'cycle', title: 'Dyphullsbore-syklus (Peck)', desc: 'Borer med fullt uttrekk og sponbryting (Q-verdi)' },
-            { code: 'G84', cat: 'cycle', title: 'Gjengesnitt-syklus (Tapping)', desc: 'Synkronisert gjenging med revers i bunn' },
-            { code: 'G90 / G91', cat: 'move', title: 'Absolutt / Inkrementell', desc: 'G90 = faste koordinater, G91 = kjedemål' },
-            { code: 'G94 / G95', cat: 'move', title: 'Mating i mm/min eller mm/omdr', desc: 'G94 = mm/min (fres), G95 = mm/o (dreiing)' },
-            { code: 'G96 / G97', cat: 'move', title: 'Konstant Vc (CSS) / Fast RPM', desc: 'G96 = m/min, G97 = låst spindelturtall' },
-            { code: 'M00 / M01', cat: 'mcode', title: 'Programstopp / Valgfri stopp', desc: 'M00 stopper alltid, M01 stopper ved Optional Stop' },
-            { code: 'M03 / M04 / M05', cat: 'mcode', title: 'Spindel CW / CCW / Stopp', desc: 'Starter eller stopper spindelen' },
-            { code: 'M06', cat: 'mcode', title: 'Verktøyveksling', desc: 'Bytter til valgt T-nummer i veksler' },
-            { code: 'M08 / M09', cat: 'mcode', title: 'Kjølevæske PÅ / AV', desc: 'Flomkjøling på (M08) og av (M09)' },
-            { code: 'M19', cat: 'mcode', title: 'Spindelorientering', desc: 'Låser spindel i fast vinkelposisjon' },
-            { code: 'M30', cat: 'mcode', title: 'Programslutt med retur', desc: 'Avslutter og spoler tilbake til start' },
-            { code: 'M88 / M51', cat: 'mcode', title: 'Høytrykkskjøling gjennom spindel', desc: 'TSC (Through Spindle Coolant) på mange maskiner' }
+            { code: 'G00', cat: 'move', title: 'Hurtiggang (Rapid)', titleEn: 'Rapid Traverse', desc: 'Posjonering i maks hastighet uten skjæring', descEn: 'Positioning at max speed without cutting' },
+            { code: 'G01', cat: 'move', title: 'Lineær interpolasjon', titleEn: 'Linear Interpolation', desc: 'Rettlinjet arbeidsmating med programmert F', descEn: 'Straight line cutting feed at programmed F' },
+            { code: 'G02', cat: 'move', title: 'Sirkulær medurs (CW)', titleEn: 'Circular Interpolation CW', desc: 'Buebevegelse med klokken (R eller I/J/K)', descEn: 'Clockwise arc motion (using R or I/J/K)' },
+            { code: 'G03', cat: 'move', title: 'Sirkulær moturs (CCW)', titleEn: 'Circular Interpolation CCW', desc: 'Buebevegelse mot klokken (R eller I/J/K)', descEn: 'Counter-clockwise arc motion (using R or I/J/K)' },
+            { code: 'G04', cat: 'move', title: 'Dveletid (Dwell)', titleEn: 'Dwell Time', desc: 'Pause i bunn av hull/spor (X/U eller P i ms)', descEn: 'Pause at bottom of hole/groove (X/U or P in ms)' },
+            { code: 'G17 / G18 / G19', cat: 'move', title: 'Planvalg XY / XZ / YZ', titleEn: 'Plane Selection XY / XZ / YZ', desc: 'G17=Fresing (XY), G18=Dreiing (XZ)', descEn: 'G17=Milling (XY), G18=Turning (XZ)' },
+            { code: 'G28', cat: 'move', title: 'Referansepunkt', titleEn: 'Return to Home Position', desc: 'Gå til maskinens hjemposisjon (f.eks. G28 U0 W0)', descEn: 'Return to machine reference point (e.g. G28 U0 W0)' },
+            { code: 'G40', cat: 'move', title: 'Avbryt radiekompensasjon', titleEn: 'Cancel Cutter Compensation', desc: 'Skrur av G41 / G42', descEn: 'Cancels G41 / G42 cutter radius compensation' },
+            { code: 'G41 / G42', cat: 'move', title: 'Radiekomp Venstre / Høyre', titleEn: 'Cutter Comp Left / Right', desc: 'G41 = venstre (medfresing), G42 = høyre', descEn: 'G41 = left (climb milling), G42 = right' },
+            { code: 'G43', cat: 'move', title: 'Verktøylengdekompensasjon (+)', titleEn: 'Tool Length Compensation (+)', desc: 'Aktiverer H-lengde på fres (G43 H1 Z100)', descEn: 'Activates H length offset on mill (G43 H1 Z100)' },
+            { code: 'G50 / G92', cat: 'move', title: 'Maks spindelturtall (Dreiing)', titleEn: 'Max Spindle Speed Clamp (Lathe)', desc: 'Låser maks RPM ved konstant skjærehastighet (G50 S2500)', descEn: 'Limits max RPM during constant surface speed (G50 S2500)' },
+            { code: 'G54 – G59', cat: 'move', title: 'Nullpunkt-forskyvning', titleEn: 'Work Coordinate Systems', desc: 'Velger arbeidsstykkets koordinatsystem', descEn: 'Selects workpiece zero offset (G54–G59)' },
+            { code: 'G70 / G71', cat: 'cycle', title: 'Slett- / Grovdreiesyklus', titleEn: 'Finishing / Stock Removal Turning Cycle', desc: 'G71 grovdreier profil, G70 kjører slettkutt', descEn: 'G71 roughs contour, G70 runs finishing pass' },
+            { code: 'G76', cat: 'cycle', title: 'Gjengedreiesyklus', titleEn: 'Multiple Threading Cycle', desc: 'Automatisk fler-kutt gjengedreiing', descEn: 'Automatic multi-pass thread turning cycle' },
+            { code: 'G80', cat: 'cycle', title: 'Avbryt fast syklus', titleEn: 'Cancel Canned Cycle', desc: 'Kansellerer aktiv boresyklus (G81–G85)', descEn: 'Cancels active drilling/tapping cycle (G81–G85)' },
+            { code: 'G81', cat: 'cycle', title: 'Standard boresyklus', titleEn: 'Spot / Standard Drilling Cycle', desc: 'Borer ned til Z og går hurtig opp til R', descEn: 'Feeds to Z-depth and rapids back to R-plane' },
+            { code: 'G83', cat: 'cycle', title: 'Dyphullsbore-syklus (Peck)', titleEn: 'Peck Drilling Cycle', desc: 'Borer med fullt uttrekk og sponbryting (Q-verdi)', descEn: 'Deep hole peck drilling with full retract (Q peck depth)' },
+            { code: 'G84', cat: 'cycle', title: 'Gjengesnitt-syklus (Tapping)', titleEn: 'Tapping Cycle', desc: 'Synkronisert gjenging med revers i bunn', descEn: 'Synchronized tapping with spindle reverse at bottom' },
+            { code: 'G90 / G91', cat: 'move', title: 'Absolutt / Inkrementell', titleEn: 'Absolute / Incremental Mode', desc: 'G90 = faste koordinater, G91 = kjedemål', descEn: 'G90 = absolute coordinates, G91 = incremental' },
+            { code: 'G94 / G95', cat: 'move', title: 'Mating i mm/min eller mm/omdr', titleEn: 'Feed per Minute / Feed per Rev', desc: 'G94 = mm/min (fres), G95 = mm/o (dreiing)', descEn: 'G94 = mm/min (milling), G95 = mm/rev (turning)' },
+            { code: 'G96 / G97', cat: 'move', title: 'Konstant Vc (CSS) / Fast RPM', titleEn: 'Constant Surface Speed / Fixed RPM', desc: 'G96 = m/min, G97 = låst spindelturtall', descEn: 'G96 = constant m/min, G97 = fixed RPM' },
+            { code: 'M00 / M01', cat: 'mcode', title: 'Programstopp / Valgfri stopp', titleEn: 'Program Stop / Optional Stop', desc: 'M00 stopper alltid, M01 stopper ved Optional Stop', descEn: 'M00 always stops, M01 stops if Optional Stop is active' },
+            { code: 'M03 / M04 / M05', cat: 'mcode', title: 'Spindel CW / CCW / Stopp', titleEn: 'Spindle CW / CCW / Stop', desc: 'Starter eller stopper spindelen', descEn: 'Starts spindle clockwise (M03), CCW (M04) or stops (M05)' },
+            { code: 'M06', cat: 'mcode', title: 'Verktøyveksling', titleEn: 'Tool Change', desc: 'Bytter til valgt T-nummer i veksler', descEn: 'Executes tool change to selected T-number' },
+            { code: 'M08 / M09', cat: 'mcode', title: 'Kjølevæske PÅ / AV', titleEn: 'Coolant ON / OFF', desc: 'Flomkjøling på (M08) og av (M09)', descEn: 'Flood coolant ON (M08) and OFF (M09)' },
+            { code: 'M19', cat: 'mcode', title: 'Spindelorientering', titleEn: 'Spindle Orientation', desc: 'Låser spindel i fast vinkelposisjon', descEn: 'Locks spindle at a specific angular position' },
+            { code: 'M30', cat: 'mcode', title: 'Programslutt med retur', titleEn: 'End of Program & Rewind', desc: 'Avslutter og spoler tilbake til start', descEn: 'Ends program and rewinds to start' },
+            { code: 'M88 / M51', cat: 'mcode', title: 'Høytrykkskjøling gjennom spindel', titleEn: 'Through-Spindle Coolant (TSC)', desc: 'TSC (Through Spindle Coolant) på mange maskiner', descEn: 'High-pressure coolant through tool/spindle' }
         ];
 
         function filtrerGKoder() {
@@ -3955,21 +4983,28 @@
             if (!listEl) return;
             const filtrert = gCodeDatabase.filter(item => {
                 const matchCat = cat === 'all' || item.cat === cat;
-                const matchQ = !q || item.code.toLowerCase().includes(q) || item.title.toLowerCase().includes(q) || item.desc.toLowerCase().includes(q);
+                const matchQ = !q || item.code.toLowerCase().includes(q) || item.title.toLowerCase().includes(q) || item.desc.toLowerCase().includes(q) || (item.titleEn && item.titleEn.toLowerCase().includes(q)) || (item.descEn && item.descEn.toLowerCase().includes(q));
                 return matchCat && matchQ;
             });
-            listEl.innerHTML = filtrert.map(item => `
-                <div onclick="kopierTekst('${item.code}', 'G-kode')" class="p-3 rounded-2xl bg-slate-50 hover:bg-amber-500/10 dark:bg-slate-800/60 dark:hover:bg-amber-500/15 border border-slate-200/80 dark:border-slate-700/60 cursor-pointer transition-all flex items-start justify-between gap-3">
-                    <div>
+            listEl.innerHTML = filtrert.map(item => {
+                const visTittel = currentLang === 'en' ? (item.titleEn || item.title) : item.title;
+                const visBesk = currentLang === 'en' ? (item.descEn || item.desc) : item.desc;
+                const safeNote = `${item.code} – ${visTittel}: ${visBesk}`.replace(/'/g, "\\'");
+                return `
+                <div onclick="kopierTekst('${item.code}', 'G-code')" class="p-3 rounded-2xl bg-slate-50 hover:bg-amber-500/10 dark:bg-slate-800/60 dark:hover:bg-amber-500/15 border border-slate-200/80 dark:border-slate-700/60 cursor-pointer transition-all flex items-start justify-between gap-3">
+                    <div class="min-w-0">
                         <div class="flex items-center gap-2">
                             <span class="font-mono font-extrabold text-sm text-amber-600 dark:text-amber-400">${item.code}</span>
-                            <span class="font-bold text-xs text-slate-900 dark:text-white">${item.title}</span>
+                            <span class="font-bold text-xs text-slate-900 dark:text-white truncate">${visTittel}</span>
                         </div>
-                        <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">${item.desc}</p>
+                        <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">${visBesk}</p>
                     </div>
-                    <span class="text-[10px] font-mono text-slate-400 shrink-0">📋</span>
+                    <div class="flex items-center gap-1.5 shrink-0">
+                        <button type="button" onclick="event.stopPropagation(); leggTilTekstINotatEllerSjekkliste('${safeNote}')" class="px-2 py-1 rounded-lg bg-brand-500/15 hover:bg-brand-500 text-brand-600 dark:text-brand-400 hover:text-slate-950 font-mono font-bold text-[10px] transition-all" title="${currentLang === 'en' ? 'Add to Notes' : 'Legg til i Notat'}">+ 📝</button>
+                        <span class="text-[10px] font-mono text-slate-400">📋</span>
+                    </div>
                 </div>
-            `).join('');
+            `}).join('');
         }
 
         function beregnIso2768() {
@@ -4307,23 +5342,24 @@
             if (badgeEl) {
                 if (isLegal) {
                     badgeEl.className = "text-xs font-mono font-extrabold px-2.5 py-1 rounded-xl bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30";
-                    badgeEl.innerText = "✅ LOVLIG (±5%)";
+                    badgeEl.innerText = currentLang === 'en' ? "✅ LEGAL (±5%)" : "✅ LOVLIG (±5%)";
                 } else {
                     badgeEl.className = "text-xs font-mono font-extrabold px-2.5 py-1 rounded-xl bg-rose-500/15 text-rose-600 dark:text-rose-400 border border-rose-500/30";
-                    badgeEl.innerText = "❌ ULOVLIG (>5%)";
+                    badgeEl.innerText = currentLang === 'en' ? "❌ ILLEGAL (>5%)" : "❌ ULOVLIG (>5%)";
                 }
             }
 
             const sign = diffPct >= 0 ? "+" : "";
             if (diffEl) diffEl.innerText = `${sign}${diffPct.toFixed(2)} % (${sign}${diffCircMm} mm)`;
-            if (diaEl) diaEl.innerText = `Ø${Math.round(d1)} → Ø${Math.round(d2)} mm (${rideHeightDiff >= 0 ? '+' : ''}${rideHeightDiff.toFixed(1)} mm høyde)`;
-            if (spdEl) spdEl.innerText = `Reell fart: ${realSpeedAt80.toFixed(1)} km/t`;
+            if (diaEl) diaEl.innerText = `Ø${Math.round(d1)} → Ø${Math.round(d2)} mm (${rideHeightDiff >= 0 ? '+' : ''}${rideHeightDiff.toFixed(1)} mm ${currentLang === 'en' ? 'height' : 'høyde'})`;
+            if (spdEl) spdEl.innerText = `${currentLang === 'en' ? 'Actual speed' : 'Reell fart'}: ${realSpeedAt80.toFixed(1)} km/h`;
         }
 
         // --- OPPSTART ---
         window.addEventListener('DOMContentLoaded', () => {
             hentWidgetKonfig();
             lastInnAltState();
+            lastInnNotaterOgSjekkliste();
             brukWidgetOppsett();
             beregnSirkulaerMating();
             beregnGjengerInnvendig();
@@ -4358,6 +5394,7 @@
             beregnStromTariff();
             beregnDekkDimensjon();
             aktiverHurtigKopiering();
+            if (currentLang === 'en') brukSprak();
             initIcons();
         });
     </script>
