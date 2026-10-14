@@ -195,12 +195,16 @@
                 <button onclick="lukkPwaModal()" class="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-800 dark:hover:text-white">✕</button>
             </div>
 
-            <!-- Alltid synlig direkteteknapp for PC / Mac -->
-            <div class="mb-4">
+            <!-- Alltid synlig direkteteknapp for PC / Mac og Android APK -->
+            <div class="mb-4 space-y-2.5">
                 <button onclick="utlosPwaInstallasjon()" class="w-full flex items-center justify-center gap-2.5 py-3.5 px-4 rounded-2xl font-extrabold text-sm bg-brand-500 hover:bg-brand-400 text-slate-950 transition-all shadow-lg shadow-brand-500/25">
                     <i data-lucide="download" class="w-5 h-5 stroke-[2.5]"></i>
                     <span>Installer på PC / Mac nå</span>
                 </button>
+                <a href="https://drive.google.com/file/d/1cvCJVxEvbslHMSH2I_e9WBfOrm30-_CA/view?usp=drive_link" target="_blank" rel="noopener noreferrer" class="w-full flex items-center justify-center gap-2.5 py-3.5 px-4 rounded-2xl font-extrabold text-sm bg-emerald-500 hover:bg-emerald-400 text-slate-950 transition-all shadow-lg shadow-emerald-500/25">
+                    <i data-lucide="smartphone" class="w-5 h-5 stroke-[2.5]"></i>
+                    <span>Last ned Android App (.APK)</span>
+                </a>
             </div>
 
             <div class="space-y-3 text-xs sm:text-sm text-slate-600 dark:text-slate-300 mb-6">
