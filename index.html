@@ -96,17 +96,45 @@
         
         /* Custom Checkbox */
         .custom-checkbox {
-            appearance: none; background-color: transparent; margin: 0; font: inherit; color: currentColor;
-            width: 1.25em; height: 1.25em; border: 2px solid currentColor; border-radius: 0.25em;
-            transform: translateY(-0.075em); display: grid; place-content: center; cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+            background-color: rgba(255, 255, 255, 0.9);
+            margin: 0;
+            width: 1.35em;
+            height: 1.35em;
+            border: 2px solid #94a3b8;
+            border-radius: 0.35em;
+            transform: translateY(-0.075em);
+            display: grid;
+            place-content: center;
+            cursor: pointer;
+            transition: all 150ms ease-in-out;
+        }
+        .dark .custom-checkbox {
+            background-color: rgba(15, 23, 42, 0.85);
+            border-color: #64748b;
+        }
+        .custom-checkbox:hover {
+            border-color: #f59e0b;
         }
         .custom-checkbox::before {
-            content: ""; width: 0.65em; height: 0.65em; transform: scale(0); transition: 120ms transform ease-in-out;
-            box-shadow: inset 1em 1em white; transform-origin: bottom left;
+            content: "";
+            width: 0.7em;
+            height: 0.7em;
+            transform: scale(0);
+            transition: 120ms transform ease-in-out;
+            background-color: #0f172a;
+            transform-origin: center;
             clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
         }
-        .custom-checkbox:checked { background-color: currentColor; }
-        .custom-checkbox:checked::before { transform: scale(1); }
+        .custom-checkbox:checked {
+            background-color: #f59e0b !important;
+            border-color: #f59e0b !important;
+            box-shadow: 0 0 10px rgba(245, 158, 11, 0.35);
+        }
+        .custom-checkbox:checked::before {
+            transform: scale(1);
+        }
 
         .line-row { @apply flex items-baseline justify-between gap-3 py-1.5; }
         .line-row.strong { @apply font-bold; }
@@ -1520,14 +1548,16 @@
             if (modal) {
                 modal.classList.remove('hidden');
                 modal.classList.add('flex');
+                dyttHistorikkState();
             }
         }
 
-        function lukkPwaModal() {
+        function lukkPwaModal(fraPopstate = false) {
             const modal = document.getElementById('pwa-modal');
-            if (modal) {
+            if (modal && !modal.classList.contains('hidden')) {
                 modal.classList.add('hidden');
                 modal.classList.remove('flex');
+                if (!fraPopstate) dyttHistorikkState();
             }
         }
 
@@ -1608,8 +1638,95 @@
             if (map[e.key]) switchTab(map[e.key]);
         });
 
+        // --- HISTORIKK & TILBAKEKNAPP-NAVIGASJON (HISTORY API) ---
+        let ignorerHistorikkPush = false;
+
+        function hentNaavaerendeNavState() {
+            const activeTab = localStorage.getItem('active_tab') || 'dashboard';
+            const activeTools = localStorage.getItem('active_tools_tab') || 'data';
+            const activeSalary = localStorage.getItem('active_salary_tab') || 'oversikt';
+            const pwaOpen = !document.getElementById('pwa-modal')?.classList.contains('hidden');
+            const widgetOpen = !document.getElementById('widget-modal')?.classList.contains('hidden');
+            const confirmOpen = !document.getElementById('confirm-modal')?.classList.contains('hidden');
+            return { tab: activeTab, toolsTab: activeTools, salaryTab: activeSalary, pwaOpen, widgetOpen, confirmOpen };
+        }
+
+        function byggHashFraState(st) {
+            if (st.tab === 'salary') return `#salary/${st.salaryTab}`;
+            if (st.tab === 'tools') return `#tools/${st.toolsTab}`;
+            return `#${st.tab}`;
+        }
+
+        function dyttHistorikkState(erstatte = false) {
+            if (ignorerHistorikkPush) return;
+            const nyState = hentNaavaerendeNavState();
+            const nyHash = byggHashFraState(nyState);
+            const gammelState = history.state;
+
+            if (!erstatte && gammelState &&
+                gammelState.tab === nyState.tab &&
+                gammelState.toolsTab === nyState.toolsTab &&
+                gammelState.salaryTab === nyState.salaryTab &&
+                gammelState.pwaOpen === nyState.pwaOpen &&
+                gammelState.widgetOpen === nyState.widgetOpen &&
+                gammelState.confirmOpen === nyState.confirmOpen) {
+                return;
+            }
+
+            try {
+                if (erstatte) {
+                    history.replaceState(nyState, '', nyHash);
+                } else {
+                    history.pushState(nyState, '', nyHash);
+                }
+            } catch (e) {}
+        }
+
+        window.addEventListener('popstate', (event) => {
+            ignorerHistorikkPush = true;
+
+            // Hvis en modal var åpen og brukeren trykker Tilbake, lukk modalen først
+            const pwaEl = document.getElementById('pwa-modal');
+            const widEl = document.getElementById('widget-modal');
+            const confEl = document.getElementById('confirm-modal');
+
+            const st = event.state;
+            if (st) {
+                if (!st.pwaOpen && pwaEl && !pwaEl.classList.contains('hidden')) lukkPwaModal(true);
+                if (!st.widgetOpen && widEl && !widEl.classList.contains('hidden')) lukkWidgetModal(true);
+                if (!st.confirmOpen && confEl && !confEl.classList.contains('hidden')) lukkConfirmModal(true);
+
+                if (st.tab) switchTab(st.tab, false);
+                if (st.toolsTab) switchToolsTab(st.toolsTab, false);
+                if (st.salaryTab) switchSalaryTab(st.salaryTab, false);
+            } else {
+                // Fallback: les fra URL-hash dersom state er tom
+                lesStateFraUrlHash();
+            }
+
+            ignorerHistorikkPush = false;
+        });
+
+        function lesStateFraUrlHash() {
+            const hash = (window.location.hash || '').replace(/^#/, '');
+            if (!hash) return false;
+            const [mainTab, subTab] = hash.split('/');
+            const gyldigeMain = ['dashboard', 'salary', 'cnc', 'tools', 'ev'];
+            if (gyldigeMain.includes(mainTab)) {
+                switchTab(mainTab, false);
+                if (mainTab === 'salary' && ['oversikt', 'vakter', 'innstillinger'].includes(subTab)) {
+                    switchSalaryTab(subTab, false);
+                }
+                if (mainTab === 'tools' && ['data', 'threads', 'weight', 'math', 'conv'].includes(subTab)) {
+                    switchToolsTab(subTab, false);
+                }
+                return true;
+            }
+            return false;
+        }
+
         // --- NAVIGATION LOGIC ---
-        function switchTab(tabId) {
+        function switchTab(tabId, pushHist = true) {
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
             const target = document.getElementById(tabId);
             if(target) target.classList.add('active');
@@ -1652,9 +1769,10 @@
                 if(tabId === 'ev') activeMnav.classList.add('text-teal-500');
             }
             localStorage.setItem('active_tab', tabId);
+            if (pushHist) dyttHistorikkState();
         }
 
-        function switchToolsTab(tabId) {
+        function switchToolsTab(tabId, pushHist = true) {
             document.querySelectorAll('.tools-tab-content').forEach(t => t.classList.remove('active'));
             const target = document.getElementById('ttab-' + tabId);
             if(target) target.classList.add('active');
@@ -1669,9 +1787,10 @@
                 activeBtn.classList.add('bg-emerald-500', 'text-white', 'shadow-md', 'shadow-emerald-500/20');
             }
             localStorage.setItem('active_tools_tab', tabId);
+            if (pushHist) dyttHistorikkState();
         }
 
-        function switchSalaryTab(tabId) {
+        function switchSalaryTab(tabId, pushHist = true) {
             document.querySelectorAll('.salary-tab-content').forEach(t => t.classList.remove('active'));
             const target = document.getElementById('stab-' + tabId);
             if(target) target.classList.add('active');
@@ -1686,6 +1805,7 @@
                 activeBtn.classList.add('bg-brand-500', 'text-white', 'shadow-md', 'shadow-brand-500/20');
             }
             localStorage.setItem('active_salary_tab', tabId);
+            if (pushHist) dyttHistorikkState();
         }
 
         // --- SALARY LOGIC ---
@@ -2163,14 +2283,16 @@
             if (modal) {
                 modal.classList.remove('hidden');
                 modal.classList.add('flex');
+                dyttHistorikkState();
             }
         }
 
-        function lukkWidgetModal() {
+        function lukkWidgetModal(fraPopstate = false) {
             const modal = document.getElementById('widget-modal');
-            if (modal) {
+            if (modal && !modal.classList.contains('hidden')) {
                 modal.classList.add('hidden');
                 modal.classList.remove('flex');
+                if (!fraPopstate) dyttHistorikkState();
             }
         }
 
@@ -2340,12 +2462,16 @@
                     if (subEl) subEl.innerText = localStorage.getItem('siste_cnc_sub');
                 }
 
-                const activeTab = localStorage.getItem('active_tab');
-                if (activeTab) switchTab(activeTab);
-                const activeTools = localStorage.getItem('active_tools_tab');
-                if (activeTools) switchToolsTab(activeTools);
-                const activeSalary = localStorage.getItem('active_salary_tab');
-                if (activeSalary) switchSalaryTab(activeSalary);
+                // Sjekk først om URL-hash angir en spesifikk fane, ellers bruk sist lagrede fane
+                if (!lesStateFraUrlHash()) {
+                    const activeTab = localStorage.getItem('active_tab');
+                    if (activeTab) switchTab(activeTab, false);
+                    const activeTools = localStorage.getItem('active_tools_tab');
+                    if (activeTools) switchToolsTab(activeTools, false);
+                    const activeSalary = localStorage.getItem('active_salary_tab');
+                    if (activeSalary) switchSalaryTab(activeSalary, false);
+                }
+                dyttHistorikkState(true);
 
             } catch (e) {}
 
@@ -2392,6 +2518,7 @@
             const yesBtn = document.getElementById('confirm-modal-yes');
             if (!modal || !yesBtn) return;
             modal.classList.remove('hidden'); modal.classList.add('flex');
+            dyttHistorikkState();
             yesBtn.onclick = function() {
                 Object.keys(localStorage).forEach(k => { if (k.startsWith('lonn_') || k === 'verksted_all_inputs') localStorage.removeItem(k); });
                 registrerteVakter = [];
@@ -2401,9 +2528,13 @@
                 visToast("Nullstilt");
             };
         }
-        function lukkConfirmModal() {
+        function lukkConfirmModal(fraPopstate = false) {
             const modal = document.getElementById('confirm-modal');
-            if (modal) { modal.classList.add('hidden'); modal.classList.remove('flex'); }
+            if (modal && !modal.classList.contains('hidden')) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+                if (!fraPopstate) dyttHistorikkState();
+            }
         }
 
         // --- CNC LOGIC ---
@@ -2778,12 +2909,19 @@
             document.getElementById('res-c').innerText = `${((f - 32) * 5/9).toFixed(1)} °C`;
         }
         function syncStrømPris(src) {
-            const val = document.getElementById(src === 'app' ? 'app-price' : 'charge-price').value;
-            document.getElementById('app-price').value = val;
-            document.getElementById('charge-price').value = val;
-            document.getElementById('save-elek-price').value = val;
+            const kildeId = src === 'app' ? 'app-price' : (src === 'save' ? 'save-elek-price' : 'charge-price');
+            const kildeEl = document.getElementById(kildeId);
+            if (!kildeEl) return;
+            const val = kildeEl.value;
+
+            if (src !== 'app' && document.getElementById('app-price')) document.getElementById('app-price').value = val;
+            if (src !== 'charge' && document.getElementById('charge-price')) document.getElementById('charge-price').value = val;
+            if (src !== 'save' && document.getElementById('save-elek-price')) document.getElementById('save-elek-price').value = val;
+
             const dashPower = document.getElementById('dash-kpi-power');
-            if (dashPower) dashPower.innerText = `${parseFloat(val).toFixed(2).replace('.', ',')} kr/kWh`;
+            const numVal = parseFloat(val);
+            if (dashPower && !isNaN(numVal)) dashPower.innerText = `${numVal.toFixed(2).replace('.', ',')} kr/kWh`;
+
             beregnLadetid(); beregnApparat(); beregnBesparelse();
         }
         function byttApparat() {
