@@ -5398,11 +5398,13 @@
             initIcons();
         });
     </script>
-<!-- ================= AUTOMATISK PRODUKSJON-MODUL (3D-PRINT & SVEIS) ================= -->
+<!-- ================= OPTIMALISERT FEILFRI SAMLEMODUL (PRODUKSJON, RCT MM/%, SVG, SKATT & DYNAMISK SØK) ================= -->
 <script>
 (function() {
-    function installerProduksjonModul() {
-        // 1. Oppdater menynavn fra Maskinering til Produksjon (beholder ikoner og design)
+    function initAlleTilleggOgFiks() {
+        // -------------------------------------------------------------------------
+        // 1. OPPDATER PRODUKSJON-MENY & LEGG TIL 3D-PRINT OG SVEISING
+        // -------------------------------------------------------------------------
         const navCnc = document.querySelector('#nav-cnc span');
         if (navCnc) {
             navCnc.innerHTML = `<i data-lucide="factory" class="w-5 h-5 mr-3 text-slate-400"></i> Produksjon`;
@@ -5410,18 +5412,15 @@
         const mnavCnc = document.querySelector('#mnav-cnc span');
         if (mnavCnc) mnavCnc.innerText = 'Produksjon';
 
-        // Oppdater tittel inne på selve fanen
         const cncHeaderTitle = document.querySelector('#cnc header h2');
         const cncHeaderSub = document.querySelector('#cnc header p');
         if (cncHeaderTitle) cncHeaderTitle.innerText = 'Produksjon & Maskinering';
         if (cncHeaderSub) cncHeaderSub.innerText = 'CNC Skjæredata, Dreiing, G-koder, 3D-Print & Sveising';
 
-        // Oppdater modulkort på Oversikt
         document.querySelectorAll('[onclick*="switchTab(\'cnc\')"] h3').forEach(el => {
             if (el.innerText.includes('Maskinering')) el.innerText = 'Produksjon (CNC, 3D & Sveis)';
         });
 
-        // 2. Legg til de 2 nye underfane-knappene i #cnc-subtab-bar
         const subBar = document.getElementById('cnc-subtab-bar');
         if (subBar && !document.getElementById('btn-cnc-print3d')) {
             subBar.insertAdjacentHTML('beforeend', `
@@ -5430,7 +5429,6 @@
             `);
         }
 
-        // 3. Injiser innholdspanelene i eksakt V18.1 HMI PRO-design
         const cncSection = document.getElementById('cnc');
         if (cncSection && !document.getElementById('ctab-print3d')) {
             cncSection.insertAdjacentHTML('beforeend', `
@@ -5529,16 +5527,153 @@
             `);
         }
 
-        // 4. Legg inn i hurtigsøk (Ctrl+K) og engelsk oversettelsesordbok
-        if (typeof verktoySokIndeks !== 'undefined') {
-            verktoySokIndeks.push(
-                { title: '3D-Print Kostnad & Delekalkulator', titleEn: '3D Print Cost & Part Calculator', keys: '3d print pla petg bambu ams filament pris kostnad weight spool', tab: 'cnc', sub: 'print3d', card: 'card-cnc-p3dcost' },
-                { title: 'Dyse- & Filamenttørking (AMS Pro 2)', titleEn: 'Nozzle & Filament Drying (AMS Pro 2)', keys: 'tørking dyse laghøyde pla petg abs asa tpu pa-cf drying nozzle layer', tab: 'cnc', sub: 'print3d', card: 'card-cnc-p3ddry' },
-                { title: 'Sveiseparametere (Rørtråd, MIG/MAG & TIG)', titleEn: 'Welding Parameters (FCAW, MIG/MAG & TIG)', keys: 'sveis mig mag tig rørtråd flux ampere volt gass welding', tab: 'cnc', sub: 'welding', card: 'card-cnc-weld' },
-                { title: 'Plateknekking (Utbredning & V-dyse)', titleEn: 'Sheet Metal Bending (Flat Pattern & V-Die)', keys: 'plate knekking kantpresse utbredning v-dyse k-faktor bending sheet metal', tab: 'cnc', sub: 'welding', card: 'card-cnc-bend' }
-            );
+        // -------------------------------------------------------------------------
+        // 1B. LEGG TIL MM / % VELGER FOR SIDEINNGREP (ae) I TYNN SPON-KOMPENSASJON
+        // -------------------------------------------------------------------------
+        const rctAeInput = document.getElementById('rct-ae');
+        if (rctAeInput && !document.getElementById('rct-ae-mode')) {
+            const aeContainer = rctAeInput.parentElement;
+            const labelEl = aeContainer.querySelector('label');
+            if (labelEl) {
+                const headerRow = document.createElement('div');
+                headerRow.className = 'flex items-center justify-between gap-1 mb-1.5';
+                labelEl.className = 'block text-sm font-semibold text-slate-700 dark:text-slate-300 truncate';
+                labelEl.id = 'rct-ae-label';
+                headerRow.appendChild(labelEl);
+
+                headerRow.insertAdjacentHTML('beforeend', `
+                    <input type="hidden" id="rct-ae-mode" value="mm">
+                    <div class="inline-flex rounded-lg bg-slate-200/80 dark:bg-slate-800 p-0.5 border border-slate-300/60 dark:border-slate-700 shrink-0">
+                        <button type="button" id="btn-rct-mm" onclick="settRctAeModus('mm')" class="px-2 py-0.5 text-[10px] font-mono font-extrabold rounded-md bg-emerald-500 text-white shadow-sm transition-all">mm</button>
+                        <button type="button" id="btn-rct-pct" onclick="settRctAeModus('pct')" class="px-2 py-0.5 text-[10px] font-mono font-extrabold rounded-md text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all">%</button>
+                    </div>
+                `);
+                aeContainer.insertBefore(headerRow, rctAeInput);
+            }
+            const savedMode = localStorage.getItem('rct_ae_mode');
+            if (savedMode === 'pct') {
+                settRctAeModus('pct', false);
+            }
         }
 
+        // -------------------------------------------------------------------------
+        // 2. FLYTT C-AKSE GRADERING INN I GRID-CONTAINEREN PÅ FRESING-FANEN
+        // -------------------------------------------------------------------------
+        const caxisCard = document.getElementById('card-cnc-caxis');
+        const millingGrid = document.querySelector('#ctab-milling > .grid');
+        if (caxisCard && millingGrid) {
+            millingGrid.appendChild(caxisCard);
+        }
+
+        // -------------------------------------------------------------------------
+        // 3. LEGG TIL VISUELL SVG-SKISSE FOR RETTVINKLET TREKANT & BOLTSIRKEL (PCD)
+        // -------------------------------------------------------------------------
+        document.querySelectorAll('#tools h3').forEach(h3 => {
+            if (h3.innerText.includes('Rettvinklet Trekant')) {
+                const card = h3.closest('.pers-input');
+                if (card && !document.getElementById('trekant-illustrasjon-svg')) {
+                    const p = card.querySelector('p');
+                    const illustrasjonHtml = `
+                    <div id="trekant-illustrasjon-svg" class="mb-5 p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/60 flex flex-col items-center justify-center">
+                        <svg viewBox="0 0 240 160" class="w-full max-w-[220px] h-auto drop-sm">
+                            <polygon points="35,130 205,130 35,25" class="fill-emerald-500/10 dark:fill-emerald-500/15 stroke-emerald-500" stroke-width="3" stroke-linejoin="round" />
+                            <rect x="35" y="112" width="18" height="18" fill="none" class="stroke-slate-400 dark:stroke-slate-500" stroke-width="1.5" />
+                            <text x="15" y="80" class="text-[11px] font-mono font-bold fill-slate-700 dark:fill-slate-300" text-anchor="middle">a</text>
+                            <text x="120" y="148" class="text-[11px] font-mono font-bold fill-slate-700 dark:fill-slate-300" text-anchor="middle">b</text>
+                            <text x="128" y="70" class="text-[11px] font-mono font-bold fill-emerald-600 dark:fill-emerald-400" transform="rotate(-32, 120, 75)" text-anchor="middle">c (Hypotenus)</text>
+                            <text x="45" y="123" class="text-[10px] font-mono fill-slate-400">90°</text>
+                        </svg>
+                        <span class="text-[10px] font-mono text-slate-400 mt-2">Visuell skisse (Katet a, Katet b, Hypotenus c)</span>
+                    </div>`;
+                    if (p) p.insertAdjacentHTML('afterend', illustrasjonHtml);
+                }
+            }
+
+            if (h3.innerText.includes('Boltsirkel')) {
+                const card = h3.closest('.pers-input');
+                if (card && !document.getElementById('pcd-illustrasjon-svg')) {
+                    const p = card.querySelector('p');
+                    const pcdSvgHtml = `
+                    <div id="pcd-illustrasjon-svg" class="mb-5 p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/60 flex flex-col items-center justify-center">
+                        <div id="pcd-svg-wrapper" class="w-full max-w-[200px] aspect-square flex items-center justify-center"></div>
+                        <span class="text-[10px] font-mono text-slate-400 mt-2">Dynamisk boltsirkel med nummererte hull</span>
+                    </div>`;
+                    if (p) p.insertAdjacentHTML('afterend', pcdSvgHtml);
+                }
+                if (card && !document.getElementById('pcd-koordinater-boks')) {
+                    const boksHtml = `
+                    <div id="pcd-koordinater-boks" class="mt-5 pt-4 border-t border-slate-200 dark:border-slate-800">
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2.5">📍 Beregnede X- og Y-koordinater (Senter = 0,0)</h4>
+                        <div id="pcd-koordinater-liste" class="max-h-44 overflow-y-auto space-y-1.5 pr-1 font-mono text-xs"></div>
+                    </div>`;
+                    card.insertAdjacentHTML('beforeend', boksHtml);
+                    card.querySelectorAll('input').forEach(inp => inp.addEventListener('input', oppdaterPcdAlt));
+                    oppdaterPcdAlt();
+                }
+            }
+        });
+
+        // -------------------------------------------------------------------------
+        // 4. LEGG TIL FORKLARINGSKORT FOR TABELLTREKK UNDER LØNNSINNSTILLINGER
+        // -------------------------------------------------------------------------
+        const stabInnstillinger = document.getElementById('stab-innstillinger');
+        if (stabInnstillinger && !document.getElementById('forklaring-tabelltrekk-kort')) {
+            const koloner = stabInnstillinger.querySelector('.grid');
+            if (koloner) {
+                const forklaringsBoksHtml = `
+                <div id="forklaring-tabelltrekk-kort" class="pers-input bg-white/80 dark:bg-slate-900/60 backdrop-blur-md border border-slate-200 dark:border-slate-800 rounded-3xl p-6 lg:p-8 shadow-sm border-l-4 border-l-brand-500 lg:col-span-2 mt-6">
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2 flex items-center">
+                        <i data-lucide="info" class="w-6 h-6 mr-3 text-brand-500"></i> Hvordan beregnes tabelltrekket?
+                    </h3>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 mb-5 border-b border-slate-200 dark:border-slate-800 pb-4 font-medium">
+                        Prinsippet bak skattetrekk tabell (7100- og 8000-serien) i kalkulatoren:
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+                        <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-700/60 space-y-2">
+                            <p class="font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                                <span class="w-5 h-5 rounded-full bg-brand-500/20 text-brand-600 dark:text-brand-400 flex items-center justify-center text-xs font-mono">1</span>
+                                Årsgrunnlag & Omregning
+                            </p>
+                            <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                                Månedlig bruttolønn avrundes ned til nærmeste hundre og ganges opp med 12 for å finne <strong>estimert samlet årsinntekt</strong>.
+                            </p>
+                        </div>
+                        <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-700/60 space-y-2">
+                            <p class="font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                                <span class="w-5 h-5 rounded-full bg-brand-500/20 text-brand-600 dark:text-brand-400 flex items-center justify-center text-xs font-mono">2</span>
+                                Fradrag & Skattegrunnlag
+                            </p>
+                            <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                                Standard minstefradrag, personfradrag og det spesifikke tabellfradraget (f.eks. 0 kr for 8000-serien eller 4 000 kr pr. trinn for 7100-serien) trekkes fra for å finne <strong>alminnelig inntekt</strong>.
+                            </p>
+                        </div>
+                        <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-700/60 space-y-2">
+                            <p class="font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                                <span class="w-5 h-5 rounded-full bg-brand-500/20 text-brand-600 dark:text-brand-400 flex items-center justify-center text-xs font-mono">3</span>
+                                Skatter & Avgifter
+                            </p>
+                            <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                                Kalkulatoren summerer opp <strong>trygdeavgift</strong> (7.6%), <strong>fellesskatt</strong> (22% av alminnelig inntekt) og trinnskatt basert på inntektstrinnene.
+                            </p>
+                        </div>
+                        <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-700/60 space-y-2">
+                            <p class="font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                                <span class="w-5 h-5 rounded-full bg-brand-500/20 text-brand-600 dark:text-brand-400 flex items-center justify-center text-xs font-mono">4</span>
+                                Månedlig Fordeling (10,5 mnd)
+                            </p>
+                            <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                                Summen deles på <strong>10,5 måneder</strong> (siden det er skattefri juni og halv skatt i desember i Norge) for å finne det nøyaktige månedlige tabelltrekket.
+                            </p>
+                        </div>
+                    </div>
+                </div>`;
+                koloner.insertAdjacentHTML('afterend', forklaringsBoksHtml);
+            }
+        }
+
+        // -------------------------------------------------------------------------
+        // 5. OPPDATER ORDBOK, IKONER & SAMMENLEGGBARE KORT
+        // -------------------------------------------------------------------------
         if (typeof noToEnDict !== 'undefined') {
             Object.assign(noToEnDict, {
                 "Produksjon": "Production",
@@ -5573,25 +5708,169 @@
                 "Flens A (mm)": "Flange A (mm)",
                 "Flens B (mm)": "Flange B (mm)",
                 "Anbefalt V-dyse (8×t):": "Recommended V-Die (8×t):",
-                "Utbredt Kappelengde:": "Flat Blank Length:"
+                "Utbredt Kappelengde:": "Flat Blank Length:",
+                "Hvordan beregnes tabelltrekket?": "How is the tax table deduction calculated?",
+                "Sideinngrep (ae)": "Radial stepover (ae)",
+                "Sideinngrep (% av D)": "Radial stepover (% of D)"
             });
             if (typeof enToNoDict !== 'undefined') {
                 Object.keys(noToEnDict).forEach(k => { enToNoDict[noToEnDict[k]] = k; });
             }
         }
 
-        // 5. Aktiver "+ Notat"-knapper, Lucide-ikoner og startberegning på de nye kortene
         if (typeof initSammenleggbareKort === 'function') initSammenleggbareKort();
         if (typeof initIcons === 'function') initIcons();
+        beregnChipThinning();
         beregn3DPrint();
         beregnSveising();
         beregnPlateknekk();
+
+        // -------------------------------------------------------------------------
+        // 6. DYNAMISK HURTIGSØK-INDEKS (OPPDATERER SELVE CONST-ARRAYEN DIREKTE)
+        // -------------------------------------------------------------------------
+        const dynamiskIndeks = [
+            { title: 'Lønnskalkulator & Netto oversikt', titleEn: 'Salary Calculator & Net Overview', keys: 'lønn skatt netto brutto feriepenger salary tax net gross holiday pay', tab: 'salary', sub: 'oversikt' },
+            { title: 'Registrer Vakt & Timebank', titleEn: 'Register Shift & Timebank', keys: 'overtid vakt timebank avspasering 50% 100% overtime shift time off', tab: 'salary', sub: 'vakter' },
+            { title: 'Formannstillegg & Skattetabell', titleEn: 'Foreman Bonus & Tax Table', keys: 'formann 20% timelønn tabelltrekk fagforening lo foreman hourly rate union tax', tab: 'salary', sub: 'innstillinger' }
+        ];
+
+        document.querySelectorAll('.pers-input').forEach(card => {
+            const h3 = card.querySelector('h3');
+            if (!h3) return;
+            
+            const tittelSpan = h3.querySelector('span:first-child') || h3;
+            const tittel = tittelSpan.innerText.trim();
+            if (!tittel) return;
+
+            const mainSection = card.closest('section.tab-content');
+            const toolsSub = card.closest('.tools-tab-content');
+            const cncSub = card.closest('.cnc-tab-content');
+            const evSub = card.closest('.ev-tab-content');
+            const salarySub = card.closest('.salary-tab-content');
+
+            let tab = mainSection ? mainSection.id : 'dashboard';
+            let sub = '';
+
+            if (toolsSub) sub = toolsSub.id.replace('ttab-', '');
+            else if (cncSub) sub = cncSub.id.replace('ctab-', '');
+            else if (evSub) sub = evSub.id.replace('etab-', '');
+            else if (salarySub) sub = salarySub.id.replace('stab-', '');
+
+            let cardId = card.id;
+            if (!cardId) {
+                cardId = 'auto_card_' + tittel.toLowerCase().replace(/[^a-z0-9]/g, '_');
+                card.id = cardId;
+            }
+
+            const kortTekst = card.innerText.toLowerCase();
+            const engTittel = (typeof noToEnDict !== 'undefined' && noToEnDict[tittel]) ? noToEnDict[tittel] : tittel;
+
+            dynamiskIndeks.push({
+                title: tittel,
+                titleEn: engTittel,
+                keys: `${tittel.toLowerCase()} ${engTittel.toLowerCase()} ${kortTekst}`,
+                tab: tab,
+                sub: sub,
+                card: cardId
+            });
+        });
+
+        // Viktig: Muter den opprinnelige const-arrayen `verktoySokIndeks` direkte!
+        if (typeof verktoySokIndeks !== 'undefined' && Array.isArray(verktoySokIndeks)) {
+            verktoySokIndeks.length = 0;
+            verktoySokIndeks.push(...dynamiskIndeks);
+        }
+
         if (typeof currentLang !== 'undefined' && currentLang === 'en' && typeof oversettDomTekstNoder === 'function') {
             oversettDomTekstNoder();
         }
     }
 
-    // Globale kalkulatorfunksjoner for 3D-print og Sveising
+    // -------------------------------------------------------------------------
+    // KALKULATORFUNKSJONER FOR RCT (MM / %), 3D-PRINT, SVEISING & PCD
+    // -------------------------------------------------------------------------
+    window.settRctAeModus = function(nyModus, konverterVerdi = true) {
+        const modeInput = document.getElementById('rct-ae-mode');
+        const aeInput = document.getElementById('rct-ae');
+        const dInput = document.getElementById('rct-d');
+        const btnMm = document.getElementById('btn-rct-mm');
+        const btnPct = document.getElementById('btn-rct-pct');
+        const lbl = document.getElementById('rct-ae-label');
+        if (!modeInput || !aeInput || !dInput) return;
+
+        const gammelModus = modeInput.value || 'mm';
+        const d = parseFloat(dInput.value) || 16;
+        const naaVerdi = parseFloat(aeInput.value) || 0;
+
+        if (konverterVerdi && gammelModus !== nyModus && d > 0) {
+            if (nyModus === 'pct') {
+                // Konverter fra mm til %
+                const pct = (naaVerdi / d) * 100;
+                aeInput.value = parseFloat(pct.toFixed(1));
+                aeInput.step = '1';
+            } else {
+                // Konverter fra % til mm
+                const mm = (naaVerdi / 100) * d;
+                aeInput.value = parseFloat(mm.toFixed(2));
+                aeInput.step = '0.1';
+            }
+        }
+
+        modeInput.value = nyModus;
+        localStorage.setItem('rct_ae_mode', nyModus);
+
+        if (btnMm && btnPct) {
+            if (nyModus === 'pct') {
+                btnPct.className = 'px-2 py-0.5 text-[10px] font-mono font-extrabold rounded-md bg-emerald-500 text-white shadow-sm transition-all';
+                btnMm.className = 'px-2 py-0.5 text-[10px] font-mono font-extrabold rounded-md text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all';
+            } else {
+                btnMm.className = 'px-2 py-0.5 text-[10px] font-mono font-extrabold rounded-md bg-emerald-500 text-white shadow-sm transition-all';
+                btnPct.className = 'px-2 py-0.5 text-[10px] font-mono font-extrabold rounded-md text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all';
+            }
+        }
+
+        if (lbl) {
+            const erEng = typeof currentLang !== 'undefined' && currentLang === 'en';
+            lbl.innerText = nyModus === 'pct'
+                ? (erEng ? 'Radial stepover (% of D)' : 'Sideinngrep (% av D)')
+                : (erEng ? 'Radial stepover (ae)' : 'Sideinngrep (ae)');
+        }
+
+        beregnChipThinning();
+        if (typeof lagreAltState === 'function') lagreAltState();
+    };
+
+    window.beregnChipThinning = function() {
+        const d = parseFloat(document.getElementById('rct-d')?.value) || 16;
+        const rawAe = parseFloat(document.getElementById('rct-ae')?.value) || 0;
+        const mode = document.getElementById('rct-ae-mode')?.value || 'mm';
+        const hm = parseFloat(document.getElementById('rct-hm')?.value) || 0.10;
+        const z = parseFloat(document.getElementById('rct-z')?.value) || 5;
+        const rpm = parseFloat(document.getElementById('rct-rpm')?.value) || 4500;
+
+        const aeMm = mode === 'pct' ? (rawAe / 100) * d : rawAe;
+        const pct = d > 0 ? (aeMm / d) * 100 : 0;
+
+        let rctFactor = (aeMm > 0 && aeMm < d / 2)
+            ? 1 / (2 * Math.sqrt((aeMm / d) * (1 - (aeMm / d))))
+            : 1.0;
+
+        const fzComp = hm * rctFactor;
+        const vf = rpm * z * fzComp;
+
+        const pctEl = document.getElementById('rct-res-pct');
+        const fzEl = document.getElementById('rct-res-fz');
+        const vfEl = document.getElementById('rct-res-vf');
+
+        if (pctEl) pctEl.innerText = `${pct.toFixed(1)} % (${aeMm.toFixed(2)} mm)`;
+        if (fzEl) fzEl.innerText = `${fzComp.toFixed(3)} mm/tann`;
+        if (vfEl) vfEl.innerText = `${Math.round(vf)} mm/min`;
+
+        if (typeof oppdaterSisteCncKpi === 'function') {
+            oppdaterSisteCncKpi(`fz ${fzComp.toFixed(3)} | F${Math.round(vf)}`, `Tynn spon: Ø${d} (ae=${aeMm.toFixed(2)}mm / ${pct.toFixed(0)}%)`, 'cnc', 'milling');
+        }
+    };
+
     window.beregn3DPrint = function() {
         const w = parseFloat(document.getElementById('p3d-weight')?.value) || 0;
         const spool = parseFloat(document.getElementById('p3d-spool')?.value) || 0;
@@ -5664,322 +5943,125 @@
         if (fEl) fEl.innerText = `${flat.toFixed(1)} mm`;
     };
 
+    window.oppdaterPcdAlt = function() {
+        const diaEl = document.getElementById('pcd-dia');
+        const numEl = document.getElementById('pcd-num');
+        const listeEl = document.getElementById('pcd-koordinater-liste');
+        const svgWrap = document.getElementById('pcd-svg-wrapper');
+        if (!diaEl || !numEl || !listeEl || !svgWrap) return;
+
+        const pcd = parseFloat(diaEl.value) || 0;
+        const antall = parseInt(numEl.value) || 0;
+        const r = pcd / 2;
+
+        if (antall <= 0 || pcd <= 0) {
+            listeEl.innerHTML = '<p class="text-slate-400 text-center py-2">Angi gyldig diameter og antall hull.</p>';
+            svgWrap.innerHTML = '<span class="text-xs text-slate-400">Ugyldige mål</span>';
+            return;
+        }
+
+        let svgHtml = `<svg viewBox="0 0 200 200" class="w-full h-full drop-sm">
+            <circle cx="100" cy="100" r="82" fill="none" class="stroke-slate-300 dark:stroke-slate-700" stroke-width="1.5" stroke-dasharray="3,3" />
+            <circle cx="100" cy="100" r="58" fill="none" class="stroke-indigo-500" stroke-width="1.5" stroke-dasharray="4,4" />
+            <line x1="90" y1="100" x2="110" y2="100" class="stroke-slate-400" stroke-width="1" />
+            <line x1="100" y1="90" x2="100" y2="110" class="stroke-slate-400" stroke-width="1" />`;
+
+        let htmlListe = '';
+        const sRadiusSvg = 58;
+
+        for (let i = 0; i < antall; i++) {
+            const vinkelDeg = i * (360 / antall);
+            const vinkelRad = vinkelDeg * (Math.PI / 180);
+            const xReal = r * Math.cos(vinkelRad);
+            const yReal = r * Math.sin(vinkelRad);
+
+            const svgX = 100 + sRadiusSvg * Math.cos(vinkelRad);
+            const svgY = 100 + sRadiusSvg * Math.sin(vinkelRad);
+            const tX = svgX + (Math.cos(vinkelRad) * 14);
+            const tY = svgY + (Math.sin(vinkelRad) * 14) + 3;
+
+            svgHtml += `
+            <circle cx="${svgX.toFixed(1)}" cy="${svgY.toFixed(1)}" r="7" class="fill-indigo-600 dark:fill-indigo-500 stroke-white dark:stroke-slate-900" stroke-width="1.5" />
+            <text x="${tX.toFixed(1)}" y="${tY.toFixed(1)}" class="text-[9px] font-mono font-bold fill-slate-800 dark:fill-slate-200" text-anchor="middle">${i + 1}</text>`;
+
+            htmlListe += `
+            <div class="flex items-center justify-between p-2 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-700/60">
+                <span class="font-bold text-indigo-600 dark:text-indigo-400">Hull ${i + 1} (${vinkelDeg.toFixed(1)}°)</span>
+                <span class="text-slate-700 dark:text-slate-200">X = <strong class="text-slate-900 dark:text-white">${xReal.toFixed(3)}</strong></span>
+                <span class="text-slate-700 dark:text-slate-200">Y = <strong class="text-slate-900 dark:text-white">${yReal.toFixed(3)}</strong></span>
+            </div>`;
+        }
+
+        svgHtml += `</svg>`;
+        svgWrap.innerHTML = svgHtml;
+        listeEl.innerHTML = htmlListe;
+    };
+
+    // -------------------------------------------------------------------------
+    // OPPDATER URL-HASH & HURTIGSØK-NAVIGASJON FOR ALLE FANER
+    // -------------------------------------------------------------------------
+    window.lesStateFraUrlHash = function() {
+        const hash = (window.location.hash || '').replace(/^#/, '');
+        if (!hash) return false;
+        const [mainTab, subTab] = hash.split('/');
+        const gyldigeMain = ['dashboard', 'salary', 'cnc', 'tools', 'ev'];
+        if (gyldigeMain.includes(mainTab)) {
+            switchTab(mainTab, false);
+            if (mainTab === 'salary' && ['oversikt', 'vakter', 'innstillinger'].includes(subTab)) {
+                switchSalaryTab(subTab, false);
+            }
+            if (mainTab === 'cnc' && ['milling', 'turning', 'gcodes', 'print3d', 'welding'].includes(subTab)) {
+                switchCncTab(subTab, false);
+            }
+            if (mainTab === 'tools' && ['data', 'threads', 'fits', 'weight', 'math', 'conv'].includes(subTab)) {
+                switchToolsTab(subTab, false);
+            }
+            if (mainTab === 'ev' && ['charging', 'power', 'tires'].includes(subTab)) {
+                switchEvTab(subTab, false);
+            }
+            return true;
+        }
+        return false;
+    };
+
+    window.gaaTilSokResultat = function(idx) {
+        if (typeof verktoySokIndeks === 'undefined' || !verktoySokIndeks[idx]) return;
+        const item = verktoySokIndeks[idx];
+        lukkSokModal();
+
+        if (typeof switchTab === 'function') switchTab(item.tab);
+
+        setTimeout(() => {
+            if (item.tab === 'tools' && typeof switchToolsTab === 'function' && item.sub) switchToolsTab(item.sub);
+            if (item.tab === 'cnc' && typeof switchCncTab === 'function' && item.sub) switchCncTab(item.sub);
+            if (item.tab === 'ev' && typeof switchEvTab === 'function' && item.sub) switchEvTab(item.sub);
+            if (item.tab === 'salary' && typeof switchSalaryTab === 'function' && item.sub) switchSalaryTab(item.sub);
+
+            setTimeout(() => {
+                let cardEl = item.card ? document.getElementById(item.card) : null;
+                if (!cardEl) {
+                    const matchingH3 = Array.from(document.querySelectorAll('h3')).find(h => h.innerText.toLowerCase().includes(item.title.toLowerCase()));
+                    if (matchingH3) cardEl = matchingH3.closest('.pers-input');
+                }
+
+                if (cardEl) {
+                    cardEl.classList.remove('card-collapsed');
+                    const chev = cardEl.querySelector('.collapse-chevron');
+                    if (chev) chev.innerText = '−';
+                    cardEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    cardEl.classList.add('card-search-highlight');
+                    setTimeout(() => cardEl.classList.remove('card-search-highlight'), 2400);
+                }
+            }, 80);
+        }, 60);
+    };
+
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', installerProduksjonModul);
+        document.addEventListener('DOMContentLoaded', initAlleTilleggOgFiks);
     } else {
-        installerProduksjonModul();
+        initAlleTilleggOgFiks();
     }
 })();
-</script>
-<script>
-window.addEventListener('DOMContentLoaded', () => {
-    // Finn kortet for Rettvinklet Trekant ved hjelp av overskriften
-    const h3s = document.querySelectorAll('#tools h3');
-    h3s.forEach(h3 => {
-        if (h3.innerText.includes('Rettvinklet Trekant')) {
-            const card = h3.closest('.pers-input');
-            if (card && !document.getElementById('trekant-illustrasjon-svg')) {
-                const p = card.querySelector('p');
-                const illustrasjonHtml = `
-                <div id="trekant-illustrasjon-svg" class="mb-5 p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/60 flex flex-col items-center justify-center">
-                    <svg viewBox="0 0 240 160" class="w-full max-w-[220px] h-auto drop-sm">
-                        <polygon points="35,130 205,130 35,25" class="fill-emerald-500/10 dark:fill-emerald-500/15 stroke-emerald-500" stroke-width="3" stroke-linejoin="round" />
-                        <rect x="35" y="112" width="18" height="18" fill="none" class="stroke-slate-400 dark:stroke-slate-500" stroke-width="1.5" />
-                        <text x="15" y="80" class="text-[11px] font-mono font-bold fill-slate-700 dark:fill-slate-300" text-anchor="middle">a</text>
-                        <text x="120" y="148" class="text-[11px] font-mono font-bold fill-slate-700 dark:fill-slate-300" text-anchor="middle">b</text>
-                        <text x="128" y="70" class="text-[11px] font-mono font-bold fill-emerald-600 dark:fill-emerald-400" transform="rotate(-32, 120, 75)" text-anchor="middle">c (Hypotenus)</text>
-                        <text x="45" y="123" class="text-[10px] font-mono fill-slate-400">90°</text>
-                    </svg>
-                    <span class="text-[10px] font-mono text-slate-400 mt-2">Visuell skisse (Katet a, Katet b, Hypotenus c)</span>
-                </div>`;
-                if (p) {
-                    p.insertAdjacentHTML('afterend', illustrasjonHtml);
-                }
-            }
-        }
-    });
-});
-</script>
-<script>
-window.addEventListener('DOMContentLoaded', () => {
-    // 1. Bytt ut den statiske sirkelen med en dynamisk SVG-container i Boltsirkel-kortet
-    const h3s = document.querySelectorAll('#tools h3');
-    h3s.forEach(h3 => {
-        if (h3.innerText.includes('Boltsirkel')) {
-            const card = h3.closest('.pers-input');
-            if (card && !document.getElementById('pcd-illustrasjon-svg')) {
-                const p = card.querySelector('p');
-                const pcdSvgHtml = `
-                <div id="pcd-illustrasjon-svg" class="mb-5 p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/60 flex flex-col items-center justify-center">
-                    <div id="pcd-svg-wrapper" class="w-full max-w-[200px] aspect-square flex items-center justify-center"></div>
-                    <span class="text-[10px] font-mono text-slate-400 mt-2">Dynamisk boltsirkel med nummererte hull</span>
-                </div>`;
-                if (p) p.insertAdjacentHTML('afterend', pcdSvgHtml);
-            }
-        }
-    });
-
-    // 2. Legg til tabell for X/Y koordinater
-    h3s.forEach(h3 => {
-        if (h3.innerText.includes('Boltsirkel')) {
-            const card = h3.closest('.pers-input');
-            if (card && !document.getElementById('pcd-koordinater-boks')) {
-                const boksHtml = `
-                <div id="pcd-koordinater-boks" class="mt-5 pt-4 border-t border-slate-200 dark:border-slate-800">
-                    <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2.5">📍 Beregnede X- og Y-koordinater (Senter = 0,0)</h4>
-                    <div id="pcd-koordinater-liste" class="max-h-44 overflow-y-auto space-y-1.5 pr-1 font-mono text-xs"></div>
-                </div>`;
-                card.insertAdjacentHTML('beforeend', boksHtml);
-
-                const inputs = card.querySelectorAll('input');
-                inputs.forEach(inp => inp.addEventListener('input', oppdaterPcdAlt));
-                oppdaterPcdAlt();
-            }
-        }
-    });
-});
-
-function oppdaterPcdAlt() {
-    const diaEl = document.getElementById('pcd-dia');
-    const numEl = document.getElementById('pcd-num');
-    const listeEl = document.getElementById('pcd-koordinater-liste');
-    const svgWrap = document.getElementById('pcd-svg-wrapper');
-    if (!diaEl || !numEl || !listeEl || !svgWrap) return;
-
-    const pcd = parseFloat(diaEl.value) || 0;
-    const antall = parseInt(numEl.value) || 0;
-    const r = pcd / 2;
-
-    if (antall <= 0 || pcd <= 0) {
-        listeEl.innerHTML = '<p class="text-slate-400 text-center py-2">Angi gyldig diameter og antall hull.</p>';
-        svgWrap.innerHTML = '<span class="text-xs text-slate-400">Ugyldige mål</span>';
-        return;
-    }
-
-    // --- A: BYGG DYNAMISK SVG MED NUMMERERTE HULL ---
-    let svgHtml = `<svg viewBox="0 0 200 200" class="w-full h-full drop-sm">
-        <!-- Ytre flens / sirkel -->
-        <circle cx="100" cy="100" r="82" fill="none" class="stroke-slate-300 dark:stroke-slate-700" stroke-width="1.5" stroke-dasharray="3,3" />
-        <!-- Boltsirkel (PCD stiplet sirkel) -->
-        <circle cx="100" cy="100" r="58" fill="none" class="stroke-indigo-500" stroke-width="1.5" stroke-dasharray="4,4" />
-        <!-- Senterkryss -->
-        <line x1="90" y1="100" x2="110" y2="100" class="stroke-slate-400" stroke-width="1" />
-        <line x1="100" y1="90" x2="100" y2="110" class="stroke-slate-400" stroke-width="1" />`;
-
-    let htmlListe = '';
-    const sRadiusSvg = 58; // Fast radius i SVG-visningen (100 til 158 / 42)
-
-    for (let i = 0; i < antall; i++) {
-        const vinkelDeg = i * (360 / antall);
-        const vinkelRad = vinkelDeg * (Math.PI / 180);
-        
-        // Reell CNC-koordinat for tabellen
-        const xReal = r * Math.cos(vinkelRad);
-        const yReal = r * Math.sin(vinkelRad);
-
-        // Posisjon i SVG-grafikken (Senter 100,100, radius 58)
-        const svgX = 100 + sRadiusSvg * Math.cos(vinkelRad);
-        const svgY = 100 + sRadiusSvg * Math.sin(vinkelRad);
-
-        // Justering av tekstplassering for hull-nummeret basert på posisjon slik at det ikke overlapper
-        let tX = svgX + (Math.cos(vinkelRad) * 14);
-        let tY = svgY + (Math.sin(vinkelRad) * 14) + 3;
-
-        svgHtml += `
-        <!-- Hull ${i+1} -->
-        <circle cx="${svgX.toFixed(1)}" cy="${svgY.toFixed(1)}" r="7" class="fill-indigo-600 dark:fill-indigo-500 stroke-white dark:stroke-slate-900" stroke-width="1.5" />
-        <text x="${tX.toFixed(1)}" y="${tY.toFixed(1)}" class="text-[9px] font-mono font-bold fill-slate-800 dark:fill-slate-200" text-anchor="middle">${i + 1}</text>`;
-
-        htmlListe += `
-        <div class="flex items-center justify-between p-2 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-700/60">
-            <span class="font-bold text-indigo-600 dark:text-indigo-400">Hull ${i + 1} (${vinkelDeg.toFixed(1)}°)</span>
-            <span class="text-slate-700 dark:text-slate-200">X = <strong class="text-slate-900 dark:text-white">${xReal.toFixed(3)}</strong></span>
-            <span class="text-slate-700 dark:text-slate-200">Y = <strong class="text-slate-900 dark:text-white">${yReal.toFixed(3)}</strong></span>
-        </div>`;
-    }
-
-    svgHtml += `</svg>`;
-    svgWrap.innerHTML = svgHtml;
-    listeEl.innerHTML = htmlListe;
-}
-</script>
-<script>
-window.addEventListener('DOMContentLoaded', () => {
-    // Flytt C-Akse Gradering fra Dreiing over til Fresing-fanen
-    const caxisCard = document.getElementById('card-cnc-caxis');
-    const millingTab = document.getElementById('ctab-milling');
-    if (caxisCard && millingTab) {
-        // Legg den nederst inne i fresing-fanen
-        millingTab.appendChild(caxisCard);
-    }
-});
-</script>
-<script>
-window.addEventListener('DOMContentLoaded', () => {
-    // Finn innstillingsfanen under lønn for å legge til forklaringsboksen
-    const stabInnstillinger = document.getElementById('stab-innstillinger');
-    if (stabInnstillinger && !document.getElementById('forklaring-tabelltrekk-kort')) {
-        const koloner = stabInnstillinger.querySelector('.grid');
-        if (koloner) {
-            const forklaringsBoksHtml = `
-            <div id="forklaring-tabelltrekk-kort" class="pers-input bg-white/80 dark:bg-slate-900/60 backdrop-blur-md border border-slate-200 dark:border-slate-800 rounded-3xl p-6 lg:p-8 shadow-sm border-l-4 border-l-brand-500 lg:col-span-2 mt-6">
-                <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2 flex items-center">
-                    <i data-lucide="info" class="w-6 h-6 mr-3 text-brand-500"></i> Hvordan beregnes tabelltrekket?
-                </h3>
-                <p class="text-sm text-slate-500 dark:text-slate-400 mb-5 border-b border-slate-200 dark:border-slate-800 pb-4 font-medium">
-                    Prinsippet bak skattetrekk tabell (7100- og 8000-serien) i kalkulatoren:
-                </p>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
-                    <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-700/60 space-y-2">
-                        <p class="font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                            <span class="w-5 h-5 rounded-full bg-brand-500/20 text-brand-600 dark:text-brand-400 flex items-center justify-center text-xs font-mono">1</span>
-                            Årsgrunnlag & Omregning
-                        </p>
-                        <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
-                            Månedlig bruttolønn avrundes ned til nærmeste hundre og ganges opp med 12 for å finne <strong>estimert samlet årsinntekt</strong>.
-                        </p>
-                    </div>
-                    <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-700/60 space-y-2">
-                        <p class="font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                            <span class="w-5 h-5 rounded-full bg-brand-500/20 text-brand-600 dark:text-brand-400 flex items-center justify-center text-xs font-mono">2</span>
-                            Fradrag & Skattegrunnlag
-                        </p>
-                        <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
-                            Standard minstefradrag, personfradrag og det spesifikke tabellfradraget (f.eks. 0 kr for 8000-serien eller 4 000 kr pr. trinn for 7100-serien) trekkes fra for å finne <strong>alminnelig inntekt</strong>.
-                        </p>
-                    </div>
-                    <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-700/60 space-y-2">
-                        <p class="font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                            <span class="w-5 h-5 rounded-full bg-brand-500/20 text-brand-600 dark:text-brand-400 flex items-center justify-center text-xs font-mono">3</span>
-                            Skatter & Avgifter
-                        </p>
-                        <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
-                            Kalkulatoren summerer opp <strong>trygdeavgift</strong> (7.6%), <strong>fellesskatt</strong> (22% av alminnelig inntekt) og trinnskatt basert på inntektstrinnene.
-                        </p>
-                    </div>
-                    <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-700/60 space-y-2">
-                        <p class="font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                            <span class="w-5 h-5 rounded-full bg-brand-500/20 text-brand-600 dark:text-brand-400 flex items-center justify-center text-xs font-mono">4</span>
-                            Månedlig Fordeling (10,5 mnd)
-                        </p>
-                        <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
-                            Summen deles på <strong>10,5 måneder</strong> (siden det er skattefri juni og halv skatt i desember i Norge) for å finne det nøyaktige månedlige tabelltrekket.
-                        </p>
-                    </div>
-                </div>
-            </div>`;
-            koloner.insertAdjacentHTML('afterend', forklaringsBoksHtml);
-            if (typeof initIcons === 'function') initIcons();
-        }
-    }
-});
-</script>
-<script>
-window.addEventListener('DOMContentLoaded', () => {
-    const dynamiskIndeks = [];
-    
-    // 1. Skann alle standard kalkulatorkort på siden automatisk
-    document.querySelectorAll('.pers-input').forEach(card => {
-        const h3 = card.querySelector('h3');
-        if (!h3) return;
-        
-        const tittelSpan = h3.querySelector('span:first-child') || h3;
-        const tittel = tittelSpan.innerText.trim();
-        if (!tittel) return;
-
-        const mainSection = card.closest('section.tab-content');
-        const toolsSub = card.closest('.tools-tab-content');
-        const cncSub = card.closest('.cnc-tab-content');
-        const evSub = card.closest('.ev-tab-content');
-        const salarySub = card.closest('.salary-tab-content');
-
-        let tab = mainSection ? mainSection.id : 'dashboard';
-        let sub = '';
-
-        if (toolsSub) sub = toolsSub.id.replace('ttab-', '');
-        else if (cncSub) sub = cncSub.id.replace('ctab-', '');
-        else if (evSub) sub = evSub.id.replace('etab-', '');
-        else if (salarySub) sub = salarySub.id.replace('stab-', '');
-
-        let cardId = card.id;
-        if (!cardId) {
-            cardId = 'auto_card_' + tittel.toLowerCase().replace(/[^a-z0-9]/g, '_');
-            card.id = cardId;
-        }
-
-        const kortTekst = card.innerText.toLowerCase();
-        
-        dynamiskIndeks.push({
-            title: tittel,
-            keys: `${tittel.toLowerCase()} ${kortTekst}`,
-            tab: tab,
-            sub: sub,
-            card: cardId
-        });
-    });
-
-    // 2. Legg til spesifikke nøkkelkort manuelt for å sikre 100% treffsikkerhet
-    const ekstraElementer = [
-        { id: 'card-cnc-caxis', title: 'C-Akse Gradering', keys: 'c-akse grader omkrets dreiing c-axis degrees circumference rotary', tab: 'cnc', sub: 'milling' },
-        { id: 'pcd-koordinater-boks', title: 'Boltsirkel (PCD) & X/Y Koordinater', keys: 'pcd boltsirkel kordelengde x y koordinater hull', tab: 'tools', sub: 'math' }
-    ];
-
-    ekstraElementer.forEach(item => {
-        const el = document.getElementById(item.id);
-        if (el && !dynamiskIndeks.some(d => d.card === item.id || d.title === item.title)) {
-            const card = el.closest('.pers-input') || el;
-            if (!card.id) card.id = item.id;
-            
-            dynamiskIndeks.push({
-                title: item.title,
-                keys: `${item.keys} ${card.innerText.toLowerCase()}`,
-                tab: item.tab,
-                sub: item.sub,
-                card: card.id
-            });
-        }
-    });
-
-    // Oppdater den globale søkeindeksen
-    if (typeof verktoySokIndeks !== 'undefined') {
-        window.verktoySokIndeks = dynamiskIndeks;
-    }
-});
-
-// Robust navigasjonsfunksjon for søkeresultater
-window.gaaTilSokResultat = function(idx) {
-    if (typeof verktoySokIndeks === 'undefined' || !verktoySokIndeks[idx]) return;
-    const item = verktoySokIndeks[idx];
-    lukkSokModal();
-
-    // 1. Aktiver hovedfane
-    if (typeof switchTab === 'function') switchTab(item.tab);
-
-    // 2. Aktiver riktig underfane etter en liten tidsluke
-    setTimeout(() => {
-        if (item.tab === 'tools' && typeof switchToolsTab === 'function' && item.sub) switchToolsTab(item.sub);
-        if (item.tab === 'cnc' && typeof switchCncTab === 'function' && item.sub) switchCncTab(item.sub);
-        if (item.tab === 'ev' && typeof switchEvTab === 'function' && item.sub) switchEvTab(item.sub);
-        if (item.tab === 'salary' && typeof switchSalaryTab === 'function' && item.sub) switchSalaryTab(item.sub);
-
-        // 3. Finn elementet og rull til det med lyseffekt
-        setTimeout(() => {
-            let cardEl = document.getElementById(item.card);
-            if (!cardEl) {
-                // Fallback: søk etter tittel i h3 dersom ID feiler
-                const matchingH3 = Array.from(document.querySelectorAll('h3')).find(h => h.innerText.toLowerCase().includes(item.title.toLowerCase()));
-                if (matchingH3) cardEl = matchingH3.closest('.pers-input');
-            }
-
-            if (cardEl) {
-                cardEl.classList.remove('card-collapsed');
-                cardEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                cardEl.classList.add('card-search-highlight');
-                setTimeout(() => cardEl.classList.remove('card-search-highlight'), 2400);
-            }
-        }, 80);
-    }, 60);
-};
 </script>
 </body>
 </html>
