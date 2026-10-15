@@ -12,12 +12,88 @@
   .scrollbar-thin { scrollbar-width: thin; }
   .animation-delay-2000 { animation-delay: 2s; }
   .animation-delay-4000 { animation-delay: 4s; }
+
+  /* Teknisk bakgrunnsrutenett */
+  .bg-tech-grid {
+    background-size: 32px 32px;
+    background-image: 
+      linear-gradient(to right, rgba(148, 163, 184, 0.07) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(148, 163, 184, 0.07) 1px, transparent 1px);
+  }
 }
 
 @layer components {
+  /* Fanestyring */
   .tab-content, .tools-tab-content, .salary-tab-content, .cnc-tab-content, .ev-tab-content { display: none; }
   .tab-content.active, .tools-tab-content.active, .salary-tab-content.active, .cnc-tab-content.active, .ev-tab-content.active { 
       display: block; 
       animation: fadeIn 0.4s ease-out forwards;
   }
+
+  /* Klassisk lang-visning (vis alle underfaner samtidig) */
+  body.classic-subtabs .tools-tab-content,
+  body.classic-subtabs .cnc-tab-content,
+  body.classic-subtabs .ev-tab-content {
+      display: block !important;
+      margin-bottom: 2rem;
+  }
+  body.classic-subtabs #tools-subtab-bar,
+  body.classic-subtabs #cnc-subtab-bar,
+  body.classic-subtabs #ev-subtab-bar,
+  body.classic-subtabs #tools-swipe-hint,
+  body.classic-subtabs #cnc-swipe-hint,
+  body.classic-subtabs #ev-swipe-hint {
+      display: none !important;
+  }
+
+  /* Kompakt HMI-modus */
+  body.compact-hmi .pers-input { padding: 1rem !important; }
+  body.compact-hmi .pers-input > p { display: none !important; }
+
+  /* Sammenleggbare kort */
+  .pers-input.card-collapsed > *:not(h3) { display: none !important; }
+  .pers-input.card-collapsed > h3 { margin-bottom: 0 !important; }
+
+  /* Søkemarkering */
+  .card-search-highlight {
+      @apply ring-4 ring-brand-500 transition-all duration-500;
+  }
+
+  /* Input-felter og nedtrekksmenyer */
+  .glass-input {
+      @apply w-full bg-slate-50/90 dark:bg-slate-800/90 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-sm font-mono font-bold text-slate-900 dark:text-white transition-all focus:outline-none focus:ring-2;
+  }
+  .glass-input-brand { @apply focus:ring-brand-500 focus:border-brand-500; }
+  .glass-input-blue { @apply focus:ring-blue-500 focus:border-blue-500; }
+  .glass-input-emerald { @apply focus:ring-emerald-500 focus:border-emerald-500; }
+  .glass-input-amber { @apply focus:ring-amber-500 focus:border-amber-500; }
+  .glass-input-indigo { @apply focus:ring-indigo-500 focus:border-indigo-500; }
+  .glass-input-teal { @apply focus:ring-teal-500 focus:border-teal-500; }
+  .glass-input-sky { @apply focus:ring-sky-500 focus:border-sky-500; }
+  .glass-input-rose { @apply focus:ring-rose-500 focus:border-rose-500; }
+
+  /* Rader i lønnskalkulator */
+  .line-row {
+      @apply flex items-center justify-between gap-2;
+  }
+  .line-row.strong {
+      @apply font-bold;
+  }
+
+  /* Avkrysningsbokser */
+  .custom-checkbox {
+      @apply w-5 h-5 rounded-lg border-2 border-slate-300 dark:border-slate-600 accent-brand-500 cursor-pointer transition-all shrink-0;
+  }
+
+  /* Klikkbare resultatverdier for kopiering */
+  .copy-val {
+      @apply cursor-pointer hover:opacity-80 active:scale-95 transition-all select-none;
+  }
+}
+
+/* Utskriftsvennlig visning */
+@media print {
+  body { height: auto !important; overflow: visible !important; background: white !important; color: black !important; }
+  aside, #mobile-header, #mobile-bottom-nav, #toast-container, #confirm-modal, #pwa-modal, #notes-drawer-backdrop, #notes-drawer, #widget-modal, #search-modal { display: none !important; }
+  main { overflow: visible !important; padding: 0 !important; }
 }
