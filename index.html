@@ -2719,6 +2719,7 @@
         // --- GLOBAL NOTAT- OG SJEKKLISTESKUFF (KOMBINERT NR. 4 + NR. 2) ---
         let verkstedSjekkliste = [];
         let aktivNotatModus = 'todo'; // 'todo' eller 'text'
+        let notatLagringTimer = null;
 
         function lastInnNotaterOgSjekkliste() {
             try {
@@ -2744,6 +2745,8 @@
         }
 
         function lagreNotatData() {
+            clearTimeout(notatLagringTimer);
+            notatLagringTimer = null;
             try {
                 localStorage.setItem('verksted_todos_v1', JSON.stringify(verkstedSjekkliste));
                 localStorage.setItem('verksted_notes_mode', aktivNotatModus);
@@ -2753,6 +2756,21 @@
                 }
             } catch (e) {}
             oppdaterNotatTellereOgWidget();
+        }
+
+        function planleggLagringNotatData() {
+            clearTimeout(notatLagringTimer);
+            notatLagringTimer = setTimeout(() => {
+                notatLagringTimer = null;
+                const txtArea = document.getElementById('notes-text-area');
+                if (!txtArea) return;
+                try {
+                    const verdi = txtArea.value;
+                    if (localStorage.getItem('verksted_freetext_note') !== verdi) {
+                        localStorage.setItem('verksted_freetext_note', verdi);
+                    }
+                } catch (e) {}
+            }, 300);
         }
 
         function apneNotatSkuff() {
@@ -2898,7 +2916,8 @@
         function oppdaterFritekstNotat(verdi) {
             const countEl = document.getElementById('notes-char-count');
             if (countEl) countEl.innerText = `${verdi.length} tegn`;
-            lagreNotatData();
+            oppdaterNotatTellereOgWidget();
+            planleggLagringNotatData();
         }
 
         function settInnTidsstempelNotat() {
@@ -4089,25 +4108,40 @@
         }
 
         // --- LOCALSTORAGE & AUTO-SAVE (LAGRER ABSOLUTT ALT) ---
+        let altStateLagringTimer = null;
+
         function lagreInnstillinger() {
-            lagreAltState();
+            planleggLagringAltState();
+        }
+
+        function planleggLagringAltState() {
+            clearTimeout(altStateLagringTimer);
+            altStateLagringTimer = setTimeout(lagreAltState, 300);
+        }
+
+        function lagreHvisEndret(nokkel, verdi) {
+            if (localStorage.getItem(nokkel) !== verdi) {
+                localStorage.setItem(nokkel, verdi);
+            }
         }
 
         function lagreAltState() {
+            clearTimeout(altStateLagringTimer);
+            altStateLagringTimer = null;
             try {
-                localStorage.setItem('lonn_year', document.getElementById('year')?.value || '');
-                localStorage.setItem('lonn_month', document.getElementById('month')?.value || '');
-                localStorage.setItem('lonn_inkl_fastlonn', document.getElementById('inkluder-fastlonn')?.checked ? '1' : '0');
-                localStorage.setItem('lonn_inkl_formann', document.getElementById('inkluder-formann')?.checked ? '1' : '0');
-                localStorage.setItem('lonn_timelonn', document.getElementById('timelonn')?.value || '');
-                localStorage.setItem('lonn_timer', document.getElementById('timer-dag')?.value || '');
-                localStorage.setItem('lonn_ferier', document.getElementById('feriedager')?.value || '');
-                localStorage.setItem('lonn_skatt_type', document.getElementById('skatt-type')?.value || '');
-                localStorage.setItem('lonn_tabell', document.getElementById('skatte-tabellnummer')?.value || '');
-                localStorage.setItem('lonn_skatt_overtid', document.getElementById('skatt-overtid')?.value || '');
-                localStorage.setItem('lonn_skatt_pct', document.getElementById('skatt')?.value || '');
-                localStorage.setItem('lonn_union_pct', document.getElementById('fagforening-prosent')?.value || '');
-                localStorage.setItem('lonn_vakter_tabs_v26', JSON.stringify(registrerteVakter));
+                lagreHvisEndret('lonn_year', document.getElementById('year')?.value || '');
+                lagreHvisEndret('lonn_month', document.getElementById('month')?.value || '');
+                lagreHvisEndret('lonn_inkl_fastlonn', document.getElementById('inkluder-fastlonn')?.checked ? '1' : '0');
+                lagreHvisEndret('lonn_inkl_formann', document.getElementById('inkluder-formann')?.checked ? '1' : '0');
+                lagreHvisEndret('lonn_timelonn', document.getElementById('timelonn')?.value || '');
+                lagreHvisEndret('lonn_timer', document.getElementById('timer-dag')?.value || '');
+                lagreHvisEndret('lonn_ferier', document.getElementById('feriedager')?.value || '');
+                lagreHvisEndret('lonn_skatt_type', document.getElementById('skatt-type')?.value || '');
+                lagreHvisEndret('lonn_tabell', document.getElementById('skatte-tabellnummer')?.value || '');
+                lagreHvisEndret('lonn_skatt_overtid', document.getElementById('skatt-overtid')?.value || '');
+                lagreHvisEndret('lonn_skatt_pct', document.getElementById('skatt')?.value || '');
+                lagreHvisEndret('lonn_union_pct', document.getElementById('fagforening-prosent')?.value || '');
+                lagreHvisEndret('lonn_vakter_tabs_v26', JSON.stringify(registrerteVakter));
 
                 const stateObj = {};
                 document.querySelectorAll('input, select, textarea').forEach(el => {
@@ -4115,7 +4149,7 @@
                         stateObj[el.id] = el.type === 'checkbox' ? el.checked : el.value;
                     }
                 });
-                localStorage.setItem('verksted_all_inputs', JSON.stringify(stateObj));
+                lagreHvisEndret('verksted_all_inputs', JSON.stringify(stateObj));
             } catch (e) {}
         }
 
@@ -4183,8 +4217,12 @@
             beregnAlt();
         }
 
-        document.addEventListener('input', lagreAltState);
+        document.addEventListener('input', planleggLagringAltState);
         document.addEventListener('change', lagreAltState);
+        window.addEventListener('pagehide', () => {
+            if (altStateLagringTimer !== null) lagreAltState();
+            if (notatLagringTimer !== null) lagreNotatData();
+        });
 
         function eksporterBackupJson() {
             const data = {};
