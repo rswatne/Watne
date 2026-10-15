@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .scrollbar-hide::-webkit-scrollbar { display: none; }
+  .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+  .scrollbar-thin::-webkit-scrollbar { height: 3px; }
+  .scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
+  .scrollbar-thin::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.4); border-radius: 3px; }
+  .dark .scrollbar-thin::-webkit-scrollbar-thumb { background: rgba(71, 85, 105, 0.4); }
+  .scrollbar-thin { scrollbar-width: thin; }
+  .animation-delay-2000 { animation-delay: 2s; }
+  .animation-delay-4000 { animation-delay: 4s; }
+}
+
+@layer components {
+  .tab-content, .tools-tab-content, .salary-tab-content, .cnc-tab-content, .ev-tab-content { display: none; }
+  .tab-content.active, .tools-tab-content.active, .salary-tab-content.active, .cnc-tab-content.active, .ev-tab-content.active { 
+      display: block; 
+      animation: fadeIn 0.4s ease-out forwards;
+  }
+}
