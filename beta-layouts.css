@@ -1,0 +1,469 @@
+/* Felles: layoutvelger og hurtigknapper i toppfeltet */
+.beta-layouts {
+    display: inline-flex;
+    padding: 0.2rem;
+    gap: 0.15rem;
+    background: rgb(120 130 125 / 14%);
+    border-radius: 0.7rem;
+}
+
+.beta-layouts button {
+    padding: 0.4rem 0.7rem;
+    border-radius: 0.5rem;
+    color: var(--beta-muted);
+    font: 700 0.68rem "JetBrains Mono", monospace;
+    letter-spacing: 0.04em;
+    transition: background 150ms ease, color 150ms ease;
+}
+
+.beta-layouts button:hover {
+    color: var(--beta-ink);
+}
+
+.beta-layouts button.is-active {
+    color: #fff;
+    background: var(--beta-accent);
+}
+
+.beta-tool-btn {
+    display: grid;
+    width: 2.3rem;
+    height: 2.3rem;
+    place-items: center;
+    color: var(--beta-ink);
+    background: rgb(120 130 125 / 14%);
+    border-radius: 0.65rem;
+    transition: background 150ms ease;
+}
+
+.beta-tool-btn:hover {
+    background: rgb(120 130 125 / 28%);
+}
+
+/* Felles sidemeny-farger styres av variabler for alle layouter unntatt Lab */
+body.beta-workspace:not([data-layout="lab"]) > aside:first-of-type {
+    background: var(--s-bg) !important;
+    color: var(--s-ink);
+    border-color: var(--s-line) !important;
+}
+
+body.beta-workspace:not([data-layout="lab"]) > aside:first-of-type h1,
+body.beta-workspace:not([data-layout="lab"]) > aside:first-of-type .text-slate-900,
+body.beta-workspace:not([data-layout="lab"]) > aside:first-of-type .dark\:text-white {
+    color: var(--s-ink) !important;
+}
+
+body.beta-workspace:not([data-layout="lab"]) > aside:first-of-type .text-slate-500,
+body.beta-workspace:not([data-layout="lab"]) > aside:first-of-type .dark\:text-slate-400 {
+    color: var(--s-muted) !important;
+}
+
+body.beta-workspace:not([data-layout="lab"]) > aside:first-of-type .bg-slate-100,
+body.beta-workspace:not([data-layout="lab"]) > aside:first-of-type .dark\:bg-slate-800,
+body.beta-workspace:not([data-layout="lab"]) > aside:first-of-type .dark\:bg-slate-900 {
+    background: var(--s-panel) !important;
+}
+
+body.beta-workspace:not([data-layout="lab"]) > aside:first-of-type .border-slate-200,
+body.beta-workspace:not([data-layout="lab"]) > aside:first-of-type .dark\:border-slate-700,
+body.beta-workspace:not([data-layout="lab"]) > aside:first-of-type .dark\:border-slate-800,
+body.beta-workspace:not([data-layout="lab"]) > aside:first-of-type > button:first-child,
+body.beta-workspace:not([data-layout="lab"]) > aside:first-of-type > div:last-child {
+    border-color: var(--s-line) !important;
+}
+
+body.beta-workspace:not([data-layout="lab"]) > aside:first-of-type > div:last-child {
+    background: var(--s-panel) !important;
+}
+
+body.beta-workspace:not([data-layout="lab"]) > aside:first-of-type a,
+body.beta-workspace:not([data-layout="lab"]) > aside:first-of-type button {
+    color: var(--s-ink);
+}
+
+body.beta-workspace:not([data-layout="lab"]) > aside:first-of-type .nav-btn:hover {
+    color: var(--s-ink) !important;
+    background: var(--s-panel) !important;
+}
+
+body.beta-workspace:not([data-layout="lab"]) > aside:first-of-type .nav-btn.bg-white,
+body.beta-workspace:not([data-layout="lab"]) > aside:first-of-type .nav-btn.bg-white:hover {
+    color: var(--s-active-ink) !important;
+    background: var(--s-active-bg) !important;
+    border-color: var(--s-line) !important;
+    box-shadow: none;
+}
+
+body.beta-workspace:not([data-layout="lab"]) > aside:first-of-type .nav-btn.bg-white svg {
+    color: var(--s-active-ink) !important;
+}
+
+body.beta-workspace:not([data-layout="lab"]) > aside:first-of-type .nav-btn kbd {
+    background: var(--s-panel) !important;
+    color: var(--s-muted) !important;
+}
+
+body.beta-workspace:not([data-layout="lab"]) > aside:first-of-type #pwa-install-btn-desktop {
+    color: #17272c !important;
+}
+
+@media (min-width: 768px) and (max-width: 1199px) {
+    .beta-topbar .beta-eyebrow,
+    .beta-topbar .beta-main-link,
+    .beta-topbar-title span {
+        display: none;
+    }
+
+    .beta-topbar {
+        gap: 0.75rem;
+    }
+}
+
+@media (min-width: 768px) {
+    /* ============ DOCK: flytende ikonrad nederst, full bredde til innhold ============ */
+    html body.beta-workspace[data-layout="dock"] {
+        --s-bg: rgb(23 39 44 / 92%);
+        --s-ink: #f4f2eb;
+        --s-muted: #a4b0b1;
+        --s-panel: #20343a;
+        --s-line: #34494e;
+        --s-active-bg: #d65c3e;
+        --s-active-ink: #fff;
+    }
+
+    body[data-layout="dock"] > aside:first-of-type {
+        display: contents;
+    }
+
+    body[data-layout="dock"] > aside:first-of-type > :not(nav) {
+        display: none !important;
+    }
+
+    body[data-layout="dock"] > aside:first-of-type > nav {
+        position: fixed;
+        left: 50%;
+        bottom: 1.1rem;
+        z-index: 40;
+        display: flex;
+        flex: none;
+        flex-direction: row;
+        gap: 0.35rem;
+        width: auto;
+        padding: 0.55rem;
+        overflow: visible;
+        background: var(--s-bg);
+        border: 1px solid var(--s-line);
+        border-radius: 1.6rem;
+        box-shadow: 0 18px 50px rgb(10 20 24 / 35%);
+        backdrop-filter: blur(18px);
+        transform: translateX(-50%);
+    }
+
+    body[data-layout="dock"] > aside:first-of-type > nav > * {
+        position: relative;
+        display: flex;
+        width: 3.3rem;
+        height: 3.3rem;
+        min-height: 0;
+        padding: 0;
+        justify-content: center;
+        border-radius: 1rem;
+        transition: transform 180ms cubic-bezier(0.3, 1.5, 0.5, 1), background 150ms ease;
+    }
+
+    body[data-layout="dock"] > aside:first-of-type > nav > *:hover {
+        transform: translateY(-0.6rem) scale(1.22);
+    }
+
+    body[data-layout="dock"] > aside:first-of-type > nav > * > span {
+        font-size: 0;
+    }
+
+    body[data-layout="dock"] > aside:first-of-type > nav > * svg {
+        margin: 0;
+    }
+
+    body[data-layout="dock"] > aside:first-of-type > nav kbd {
+        display: none;
+    }
+
+    body[data-layout="dock"] > aside:first-of-type > nav > *::after {
+        content: attr(data-label);
+        position: absolute;
+        bottom: calc(100% + 0.7rem);
+        left: 50%;
+        padding: 0.3rem 0.6rem;
+        color: #fff;
+        background: #0f1b1f;
+        border-radius: 0.45rem;
+        font: 700 0.68rem Inter, sans-serif;
+        white-space: nowrap;
+        pointer-events: none;
+        opacity: 0;
+        transform: translateX(-50%) translateY(4px);
+        transition: opacity 150ms ease, transform 150ms ease;
+    }
+
+    body[data-layout="dock"] > aside:first-of-type > nav > *:hover::after {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+
+    body[data-layout="dock"] > main {
+        padding-bottom: 7rem;
+    }
+
+    body[data-layout="dock"] .tab-content {
+        max-width: 90rem;
+    }
+
+    /* ============ BLUEPRINT: tegningsstil, faner øverst, mørkt rutenett ============ */
+    html body.beta-workspace[data-layout="blueprint"] {
+        --s-bg: #08203d;
+        --s-ink: #e6f2ff;
+        --s-muted: #8fb4de;
+        --s-panel: #123a6b;
+        --s-line: #2f5f95;
+        --s-active-bg: #5ad1ff;
+        --s-active-ink: #06203f;
+        --beta-paper: #0b2a50;
+        --beta-ink: #e6f2ff;
+        --beta-muted: #8fb4de;
+        --beta-accent: #5ad1ff;
+        --beta-line: #2f5f95;
+    }
+
+    body[data-layout="blueprint"] {
+        flex-direction: column;
+        font-family: "JetBrains Mono", monospace;
+    }
+
+    body[data-layout="blueprint"] > aside:first-of-type {
+        width: 100%;
+        height: 3.75rem;
+        flex: 0 0 3.75rem;
+        flex-direction: row;
+        align-items: center;
+        border-right: 0;
+        border-bottom: 1px solid var(--s-line);
+        box-shadow: none;
+    }
+
+    body[data-layout="blueprint"] > aside:first-of-type > div {
+        display: none !important;
+    }
+
+    body[data-layout="blueprint"] > aside:first-of-type > button:first-child {
+        width: auto;
+        height: 100%;
+        padding: 0 1.25rem;
+        border: 0;
+        border-right: 1px dashed var(--s-line);
+    }
+
+    body[data-layout="blueprint"] > aside:first-of-type > button:first-child p {
+        display: none;
+    }
+
+    body[data-layout="blueprint"] > aside:first-of-type > nav {
+        display: flex;
+        flex: 1;
+        flex-direction: row;
+        align-items: center;
+        gap: 0.2rem;
+        padding: 0 1rem;
+        overflow-x: auto;
+        overflow-y: hidden;
+        scrollbar-width: none;
+    }
+
+    body[data-layout="blueprint"] > aside:first-of-type > nav > * {
+        flex: none;
+        width: auto;
+        min-height: 0;
+        padding: 0.5rem 0.6rem;
+        white-space: nowrap;
+        border-radius: 0.2rem;
+        font-size: 0.72rem;
+    }
+
+    body[data-layout="blueprint"] > aside:first-of-type > nav > * svg {
+        margin-right: 0.45rem;
+    }
+
+    body[data-layout="blueprint"] > aside:first-of-type > nav kbd {
+        display: none;
+    }
+
+    body[data-layout="blueprint"] > main {
+        background-color: #0b2a50;
+        background-image:
+            linear-gradient(rgb(90 209 255 / 14%) 1px, transparent 1px),
+            linear-gradient(90deg, rgb(90 209 255 / 14%) 1px, transparent 1px),
+            linear-gradient(rgb(90 209 255 / 6%) 1px, transparent 1px),
+            linear-gradient(90deg, rgb(90 209 255 / 6%) 1px, transparent 1px);
+        background-size: 120px 120px, 120px 120px, 24px 24px, 24px 24px;
+    }
+
+    body[data-layout="blueprint"] .beta-topbar {
+        min-height: 3.5rem;
+        background: rgb(11 42 80 / 92%);
+        border-bottom: 1px dashed var(--beta-line);
+    }
+
+    body[data-layout="blueprint"] .beta-topbar-mark,
+    body[data-layout="blueprint"] .beta-layouts button.is-active {
+        color: #06203f;
+    }
+
+    body[data-layout="blueprint"] .beta-topbar-mark {
+        border-radius: 0.2rem;
+    }
+
+    body[data-layout="blueprint"] .beta-main-link {
+        color: #06203f;
+        background: var(--beta-accent);
+        border-radius: 0.2rem;
+    }
+
+    body[data-layout="blueprint"] .beta-theme-btn {
+        display: none;
+    }
+
+    body[data-layout="blueprint"] .tab-content :is(h1, h2, h3) {
+        font-family: "JetBrains Mono", monospace;
+        letter-spacing: 0.02em;
+    }
+
+    body[data-layout="blueprint"] .tab-content :is([class*="rounded-2xl"], [class*="rounded-3xl"])[class*="border"]:not(button):not(a) {
+        background: rgb(6 27 58 / 74%) !important;
+        border: 1px solid rgb(90 209 255 / 45%) !important;
+        border-radius: 0.2rem !important;
+        box-shadow: inset 0 0 0 3px rgb(90 209 255 / 6%) !important;
+    }
+
+    body[data-layout="blueprint"] .tab-content .glass-input {
+        border-color: #2f5f95;
+        border-radius: 0.2rem;
+    }
+
+    /* ============ BRUTAL: tykke kanter, harde skygger, meny til høyre ============ */
+    html body.beta-workspace[data-layout="brutal"] {
+        --s-bg: #fffaf0;
+        --s-ink: #111;
+        --s-muted: #444;
+        --s-panel: #fff1b8;
+        --s-line: #111;
+        --s-active-bg: #ffd23f;
+        --s-active-ink: #111;
+        --beta-paper: #fff4cc;
+        --beta-ink: #111;
+        --beta-muted: #555;
+        --beta-accent: #ff4d2e;
+        --beta-line: #111;
+    }
+
+    body[data-layout="brutal"] > aside:first-of-type {
+        order: 2;
+        border-right: 0;
+        border-left: 3px solid #111;
+        box-shadow: none;
+    }
+
+    body[data-layout="brutal"] > aside:first-of-type .nav-btn {
+        border: 2px solid #111 !important;
+        border-radius: 0.3rem;
+        box-shadow: 3px 3px 0 #111;
+        transition: transform 120ms ease, box-shadow 120ms ease;
+    }
+
+    body[data-layout="brutal"] > aside:first-of-type .nav-btn:hover {
+        transform: translate(-2px, -2px);
+        box-shadow: 5px 5px 0 #111;
+    }
+
+    body[data-layout="brutal"] > aside:first-of-type .nav-btn.bg-white {
+        transform: translate(3px, 3px);
+        box-shadow: 0 0 0 #111 !important;
+    }
+
+    body[data-layout="brutal"] > aside:first-of-type h1 {
+        font-family: Georgia, serif;
+        font-weight: 900;
+    }
+
+    body[data-layout="brutal"] .beta-topbar {
+        background: #ffd23f;
+        border-bottom: 3px solid #111;
+    }
+
+    body[data-layout="brutal"] .beta-topbar-mark {
+        border: 2px solid #111;
+        border-radius: 0.3rem;
+    }
+
+    body[data-layout="brutal"] .beta-topbar-title {
+        font-family: Georgia, serif;
+        font-size: 1.05rem;
+        font-weight: 900;
+    }
+
+    body[data-layout="brutal"] .beta-topbar-title span {
+        display: none;
+    }
+
+    body[data-layout="brutal"] .beta-topbar :is(.beta-eyebrow, .beta-main-link, .beta-topbar-title) {
+        white-space: nowrap;
+    }
+
+    body[data-layout="brutal"] .beta-main-link {
+        color: #111;
+        background: #fff;
+        border: 2px solid #111;
+        border-radius: 0.3rem;
+        box-shadow: 3px 3px 0 #111;
+    }
+
+    body[data-layout="brutal"] .beta-layouts {
+        background: #fff;
+        border: 2px solid #111;
+        border-radius: 0.3rem;
+    }
+
+    body[data-layout="brutal"] .beta-layouts button {
+        color: #111;
+        border-radius: 0.2rem;
+    }
+
+    body[data-layout="brutal"] .beta-layouts button.is-active {
+        color: #fff;
+        background: #111;
+    }
+
+    body[data-layout="brutal"] .beta-tool-btn {
+        background: #fff;
+        border: 2px solid #111;
+        border-radius: 0.3rem;
+        box-shadow: 2px 2px 0 #111;
+    }
+
+    body[data-layout="brutal"] .beta-theme-btn {
+        display: none;
+    }
+
+    body[data-layout="brutal"] .tab-content :is(h1, h2, h3) {
+        font-family: Georgia, serif;
+        letter-spacing: -0.02em;
+    }
+
+    body[data-layout="brutal"] .tab-content :is([class*="rounded-2xl"], [class*="rounded-3xl"])[class*="border"]:not(button):not(a) {
+        border: 2px solid #111 !important;
+        border-radius: 0.35rem !important;
+        box-shadow: 5px 5px 0 #111 !important;
+    }
+
+    body[data-layout="brutal"] .tab-content .glass-input {
+        border: 2px solid #111;
+        border-radius: 0.3rem;
+    }
+}
