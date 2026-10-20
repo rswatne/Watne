@@ -35,7 +35,7 @@
             if (elDesk) elDesk.innerText = tidStr;
             if (elDeskDate) elDeskDate.innerText = datoStr;
             if (elDeskWeek) elDeskWeek.innerText = `Uke ${ukeNr}`;
-            if (elMob) elMob.innerText = `${tidStr} · Uke ${ukeNr} · ${datoStr}`;
+            if (elMob) elMob.innerText = `${tidStr.slice(0, 5)} · Uke ${ukeNr}`;
         }
         setInterval(oppdaterLiveKlokke, 1000);
         oppdaterLiveKlokke();

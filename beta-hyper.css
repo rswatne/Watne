@@ -379,8 +379,8 @@ body[data-layout="hyper"] .tab-content .glass-input:focus {
 
     body[data-layout="hyper"] #mobile-header #live-clock-mobile {
         color: #d2d2d7 !important;
-        font-size: 0.7rem;
-        letter-spacing: 0.04em;
+        font-size: 0.65rem;
+        letter-spacing: 0;
         white-space: nowrap;
     }
 
