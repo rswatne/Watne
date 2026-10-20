@@ -2085,6 +2085,7 @@
 
             const unionPct = parseFloat(document.getElementById('fagforening-prosent').value) || 1.5;
             const unionKr = Math.max(0, totalBrutto * (unionPct / 100));
+            window.sisteFagforeningMnd = unionKr;
             document.getElementById('vis-fagforening-mnd').innerText = "− " + unionKr.toFixed(2).replace('.', ',') + " kr";
 
             const skattType = document.getElementById('skatt-type').value;
