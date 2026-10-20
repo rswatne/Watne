@@ -3877,7 +3877,8 @@
         window.addEventListener('DOMContentLoaded', () => {
             registrerKalkulatorLivekort();
             hentWidgetKonfig();
-            lastInnAltState(true);
+            const navigation = performance.getEntriesByType('navigation')[0];
+            lastInnAltState(navigation?.type !== 'reload');
             lastInnNotaterOgSjekkliste();
             beregnSirkulaerMating();
             beregnGjengerInnvendig();
