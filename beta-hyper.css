@@ -377,6 +377,13 @@ body[data-layout="hyper"] .tab-content .glass-input:focus {
         color: #fff !important;
     }
 
+    body[data-layout="hyper"] #mobile-header #live-clock-mobile {
+        color: #d2d2d7 !important;
+        font-size: 0.7rem;
+        letter-spacing: 0.04em;
+        white-space: nowrap;
+    }
+
     body[data-layout="hyper"] #mobile-header button:not(#pwa-install-btn-mobile) {
         background: rgb(255 255 255 / 8%) !important;
         border-color: rgb(255 255 255 / 18%) !important;
