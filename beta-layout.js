@@ -50,6 +50,12 @@
         }, { passive: true });
 
         document.addEventListener('verksted:tab-open', event => setHeroTitle(event.detail?.tabId));
+
+        if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+        const toTop = () => { main.scrollTop = 0; window.scrollTo(0, 0); document.body.style.setProperty('--sy', 0); };
+        toTop();
+        window.addEventListener('load', () => { toTop(); setTimeout(toTop, 150); setTimeout(toTop, 600); });
+        window.addEventListener('pageshow', toTop);
     }
 
     const janteOpeners = ['Du skal ikke tro at du er', 'Ikke tro at du er', 'Ingen her tror at du er', 'Det kommer aldri noe godt av å tro at du er'];
@@ -100,7 +106,7 @@
         title.classList.toggle('is-saying', jante);
         const hero = title.closest('.hyper-hero');
         hero.classList.toggle('is-jante', jante);
-        hero.querySelector('.hyper-hero-kicker').textContent = jante ? 'JANTELOVEN / ORDTAKGENERATOR' : 'VERKSTEDSPORTALEN';
+        hero.querySelector('.hyper-hero-kicker').textContent = jante ? '' : 'VERKSTEDSPORTALEN';
         renderTitle(title, jante ? janteSaying() : (tabTitles[id] || id));
     }
 
