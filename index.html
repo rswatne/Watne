@@ -184,6 +184,14 @@
                 <span class="flex items-center"><i data-lucide="zap" class="w-5 h-5 mr-3 text-slate-400"></i> Strøm & Elbil</span>
                 <kbd class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-400">5</kbd>
             </button>
+            <button onclick="switchTab('amounts')" id="nav-amounts" class="nav-btn w-full flex items-center justify-between px-4 py-3 text-sm font-medium rounded-xl text-slate-500 dark:text-slate-400 border border-transparent hover:bg-white/50 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-white transition-all">
+                <span class="flex items-center"><i data-lucide="shapes" class="w-5 h-5 mr-3 text-slate-400"></i> Hvor mye trenger jeg?</span>
+                <kbd class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-400">6</kbd>
+            </button>
+            <button onclick="switchTab('datetime')" id="nav-datetime" class="nav-btn w-full flex items-center justify-between px-4 py-3 text-sm font-medium rounded-xl text-slate-500 dark:text-slate-400 border border-transparent hover:bg-white/50 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-white transition-all">
+                <span class="flex items-center"><i data-lucide="calendar-clock" class="w-5 h-5 mr-3 text-slate-400"></i> Dato & tid</span>
+                <kbd class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-400">7</kbd>
+            </button>
         </nav>
         
         <div class="p-4 border-t border-slate-200/50 dark:border-slate-800/50 bg-slate-50/50 dark:bg-slate-900/30 space-y-2">
@@ -2005,8 +2013,154 @@
             </div>
         </section>
 
+        <section id="amounts" class="tab-content p-4 lg:p-8 max-w-7xl mx-auto">
+            <header class="mb-6 lg:mb-8 flex items-center gap-4">
+                <div class="w-12 h-12 lg:w-16 lg:h-16 bg-violet-100 dark:bg-violet-900/30 rounded-2xl flex items-center justify-center shrink-0 border border-violet-200 dark:border-violet-700/50 shadow-sm">
+                    <i data-lucide="shapes" class="w-6 h-6 lg:w-8 lg:h-8 text-violet-600 dark:text-violet-400"></i>
+                </div>
+                <div class="min-w-0">
+                    <h2 class="text-2xl lg:text-3xl font-extrabold text-slate-900 dark:text-white">Hvor mye trenger jeg?</h2>
+                    <p class="text-xs lg:text-sm text-violet-600 dark:text-violet-400 font-mono mt-1">Mengder til prosjekter, blandinger og oppskrifter</p>
+                </div>
+            </header>
+
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5 mb-5" role="group" aria-label="Velg hva du vil beregne">
+                <button type="button" data-amount-mode="paint" aria-pressed="true" class="amount-mode-btn min-h-14 px-3 py-3 rounded-2xl border border-violet-500 bg-violet-500 text-white shadow-md shadow-violet-500/20 text-sm font-bold transition-all">🎨 Maling</button>
+                <button type="button" data-amount-mode="floor" aria-pressed="false" class="amount-mode-btn min-h-14 px-3 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-900/70 text-slate-600 dark:text-slate-300 text-sm font-bold transition-all">🪵 Gulv / flis</button>
+                <button type="button" data-amount-mode="concrete" aria-pressed="false" class="amount-mode-btn min-h-14 px-3 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-900/70 text-slate-600 dark:text-slate-300 text-sm font-bold transition-all">🧱 Betong</button>
+                <button type="button" data-amount-mode="mix" aria-pressed="false" class="amount-mode-btn min-h-14 px-3 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-900/70 text-slate-600 dark:text-slate-300 text-sm font-bold transition-all">🧪 Blandingsforhold</button>
+                <button type="button" data-amount-mode="recipe" aria-pressed="false" class="amount-mode-btn min-h-14 px-3 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-900/70 text-slate-600 dark:text-slate-300 text-sm font-bold transition-all">🍲 Oppskrift</button>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-5 gap-4 lg:gap-6 items-start">
+                <div class="lg:col-span-3 bg-white/80 dark:bg-slate-900/60 backdrop-blur-md border border-slate-200 dark:border-slate-800 rounded-3xl p-5 sm:p-6 lg:p-8 shadow-sm">
+                    <h3 id="amount-mode-title" class="text-lg font-extrabold text-slate-900 dark:text-white mb-1">🎨 Maling</h3>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 mb-5">Fyll inn målene — resultatet oppdateres automatisk.</p>
+
+                    <div data-amount-fields="paint" class="grid grid-cols-2 gap-3 sm:gap-4">
+                        <div><label for="amount-paint-width" class="block text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400 mb-1.5">Bredde (m)</label><input id="amount-paint-width" type="number" min="0" step="0.1" value="4" class="glass-input glass-input-indigo min-h-12"></div>
+                        <div><label for="amount-paint-height" class="block text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400 mb-1.5">Høyde (m)</label><input id="amount-paint-height" type="number" min="0" step="0.1" value="2.4" class="glass-input glass-input-indigo min-h-12"></div>
+                        <div><label for="amount-paint-coats" class="block text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400 mb-1.5">Antall strøk</label><input id="amount-paint-coats" type="number" min="1" step="1" value="2" class="glass-input glass-input-indigo min-h-12"></div>
+                        <div><label for="amount-paint-coverage" class="block text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400 mb-1.5">Dekkevne (m²/L)</label><input id="amount-paint-coverage" type="number" min="0" step="0.5" value="8" class="glass-input glass-input-indigo min-h-12"></div>
+                        <div><label for="amount-paint-waste" class="block text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400 mb-1.5">Ekstra å beregne (%)</label><input id="amount-paint-waste" type="number" min="0" max="100" step="1" value="10" class="glass-input glass-input-indigo min-h-12"></div>
+                        <div><label for="amount-paint-can" class="block text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400 mb-1.5">Størrelse per spann (L)</label><input id="amount-paint-can" type="number" min="0" step="0.5" value="10" class="glass-input glass-input-indigo min-h-12"></div>
+                    </div>
+
+                    <div data-amount-fields="floor" class="hidden grid grid-cols-2 gap-3 sm:gap-4">
+                        <div class="col-span-2"><label for="amount-floor-type" class="block text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400 mb-1.5">Materialtype</label><select id="amount-floor-type" class="glass-input glass-input-indigo min-h-12"><option value="flooring">Gulv / laminat (pakkeareal)</option><option value="tile">Flis (størrelse og fuge)</option></select></div>
+                        <div><label for="amount-floor-length" class="block text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400 mb-1.5">Lengde (m)</label><input id="amount-floor-length" type="number" min="0" step="0.1" value="5" class="glass-input glass-input-indigo min-h-12"></div>
+                        <div><label for="amount-floor-width" class="block text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400 mb-1.5">Bredde (m)</label><input id="amount-floor-width" type="number" min="0" step="0.1" value="4" class="glass-input glass-input-indigo min-h-12"></div>
+                        <div data-flooring-fields><label for="amount-floor-pack" class="block text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400 mb-1.5">Dekning per pakke (m²)</label><input id="amount-floor-pack" type="number" min="0" step="0.1" value="2.2" class="glass-input glass-input-indigo min-h-12"></div>
+                        <div data-flooring-fields><label for="amount-floor-waste" class="block text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400 mb-1.5">Ekstra for kapp/svinn (%)</label><input id="amount-floor-waste" type="number" min="0" max="100" step="1" value="10" class="glass-input glass-input-indigo min-h-12"></div>
+                        <div data-tile-fields class="hidden"><label for="amount-tile-length" class="block text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400 mb-1.5">Flislengde (mm)</label><input id="amount-tile-length" type="number" min="1" step="1" value="600" class="glass-input glass-input-indigo min-h-12"></div>
+                        <div data-tile-fields class="hidden"><label for="amount-tile-width" class="block text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400 mb-1.5">Flisbredde (mm)</label><input id="amount-tile-width" type="number" min="1" step="1" value="600" class="glass-input glass-input-indigo min-h-12"></div>
+                        <div data-tile-fields class="hidden"><label for="amount-tile-grout" class="block text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400 mb-1.5">Fugebredde (mm)</label><input id="amount-tile-grout" type="number" min="0" step="0.5" value="3" class="glass-input glass-input-indigo min-h-12"></div>
+                        <div data-tile-fields class="hidden"><label for="amount-tile-box" class="block text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400 mb-1.5">Fliser per eske</label><input id="amount-tile-box" type="number" min="1" step="1" value="4" class="glass-input glass-input-indigo min-h-12"></div>
+                        <div data-tile-fields class="hidden col-span-2"><label for="amount-tile-waste" class="block text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400 mb-1.5">Ekstra for kapp/svinn (%)</label><input id="amount-tile-waste" type="number" min="0" max="100" step="1" value="10" class="glass-input glass-input-indigo min-h-12"></div>
+                    </div>
+
+                    <div data-amount-fields="concrete" class="hidden grid grid-cols-2 gap-3 sm:gap-4">
+                        <div><label for="amount-concrete-length" class="block text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400 mb-1.5">Lengde (m)</label><input id="amount-concrete-length" type="number" min="0" step="0.1" value="2" class="glass-input glass-input-indigo min-h-12"></div>
+                        <div><label for="amount-concrete-width" class="block text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400 mb-1.5">Bredde (m)</label><input id="amount-concrete-width" type="number" min="0" step="0.1" value="1" class="glass-input glass-input-indigo min-h-12"></div>
+                        <div><label for="amount-concrete-depth" class="block text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400 mb-1.5">Tykkelse (cm)</label><input id="amount-concrete-depth" type="number" min="0" step="1" value="10" class="glass-input glass-input-indigo min-h-12"></div>
+                        <div><label for="amount-concrete-yield" class="block text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400 mb-1.5">Ferdig masse per sekk (L)</label><input id="amount-concrete-yield" type="number" min="0" step="0.5" value="12" class="glass-input glass-input-indigo min-h-12"></div>
+                        <div><label for="amount-concrete-waste" class="block text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400 mb-1.5">Ekstra å beregne (%)</label><input id="amount-concrete-waste" type="number" min="0" max="100" step="1" value="10" class="glass-input glass-input-indigo min-h-12"></div>
+                    </div>
+
+                    <div data-amount-fields="mix" class="hidden grid grid-cols-2 gap-3 sm:gap-4">
+                        <div class="col-span-2"><label for="amount-mix-total" class="block text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400 mb-1.5">Total mengde ferdig blanding (L)</label><input id="amount-mix-total" type="number" min="0" step="0.1" value="5" class="glass-input glass-input-indigo min-h-12"></div>
+                        <div><label for="amount-mix-part-a" class="block text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400 mb-1.5">Del A i forholdet</label><input id="amount-mix-part-a" type="number" min="0" step="0.1" value="1" class="glass-input glass-input-indigo min-h-12"></div>
+                        <div><label for="amount-mix-part-b" class="block text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400 mb-1.5">Del B i forholdet</label><input id="amount-mix-part-b" type="number" min="0" step="0.1" value="4" class="glass-input glass-input-indigo min-h-12"></div>
+                    </div>
+
+                    <div data-amount-fields="recipe" class="hidden grid grid-cols-2 gap-3 sm:gap-4">
+                        <div><label for="amount-recipe-from" class="block text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400 mb-1.5">Porsjoner i oppskriften</label><input id="amount-recipe-from" type="number" min="0" step="1" value="4" class="glass-input glass-input-indigo min-h-12"></div>
+                        <div><label for="amount-recipe-to" class="block text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400 mb-1.5">Porsjoner du vil lage</label><input id="amount-recipe-to" type="number" min="0" step="1" value="6" class="glass-input glass-input-indigo min-h-12"></div>
+                        <div class="col-span-2"><label for="amount-recipe-ingredients" class="block text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400 mb-1.5">Ingredienser — én per linje, f.eks. «200 g mel»</label><textarea id="amount-recipe-ingredients" rows="5" placeholder="200 g mel&#10;3 dl melk&#10;2 stk egg" class="glass-input glass-input-indigo min-h-32 resize-y"></textarea></div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-2 bg-violet-50/90 dark:bg-violet-950/40 border border-violet-200 dark:border-violet-800/70 rounded-3xl p-5 sm:p-6 lg:p-8 shadow-sm lg:sticky lg:top-6" aria-live="polite">
+                    <p class="text-xs font-bold uppercase tracking-widest text-violet-600 dark:text-violet-300 mb-2">Resultat</p>
+                    <p id="amount-result-main" class="text-3xl sm:text-4xl font-extrabold font-mono text-violet-700 dark:text-violet-200 break-words">11.55 L</p>
+                    <p id="amount-result-summary" class="text-sm font-semibold text-violet-800 dark:text-violet-300 mt-2">Maling som trengs</p>
+                    <div id="amount-result-details" class="border-t border-violet-200 dark:border-violet-800/80 mt-5 pt-4 space-y-2 text-sm text-slate-700 dark:text-slate-300">
+                        <p>Inkludert strøk og ekstra mengde</p>
+                    </div>
+                    <p id="amount-result-error" class="hidden text-sm font-semibold text-rose-600 dark:text-rose-400 mt-4" role="alert"></p>
+                    <p class="text-[11px] leading-relaxed text-slate-500 dark:text-slate-400 mt-5">Beregningen er et estimat. Kontroller dekkevne, blandingsforhold og utbytte på produktets emballasje.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="datetime" class="tab-content p-4 lg:p-8 max-w-7xl mx-auto">
+            <header class="mb-6 lg:mb-8 flex items-center gap-4">
+                <div class="w-12 h-12 lg:w-16 lg:h-16 bg-sky-100 dark:bg-sky-900/30 rounded-2xl flex items-center justify-center shrink-0 border border-sky-200 dark:border-sky-700/50 shadow-sm">
+                    <i data-lucide="calendar-clock" class="w-6 h-6 lg:w-8 lg:h-8 text-sky-600 dark:text-sky-400"></i>
+                </div>
+                <div class="min-w-0">
+                    <h2 class="text-2xl lg:text-3xl font-extrabold text-slate-900 dark:text-white">Dato & tid</h2>
+                    <p class="text-xs lg:text-sm text-sky-600 dark:text-sky-400 font-mono mt-1">Tidsrom, frister, arbeidsdager og ukenummer</p>
+                </div>
+            </header>
+
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5 mb-5" role="group" aria-label="Velg dato- eller tidsverktøy">
+                <button type="button" data-datetime-mode="duration" aria-pressed="true" class="datetime-mode-btn min-h-14 px-3 py-3 rounded-2xl border border-sky-500 bg-sky-500 text-white shadow-md shadow-sky-500/20 text-sm font-bold transition-all">⏱️ Tidsrom</button>
+                <button type="button" data-datetime-mode="difference" aria-pressed="false" class="datetime-mode-btn min-h-14 px-3 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-900/70 text-slate-600 dark:text-slate-300 text-sm font-bold transition-all">📅 Datoforskjell</button>
+                <button type="button" data-datetime-mode="countdown" aria-pressed="false" class="datetime-mode-btn min-h-14 px-3 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-900/70 text-slate-600 dark:text-slate-300 text-sm font-bold transition-all">⌛ Nedtelling</button>
+                <button type="button" data-datetime-mode="add" aria-pressed="false" class="datetime-mode-btn min-h-14 px-3 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-900/70 text-slate-600 dark:text-slate-300 text-sm font-bold transition-all">➕ Legg til tid</button>
+                <button type="button" data-datetime-mode="week" aria-pressed="false" class="datetime-mode-btn min-h-14 px-3 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-900/70 text-slate-600 dark:text-slate-300 text-sm font-bold transition-all">🗓️ Ukenummer</button>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-5 gap-4 lg:gap-6 items-start">
+                <div class="lg:col-span-3 bg-white/80 dark:bg-slate-900/60 backdrop-blur-md border border-slate-200 dark:border-slate-800 rounded-3xl p-5 sm:p-6 lg:p-8 shadow-sm">
+                    <h3 id="datetime-mode-title" class="text-lg font-extrabold text-slate-900 dark:text-white mb-1">⏱️ Tidsrom</h3>
+                    <p id="datetime-mode-description" class="text-sm text-slate-500 dark:text-slate-400 mb-5">Regn ut arbeidstid mellom to klokkeslett. Slutt før start regnes som neste dag.</p>
+
+                    <div data-datetime-fields="duration" class="grid grid-cols-2 gap-3 sm:gap-4">
+                        <div><label for="dt-duration-start" class="block text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400 mb-1.5">Fra klokkeslett</label><input id="dt-duration-start" type="time" value="08:00" class="glass-input glass-input-sky min-h-12"></div>
+                        <div><label for="dt-duration-end" class="block text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400 mb-1.5">Til klokkeslett</label><input id="dt-duration-end" type="time" value="16:00" class="glass-input glass-input-sky min-h-12"></div>
+                    </div>
+
+                    <div data-datetime-fields="difference" class="hidden grid grid-cols-2 gap-3 sm:gap-4">
+                        <div><label for="dt-diff-start" class="block text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400 mb-1.5">Fra dato</label><input id="dt-diff-start" type="date" class="glass-input glass-input-sky min-h-12"></div>
+                        <div><label for="dt-diff-end" class="block text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400 mb-1.5">Til dato</label><input id="dt-diff-end" type="date" class="glass-input glass-input-sky min-h-12"></div>
+                    </div>
+
+                    <div data-datetime-fields="countdown" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                        <div class="sm:col-span-2"><label for="dt-countdown-label" class="block text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400 mb-1.5">Hva teller du ned til?</label><input id="dt-countdown-label" type="text" maxlength="60" placeholder="F.eks. ferie eller frist" class="glass-input glass-input-sky min-h-12"></div>
+                        <div class="sm:col-span-2"><label for="dt-countdown-target" class="block text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400 mb-1.5">Dato og klokkeslett</label><input id="dt-countdown-target" type="datetime-local" class="glass-input glass-input-sky min-h-12"></div>
+                    </div>
+
+                    <div data-datetime-fields="add" class="hidden grid grid-cols-2 gap-3 sm:gap-4">
+                        <div class="col-span-2"><label for="dt-add-start" class="block text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400 mb-1.5">Starttid</label><input id="dt-add-start" type="time" value="09:00" class="glass-input glass-input-sky min-h-12"></div>
+                        <div><label for="dt-add-hours" class="block text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400 mb-1.5">Timer å legge til</label><input id="dt-add-hours" type="number" min="0" step="1" value="7" class="glass-input glass-input-sky min-h-12"></div>
+                        <div><label for="dt-add-minutes" class="block text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400 mb-1.5">Minutter å legge til</label><input id="dt-add-minutes" type="number" min="0" max="59" step="1" value="30" class="glass-input glass-input-sky min-h-12"></div>
+                    </div>
+
+                    <div data-datetime-fields="week" class="hidden grid grid-cols-1 gap-3 sm:gap-4">
+                        <div><label for="dt-week-date" class="block text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400 mb-1.5">Velg dato</label><input id="dt-week-date" type="date" class="glass-input glass-input-sky min-h-12"></div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-2 bg-sky-50/90 dark:bg-sky-950/40 border border-sky-200 dark:border-sky-800/70 rounded-3xl p-5 sm:p-6 lg:p-8 shadow-sm lg:sticky lg:top-6" aria-live="polite">
+                    <p class="text-xs font-bold uppercase tracking-widest text-sky-600 dark:text-sky-300 mb-2">Resultat</p>
+                    <p id="datetime-result-main" class="text-3xl sm:text-4xl font-extrabold font-mono text-sky-700 dark:text-sky-200 break-words">8 t 0 min</p>
+                    <p id="datetime-result-summary" class="text-sm font-semibold text-sky-800 dark:text-sky-300 mt-2">Tidsrom</p>
+                    <div id="datetime-result-details" class="border-t border-sky-200 dark:border-sky-800/80 mt-5 pt-4 space-y-2 text-sm text-slate-700 dark:text-slate-300"></div>
+                    <p id="datetime-result-error" class="hidden text-sm font-semibold text-rose-600 dark:text-rose-400 mt-4" role="alert"></p>
+                </div>
+            </div>
+        </section>
+
         <div class="h-24 md:h-12"></div>
     </main>
+
+    <div id="mobile-more-menu" class="md:hidden hidden fixed bottom-20 right-3 z-[60] w-60 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl p-2 shadow-2xl" role="menu" aria-label="Flere sider">
+        <button type="button" role="menuitem" onclick="switchTab('ev')" class="w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="zap" class="w-5 h-5 text-teal-500"></i> Strøm & Elbil</button>
+        <button type="button" role="menuitem" onclick="switchTab('amounts')" class="w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="shapes" class="w-5 h-5 text-violet-500"></i> Hvor mye trenger jeg?</button>
+        <button type="button" role="menuitem" onclick="switchTab('datetime')" class="w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="calendar-clock" class="w-5 h-5 text-sky-500"></i> Dato & tid</button>
+    </div>
 
     <!-- MOBILE BOTTOM NAVIGATION -->
     <nav id="mobile-bottom-nav" class="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-t border-slate-200 dark:border-slate-800 grid grid-cols-5 items-center z-50 px-1 pb-[env(safe-area-inset-bottom)] shadow-[0_-4px_20px_rgba(0,0,0,0.06)] dark:shadow-[0_-4px_20px_rgba(0,0,0,0.4)] transition-colors">
@@ -2026,16 +2180,18 @@
             <i data-lucide="ruler" class="w-5 h-5 mb-0.5"></i>
             <span class="text-[10px] tracking-tight">Tabeller</span>
         </button>
-        <button type="button" onclick="switchTab('ev')" id="mnav-ev" class="mnav-btn flex flex-col items-center justify-center py-1.5 text-slate-400 dark:text-slate-500 font-medium transition-colors">
-            <i data-lucide="zap" class="w-5 h-5 mb-0.5"></i>
-            <span class="text-[10px] tracking-tight">Strøm</span>
+        <button type="button" onclick="toggleMobileMoreMenu()" id="mnav-more" aria-haspopup="menu" aria-expanded="false" aria-controls="mobile-more-menu" class="mnav-btn flex flex-col items-center justify-center py-1.5 text-slate-400 dark:text-slate-500 font-medium transition-colors">
+            <i data-lucide="ellipsis" class="w-5 h-5 mb-0.5"></i>
+            <span class="text-[10px] tracking-tight">Mer</span>
         </button>
     </nav>
 
     <!-- MAIN JAVASCRIPT -->
-    <script src="./js/app.js?v=20261020-rct"></script>
+    <script src="./js/app.js?v=20261020-datetime"></script>
     <script src="./js/manual-library.js"></script>
-    <script src="./js/production-addons.js?v=20261020-rct"></script>
+    <script src="./js/production-addons.js?v=20261020-datetime"></script>
+    <script src="./js/amount-planner.js?v=20261020-datetime"></script>
+    <script src="./js/datetime-tools.js?v=20261020"></script>
 
 </body>
 </html>

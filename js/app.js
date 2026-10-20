@@ -162,6 +162,11 @@
             "Maskinering": "Machining",
             "Verktøytabeller": "Tool Tables",
             "Strøm & Elbil": "Power & EV",
+            "Hvor mye trenger jeg?": "How much do I need?",
+            "Mengder": "Amounts",
+            "Dato & tid": "Date & Time",
+            "Mer": "More",
+            "Flere sider": "More pages",
             "Lønn": "Salary",
             "Tabeller": "Tables",
             "Strøm": "Power",
@@ -211,6 +216,113 @@
             "Verktøytabeller & Matte": "Tool Tables & Math",
             "Materialdatabank, kjernebor M3–M36, ISO-pasninger, Brix kjølevæske, PCD og trigonometri.": "Material database, tap drills M3–M36, ISO fits, Brix coolant, PCD and trigonometry.",
             "Apparatkostnader, ladetid, drivstoffbesparelse og vintertap.": "Appliance power cost, charging time, fuel savings and winter range loss.",
+            "Mengder til prosjekter, blandinger og oppskrifter": "Amounts for projects, mixes and recipes",
+            "Velg hva du vil beregne": "Choose what to calculate",
+            "🎨 Maling": "🎨 Paint",
+            "🪵 Gulv / flis": "🪵 Flooring / tile",
+            "🧱 Betong": "🧱 Concrete",
+            "🧪 Blandingsforhold": "🧪 Mixing ratio",
+            "🍲 Oppskrift": "🍲 Recipe",
+            "Fyll inn målene — resultatet oppdateres automatisk.": "Enter the measurements — the result updates automatically.",
+            "Bredde (m)": "Width (m)",
+            "Høyde (m)": "Height (m)",
+            "Antall strøk": "Number of coats",
+            "Dekkevne (m²/L)": "Coverage (m²/L)",
+            "Ekstra å beregne (%)": "Extra allowance (%)",
+            "Størrelse per spann (L)": "Can size (L)",
+            "Lengde (m)": "Length (m)",
+            "Dekning per pakke (m²)": "Coverage per pack (m²)",
+            "Ekstra for kapp/svinn (%)": "Extra for cuts/waste (%)",
+            "Materialtype": "Material type",
+            "Gulv / laminat (pakkeareal)": "Flooring / laminate (pack coverage)",
+            "Flis (størrelse og fuge)": "Tile (size and grout)",
+            "Flislengde (mm)": "Tile length (mm)",
+            "Flisbredde (mm)": "Tile width (mm)",
+            "Fugebredde (mm)": "Grout width (mm)",
+            "Fliser per eske": "Tiles per box",
+            "Fliser trengs": "Tiles needed",
+            "Fliser per eske:": "Tiles per box:",
+            "Rommets areal:": "Room area:",
+            "Flisareal inkl. fuge:": "Tile module area incl. grout:",
+            "Med kapp/svinn:": "Including cuts/waste:",
+            "Tidsrom, frister, arbeidsdager og ukenummer": "Durations, deadlines, working days and week numbers",
+            "Velg dato- eller tidsverktøy": "Choose a date or time tool",
+            "Regn ut arbeidstid mellom to klokkeslett. Slutt før start regnes som neste dag.": "Calculate time between two clock times. An end time before the start is treated as the next day.",
+            "Tell kalenderdager, uker og hverdager mellom to datoer.": "Count calendar days, weeks and weekdays between two dates.",
+            "Se hvor lang tid det er igjen til en frist eller hendelse.": "See how much time remains until a deadline or event.",
+            "Finn klokkeslettet etter et antall timer og minutter.": "Find the time after adding a number of hours and minutes.",
+            "Finn ISO-ukenummer og ukedag for en dato.": "Find the ISO week number and weekday for a date.",
+            "Timer og minutter mellom to klokkeslett": "Hours and minutes between two times",
+            "⏱️ Tidsrom": "⏱️ Time duration",
+            "📅 Datoforskjell": "📅 Date difference",
+            "⌛ Nedtelling": "⌛ Countdown",
+            "➕ Legg til tid": "➕ Add time",
+            "🗓️ Ukenummer": "🗓️ Week number",
+            "Regn ut arbeidstid mellom to klokkeslett. Slutt før start regnes som neste dag.": "Calculate time between two clock times. An end time before the start is treated as the next day.",
+            "Fra klokkeslett": "Start time",
+            "Til klokkeslett": "End time",
+            "Fra dato": "From date",
+            "Til dato": "To date",
+            "Hva teller du ned til?": "What are you counting down to?",
+            "Dato og klokkeslett": "Date and time",
+            "F.eks. ferie eller frist": "E.g. holiday or deadline",
+            "Starttid": "Start time",
+            "Timer å legge til": "Hours to add",
+            "Minutter å legge til": "Minutes to add",
+            "Velg dato": "Choose date",
+            "Tidsrom": "Time duration",
+            "Datoforskjell": "Date difference",
+            "Nedtelling": "Countdown",
+            "Legg til tid": "Add time",
+            "Ukenummer": "Week number",
+            "Arbeidstid": "Duration",
+            "Arbeidsdager (man–fre, inkl. datoene)": "Working days (Mon–Fri, incl. both dates)",
+            "Dager mellom datoene": "Days between dates",
+            "Uker": "Weeks",
+            "Igjen til": "Until",
+            "Overskredet": "Overdue",
+            "Klokkeslett etter tillegg": "Time after addition",
+            "Dato": "Date",
+            "Ukedag": "Weekday",
+            "Uke": "Week",
+            "Ingen fristnavn": "No deadline name",
+            "Datoene må være gyldige, og sluttdatoen må være lik eller etter startdatoen.": "Dates must be valid, and the end date must be the same as or later than the start date.",
+            "Oppgi et gyldig klokkeslett.": "Enter a valid time.",
+            "Oppgi en gyldig dato og tid.": "Enter a valid date and time.",
+            "Velg en gyldig dato.": "Choose a valid date.",
+            "Timer må være et helt tall på null eller mer, og minutter må være 0–59.": "Hours must be a whole number of zero or more, and minutes must be 0–59.",
+            "Totalt antall minutter:": "Total minutes:",
+            "Sluttid:": "End time:",
+            "Lagt til:": "Added:",
+            "Dagsforskyvning:": "Day offset:",
+            "Tykkelse (cm)": "Thickness (cm)",
+            "Ferdig masse per sekk (L)": "Mixed yield per bag (L)",
+            "Total mengde ferdig blanding (L)": "Total mixed volume (L)",
+            "Del A i forholdet": "Part A in ratio",
+            "Del B i forholdet": "Part B in ratio",
+            "Porsjoner i oppskriften": "Original servings",
+            "Porsjoner du vil lage": "Servings to make",
+            "Ingredienser — én per linje, f.eks. «200 g mel»": "Ingredients — one per line, e.g. “200 g flour”",
+            "Resultat": "Result",
+            "Maling som trengs": "Paint needed",
+            "Inkludert strøk og ekstra mengde": "Includes coats and extra allowance",
+            "Beregningen er et estimat. Kontroller dekkevne, blandingsforhold og utbytte på produktets emballasje.": "This is an estimate. Check coverage, mixing ratio and yield on the product packaging.",
+            "Trenger tall større enn null:": "Enter numbers greater than zero:",
+            "Ekstra mengde må være mellom 0 og 100 %.": "Extra allowance must be between 0 and 100%.",
+            "Kontroller ingredienslinje": "Check ingredient line",
+            "Gyldig format er mengde etterfulgt av enhet eller navn, for eksempel «200 g mel».": "Use an amount followed by a unit or name, for example “200 g flour”.",
+            "Areal med strøk:": "Area including coats:",
+            "Beregningsareal:": "Calculated area:",
+            "Anbefalt å kjøpe:": "Recommended to buy:",
+            "Volum inkl. ekstra mengde:": "Volume including extra:",
+            "Forhold:": "Ratio:",
+            "Porsjonsfaktor:": "Serving multiplier:",
+            "Porsjoner:": "Servings:",
+            "Maling trengs": "Paint needed",
+            "Gulv / flis trengs": "Flooring / tile needed",
+            "Betong trengs": "Concrete needed",
+            "Blanding fordelt etter forholdet": "Mix split by ratio",
+            "Oppskrift skalert": "Recipe scaled",
 
             // Modaler & Notatskuff
             "Verkstednotat & Sjekkliste": "Workshop Notes & Checklist",
@@ -670,7 +782,8 @@
                 { id: 'notes-todo-input', no: 'Ny oppgave (f.eks. Bytt skjær T04, Mål Ø40 H7)...', en: 'New task (e.g. Change insert T04, Measure Ø40 H7)...' },
                 { id: 'notes-text-area', no: 'Skriv inn mål, verktøylengder, G54 Z-nullpunkt, ordrenummer eller beskjed til neste skift...', en: 'Enter dimensions, tool lengths, G54 Z-zero, order number or shift handover notes...' },
                 { id: 'gcode-search', no: 'Søk på kode (f.eks. G76, G41, M08, gjenge)...', en: 'Search code (e.g. G76, G41, M08, thread)...' },
-                { id: 'overstyr-dager', no: 'Auto (man-fre)', en: 'Auto (Mon-Fri)' }
+                { id: 'overstyr-dager', no: 'Auto (man-fre)', en: 'Auto (Mon-Fri)' },
+                { id: 'amount-recipe-ingredients', no: '200 g mel\n3 dl melk\n2 stk egg', en: '200 g flour\n3 dl milk\n2 eggs' }
             ];
             phMap.forEach(item => {
                 const el = document.getElementById(item.id);
@@ -720,10 +833,11 @@
             if (e.key === 'Escape') {
                 lukkSokModal();
                 lukkNotatSkuff();
+                window.hideMobileMoreMenu();
                 return;
             }
             if (['INPUT', 'SELECT', 'TEXTAREA'].includes(document.activeElement?.tagName)) return;
-            const map = { '1': 'dashboard', '2': 'salary', '3': 'cnc', '4': 'tools', '5': 'ev' };
+            const map = { '1': 'dashboard', '2': 'salary', '3': 'cnc', '4': 'tools', '5': 'ev', '6': 'amounts', '7': 'datetime' };
             if (map[e.key]) switchTab(map[e.key]);
         });
 
@@ -1421,7 +1535,7 @@
             const hash = (window.location.hash || '').replace(/^#/, '');
             if (!hash) return false;
             const [mainTab, subTab] = hash.split('/');
-            const gyldigeMain = ['dashboard', 'salary', 'cnc', 'tools', 'ev'];
+            const gyldigeMain = ['dashboard', 'salary', 'cnc', 'tools', 'ev', 'amounts', 'datetime'];
             if (gyldigeMain.includes(mainTab)) {
                 switchTab(mainTab, false);
                 if (mainTab === 'salary' && ['oversikt', 'vakter', 'innstillinger'].includes(subTab)) {
@@ -1442,7 +1556,21 @@
         }
 
         // --- NAVIGATION LOGIC ---
+        window.toggleMobileMoreMenu = function() {
+            const menu = document.getElementById('mobile-more-menu');
+            const button = document.getElementById('mnav-more');
+            if (!menu || !button) return;
+            const isOpen = menu.classList.toggle('hidden') === false;
+            button.setAttribute('aria-expanded', String(isOpen));
+        };
+
+        window.hideMobileMoreMenu = function() {
+            document.getElementById('mobile-more-menu')?.classList.add('hidden');
+            document.getElementById('mnav-more')?.setAttribute('aria-expanded', 'false');
+        };
+
         function switchTab(tabId, pushHist = true) {
+            window.hideMobileMoreMenu();
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
             const target = document.getElementById(tabId);
             if(target) target.classList.add('active');
@@ -1452,7 +1580,7 @@
                 btn.classList.add('text-slate-500', 'dark:text-slate-400', 'border-transparent');
                 let icon = btn.querySelector('svg') || btn.querySelector('i');
                 if (icon) {
-                    icon.classList.remove('text-brand-500', 'text-blue-500', 'text-emerald-500', 'text-teal-500');
+                    icon.classList.remove('text-brand-500', 'text-blue-500', 'text-emerald-500', 'text-teal-500', 'text-violet-500', 'text-sky-500');
                     icon.classList.add('text-slate-400');
                 }
             });
@@ -1468,14 +1596,17 @@
                     if(tabId === 'cnc') icon.classList.add('text-blue-500');
                     if(tabId === 'tools') icon.classList.add('text-emerald-500');
                     if(tabId === 'ev') icon.classList.add('text-teal-500');
+                    if(tabId === 'amounts') icon.classList.add('text-violet-500');
+                    if(tabId === 'datetime') icon.classList.add('text-sky-500');
                 }
             }
 
             document.querySelectorAll('.mnav-btn').forEach(btn => {
-                btn.classList.remove('text-brand-500', 'text-blue-500', 'text-emerald-500', 'text-teal-500', 'font-bold');
+                btn.classList.remove('text-brand-500', 'text-blue-500', 'text-emerald-500', 'text-teal-500', 'text-violet-500', 'text-sky-500', 'font-bold');
                 btn.classList.add('text-slate-400', 'dark:text-slate-500', 'font-medium');
             });
             const activeMnav = document.getElementById('mnav-' + tabId);
+            const moreMnav = document.getElementById('mnav-more');
             if (activeMnav) {
                 activeMnav.classList.remove('text-slate-400', 'dark:text-slate-500', 'font-medium');
                 activeMnav.classList.add('font-bold');
@@ -1483,6 +1614,14 @@
                 if(tabId === 'cnc') activeMnav.classList.add('text-blue-500');
                 if(tabId === 'tools') activeMnav.classList.add('text-emerald-500');
                 if(tabId === 'ev') activeMnav.classList.add('text-teal-500');
+                if(tabId === 'amounts') activeMnav.classList.add('text-violet-500');
+                if(tabId === 'datetime') activeMnav.classList.add('text-sky-500');
+            } else if (moreMnav && ['ev', 'amounts', 'datetime'].includes(tabId)) {
+                moreMnav.classList.remove('text-slate-400', 'dark:text-slate-500', 'font-medium');
+                moreMnav.classList.add('font-bold');
+                if(tabId === 'ev') moreMnav.classList.add('text-teal-500');
+                if(tabId === 'amounts') moreMnav.classList.add('text-violet-500');
+                if(tabId === 'datetime') moreMnav.classList.add('text-sky-500');
             }
             localStorage.setItem('active_tab', tabId);
             if (pushHist) dyttHistorikkState();
