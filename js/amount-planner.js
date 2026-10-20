@@ -16,6 +16,7 @@
     const buttons = [...page.querySelectorAll('[data-amount-mode]')];
     const floorType = document.getElementById('amount-floor-type');
     let activeMode = localStorage.getItem('amount_planner_mode') || 'paint';
+    let pageInitialized = false;
 
     function setError(message) {
         resultMain.textContent = '—';
@@ -69,6 +70,7 @@
     }
 
     function calculate() {
+        if (!pageInitialized) return;
         const f = format;
         const en = isEnglish();
 
@@ -254,7 +256,11 @@
     page.addEventListener('input', calculate);
     page.addEventListener('change', calculate);
     floorType?.addEventListener('change', updateFloorFields);
-    document.addEventListener('DOMContentLoaded', calculate);
+    document.addEventListener('verksted:tab-open', event => {
+        if (event.detail?.tabId !== 'amounts') return;
+        pageInitialized = true;
+        calculate();
+    });
     new MutationObserver(calculate).observe(document.documentElement, {
         attributes: true,
         attributeFilter: ['lang']

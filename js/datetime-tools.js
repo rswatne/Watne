@@ -10,6 +10,7 @@
     const description = document.getElementById('datetime-mode-description');
     const dayMs = 24 * 60 * 60 * 1000;
     let activeMode = localStorage.getItem('datetime_tools_mode') || 'duration';
+    let pageInitialized = false;
     const descriptions = {
         duration: ['Regn ut arbeidstid mellom to klokkeslett. Slutt før start regnes som neste dag.', 'Calculate time between two clock times. An end time before the start is treated as the next day.'],
         difference: ['Tell kalenderdager, uker og hverdager mellom to datoer.', 'Count calendar days, weeks and weekdays between two dates.'],
@@ -104,6 +105,7 @@
     }
 
     function calculate() {
+        if (!pageInitialized) return;
         const en = isEnglish();
         const fmt = formatNumber;
 
@@ -244,7 +246,11 @@
     buttons.forEach(button => button.addEventListener('click', () => chooseMode(button.dataset.datetimeMode)));
     page.addEventListener('input', calculate);
     page.addEventListener('change', calculate);
-    document.addEventListener('DOMContentLoaded', calculate);
+    document.addEventListener('verksted:tab-open', event => {
+        if (event.detail?.tabId !== 'datetime') return;
+        pageInitialized = true;
+        calculate();
+    });
     new MutationObserver(() => {
         description.textContent = descriptions[activeMode][isEnglish() ? 1 : 0];
         calculate();
@@ -254,6 +260,6 @@
     });
     chooseMode(buttons.some(button => button.dataset.datetimeMode === activeMode) ? activeMode : 'duration');
     window.setInterval(() => {
-        if (activeMode === 'countdown') calculate();
+        if (pageInitialized && activeMode === 'countdown') calculate();
     }, 60000);
 })();

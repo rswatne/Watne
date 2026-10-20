@@ -798,12 +798,16 @@
             brukLayoutPreferanser();
             oppdaterNotatTellereOgWidget();
             oppdaterAarOgMaaned();
-            filtrerGKoder();
             oppdaterSokResultater();
-            beregnIso();
-            konverterHardhet('hrc');
-            beregnStromTariff();
-            beregnDekkDimensjon();
+            if (initialiserteBeregninger.has('cnc')) filtrerGKoder();
+            if (initialiserteBeregninger.has('tools')) {
+                beregnIso();
+                konverterHardhet('hrc');
+            }
+            if (initialiserteBeregninger.has('ev')) {
+                beregnStromTariff();
+                beregnDekkDimensjon();
+            }
         }
 
         function toggleLanguage() {
@@ -1535,11 +1539,63 @@
             document.getElementById('mnav-more')?.setAttribute('aria-expanded', 'false');
         };
 
+        const initialiserteBeregninger = new Set();
+
+        function initialiserBeregningerForFane(tabId) {
+            if (initialiserteBeregninger.has(tabId)) return;
+
+            if (tabId === 'cnc') {
+                beregnSirkulaerMating();
+                beregnGjengerInnvendig();
+                beregnGjengerUtvendig();
+                beregnFinnVc();
+                beregnFinnRpm();
+                beregnFinnMmMin();
+                beregnGraderPrMin();
+                window.oppdaterRctInndatamodus();
+                window.beregnChipThinning();
+                byttKonusModus();
+                filtrerGKoder();
+                oppdaterMaterialeData();
+            } else if (tabId === 'tools') {
+                beregnBoredybde();
+                beregnKjolevaeske();
+                beregnOverflate('fn');
+                oppdaterGjengeTabell();
+                beregnGjengeToleranse();
+                beregnIso();
+                beregnIso2768();
+                beregnKilespor();
+                beregnBoltMoment();
+                byttVektForm();
+                beregnPcd();
+                beregnTrekant();
+                beregnFraTommer();
+                beregnTrykkVekt();
+                konverterHardhet('hrc');
+            } else if (tabId === 'ev') {
+                beregnLadetid();
+                beregnBesparelse();
+                beregnVinter();
+                beregnApparat();
+                beregnStromTariff();
+                beregnDekkDimensjon();
+            } else {
+                return;
+            }
+
+            initialiserteBeregninger.add(tabId);
+        }
+
         function switchTab(tabId, pushHist = true) {
             window.hideMobileMoreMenu();
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
             const target = document.getElementById(tabId);
             if(target) target.classList.add('active');
+            if (target) {
+                initialiserBeregningerForFane(tabId);
+                document.dispatchEvent(new CustomEvent('verksted:tab-open', { detail: { tabId } }));
+            }
 
             document.querySelectorAll('.nav-btn').forEach(btn => {
                 btn.classList.remove('bg-white', 'dark:bg-slate-800', 'border-slate-200', 'dark:border-slate-700', 'text-slate-900', 'dark:text-white', 'shadow-sm');
@@ -3880,39 +3936,6 @@
             const navigation = performance.getEntriesByType('navigation')[0];
             lastInnAltState(navigation?.type !== 'reload');
             lastInnNotaterOgSjekkliste();
-            beregnSirkulaerMating();
-            beregnGjengerInnvendig();
-            beregnGjengerUtvendig();
-            beregnFinnVc();
-            beregnFinnRpm();
-            beregnFinnMmMin();
-            beregnGraderPrMin();
-            window.oppdaterRctInndatamodus();
-            window.beregnChipThinning();
-            byttKonusModus();
-            filtrerGKoder();
-            oppdaterMaterialeData();
-            beregnBoredybde();
-            beregnKjolevaeske();
-            beregnOverflate('fn');
-            oppdaterGjengeTabell();
-            beregnGjengeToleranse();
-            beregnIso();
-            beregnIso2768();
-            beregnKilespor();
-            beregnBoltMoment();
-            byttVektForm();
-            beregnPcd();
-            beregnTrekant();
-            beregnFraTommer();
-            beregnTrykkVekt();
-            konverterHardhet('hrc');
-            beregnLadetid();
-            beregnBesparelse();
-            beregnVinter();
-            beregnApparat();
-            beregnStromTariff();
-            beregnDekkDimensjon();
             brukWidgetOppsett();
             aktiverHurtigKopiering();
             if (currentLang === 'en') brukSprak();
