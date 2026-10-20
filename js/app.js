@@ -473,6 +473,7 @@
             "Spindelhastighet (n)": "Spindle Speed (n)",
             "Bordmating (Vf / F)": "Table Feed (Vf / F)",
             "Beregnet mating per tann (fz)": "Calculated Feed per Tooth (fz)",
+            "Teoretisk spontykkelse (hmax)": "Theoretical Chip Thickness (hmax)",
             "Mating per omdreining (fn)": "Feed per Revolution (fn)",
             "Sponvolum (MRR / Q)": "Material Removal Rate (MRR / Q)",
             "Formel: n = (Vc × 1000) / (π × D)": "Formula: n = (Vc × 1000) / (π × D)",
@@ -3070,12 +3071,13 @@
             const rpmEl = document.getElementById('rct-res-rpm');
             const feedEl = document.getElementById('rct-res-vf');
             const fzEl = document.getElementById('rct-res-fz');
+            const hmaxEl = document.getElementById('rct-res-hmax');
             const fnEl = document.getElementById('rct-res-fn');
             const mrrEl = document.getElementById('rct-res-mrr');
             const factorEl = document.getElementById('rct-res-factor');
             const statusEl = document.getElementById('rct-status');
             const erEng = typeof currentLang !== 'undefined' && currentLang === 'en';
-            if (!rpmEl || !feedEl || !fzEl || !fnEl || !mrrEl || !factorEl || !statusEl) return;
+            if (!rpmEl || !feedEl || !fzEl || !hmaxEl || !fnEl || !mrrEl || !factorEl || !statusEl) return;
 
             if (!Number.isFinite(d) || d <= 0 || !Number.isFinite(vc) || vc <= 0 ||
                 !Number.isInteger(z) || z <= 0 || !Number.isFinite(targetFeed) || targetFeed < 0 ||
@@ -3083,6 +3085,7 @@
                 rpmEl.innerText = '--';
                 feedEl.innerText = '--';
                 fzEl.innerText = '--';
+                hmaxEl.innerText = '--';
                 fnEl.innerText = '--';
                 mrrEl.innerText = '--';
                 factorEl.innerText = '--';
@@ -3098,12 +3101,17 @@
                 : 1;
             const rpm = (vc * 1000) / (Math.PI * d);
             const fz = targetFeed * rctFactor;
+            const chipThicknessFactor = aeRatio < 0.5
+                ? 2 * Math.sqrt(aeRatio * (1 - aeRatio))
+                : 1;
+            const hmax = fz * chipThicknessFactor;
             const feedPerRev = fz * z;
             const vf = rpm * feedPerRev;
             const mrr = (vf * ap * ae) / 1000;
             rpmEl.innerText = `${Math.round(rpm)}`;
             feedEl.innerText = `${Math.round(vf)} mm/min`;
             fzEl.innerText = fz.toFixed(3);
+            hmaxEl.innerText = hmax.toFixed(3);
             fnEl.innerText = feedPerRev.toFixed(3);
             mrrEl.innerText = mrr.toFixed(1);
             factorEl.innerText = rctFactor.toFixed(2);
