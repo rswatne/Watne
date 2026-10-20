@@ -46,9 +46,20 @@
       display: none !important;
   }
 
-  /* Kompakt HMI-modus */
-  body.compact-hmi .pers-input { padding: 1rem !important; }
-  body.compact-hmi .pers-input > p { display: none !important; }
+  /* Individually enlarged dashboard live cards */
+  #dash-widgets-grid > .dash-widget.widget-large {
+      grid-column: span 2;
+      min-height: 9rem;
+  }
+  #dash-widgets-grid > .dash-widget.widget-large > p {
+      white-space: normal !important;
+      overflow: visible !important;
+      text-overflow: clip !important;
+      overflow-wrap: anywhere;
+  }
+  #dash-widgets-grid > .dash-widget.widget-large [data-live-extra]:not(.hidden) {
+      display: block;
+  }
 
   /* Sammenleggbare kort */
   .pers-input.card-collapsed > *:not(h3) { display: none !important; }

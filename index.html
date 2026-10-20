@@ -26,7 +26,7 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 
-    <link href="./style.css" rel="stylesheet">
+    <link href="./style.css?v=20261020-live-card-size" rel="stylesheet">
 
     <!-- Theme Initialization -->
     <script>
@@ -123,18 +123,15 @@
 
     <!-- SIDEBAR (Desktop) -->
     <aside class="w-64 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-r border-slate-200/80 dark:border-slate-800 flex-col hidden md:flex z-20 shadow-[4px_0_24px_rgba(0,0,0,0.03)] dark:shadow-[4px_0_24px_rgba(0,0,0,0.3)] transition-colors duration-300">
-        <div class="h-20 flex items-center px-6 border-b border-slate-200/60 dark:border-slate-800/80">
+        <button type="button" onclick="switchTab('dashboard')" aria-label="Verkstedsportalen – gå til hovedsiden" class="h-20 w-full flex items-center px-6 border-b border-slate-200/60 dark:border-slate-800/80 text-left bg-transparent">
             <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center mr-3 shadow-md shadow-brand-500/20 text-slate-950">
                 <i data-lucide="wrench" class="w-5 h-5 stroke-[2.5]"></i>
             </div>
             <div>
                 <h1 class="text-lg font-extrabold tracking-tight text-slate-900 dark:text-white leading-none">Verksteds<span class="text-brand-500">Portal</span></h1>
-                <div class="flex items-center gap-1.5 mt-1">
-                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <p class="text-[10px] text-slate-500 dark:text-slate-400 font-mono font-bold tracking-wider">V18.1 HMI PRO</p>
-                </div>
+                <p class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold mt-1">Alt for verksted og hverdag</p>
             </div>
-        </div>
+        </button>
         
         <!-- Live Klokke Widget i Sidemenyen -->
         <div class="px-4 py-3 mx-4 mt-4 rounded-2xl bg-slate-100/80 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/60 shadow-inner">
@@ -224,39 +221,15 @@
                     </div>
                     <div>
                         <h3 class="text-lg font-extrabold text-slate-900 dark:text-white leading-tight">Tilpass Oversikt & Layout</h3>
-                        <p class="text-xs text-slate-500 dark:text-slate-400">Skreddersy kort, kompakthet og visningsmodus</p>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Velg live-kort fra kalkulatorene og tilpass rekkefølge og visning</p>
                     </div>
                 </div>
                 <button onclick="lukkWidgetModal()" class="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-800 dark:hover:text-white">✕</button>
             </div>
 
-            <!-- Visningsvalg & Angre til klassisk layout -->
-            <div class="p-3.5 mb-4 rounded-2xl bg-slate-100/80 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/70 space-y-2.5 text-xs">
-                <div class="flex items-center justify-between gap-2">
-                    <div>
-                        <span class="font-bold text-slate-900 dark:text-white block">Hovedmoduler nederst på Oversikt</span>
-                        <span class="text-[11px] text-slate-500 dark:text-slate-400">Velg størrelse på de 4 modulboksene</span>
-                    </div>
-                    <select id="pref-dash-modules" onchange="oppdaterLayoutPreferanser()" class="bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-2.5 py-1.5 font-bold text-slate-800 dark:text-slate-200">
-                        <option value="compact">Kompakte knapper (Ryddig)</option>
-                        <option value="large">Store kort (Klassisk)</option>
-                        <option value="hidden">Skjul helt</option>
-                    </select>
-                </div>
-                <label class="flex items-center justify-between gap-2 pt-2 border-t border-slate-200/80 dark:border-slate-700/60 cursor-pointer">
-                    <div>
-                        <span class="font-bold text-slate-900 dark:text-white block">Kompakt HMI-modus</span>
-                        <span class="text-[11px] text-slate-500 dark:text-slate-400">Mindre luft og skjulte hjelpetekster på kort</span>
-                    </div>
-                    <input type="checkbox" id="pref-compact-hmi" onchange="oppdaterLayoutPreferanser()" class="custom-checkbox">
-                </label>
-                <label class="flex items-center justify-between gap-2 pt-2 border-t border-slate-200/80 dark:border-slate-700/60 cursor-pointer">
-                    <div>
-                        <span class="font-bold text-amber-600 dark:text-amber-400 block">Klassisk lang-visning (Angre oppdeling)</span>
-                        <span class="text-[11px] text-slate-500 dark:text-slate-400">Vis alle CNC/Tabell-kort på én lang side som før</span>
-                    </div>
-                    <input type="checkbox" id="pref-classic-subtabs" onchange="oppdaterLayoutPreferanser()" class="custom-checkbox">
-                </label>
+            <div class="p-3.5 mb-4 rounded-2xl bg-slate-100/80 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/70">
+                <p class="text-xs font-extrabold text-slate-900 dark:text-white">Beregn direkte fra Oversikt</p>
+                <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Trykk Større på et kort for å utvide det. På beregningskort åpnes også feltene, slik at du kan regne direkte fra Oversikt.</p>
             </div>
 
             <div id="widget-config-list" class="flex-1 overflow-y-auto space-y-2 pr-1 mb-5"></div>
@@ -369,15 +342,15 @@
 
     <!-- MOBILE TOP HEADER -->
     <div id="mobile-header" class="md:hidden fixed top-0 left-0 right-0 h-14 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-3 z-50 transition-colors">
-        <div class="flex items-center gap-1.5">
+        <button type="button" onclick="switchTab('dashboard')" aria-label="Verkstedsportalen – gå til hovedsiden" class="flex items-center gap-1.5 text-left bg-transparent">
             <div class="w-7 h-7 rounded-lg bg-brand-500 flex items-center justify-center text-slate-950 shrink-0">
                 <i data-lucide="wrench" class="w-4 h-4 stroke-[2.5]"></i>
             </div>
             <div>
-                <h1 class="text-xs font-extrabold text-slate-900 dark:text-white leading-tight truncate max-w-[100px]">Verksted</h1>
+                <h1 class="text-xs font-extrabold text-slate-900 dark:text-white leading-tight truncate max-w-[100px]">Verkstedsportalen</h1>
                 <p id="live-clock-mobile" class="font-mono text-[9px] font-bold text-brand-600 dark:text-brand-400">00:00</p>
             </div>
-        </div>
+        </button>
         <div class="flex items-center gap-1">
             <button onclick="apneNotatSkuff()" class="relative p-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300" title="Notater & Sjekkliste">
                 <i data-lucide="clipboard-list" class="w-4 h-4 text-brand-500"></i>
@@ -428,7 +401,7 @@
 
             <!-- DYNAMISK SANNTIDSKORT-CONTAINER -->
             <div id="dash-widgets-grid" class="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 mb-8">
-                <div id="widget-netto" data-widget-id="netto" onclick="switchTab('salary')" class="dash-widget bg-white/90 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200/90 dark:border-slate-800 rounded-2xl p-4 cursor-pointer hover:border-brand-500 transition-all group">
+                <div id="widget-netto" data-widget-id="netto" class="dash-widget bg-white/90 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200/90 dark:border-slate-800 rounded-2xl p-4 cursor-pointer hover:border-brand-500 transition-all group">
                     <div class="flex items-center justify-between text-xs font-mono text-slate-400 mb-1">
                         <span>NETTO UTBETALT</span>
                         <i data-lucide="wallet" class="w-4 h-4 text-brand-500 group-hover:scale-110 transition-transform"></i>
@@ -437,7 +410,7 @@
                     <p id="dash-kpi-periode" class="text-[11px] text-brand-600 dark:text-brand-400 font-medium mt-1 truncate">Herav overtid: + 0 kr</p>
                 </div>
 
-                <div id="widget-timebank" data-widget-id="timebank" onclick="switchTab('salary'); switchSalaryTab('vakter');" class="dash-widget bg-white/90 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200/90 dark:border-slate-800 rounded-2xl p-4 cursor-pointer hover:border-indigo-500 transition-all group">
+                <div id="widget-timebank" data-widget-id="timebank" class="dash-widget bg-white/90 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200/90 dark:border-slate-800 rounded-2xl p-4 cursor-pointer hover:border-indigo-500 transition-all group">
                     <div class="flex items-center justify-between text-xs font-mono text-slate-400 mb-1">
                         <span>TIMEBANK SALDO</span>
                         <i data-lucide="clock" class="w-4 h-4 text-indigo-500 group-hover:scale-110 transition-transform"></i>
@@ -446,7 +419,7 @@
                     <p id="dash-kpi-vakter" class="text-[11px] text-slate-500 dark:text-slate-400 font-medium mt-1 truncate">0 vakter denne mnd</p>
                 </div>
 
-                <div id="widget-week" data-widget-id="week" onclick="switchTab('salary')" class="dash-widget bg-white/90 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200/90 dark:border-slate-800 rounded-2xl p-4 cursor-pointer hover:border-emerald-500 transition-all group">
+                <div id="widget-week" data-widget-id="week" class="dash-widget bg-white/90 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200/90 dark:border-slate-800 rounded-2xl p-4 cursor-pointer hover:border-emerald-500 transition-all group">
                     <div class="flex items-center justify-between text-xs font-mono text-slate-400 mb-1">
                         <span>UKENUMMER & DAGER</span>
                         <i data-lucide="calendar-days" class="w-4 h-4 text-emerald-500 group-hover:scale-110 transition-transform"></i>
@@ -455,7 +428,7 @@
                     <p id="dash-kpi-workdays" class="text-[11px] text-slate-500 dark:text-slate-400 font-medium mt-1 truncate">Beregner arbeidsdager...</p>
                 </div>
 
-                <div id="widget-cnc" data-widget-id="cnc" onclick="apneSisteCnc()" class="dash-widget bg-white/90 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200/90 dark:border-slate-800 rounded-2xl p-4 cursor-pointer hover:border-blue-500 transition-all group">
+                <div id="widget-cnc" data-widget-id="cnc" class="dash-widget bg-white/90 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200/90 dark:border-slate-800 rounded-2xl p-4 cursor-pointer hover:border-blue-500 transition-all group">
                     <div class="flex items-center justify-between text-xs font-mono text-slate-400 mb-1">
                         <span>SISTE CNC-UTREGNING</span>
                         <i data-lucide="cpu" class="w-4 h-4 text-blue-500 group-hover:scale-110 transition-transform"></i>
@@ -464,7 +437,7 @@
                     <p id="dash-kpi-cnc-sub" class="text-[11px] text-slate-500 dark:text-slate-400 font-medium mt-1 truncate">Skjæredata: Ø12 mm (z=4)</p>
                 </div>
 
-                <div id="widget-thread" data-widget-id="thread" onclick="switchTab('tools'); switchToolsTab('threads');" class="dash-widget bg-white/90 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200/90 dark:border-slate-800 rounded-2xl p-4 cursor-pointer hover:border-amber-500 transition-all group">
+                <div id="widget-thread" data-widget-id="thread" class="dash-widget bg-white/90 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200/90 dark:border-slate-800 rounded-2xl p-4 cursor-pointer hover:border-amber-500 transition-all group">
                     <div class="flex items-center justify-between text-xs font-mono text-slate-400 mb-1">
                         <span>AKTIV GJENGE</span>
                         <i data-lucide="settings-2" class="w-4 h-4 text-amber-500 group-hover:scale-110 transition-transform"></i>
@@ -473,7 +446,7 @@
                     <p id="dash-kpi-thread-sub" class="text-[11px] text-slate-500 dark:text-slate-400 font-medium mt-1 truncate">Formtapp: Ø9.3 mm · P=1.5</p>
                 </div>
 
-                <div id="widget-isofit" data-widget-id="isofit" onclick="switchTab('tools'); switchToolsTab('fits');" class="dash-widget bg-white/90 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200/90 dark:border-slate-800 rounded-2xl p-4 cursor-pointer hover:border-emerald-500 transition-all group">
+                <div id="widget-isofit" data-widget-id="isofit" class="dash-widget bg-white/90 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200/90 dark:border-slate-800 rounded-2xl p-4 cursor-pointer hover:border-emerald-500 transition-all group">
                     <div class="flex items-center justify-between text-xs font-mono text-slate-400 mb-1">
                         <span>ISO-PASNING (SIKTEMÅL)</span>
                         <i data-lucide="maximize-2" class="w-4 h-4 text-emerald-500 group-hover:scale-110 transition-transform"></i>
@@ -482,7 +455,7 @@
                     <p id="dash-kpi-isofit-sub" class="text-[11px] text-slate-500 dark:text-slate-400 font-medium mt-1 truncate">40.000–40.025 mm (+25/0 µm)</p>
                 </div>
 
-                <div id="widget-power" data-widget-id="power" onclick="switchTab('ev')" class="dash-widget bg-white/90 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200/90 dark:border-slate-800 rounded-2xl p-4 cursor-pointer hover:border-teal-500 transition-all group">
+                <div id="widget-power" data-widget-id="power" class="dash-widget bg-white/90 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200/90 dark:border-slate-800 rounded-2xl p-4 cursor-pointer hover:border-teal-500 transition-all group">
                     <div class="flex items-center justify-between text-xs font-mono text-slate-400 mb-1">
                         <span>STRØMSATS & ELBIL</span>
                         <i data-lucide="zap" class="w-4 h-4 text-teal-500 group-hover:scale-110 transition-transform"></i>
@@ -492,7 +465,7 @@
                 </div>
 
                 <!-- EKSTRA VALGFRIE SANNTIDSKORT -->
-                <div id="widget-overtime" data-widget-id="overtime" onclick="switchTab('salary'); switchSalaryTab('vakter');" class="dash-widget bg-white/90 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200/90 dark:border-slate-800 rounded-2xl p-4 cursor-pointer hover:border-rose-500 transition-all group">
+                <div id="widget-overtime" data-widget-id="overtime" class="dash-widget bg-white/90 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200/90 dark:border-slate-800 rounded-2xl p-4 cursor-pointer hover:border-rose-500 transition-all group">
                     <div class="flex items-center justify-between text-xs font-mono text-slate-400 mb-1">
                         <span>OVERTID DENNE MND</span>
                         <i data-lucide="flame" class="w-4 h-4 text-rose-500 group-hover:scale-110 transition-transform"></i>
@@ -501,7 +474,7 @@
                     <p id="dash-kpi-ot-hours" class="text-[11px] text-slate-500 dark:text-slate-400 font-medium mt-1 truncate">0,0 timer utbetalt</p>
                 </div>
 
-                <div id="widget-coolant" data-widget-id="coolant" onclick="switchTab('tools'); switchToolsTab('data');" class="dash-widget bg-white/90 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200/90 dark:border-slate-800 rounded-2xl p-4 cursor-pointer hover:border-cyan-500 transition-all group">
+                <div id="widget-coolant" data-widget-id="coolant" class="dash-widget bg-white/90 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200/90 dark:border-slate-800 rounded-2xl p-4 cursor-pointer hover:border-cyan-500 transition-all group">
                     <div class="flex items-center justify-between text-xs font-mono text-slate-400 mb-1">
                         <span>KJØLEVÆSKE (BRIX)</span>
                         <i data-lucide="droplets" class="w-4 h-4 text-cyan-500 group-hover:scale-110 transition-transform"></i>
@@ -518,93 +491,6 @@
                     <p id="dash-kpi-note-main" class="text-base sm:text-lg font-mono font-extrabold text-slate-900 dark:text-white truncate">Ingen åpne oppgaver</p>
                     <p id="dash-kpi-note-sub" class="text-[11px] text-brand-600 dark:text-brand-400 font-medium mt-1 truncate">Klikk for å åpne sjekkliste / logg →</p>
                     <input id="dash-quick-note" type="hidden">
-                </div>
-            </div>
-
-            <!-- HOVEDMODULER (Støtter både Kompakte kort, Store klassiske kort og Skjult) -->
-            <div id="dash-modules-wrapper">
-                <div class="flex items-center justify-between mb-3">
-                    <span class="text-[11px] font-mono font-bold uppercase tracking-widest text-slate-400">Hovedmoduler</span>
-                    <button onclick="veksleDashModulerStil()" id="dash-mod-style-btn" class="text-[11px] font-mono font-semibold text-slate-400 hover:text-brand-500 transition-colors">Bytt til store kort</button>
-                </div>
-
-                <!-- Kompakt 4-kolonners rad (Standard for ryddigere oversikt) -->
-                <div id="dash-modules-compact" class="grid grid-cols-2 lg:grid-cols-4 gap-3">
-                    <div onclick="switchTab('salary')" class="bg-white/85 dark:bg-slate-900/75 backdrop-blur-md border border-slate-200 dark:border-slate-800 border-l-4 border-l-brand-500 rounded-2xl p-4 cursor-pointer hover:border-brand-500 transition-all flex items-center gap-3.5 group shadow-sm">
-                        <div class="w-10 h-10 bg-brand-500/10 rounded-xl flex items-center justify-center shrink-0 text-brand-500 group-hover:scale-110 transition-transform"><i data-lucide="banknote" class="w-5 h-5"></i></div>
-                        <div class="min-w-0">
-                            <h3 class="text-sm font-extrabold text-slate-900 dark:text-white truncate">Lønn & Timebank</h3>
-                            <p class="text-[11px] text-slate-500 dark:text-slate-400 truncate">Skatt, overtid, vakter</p>
-                        </div>
-                    </div>
-                    <div onclick="switchTab('cnc')" class="bg-white/85 dark:bg-slate-900/75 backdrop-blur-md border border-slate-200 dark:border-slate-800 border-l-4 border-l-blue-500 rounded-2xl p-4 cursor-pointer hover:border-blue-500 transition-all flex items-center gap-3.5 group shadow-sm">
-                        <div class="w-10 h-10 bg-blue-500/10 rounded-xl flex items-center justify-center shrink-0 text-blue-500 group-hover:scale-110 transition-transform"><i data-lucide="cpu" class="w-5 h-5"></i></div>
-                        <div class="min-w-0">
-                            <h3 class="text-sm font-extrabold text-slate-900 dark:text-white truncate">Maskinering (CNC)</h3>
-                            <p class="text-[11px] text-slate-500 dark:text-slate-400 truncate">Mating, konus, G-koder</p>
-                        </div>
-                    </div>
-                    <div onclick="switchTab('tools')" class="bg-white/85 dark:bg-slate-900/75 backdrop-blur-md border border-slate-200 dark:border-slate-800 border-l-4 border-l-emerald-500 rounded-2xl p-4 cursor-pointer hover:border-emerald-500 transition-all flex items-center gap-3.5 group shadow-sm">
-                        <div class="w-10 h-10 bg-emerald-500/10 rounded-xl flex items-center justify-center shrink-0 text-emerald-500 group-hover:scale-110 transition-transform"><i data-lucide="ruler" class="w-5 h-5"></i></div>
-                        <div class="min-w-0">
-                            <h3 class="text-sm font-extrabold text-slate-900 dark:text-white truncate">Verktøytabeller</h3>
-                            <p class="text-[11px] text-slate-500 dark:text-slate-400 truncate">Gjenger, ISO, kilespor</p>
-                        </div>
-                    </div>
-                    <div onclick="switchTab('ev')" class="bg-white/85 dark:bg-slate-900/75 backdrop-blur-md border border-slate-200 dark:border-slate-800 border-l-4 border-l-teal-500 rounded-2xl p-4 cursor-pointer hover:border-teal-500 transition-all flex items-center gap-3.5 group shadow-sm">
-                        <div class="w-10 h-10 bg-teal-500/10 rounded-xl flex items-center justify-center shrink-0 text-teal-500 group-hover:scale-110 transition-transform"><i data-lucide="zap" class="w-5 h-5"></i></div>
-                        <div class="min-w-0">
-                            <h3 class="text-sm font-extrabold text-slate-900 dark:text-white truncate">Strøm & Elbil</h3>
-                            <p class="text-[11px] text-slate-500 dark:text-slate-400 truncate">Ladetid, besparelse</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Klassiske Store Kort (Vises dersom valgt) -->
-                <div id="dash-modules-large" class="grid grid-cols-1 md:grid-cols-2 gap-5 hidden">
-                    <div onclick="switchTab('salary')" class="bg-white/80 dark:bg-slate-900/70 backdrop-blur-md border border-slate-200 dark:border-slate-800 border-t-4 border-t-brand-500 rounded-3xl p-6 cursor-pointer transition-all duration-300 group hover:shadow-xl hover:-translate-y-0.5 relative overflow-hidden">
-                        <div class="flex items-start justify-between mb-4">
-                            <div class="w-12 h-12 bg-brand-500/10 dark:bg-brand-500/15 rounded-2xl flex items-center justify-center border border-brand-500/30">
-                                <i data-lucide="banknote" class="w-6 h-6 text-brand-500"></i>
-                            </div>
-                            <span class="text-[11px] font-mono font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 group-hover:bg-brand-500 group-hover:text-slate-950 transition-colors">MODUL 01 →</span>
-                        </div>
-                        <h3 class="text-xl font-extrabold text-slate-900 dark:text-white mb-1.5">Lønn, Skift & Timebank</h3>
-                        <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">Full kontroll på fastlønn, overtid, avspasering, fagforening og skatt.</p>
-                    </div>
-
-                    <div onclick="switchTab('cnc')" class="bg-white/80 dark:bg-slate-900/70 backdrop-blur-md border border-slate-200 dark:border-slate-800 border-t-4 border-t-blue-500 rounded-3xl p-6 cursor-pointer transition-all duration-300 group hover:shadow-xl hover:-translate-y-0.5 relative overflow-hidden">
-                        <div class="flex items-start justify-between mb-4">
-                            <div class="w-12 h-12 bg-blue-500/10 dark:bg-blue-500/15 rounded-2xl flex items-center justify-center border border-blue-500/30">
-                                <i data-lucide="cpu" class="w-6 h-6 text-blue-500"></i>
-                            </div>
-                            <span class="text-[11px] font-mono font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 group-hover:bg-blue-500 group-hover:text-white transition-colors">MODUL 02 →</span>
-                        </div>
-                        <h3 class="text-xl font-extrabold text-slate-900 dark:text-white mb-1.5">Maskinering (CNC)</h3>
-                        <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">Sentermating ved sirkulærfresing, gjengediameter, Vc/RPM, tynn spon og C-akse.</p>
-                    </div>
-
-                    <div onclick="switchTab('tools')" class="bg-white/80 dark:bg-slate-900/70 backdrop-blur-md border border-slate-200 dark:border-slate-800 border-t-4 border-t-emerald-500 rounded-3xl p-6 cursor-pointer transition-all duration-300 group hover:shadow-xl hover:-translate-y-0.5 relative overflow-hidden">
-                        <div class="flex items-start justify-between mb-4">
-                            <div class="w-12 h-12 bg-emerald-500/10 dark:bg-emerald-500/15 rounded-2xl flex items-center justify-center border border-emerald-500/30">
-                                <i data-lucide="ruler" class="w-6 h-6 text-emerald-500"></i>
-                            </div>
-                            <span class="text-[11px] font-mono font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 group-hover:bg-emerald-500 group-hover:text-slate-950 transition-colors">MODUL 03 →</span>
-                        </div>
-                        <h3 class="text-xl font-extrabold text-slate-900 dark:text-white mb-1.5">Verktøytabeller & Matte</h3>
-                        <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">Materialdatabank, kjernebor M3–M36, ISO-pasninger, Brix kjølevæske, PCD og trigonometri.</p>
-                    </div>
-
-                    <div onclick="switchTab('ev')" class="bg-white/80 dark:bg-slate-900/70 backdrop-blur-md border border-slate-200 dark:border-slate-800 border-t-4 border-t-teal-500 rounded-3xl p-6 cursor-pointer transition-all duration-300 group hover:shadow-xl hover:-translate-y-0.5 relative overflow-hidden">
-                        <div class="flex items-start justify-between mb-4">
-                            <div class="w-12 h-12 bg-teal-500/10 dark:bg-teal-500/15 rounded-2xl flex items-center justify-center border border-teal-500/30">
-                                <i data-lucide="zap" class="w-6 h-6 text-teal-500"></i>
-                            </div>
-                            <span class="text-[11px] font-mono font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 group-hover:bg-teal-500 group-hover:text-slate-950 transition-colors">MODUL 04 →</span>
-                        </div>
-                        <h3 class="text-xl font-extrabold text-slate-900 dark:text-white mb-1.5">Strøm & Elbil</h3>
-                        <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">Apparatkostnader, ladetid, drivstoffbesparelse og vintertap.</p>
-                    </div>
                 </div>
             </div>
         </section>
@@ -958,7 +844,7 @@
                     </div>
                 </div>
                 <div class="flex items-center gap-2">
-                    <button onclick="veksleKlassiskVisning()" class="px-3 py-2 rounded-xl text-xs font-bold bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:border-blue-500 transition-all shadow-sm" title="Bytt mellom faner eller alle kort på én side">
+                    <button onclick="veksleKlassiskVisning()" class="px-3 py-2 rounded-xl text-xs font-bold bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:border-blue-500 transition-all shadow-sm" title="Vis eller skjul alle CNC-, tabell- og strømfaner">
                         <span class="classic-toggle-label">📑 Vis alle på én side</span>
                     </button>
                 </div>
@@ -1182,7 +1068,7 @@
                     </div>
                 </div>
                 <div class="flex items-center gap-2">
-                    <button onclick="veksleKlassiskVisning()" class="px-3 py-2 rounded-xl text-xs font-bold bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:border-emerald-500 transition-all shadow-sm">
+                    <button onclick="veksleKlassiskVisning()" class="px-3 py-2 rounded-xl text-xs font-bold bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:border-emerald-500 transition-all shadow-sm" title="Vis eller skjul alle CNC-, tabell- og strømfaner">
                         <span class="classic-toggle-label">📑 Vis alle på én side</span>
                     </button>
                 </div>
@@ -1203,7 +1089,7 @@
             <!-- TAB 1: SKJÆREDATA & KJØLING -->
             <div id="ttab-data" class="tools-tab-content active">
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
-                    <div class="pers-input bg-white/80 dark:bg-slate-900/60 backdrop-blur-md border border-slate-200 dark:border-slate-800 rounded-3xl p-6 lg:p-8 shadow-sm border-l-4 border-l-emerald-500">
+                    <div id="card-tools-material-data" class="pers-input bg-white/80 dark:bg-slate-900/60 backdrop-blur-md border border-slate-200 dark:border-slate-800 rounded-3xl p-6 lg:p-8 shadow-sm border-l-4 border-l-emerald-500">
                         <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2 flex items-center"><i data-lucide="database" class="w-6 h-6 mr-3 text-emerald-500"></i> Materialdatabank (HM Verktøy)</h3>
                         <p class="text-sm text-slate-500 dark:text-slate-400 mb-6 border-b border-slate-200 dark:border-slate-800 pb-4 font-medium">Anbefalte startverdier for skjærehastighet (Vc) og mating.</p>
                         <div class="grid grid-cols-2 gap-4 mb-6">
@@ -1764,7 +1650,7 @@
                     </div>
                 </div>
                 <div class="flex items-center gap-2">
-                    <button onclick="veksleKlassiskVisning()" class="px-3 py-2 rounded-xl text-xs font-bold bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:border-teal-500 transition-all shadow-sm" title="Bytt mellom faner eller alle kort på én side">
+                    <button onclick="veksleKlassiskVisning()" class="px-3 py-2 rounded-xl text-xs font-bold bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:border-teal-500 transition-all shadow-sm" title="Vis eller skjul alle CNC-, tabell- og strømfaner">
                         <span class="classic-toggle-label">📑 Vis alle på én side</span>
                     </button>
                 </div>
@@ -2187,11 +2073,11 @@
     </nav>
 
     <!-- MAIN JAVASCRIPT -->
-    <script src="./js/app.js?v=20261020-datetime"></script>
+    <script src="./js/app.js?v=20261020-separate-iso-cnc-livecards"></script>
     <script src="./js/manual-library.js"></script>
     <script src="./js/production-addons.js?v=20261020-datetime"></script>
-    <script src="./js/amount-planner.js?v=20261020-datetime"></script>
-    <script src="./js/datetime-tools.js?v=20261020"></script>
+    <script src="./js/amount-planner.js?v=20261020-inline-live-calculators"></script>
+    <script src="./js/datetime-tools.js?v=20261020-inline-live-calculators"></script>
 
 </body>
 </html>
