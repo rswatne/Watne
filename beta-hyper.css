@@ -348,6 +348,26 @@ body[data-layout="hyper"] .tab-content .glass-input:focus {
     body[data-layout="hyper"] #mobile-header h1 {
         color: #fff !important;
     }
+
+    body[data-layout="hyper"] #mobile-header button:not(#pwa-install-btn-mobile) {
+        background: rgb(255 255 255 / 8%) !important;
+        border-color: rgb(255 255 255 / 18%) !important;
+        color: #f5f5f7 !important;
+    }
+
+    body[data-layout="hyper"] #mobile-header button:not(#pwa-install-btn-mobile) :is(span, i, svg) {
+        color: #f5f5f7 !important;
+    }
+
+    body[data-layout="hyper"] #mobile-header #pwa-install-btn-mobile,
+    body[data-layout="hyper"] #mobile-header #pwa-install-btn-mobile * {
+        background: #f5f5f7 !important;
+        color: #000 !important;
+    }
+
+    body[data-layout="hyper"] #mobile-header #pwa-install-btn-mobile * {
+        background: transparent !important;
+    }
 }
 
 /* ---------- Desktop: vertikal ikonrail ---------- */
@@ -629,7 +649,7 @@ body[data-layout="hyper"] .beta-topbar { gap: 0.75rem; padding-right: 1.5rem; }
 body[data-layout="hyper"] .beta-topbar > div { min-width: 0; }
 body[data-layout="hyper"] .beta-layouts { overflow-x: auto; scrollbar-width: none; }
 
-/* ---------- Jante-ordtak på oversikten ---------- */
+/* ---------- Jante-ordtak pï¿½ oversikten ---------- */
 .hyper-hero-title .hy-word-wrap {
     display: inline-block;
     margin-right: 0.28em;
@@ -683,6 +703,6 @@ body[data-layout="hyper"] .beta-layouts { overflow-x: auto; scrollbar-width: non
 body[data-layout="hyper"] #widget-modal button.bg-brand-500 { color: #fff !important; }
 html.dark body[data-layout="hyper"] #widget-modal button.bg-brand-500 { background: #fff !important; color: #000 !important; }
 
-/* Kontrast på aksentfylte knapper/etiketter */
+/* Kontrast pï¿½ aksentfylte knapper/etiketter */
 body[data-layout="hyper"] .bg-brand-500, body[data-layout="hyper"] .bg-brand-500 * { color: #000 !important; }
 html:not(.dark) body[data-layout="hyper"] .bg-brand-500, html:not(.dark) body[data-layout="hyper"] .bg-brand-500 * { color: #fff !important; }
