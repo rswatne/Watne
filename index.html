@@ -536,7 +536,10 @@
                 <button onclick="switchSalaryTab('oversikt')" id="btn-sal-oversikt" class="salary-tab-btn active px-4 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all bg-brand-500 text-white shadow-md shadow-brand-500/20 snap-start">📊 Oversikt</button>
                 <button onclick="switchSalaryTab('vakter')" id="btn-sal-vakter" class="salary-tab-btn px-4 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 snap-start">⏱️ Vakter & Timebank</button>
                 <button onclick="switchSalaryTab('innstillinger')" id="btn-sal-innstillinger" class="salary-tab-btn px-4 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 snap-start">⚙️ Innstillinger</button>
+                <button onclick="switchSalaryTab('skatt')" id="btn-sal-skatt" class="salary-tab-btn px-4 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 snap-start">🧮 Skatt</button>
             </div>
+
+            <div id="stab-skatt" class="salary-tab-content"></div>
 
             <div id="stab-oversikt" class="salary-tab-content active">
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
@@ -2107,6 +2110,7 @@
     <script src="./js/production-addons.js?v=20261020-datetime"></script>
     <script src="./js/amount-planner.js?v=20261020-lazy-tab-calculations"></script>
     <script src="./js/datetime-tools.js?v=20261020-lazy-tab-calculations"></script>
+    <script src="./js/skattekalkulator.js?v=1"></script>
     <script src="./beta-layout.js?v=12"></script>
 
 </body>
