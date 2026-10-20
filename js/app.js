@@ -38,14 +38,14 @@
 
         // PWA INSTALLER LOGIC
         function oppdaterPwaManifest() {
-            const svgIcon = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='115' fill='%230f172a'/><rect x='24' y='24' width='464' height='464' rx='95' fill='none' stroke='%23f59e0b' stroke-width='16' stroke-opacity='0.35'/><path d='M352 128c-30.5 0-57.8 14.3-75.4 36.6L140.6 300.6c-22.3 17.6-36.6 44.9-36.6 75.4 0 53 43 96 96 96 30.5 0 57.8-14.3 75.4-36.6l136-136c22.3-17.6 36.6-44.9 36.6-75.4 0-53-43-96-96-96zm-152 288c-22.1 0-40-17.9-40-40s17.9-40 40-40 40 17.9 40 40-17.9 40-40 40z' fill='%23f59e0b'/><circle cx='352' cy='224' r='32' fill='%230f172a'/></svg>`;
+            const svgIcon = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='115' fill='%23000'/><rect x='20' y='20' width='472' height='472' rx='96' fill='none' stroke='%23fff' stroke-opacity='0.14' stroke-width='4'/><polygon points='256,106 386,181 386,331 256,406 126,331 126,181' fill='none' stroke='%23f5f5f7' stroke-width='20' stroke-linejoin='round'/><circle cx='256' cy='256' r='54' fill='none' stroke='%23f5f5f7' stroke-width='20'/></svg>`;
             const manifestObj = {
                 name: "Verkstedsportal HMI",
                 short_name: "Verksted",
                 start_url: window.location.href,
                 display: "standalone",
-                background_color: "#0f172a",
-                theme_color: "#0f172a",
+                background_color: "#000000",
+                theme_color: "#000000",
                 icons: [{ src: "data:image/svg+xml," + encodeURIComponent(svgIcon), sizes: "512x512", type: "image/svg+xml" }]
             };
             const manifestLink = document.getElementById('pwa-manifest');
