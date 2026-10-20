@@ -29,7 +29,7 @@
     <link href="./style.css?v=20261020-live-card-size" rel="stylesheet">
     <link href="./beta.css?v=2" rel="stylesheet">
     <link href="./beta-layouts.css?v=1" rel="stylesheet">
-    <link href="./beta-hyper.css?v=17" rel="stylesheet">
+    <link href="./beta-hyper.css?v=18" rel="stylesheet">
 
     <script>
         if (localStorage.theme === 'dark') {
@@ -380,9 +380,9 @@
         <header class="beta-topbar hidden md:flex items-center justify-between">
             <div class="flex items-center gap-3">
                 <span class="beta-topbar-mark"><i data-lucide="hexagon" class="w-4 h-4"></i></span>
-                <div>
-                    <p class="beta-eyebrow">VERKSTEDSPORTALEN</p>
-                    <p class="beta-topbar-title">Verksted</p>
+                <div class="hy-topclock">
+                    <span id="live-clock-top" class="hy-topclock-time">00:00:00</span>
+                    <span id="live-week-top" class="hy-topclock-week">Uke --</span>
                 </div>
             </div>
             <div class="flex items-center gap-3">
@@ -2102,7 +2102,7 @@
     </nav>
 
     <!-- MAIN JAVASCRIPT -->
-    <script src="./js/app.js?v=20261020-hex-icon"></script>
+    <script src="./js/app.js?v=20261020-topclock"></script>
     <script src="./js/manual-library.js"></script>
     <script src="./js/production-addons.js?v=20261020-datetime"></script>
     <script src="./js/amount-planner.js?v=20261020-lazy-tab-calculations"></script>

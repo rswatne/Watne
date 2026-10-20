@@ -27,7 +27,11 @@
             const elDeskDate = document.getElementById('live-date-desktop');
             const elDeskWeek = document.getElementById('live-week-desktop');
             const elMob = document.getElementById('live-clock-mobile');
+            const elTop = document.getElementById('live-clock-top');
+            const elTopWeek = document.getElementById('live-week-top');
 
+            if (elTop) elTop.innerText = tidStr;
+            if (elTopWeek) elTopWeek.innerText = `Uke ${ukeNr}`;
             if (elDesk) elDesk.innerText = tidStr;
             if (elDeskDate) elDeskDate.innerText = datoStr;
             if (elDeskWeek) elDeskWeek.innerText = `Uke ${ukeNr}`;
