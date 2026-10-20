@@ -726,7 +726,7 @@
                         <div class="grid grid-cols-2 gap-5 mb-4">
                             <div>
                                 <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Timelønn (Kr)</label>
-                                <input id="timelonn" type="number" step="0.1" value="316.5" class="glass-input glass-input-brand" oninput="beregnAlt(); lagreInnstillinger();">
+                                <input id="timelonn" type="number" step="0.1" value="324" class="glass-input glass-input-brand" oninput="beregnAlt(); lagreInnstillinger();">
                             </div>
                             <div>
                                 <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Timer pr. dag</label>
@@ -776,6 +776,14 @@
                                     <option value="prosent">Kun Prosenttrekk på alt</option>
                                 </select>
                             </div>
+
+                            <label class="flex items-start gap-3 p-4 mb-5 rounded-2xl border border-brand-200 dark:border-brand-800/60 bg-brand-50/70 dark:bg-brand-900/20 cursor-pointer">
+                                <input type="checkbox" id="halvt-skattetrekk" onchange="beregnAlt(); lagreInnstillinger();" class="custom-checkbox mt-0.5 text-brand-500 border-brand-400 dark:border-brand-500 shrink-0">
+                                <span>
+                                    <span class="block text-sm font-bold text-slate-800 dark:text-slate-200">Halvt skattetrekk på ordinær lønn</span>
+                                    <span class="block text-xs text-slate-600 dark:text-slate-400 mt-1">Huk av når utbetalingen har halvt trekk, for eksempel novemberlønn utbetalt i desember. Overtid beregnes fortsatt med fullt trekk.</span>
+                                </span>
+                            </label>
 
                             <div id="skattetabell-boks" class="mb-5">
                                 <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Skattetabell (8000 / 7100-serien)</label>
@@ -2073,7 +2081,7 @@
     </nav>
 
     <!-- MAIN JAVASCRIPT -->
-    <script src="./js/app.js?v=20261020-dashboard-on-start"></script>
+    <script src="./js/app.js?v=20261020-timesats-324"></script>
     <script src="./js/manual-library.js"></script>
     <script src="./js/production-addons.js?v=20261020-datetime"></script>
     <script src="./js/amount-planner.js?v=20261020-inline-live-calculators"></script>

@@ -424,6 +424,8 @@
             "Tabelltrekk på fastlønn + % på overtid (Standard)": "Tax table on base pay + % on overtime (Default)",
             "Kun Tabelltrekk på alt": "Tax table on everything",
             "Kun Prosenttrekk på alt": "Percentage tax on everything",
+            "Halvt skattetrekk på ordinær lønn": "Half tax withholding on regular pay",
+            "Huk av når utbetalingen har halvt trekk, for eksempel novemberlønn utbetalt i desember. Overtid beregnes fortsatt med fullt trekk.": "Check when this payout has half withholding, for example November wages paid in December. Overtime is still taxed at the full rate.",
             "Skattetabell (8000 / 7100-serien)": "Tax Table (8000 / 7100 series)",
             "Skatteprosent på overtid (%)": "Overtime tax rate (%)",
             "Fast skatteprosent på alt (%)": "Flat tax percentage on all (%)",
@@ -1858,7 +1860,7 @@
                 return;
             }
 
-            const timelonn = parseFloat(document.getElementById('timelonn').value) || 316.5;
+            const timelonn = parseFloat(document.getElementById('timelonn').value) || 324;
             let html = '<ul class="space-y-3">';
             aktive.forEach(v => {
                 const erUttak = v.kind === 'uttak_tb';
@@ -1892,7 +1894,7 @@
         function eksporterVakttilExcel() {
             const aktive = hentAktiveVakter();
             if (aktive.length === 0) return;
-            const timelonn = parseFloat(document.getElementById('timelonn').value) || 316.5;
+            const timelonn = parseFloat(document.getElementById('timelonn').value) || 324;
             let csvContent = "data:text/csv;charset=utf-8,Dato;Type;Timer;Minutter;Timebank;Brutto\n";
             aktive.forEach(v => {
                 const faktor = v.isTimebank ? (v.kind.includes('50') ? 0.5 : 1.0) : (v.kind.includes('50') ? 1.5 : 2.0);
@@ -1946,7 +1948,7 @@
 
             const harFastlonn = document.getElementById('inkluder-fastlonn').checked;
             const harFormann = document.getElementById('inkluder-formann')?.checked || false;
-            const timelonn = parseFloat(document.getElementById('timelonn').value) || 316.5;
+            const timelonn = parseFloat(document.getElementById('timelonn').value) || 324;
             const timerPrDag = parseFloat(document.getElementById('timer-dag').value) || 7.5;
             const feriedager = parseInt(document.getElementById('feriedager').value) || 0;
 
@@ -2028,20 +2030,32 @@
             const tabellValg = document.getElementById('skatte-tabellnummer').value || "7101";
             const overtidSkattPct = parseFloat(document.getElementById('skatt-overtid')?.value) || 35;
             const pctTax = parseFloat(document.getElementById('skatt').value) || 30;
+            const halvtSkattetrekk = document.getElementById('halvt-skattetrekk')?.checked || false;
 
             let skattKr = 0;
             if (skattType === 'tabell') {
                 const fastSkattegrunnlag = Math.max(0, fastBruttoEtterFerie - Math.min(unionKr, 667));
                 const skattFast = beregnUniversellTabellskatt(fastSkattegrunnlag, tabellValg);
                 const skattOvertid = sumVaktBrutto * (overtidSkattPct / 100);
-                skattKr = Math.round(skattFast + skattOvertid);
-                document.getElementById('skatt-tittel').innerText = `Skatt (Tabell + ${overtidSkattPct}% OT)`;
+                skattKr = Math.round((halvtSkattetrekk ? skattFast / 2 : skattFast) + skattOvertid);
+                document.getElementById('skatt-tittel').innerText = `Skatt (Tabell${halvtSkattetrekk ? ' 50%' : ''} + ${overtidSkattPct}% OT)`;
             } else if (skattType === 'tabell_alt') {
-                skattKr = beregnUniversellTabellskatt(Math.max(0, totalBrutto - Math.min(unionKr, 667)), tabellValg);
-                document.getElementById('skatt-tittel').innerText = `Tabelltrekk på alt`;
+                const samletSkattegrunnlag = Math.max(0, totalBrutto - Math.min(unionKr, 667));
+                const samletTabelltrekk = beregnUniversellTabellskatt(samletSkattegrunnlag, tabellValg);
+                const fastSkattegrunnlag = Math.max(0, fastBruttoEtterFerie - Math.min(unionKr, 667));
+                const fastTabelltrekk = beregnUniversellTabellskatt(fastSkattegrunnlag, tabellValg);
+                skattKr = halvtSkattetrekk
+                    ? Math.round(Math.max(0, samletTabelltrekk - fastTabelltrekk / 2))
+                    : samletTabelltrekk;
+                document.getElementById('skatt-tittel').innerText = `Tabelltrekk på alt${halvtSkattetrekk ? ' (halvt på fastlønn)' : ''}`;
             } else {
-                skattKr = Math.round(Math.max(0, totalBrutto - Math.min(unionKr, 667)) * (pctTax / 100));
-                document.getElementById('skatt-tittel').innerText = `Prosenttrekk (${pctTax}%)`;
+                const samletSkattegrunnlag = Math.max(0, totalBrutto - Math.min(unionKr, 667));
+                const fastSkattegrunnlag = Math.max(0, fastBruttoEtterFerie - Math.min(unionKr, 667));
+                const skatteprosentGrunnlag = halvtSkattetrekk
+                    ? Math.max(0, samletSkattegrunnlag - fastSkattegrunnlag / 2)
+                    : samletSkattegrunnlag;
+                skattKr = Math.round(skatteprosentGrunnlag * (pctTax / 100));
+                document.getElementById('skatt-tittel').innerText = `Prosenttrekk (${pctTax}%)${halvtSkattetrekk ? ' (halvt på fastlønn)' : ''}`;
             }
 
             document.getElementById('vis-skattetrekk').innerText = "− " + skattKr.toFixed(2).replace('.', ',') + " kr";
@@ -2796,6 +2810,7 @@
                 const savedInputs = localStorage.getItem('verksted_all_inputs');
                 if (savedInputs) {
                     const parsed = JSON.parse(savedInputs);
+                    if (String(parsed.timelonn) === '316.5') parsed.timelonn = '324';
                     Object.keys(parsed).forEach(id => {
                         const el = document.getElementById(id);
                         if (el && id !== 'ttol-pitch') {
