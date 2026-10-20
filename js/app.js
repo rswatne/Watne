@@ -129,7 +129,7 @@
             const resultatIder = [
                 'vis-netto-hoved', 'gf-res-rpm', 'gf-res-mating',
                 'gjin-res-lilledia', 'gjut-res-lilledia', 'res-fvc', 'res-frpm', 'res-fmm',
-                'deg-res-gradmin', 'rct-res-fz', 'rct-res-vf', 'taper-res-half', 'taper-res-full', 'taper-res-main',
+                'deg-res-gradmin', 'rct-res-vf', 'taper-res-half', 'taper-res-full', 'taper-res-main',
                 'mat-res-vc', 'mat-res-rpm', 'mat-res-mating',
                 'cool-res-add', 'ra-res-val', 'ra-res-maxfn',
                 'tap-res-drill', 'tap-res-form', 'ttol-res-major', 'ttol-res-pitch', 'ttol-res-minor', 'iso-res',
@@ -351,15 +351,30 @@
             "2. Finne RPM ut fra Vc": "2. Find RPM from Vc",
             "3. Bordmating (Vf) ut fra fz": "3. Table Feed (Vf) from fz",
             "Vf (Mating):": "Vf (Feed):",
-            "Tynn Spon-kompensasjon (Radial Chip Thinning)": "Radial Chip Thinning (RCT)",
-            "Tilpass matingen ved lite sideinngrep ($a_e$).": "Compensate feed rate at low radial engagement (ae).",
-            "Fres Dia (D)": "Cutter Ø (D)",
-            "Sideinngrep (ae)": "Radial stepover (ae)",
-            "Ønsket hm / Spontykkelse (mm)": "Target chip thickness hm",
-            "Spindel (RPM)": "Spindle (RPM)",
-            "Inngrepsprosent:": "Engagement %:",
-            "Kompensert fz:": "Compensated fz:",
-            "Ny Bordmating (Vf):": "New Table Feed (Vf):",
+            "Skjæredata": "Cutting Data",
+            "Inndata parametre": "Input Parameters",
+            "Verktøydiameter (D)": "Tool / Workpiece Diameter (D)",
+            "Skjærehastighet (Vc)": "Cutting Speed (Vc / SFM)",
+            "Antall skjær / tenner (z)": "Number of Cutting Edges / Teeth (z)",
+            "Beregn mating ut fra": "Calculate feed from",
+            "Mating per tann (fz)": "Feed per Tooth (fz)",
+            "Ønsket spontykkelse (hm)": "Target Chip Thickness (hm)",
+            "Aksial skjæredybde (ap)": "Axial Depth of Cut (ap / DOC)",
+            "Radial skjærebredde (ae)": "Radial Width of Cut (ae / WOC)",
+            "Kompenser for radial spontynning (RCT)?": "Compensate for Radial Chip Thinning (RCT)?",
+            "Øker matingen når ae er mindre enn 50 % av verktøydiameteren.": "Increases feed when ae is less than 50% of the tool diameter.",
+            "Kalkulerte CNC-verdier": "Calculated CNC Values",
+            "Spindelhastighet (n)": "Spindle Speed (n)",
+            "Bordmating (Vf / F)": "Table Feed (Vf / F)",
+            "Beregnet mating per tann (fz)": "Calculated Feed per Tooth (fz)",
+            "Mating per omdreining (fn)": "Feed per Revolution (fn)",
+            "Sponvolum (MRR / Q)": "Material Removal Rate (MRR / Q)",
+            "Formel: n = (Vc × 1000) / (π × D)": "Formula: n = (Vc × 1000) / (π × D)",
+            "RCT-faktor:": "RCT Factor:",
+            "RPM (o/min)": "RPM (rev/min)",
+            "stk": "pcs",
+            "mm/tann": "mm/tooth",
+            "mm/omdr": "mm/rev",
             "Innv/Utv Gjenger (Gibbs)": "Int/Ext Threads (Gibbs)",
             "Beregning av oppgitt diameter for Gibbs.": "Calculate programmed thread diameter for GibbsCAM.",
             "1. Innvendige gjenger": "1. Internal Threads",
@@ -996,7 +1011,7 @@
             { title: 'Formannstillegg & Skattetabell', titleEn: 'Foreman Bonus & Tax Table', keys: 'formann 20% timelønn tabelltrekk fagforening lo foreman hourly rate union tax', tab: 'salary', sub: 'innstillinger' },
             { title: 'Sirkulær Mating (Innvendig / Utvendig)', titleEn: 'Circular Interpolation Feed (Int / Ext)', keys: 'sirkulær fresing hull lomme sentermating circular milling hole pocket center feed', tab: 'cnc', sub: 'milling', card: 'card-cnc-sirk' },
             { title: 'Skjæredata Hurtigkalkulator (Vc / RPM / Vf)', titleEn: 'Cutting Data Quick Calc (Vc / RPM / Vf)', keys: 'vc rpm bordmating spindel fz cutting speed spindle table feed', tab: 'cnc', sub: 'milling', card: 'card-cnc-hurtig' },
-            { title: 'Tynn Spon-kompensasjon (Radial Chip Thinning)', titleEn: 'Radial Chip Thinning (RCT)', keys: 'tynn spon rct ae hm sideinngrep chip thinning stepover', tab: 'cnc', sub: 'milling', card: 'card-cnc-rct' },
+            { title: 'Skjæredata (RCT)', titleEn: 'Cutting Data (RCT)', keys: 'skjæredata cutting data rct rpm bordmating table feed sideinngrep chip thinning stepover', tab: 'cnc', sub: 'milling', card: 'card-cnc-rct' },
             { title: 'Innvendige & Utvendige Gjenger (Gibbs)', titleEn: 'Internal & External Threads (Gibbs)', keys: 'gibbs gjenger dreiing stigning threads turning pitch', tab: 'cnc', sub: 'turning', card: 'card-cnc-gibbs' },
             { title: 'Konus- & Fase-kalkulator', titleEn: 'Taper & Chamfer Calculator', keys: 'konus fase vinkel dreiing 45 grader 1:10 1:20 taper chamfer angle turning', tab: 'cnc', sub: 'turning', card: 'card-cnc-taper' },
             { title: 'C-Akse Gradering (Grader/min)', titleEn: 'C-Axis Rotary Feed (Deg/min)', keys: 'c-akse grader omkrets dreiing c-axis degrees circumference rotary', tab: 'cnc', sub: 'turning', card: 'card-cnc-caxis' },
@@ -1057,6 +1072,7 @@
             const q = (document.getElementById('global-search-input')?.value || '').trim();
             const container = document.getElementById('global-search-results');
             if (!container) return;
+            if (window.ManualSok) window.ManualSok.search(q);
             const sokOrd = normaliserSoketekst(q).split(/\s+/).filter(Boolean);
             const treff = verktoySokIndeks.filter(item => {
                 const sokbarTekst = normaliserSoketekst(`${item.title} ${item.titleEn || ''} ${item.keys}`);
@@ -1425,190 +1441,6 @@
             return false;
         }
 
-        const snarveiDestinasjoner = {
-            'salary:oversikt': { label: 'Lønnsoversikt', group: 'Lønn & timebank', icon: 'banknote' },
-            'salary:vakter': { label: 'Vakter & timebank', group: 'Lønn & timebank', icon: 'clock-3' },
-            'salary:innstillinger': { label: 'Lønnsinnstillinger', group: 'Lønn & timebank', icon: 'settings-2' },
-            'cnc:milling': { label: 'Fresing & skjæredata', group: 'Produksjon', icon: 'cpu' },
-            'cnc:turning': { label: 'Dreiing & gjenger', group: 'Produksjon', icon: 'rotate-3d' },
-            'cnc:gcodes': { label: 'G- og M-koder', group: 'Produksjon', icon: 'code-xml' },
-            'cnc:print3d': { label: '3D-print & prototype', group: 'Produksjon', icon: 'layers-3' },
-            'cnc:welding': { label: 'Sveising & platearbeid', group: 'Produksjon', icon: 'flame' },
-            'tools:data': { label: 'Skjæredata & kjøling', group: 'Verktøytabeller', icon: 'ruler' },
-            'tools:threads': { label: 'Gjenger & toleranser', group: 'Verktøytabeller', icon: 'settings' },
-            'tools:fits': { label: 'Pasninger & kilespor', group: 'Verktøytabeller', icon: 'maximize-2' },
-            'tools:weight': { label: 'Vektkalkulator', group: 'Verktøytabeller', icon: 'weight' },
-            'tools:math': { label: 'PCD & trigonometri', group: 'Verktøytabeller', icon: 'triangle' },
-            'tools:conv': { label: 'Konvertering & hardhet', group: 'Verktøytabeller', icon: 'arrow-left-right' },
-            'ev:charging': { label: 'Lading & rekkevidde', group: 'Strøm & elbil', icon: 'battery-charging' },
-            'ev:power': { label: 'Strømpris & forbruk', group: 'Strøm & elbil', icon: 'zap' },
-            'ev:tires': { label: 'Dekk & økonomi', group: 'Strøm & elbil', icon: 'circle-gauge' }
-        };
-        const snarveiLagring = {
-            favorites: 'verksted_shortcut_favorites_v1',
-            recent: 'verksted_shortcut_recent_v1'
-        };
-        const snarveiMaksNylig = 8;
-        const snarveiVisAntall = 4;
-        let visAlleFavoritter = false;
-        let visAlleNylige = false;
-        let snarveiTimer = null;
-
-        function lesSnarveiListe(nokkel) {
-            try {
-                const lagret = localStorage.getItem(nokkel);
-                if (!lagret) return [];
-                const parsed = JSON.parse(lagret);
-                if (!Array.isArray(parsed)) return [];
-                return [...new Set(parsed.filter(id => typeof id === 'string' && snarveiDestinasjoner[id]))];
-            } catch (error) {
-                console.error(`Kunne ikke lese snarveier fra nettleserlagringen (${nokkel}).`, error);
-                return [];
-            }
-        }
-
-        function lagreSnarveiListe(nokkel, verdier) {
-            try {
-                localStorage.setItem(nokkel, JSON.stringify(verdier));
-                return true;
-            } catch (error) {
-                console.error(`Kunne ikke lagre snarveier i nettleserlagringen (${nokkel}).`, error);
-                visToast('Snarveien kunne ikke lagres i nettleseren.', 'error');
-                return false;
-            }
-        }
-
-        function visSnarveiListe(type, elementId, emptyId, moreId, utvidet) {
-            const container = document.getElementById(elementId);
-            const emptyState = document.getElementById(emptyId);
-            const moreButton = document.getElementById(moreId);
-            if (!container || !emptyState || !moreButton) return;
-
-            const nokkel = snarveiLagring[type];
-            const verdier = lesSnarveiListe(nokkel);
-            const favoritter = lesSnarveiListe(snarveiLagring.favorites);
-            const synlige = utvidet ? verdier : verdier.slice(0, snarveiVisAntall);
-            container.replaceChildren();
-            emptyState.classList.toggle('hidden', verdier.length > 0);
-            container.classList.toggle('hidden', verdier.length === 0);
-
-            synlige.forEach(id => {
-                const destinasjon = snarveiDestinasjoner[id];
-                const row = document.createElement('div');
-                row.className = 'flex items-center gap-2 rounded-xl border border-slate-200/80 dark:border-slate-700/80 bg-white/80 dark:bg-slate-800/70 p-2';
-
-                const openButton = document.createElement('button');
-                openButton.type = 'button';
-                openButton.dataset.shortcutGo = id;
-                openButton.className = 'flex min-w-0 flex-1 items-center gap-2.5 rounded-lg p-1 text-left hover:bg-slate-100 dark:hover:bg-slate-700/70 transition-colors';
-                openButton.innerHTML = `<i data-lucide="${destinasjon.icon}" class="w-4 h-4 shrink-0 text-brand-500"></i><span class="min-w-0"><span class="block truncate text-xs font-bold text-slate-800 dark:text-slate-200">${destinasjon.label}</span><span class="block truncate text-[10px] text-slate-500 dark:text-slate-400">${destinasjon.group}</span></span>`;
-
-                const favoriteButton = document.createElement('button');
-                const isFavorite = favoritter.includes(id);
-                favoriteButton.type = 'button';
-                favoriteButton.dataset.shortcutToggle = id;
-                favoriteButton.setAttribute('aria-label', isFavorite ? `Fjern ${destinasjon.label} fra favoritter` : `Legg ${destinasjon.label} til i favoritter`);
-                favoriteButton.setAttribute('aria-pressed', String(isFavorite));
-                favoriteButton.title = isFavorite ? 'Fjern fra favoritter' : 'Legg til i favoritter';
-                favoriteButton.className = 'shrink-0 rounded-lg p-2 text-amber-500 hover:bg-amber-500/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand-500';
-                favoriteButton.innerHTML = `<i data-lucide="star" class="w-4 h-4${isFavorite ? ' fill-current' : ''}"></i>`;
-
-                row.append(openButton, favoriteButton);
-                container.appendChild(row);
-            });
-
-            moreButton.classList.toggle('hidden', verdier.length <= snarveiVisAntall);
-            moreButton.textContent = utvidet ? 'Vis færre' : `Vis alle (${verdier.length})`;
-        }
-
-        function oppdaterSnarveier() {
-            visSnarveiListe('favorites', 'shortcut-favorites', 'shortcut-favorites-empty', 'shortcut-favorites-more', visAlleFavoritter);
-            visSnarveiListe('recent', 'shortcut-recent', 'shortcut-recent-empty', 'shortcut-recent-more', visAlleNylige);
-            initIcons();
-        }
-
-        function registrerNyligBrukt(id) {
-            if (!snarveiDestinasjoner[id]) return;
-            if (snarveiTimer !== null) window.clearTimeout(snarveiTimer);
-            snarveiTimer = window.setTimeout(() => {
-                const nylige = lesSnarveiListe(snarveiLagring.recent).filter(nyligId => nyligId !== id);
-                nylige.unshift(id);
-                if (lagreSnarveiListe(snarveiLagring.recent, nylige.slice(0, snarveiMaksNylig))) {
-                    oppdaterSnarveier();
-                }
-                snarveiTimer = null;
-            }, 0);
-        }
-
-        function registrerAktivSnarvei(hovedfane) {
-            const underfaner = {
-                salary: ['oversikt', 'vakter', 'innstillinger'],
-                cnc: ['milling', 'turning', 'gcodes', 'print3d', 'welding'],
-                tools: ['data', 'threads', 'fits', 'weight', 'math', 'conv'],
-                ev: ['charging', 'power', 'tires']
-            };
-            const lagringsnokler = {
-                salary: 'active_salary_tab',
-                cnc: 'active_cnc_tab',
-                tools: 'active_tools_tab',
-                ev: 'active_ev_tab'
-            };
-            const standardUnderfane = {
-                salary: 'oversikt',
-                cnc: 'milling',
-                tools: 'data',
-                ev: 'charging'
-            };
-            if (!underfaner[hovedfane]) return;
-            const underfane = localStorage.getItem(lagringsnokler[hovedfane]) || standardUnderfane[hovedfane];
-            if (underfaner[hovedfane].includes(underfane)) {
-                registrerNyligBrukt(`${hovedfane}:${underfane}`);
-            }
-        }
-
-        function gaTilSnarvei(id) {
-            if (!snarveiDestinasjoner[id]) return;
-            const [hovedfane, underfane] = id.split(':');
-            switchTab(hovedfane);
-            if (hovedfane === 'salary') switchSalaryTab(underfane);
-            if (hovedfane === 'cnc') switchCncTab(underfane);
-            if (hovedfane === 'tools') switchToolsTab(underfane);
-            if (hovedfane === 'ev') switchEvTab(underfane);
-        }
-
-        function byttFavoritt(id) {
-            if (!snarveiDestinasjoner[id]) return;
-            const favoritter = lesSnarveiListe(snarveiLagring.favorites);
-            const oppdatert = favoritter.includes(id)
-                ? favoritter.filter(favoritt => favoritt !== id)
-                : [id, ...favoritter];
-            if (lagreSnarveiListe(snarveiLagring.favorites, oppdatert)) oppdaterSnarveier();
-        }
-
-        function initSnarveier() {
-            const snarveier = document.getElementById('dash-shortcuts');
-            if (!snarveier) return;
-            snarveier.addEventListener('click', event => {
-                const target = event.target instanceof Element ? event.target : null;
-                const goButton = target?.closest('[data-shortcut-go]');
-                const favoriteButton = target?.closest('[data-shortcut-toggle]');
-                const moreButton = target?.closest('#shortcut-favorites-more, #shortcut-recent-more');
-
-                if (goButton instanceof HTMLButtonElement) {
-                    gaTilSnarvei(goButton.dataset.shortcutGo);
-                } else if (favoriteButton instanceof HTMLButtonElement) {
-                    byttFavoritt(favoriteButton.dataset.shortcutToggle);
-                } else if (moreButton?.id === 'shortcut-favorites-more') {
-                    visAlleFavoritter = !visAlleFavoritter;
-                    oppdaterSnarveier();
-                } else if (moreButton?.id === 'shortcut-recent-more') {
-                    visAlleNylige = !visAlleNylige;
-                    oppdaterSnarveier();
-                }
-            });
-            oppdaterSnarveier();
-        }
-
         // --- NAVIGATION LOGIC ---
         function switchTab(tabId, pushHist = true) {
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
@@ -1653,7 +1485,6 @@
                 if(tabId === 'ev') activeMnav.classList.add('text-teal-500');
             }
             localStorage.setItem('active_tab', tabId);
-            if (pushHist && tabId !== 'dashboard') registrerAktivSnarvei(tabId);
             if (pushHist) dyttHistorikkState();
         }
 
@@ -1672,7 +1503,6 @@
                 activeBtn.classList.add('bg-emerald-500', 'text-white', 'shadow-md', 'shadow-emerald-500/20');
             }
             localStorage.setItem('active_tools_tab', tabId);
-            if (pushHist && localStorage.getItem('active_tab') === 'tools') registrerNyligBrukt(`tools:${tabId}`);
             if (pushHist) dyttHistorikkState();
         }
 
@@ -1691,7 +1521,6 @@
                 activeBtn.classList.add('bg-blue-500', 'text-white', 'shadow-md', 'shadow-blue-500/20');
             }
             localStorage.setItem('active_cnc_tab', tabId);
-            if (pushHist && localStorage.getItem('active_tab') === 'cnc') registrerNyligBrukt(`cnc:${tabId}`);
             if (pushHist) dyttHistorikkState();
         }
 
@@ -1710,7 +1539,6 @@
                 activeBtn.classList.add('bg-teal-500', 'text-white', 'shadow-md', 'shadow-teal-500/20');
             }
             localStorage.setItem('active_ev_tab', tabId);
-            if (pushHist && localStorage.getItem('active_tab') === 'ev') registrerNyligBrukt(`ev:${tabId}`);
             if (pushHist) dyttHistorikkState();
         }
 
@@ -1729,7 +1557,6 @@
                 activeBtn.classList.add('bg-brand-500', 'text-white', 'shadow-md', 'shadow-brand-500/20');
             }
             localStorage.setItem('active_salary_tab', tabId);
-            if (pushHist && localStorage.getItem('active_tab') === 'salary') registrerNyligBrukt(`salary:${tabId}`);
             if (pushHist) dyttHistorikkState();
         }
 
@@ -2564,21 +2391,69 @@
             document.getElementById('deg-res-revmin').innerText = (omkrets > 0 ? (mmmin / omkrets) : 0).toFixed(2) + " omdr/min";
             oppdaterSisteCncKpi(`${gradMin} °/min`, `C-Akse: Ø${dia} mm`, 'cnc');
         }
-        function beregnChipThinning() {
-            const d = parseFloat(document.getElementById('rct-d')?.value) || 16;
-            const ae = parseFloat(document.getElementById('rct-ae')?.value) || 1.6;
-            const hm = parseFloat(document.getElementById('rct-hm')?.value) || 0.10;
-            const z = parseFloat(document.getElementById('rct-z')?.value) || 5;
-            const rpm = parseFloat(document.getElementById('rct-rpm')?.value) || 4500;
-            const pct = (ae / d) * 100;
-            let rctFactor = (ae > 0 && ae < d / 2) ? 1 / (2 * Math.sqrt((ae / d) * (1 - (ae / d)))) : 1.0;
-            const fzComp = hm * rctFactor;
-            const vf = rpm * z * fzComp;
-            document.getElementById('rct-res-pct').innerText = `${pct.toFixed(1)} %`;
-            document.getElementById('rct-res-fz').innerText = `${fzComp.toFixed(3)} mm/tann`;
-            document.getElementById('rct-res-vf').innerText = `${Math.round(vf)} mm/min`;
-            oppdaterSisteCncKpi(`fz ${fzComp.toFixed(3)} | F${Math.round(vf)}`, `Tynn spon: Ø${d} (ae=${ae})`, 'cnc');
-        }
+        window.oppdaterRctInndatamodus = function() {
+            const mode = document.getElementById('rct-mode')?.value || 'fz';
+            const fzField = document.getElementById('rct-fz-field');
+            const hmField = document.getElementById('rct-hm-field');
+            if (fzField) fzField.classList.toggle('hidden', mode !== 'fz');
+            if (hmField) hmField.classList.toggle('hidden', mode !== 'hm');
+            window.beregnChipThinning();
+            if (typeof lagreAltState === 'function') lagreAltState();
+        };
+        window.beregnChipThinning = function() {
+            const d = parseFloat(document.getElementById('rct-d')?.value);
+            const vc = parseFloat(document.getElementById('rct-vc')?.value);
+            const z = parseFloat(document.getElementById('rct-z')?.value);
+            const mode = document.getElementById('rct-mode')?.value || 'fz';
+            const inputFz = parseFloat(document.getElementById('rct-fz')?.value);
+            const hm = parseFloat(document.getElementById('rct-hm')?.value);
+            const targetFeed = mode === 'hm' ? hm : inputFz;
+            const ap = parseFloat(document.getElementById('rct-ap')?.value);
+            const ae = parseFloat(document.getElementById('rct-ae')?.value);
+            const isEnabled = document.getElementById('rct-enabled')?.checked || false;
+            const rpmEl = document.getElementById('rct-res-rpm');
+            const feedEl = document.getElementById('rct-res-vf');
+            const fzEl = document.getElementById('rct-res-fz');
+            const fnEl = document.getElementById('rct-res-fn');
+            const mrrEl = document.getElementById('rct-res-mrr');
+            const factorEl = document.getElementById('rct-res-factor');
+            const statusEl = document.getElementById('rct-status');
+            const erEng = typeof currentLang !== 'undefined' && currentLang === 'en';
+            if (!rpmEl || !feedEl || !fzEl || !fnEl || !mrrEl || !factorEl || !statusEl) return;
+
+            if (!Number.isFinite(d) || d <= 0 || !Number.isFinite(vc) || vc <= 0 ||
+                !Number.isInteger(z) || z <= 0 || !Number.isFinite(targetFeed) || targetFeed < 0 ||
+                !Number.isFinite(ap) || ap < 0 || !Number.isFinite(ae) || ae <= 0 || ae > d) {
+                rpmEl.innerText = '--';
+                feedEl.innerText = '--';
+                fzEl.innerText = '--';
+                fnEl.innerText = '--';
+                mrrEl.innerText = '--';
+                factorEl.innerText = '--';
+                statusEl.innerText = erEng
+                    ? 'Enter valid values: D, Vc and z must be greater than zero; fz/hm and ap cannot be negative; ae must be greater than zero and no larger than D.'
+                    : 'Oppgi gyldige verdier: D, Vc og z må være større enn null, fz/hm og ap kan ikke være negative, og ae må være større enn null og ikke større enn D.';
+                return;
+            }
+
+            const aeRatio = ae / d;
+            const rctFactor = isEnabled && aeRatio < 0.5
+                ? 1 / (2 * Math.sqrt(aeRatio * (1 - aeRatio)))
+                : 1;
+            const rpm = (vc * 1000) / (Math.PI * d);
+            const fz = targetFeed * rctFactor;
+            const feedPerRev = fz * z;
+            const vf = rpm * feedPerRev;
+            const mrr = (vf * ap * ae) / 1000;
+            rpmEl.innerText = `${Math.round(rpm)}`;
+            feedEl.innerText = `${Math.round(vf)} mm/min`;
+            fzEl.innerText = fz.toFixed(3);
+            fnEl.innerText = feedPerRev.toFixed(3);
+            mrrEl.innerText = mrr.toFixed(1);
+            factorEl.innerText = rctFactor.toFixed(2);
+            statusEl.innerText = '';
+            oppdaterSisteCncKpi(`${Math.round(rpm)} RPM | F${Math.round(vf)}`, `${isEnabled ? (erEng ? 'RCT on' : 'RCT på') : (erEng ? 'RCT off' : 'RCT av')}`, 'cnc', 'milling');
+        };
 
         // --- TOOLS LOGIC ---
         const materialData = {
@@ -3413,7 +3288,8 @@
             beregnFinnRpm();
             beregnFinnMmMin();
             beregnGraderPrMin();
-            beregnChipThinning();
+            window.oppdaterRctInndatamodus();
+            window.beregnChipThinning();
             byttKonusModus();
             filtrerGKoder();
             oppdaterMaterialeData();
@@ -3440,6 +3316,5 @@
             beregnDekkDimensjon();
             aktiverHurtigKopiering();
             if (currentLang === 'en') brukSprak();
-            initSnarveier();
             initIcons();
         });

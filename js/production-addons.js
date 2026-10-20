@@ -126,35 +126,6 @@
         }
 
         // -------------------------------------------------------------------------
-        // 1B. LEGG TIL MM / % VELGER FOR SIDEINNGREP (ae) I TYNN SPON-KOMPENSASJON
-        // -------------------------------------------------------------------------
-        const rctAeInput = document.getElementById('rct-ae');
-        if (rctAeInput && !document.getElementById('rct-ae-mode')) {
-            const aeContainer = rctAeInput.parentElement;
-            const labelEl = aeContainer.querySelector('label');
-            if (labelEl) {
-                const headerRow = document.createElement('div');
-                headerRow.className = 'flex items-center justify-between gap-1 mb-1.5';
-                labelEl.className = 'block text-sm font-semibold text-slate-700 dark:text-slate-300 truncate';
-                labelEl.id = 'rct-ae-label';
-                headerRow.appendChild(labelEl);
-
-                headerRow.insertAdjacentHTML('beforeend', `
-                    <input type="hidden" id="rct-ae-mode" value="mm">
-                    <div class="inline-flex rounded-lg bg-slate-200/80 dark:bg-slate-800 p-0.5 border border-slate-300/60 dark:border-slate-700 shrink-0">
-                        <button type="button" id="btn-rct-mm" onclick="settRctAeModus('mm')" class="px-2 py-0.5 text-[10px] font-mono font-extrabold rounded-md bg-emerald-500 text-white shadow-sm transition-all">mm</button>
-                        <button type="button" id="btn-rct-pct" onclick="settRctAeModus('pct')" class="px-2 py-0.5 text-[10px] font-mono font-extrabold rounded-md text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all">%</button>
-                    </div>
-                `);
-                aeContainer.insertBefore(headerRow, rctAeInput);
-            }
-            const savedMode = localStorage.getItem('rct_ae_mode');
-            if (savedMode === 'pct') {
-                settRctAeModus('pct', false);
-            }
-        }
-
-        // -------------------------------------------------------------------------
         // 2. FLYTT C-AKSE GRADERING INN I GRID-CONTAINEREN PÅ FRESING-FANEN
         // -------------------------------------------------------------------------
         const caxisCard = document.getElementById('card-cnc-caxis');
@@ -318,7 +289,7 @@
 
         if (typeof initSammenleggbareKort === 'function') initSammenleggbareKort();
         if (typeof initIcons === 'function') initIcons();
-        beregnChipThinning();
+        window.beregnChipThinning();
         beregn3DPrint();
         beregnSveising();
         beregnPlateknekk();
@@ -399,90 +370,8 @@
     }
 
     // -------------------------------------------------------------------------
-    // KALKULATORFUNKSJONER FOR RCT (MM / %), 3D-PRINT, SVEISING & PCD
+    // KALKULATORFUNKSJONER FOR 3D-PRINT, SVEISING & PCD
     // -------------------------------------------------------------------------
-    window.settRctAeModus = function(nyModus, konverterVerdi = true) {
-        const modeInput = document.getElementById('rct-ae-mode');
-        const aeInput = document.getElementById('rct-ae');
-        const dInput = document.getElementById('rct-d');
-        const btnMm = document.getElementById('btn-rct-mm');
-        const btnPct = document.getElementById('btn-rct-pct');
-        const lbl = document.getElementById('rct-ae-label');
-        if (!modeInput || !aeInput || !dInput) return;
-
-        const gammelModus = modeInput.value || 'mm';
-        const d = parseFloat(dInput.value) || 16;
-        const naaVerdi = parseFloat(aeInput.value) || 0;
-
-        if (konverterVerdi && gammelModus !== nyModus && d > 0) {
-            if (nyModus === 'pct') {
-                // Konverter fra mm til %
-                const pct = (naaVerdi / d) * 100;
-                aeInput.value = parseFloat(pct.toFixed(1));
-                aeInput.step = '1';
-            } else {
-                // Konverter fra % til mm
-                const mm = (naaVerdi / 100) * d;
-                aeInput.value = parseFloat(mm.toFixed(2));
-                aeInput.step = '0.1';
-            }
-        }
-
-        modeInput.value = nyModus;
-        localStorage.setItem('rct_ae_mode', nyModus);
-
-        if (btnMm && btnPct) {
-            if (nyModus === 'pct') {
-                btnPct.className = 'px-2 py-0.5 text-[10px] font-mono font-extrabold rounded-md bg-emerald-500 text-white shadow-sm transition-all';
-                btnMm.className = 'px-2 py-0.5 text-[10px] font-mono font-extrabold rounded-md text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all';
-            } else {
-                btnMm.className = 'px-2 py-0.5 text-[10px] font-mono font-extrabold rounded-md bg-emerald-500 text-white shadow-sm transition-all';
-                btnPct.className = 'px-2 py-0.5 text-[10px] font-mono font-extrabold rounded-md text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all';
-            }
-        }
-
-        if (lbl) {
-            const erEng = typeof currentLang !== 'undefined' && currentLang === 'en';
-            lbl.innerText = nyModus === 'pct'
-                ? (erEng ? 'Radial stepover (% of D)' : 'Sideinngrep (% av D)')
-                : (erEng ? 'Radial stepover (ae)' : 'Sideinngrep (ae)');
-        }
-
-        beregnChipThinning();
-        if (typeof lagreAltState === 'function') lagreAltState();
-    };
-
-    window.beregnChipThinning = function() {
-        const d = parseFloat(document.getElementById('rct-d')?.value) || 16;
-        const rawAe = parseFloat(document.getElementById('rct-ae')?.value) || 0;
-        const mode = document.getElementById('rct-ae-mode')?.value || 'mm';
-        const hm = parseFloat(document.getElementById('rct-hm')?.value) || 0.10;
-        const z = parseFloat(document.getElementById('rct-z')?.value) || 5;
-        const rpm = parseFloat(document.getElementById('rct-rpm')?.value) || 4500;
-
-        const aeMm = mode === 'pct' ? (rawAe / 100) * d : rawAe;
-        const pct = d > 0 ? (aeMm / d) * 100 : 0;
-
-        let rctFactor = (aeMm > 0 && aeMm < d / 2)
-            ? 1 / (2 * Math.sqrt((aeMm / d) * (1 - (aeMm / d))))
-            : 1.0;
-
-        const fzComp = hm * rctFactor;
-        const vf = rpm * z * fzComp;
-
-        const pctEl = document.getElementById('rct-res-pct');
-        const fzEl = document.getElementById('rct-res-fz');
-        const vfEl = document.getElementById('rct-res-vf');
-
-        if (pctEl) pctEl.innerText = `${pct.toFixed(1)} % (${aeMm.toFixed(2)} mm)`;
-        if (fzEl) fzEl.innerText = `${fzComp.toFixed(3)} mm/tann`;
-        if (vfEl) vfEl.innerText = `${Math.round(vf)} mm/min`;
-
-        if (typeof oppdaterSisteCncKpi === 'function') {
-            oppdaterSisteCncKpi(`fz ${fzComp.toFixed(3)} | F${Math.round(vf)}`, `Tynn spon: Ø${d} (ae=${aeMm.toFixed(2)}mm / ${pct.toFixed(0)}%)`, 'cnc', 'milling');
-        }
-    };
-
     window.beregn3DPrint = function() {
         const w = parseFloat(document.getElementById('p3d-weight')?.value) || 0;
         const spool = parseFloat(document.getElementById('p3d-spool')?.value) || 0;
