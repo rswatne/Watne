@@ -49,7 +49,10 @@
             });
         }, { passive: true });
 
-        document.addEventListener('verksted:tab-open', event => setHeroTitle(event.detail?.tabId));
+        document.addEventListener('verksted:tab-open', event => {
+            setHeroTitle(event.detail?.tabId);
+            main.scrollTo({ top: 0, behavior: 'instant' });
+        });
 
         if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
         const toTop = () => { main.scrollTop = 0; window.scrollTo(0, 0); document.body.style.setProperty('--sy', 0); };
