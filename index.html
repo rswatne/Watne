@@ -2,7 +2,7 @@
 <html lang="no" class="scroll-smooth dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Verkstedsportalen | CNC, Verktøy, Lønn & Strøm</title>
 
     <!-- PWA & Mobile App Meta Tags -->
@@ -24,6 +24,7 @@
     
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 
     <link href="./style.css" rel="stylesheet">
 
@@ -261,13 +262,28 @@
 
     <!-- GLOBALT HURTIGSØK MODAL (Ctrl + K) -->
     <div id="search-modal" class="fixed inset-0 z-[98] hidden items-start justify-center bg-slate-950/75 backdrop-blur-sm p-4 pt-16 sm:pt-24" onclick="if(event.target===this) lukkSokModal()">
-        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-3xl max-w-xl w-full p-5 shadow-2xl animate-fadeIn">
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-3xl max-w-xl w-full max-h-[85vh] overflow-y-auto p-5 shadow-2xl animate-fadeIn">
             <div class="relative mb-4">
                 <i data-lucide="search" class="w-5 h-5 text-brand-500 absolute left-4 top-1/2 -translate-y-1/2"></i>
                 <input type="text" id="global-search-input" placeholder="Søk etter verktøy (f.eks. kilespor, H7, G76, konus, brix, moment, formann)..." oninput="oppdaterSokResultater()" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-2xl pl-12 pr-10 py-3.5 text-sm font-semibold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500">
                 <button onclick="lukkSokModal()" class="absolute right-3 top-1/2 -translate-y-1/2 px-2 py-1 text-xs rounded-lg bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 font-mono">ESC</button>
             </div>
-            <div id="global-search-results" class="max-h-80 overflow-y-auto space-y-1.5 pr-1"></div>
+            <div id="global-search-results" class="max-h-64 overflow-y-auto space-y-1.5 pr-1"></div>
+            <section class="mt-4 pt-4 border-t border-slate-200 dark:border-slate-800" aria-labelledby="manual-search-title">
+                <div class="flex items-center justify-between gap-3 mb-2">
+                    <div class="min-w-0">
+                        <h3 id="manual-search-title" class="text-xs font-extrabold uppercase tracking-wider text-slate-700 dark:text-slate-200">Maskinmanualer / Machine manuals</h3>
+                        <p id="manual-library-status" role="status" class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Søk i manualene eller legg til PDF-er. Filene lagres bare i denne nettleseren.</p>
+                    </div>
+                    <label for="manual-pdf-input" class="shrink-0 inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-extrabold bg-brand-500 hover:bg-brand-400 text-slate-950 cursor-pointer transition-colors">
+                        <i data-lucide="file-up" class="w-4 h-4"></i>
+                        <span>Legg til PDF</span>
+                    </label>
+                    <input id="manual-pdf-input" type="file" accept="application/pdf,.pdf" multiple class="sr-only" onchange="ManualSok.importFiles(this.files); this.value = ''">
+                </div>
+                <div id="manual-library-documents" class="flex flex-wrap gap-1.5 mb-3"></div>
+                <div id="manual-search-results" class="space-y-1.5"></div>
+            </section>
         </div>
     </div>
 
@@ -2018,6 +2034,7 @@
 
     <!-- MAIN JAVASCRIPT -->
     <script src="./js/app.js"></script>
+    <script src="./js/manual-library.js"></script>
     <script src="./js/production-addons.js"></script>
 
 </body>
