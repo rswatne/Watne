@@ -2780,7 +2780,7 @@
             } catch (e) {}
         }
 
-        function lastInnAltState() {
+        function lastInnAltState(openDashboard = false) {
             try {
                 byggAarsOgMaanedsLister();
                 if (localStorage.getItem('lonn_year')) document.getElementById('year').value = localStorage.getItem('lonn_year');
@@ -2819,8 +2819,9 @@
                     if (subEl) subEl.innerText = localStorage.getItem('siste_cnc_sub');
                 }
 
-                // Sjekk først om URL-hash angir en spesifikk fane, ellers bruk sist lagrede fane
-                if (!lesStateFraUrlHash()) {
+                if (openDashboard) {
+                    switchTab('dashboard', false);
+                } else if (!lesStateFraUrlHash()) {
                     const activeTab = localStorage.getItem('active_tab');
                     if (activeTab) switchTab(activeTab, false);
                     const activeTools = localStorage.getItem('active_tools_tab');
@@ -3861,7 +3862,7 @@
         window.addEventListener('DOMContentLoaded', () => {
             registrerKalkulatorLivekort();
             hentWidgetKonfig();
-            lastInnAltState();
+            lastInnAltState(true);
             lastInnNotaterOgSjekkliste();
             beregnSirkulaerMating();
             beregnGjengerInnvendig();
