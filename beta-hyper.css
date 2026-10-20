@@ -741,3 +741,112 @@ html.dark body[data-layout="hyper"] #widget-modal button.bg-brand-500 { backgrou
 /* Kontrast p� aksentfylte knapper/etiketter */
 body[data-layout="hyper"] .bg-brand-500, body[data-layout="hyper"] .bg-brand-500 * { color: #000 !important; }
 html:not(.dark) body[data-layout="hyper"] .bg-brand-500, html:not(.dark) body[data-layout="hyper"] .bg-brand-500 * { color: #fff !important; }
+
+.hyper-hero[hidden] { display: none !important; }
+
+/* ---------- Monokrom palett for kalkulatorer, tabeller og dialoger ---------- */
+body[data-layout="hyper"] {
+    --hy-ink: #f5f5f7;
+    --hy-ink-2: #a1a1a6;
+    --hy-tint: rgb(255 255 255 / 6%);
+    --hy-hair: rgb(255 255 255 / 16%);
+    --hy-ring: rgb(255 255 255 / 55%);
+    --hy-solid: #f5f5f7;
+    --hy-on-solid: #000;
+}
+
+html:not(.dark) body[data-layout="hyper"] {
+    --hy-ink: #1d1d1f;
+    --hy-ink-2: #6e6e73;
+    --hy-tint: rgb(0 0 0 / 5%);
+    --hy-hair: rgb(0 0 0 / 14%);
+    --hy-ring: rgb(0 0 0 / 45%);
+    --hy-solid: #1d1d1f;
+    --hy-on-solid: #fff;
+}
+
+body[data-layout="hyper"] :is(
+    [class*="text-amber-"], [class*="text-brand-"], [class*="text-sky-"], [class*="text-indigo-"],
+    [class*="text-emerald-"], [class*="text-teal-"], [class*="text-violet-"], [class*="text-purple-"],
+    [class*="text-orange-"], [class*="text-cyan-"], [class*="text-green-"], [class*="text-yellow-"],
+    [class*="text-blue-"], [class*="text-lime-"], [class*="text-fuchsia-"], [class*="text-pink-"]
+) {
+    color: var(--hy-ink) !important;
+}
+
+body[data-layout="hyper"] :is(i, svg):is(
+    [class*="text-amber-"], [class*="text-brand-"], [class*="text-sky-"], [class*="text-indigo-"],
+    [class*="text-emerald-"], [class*="text-teal-"], [class*="text-violet-"], [class*="text-purple-"],
+    [class*="text-orange-"], [class*="text-cyan-"], [class*="text-green-"], [class*="text-yellow-"],
+    [class*="text-blue-"], [class*="text-lime-"], [class*="text-fuchsia-"], [class*="text-pink-"]
+) {
+    color: var(--hy-ink-2) !important;
+}
+
+body[data-layout="hyper"] :is(
+    [class*="bg-amber-"], [class*="bg-brand-"], [class*="bg-sky-"], [class*="bg-indigo-"],
+    [class*="bg-emerald-"], [class*="bg-teal-"], [class*="bg-violet-"], [class*="bg-purple-"],
+    [class*="bg-orange-"], [class*="bg-cyan-"], [class*="bg-green-"], [class*="bg-yellow-"],
+    [class*="bg-blue-"], [class*="bg-lime-"], [class*="bg-fuchsia-"], [class*="bg-pink-"]
+) {
+    background-color: var(--hy-tint) !important;
+}
+
+body[data-layout="hyper"] :is(
+    [class*="border-amber-"], [class*="border-brand-"], [class*="border-sky-"], [class*="border-indigo-"],
+    [class*="border-emerald-"], [class*="border-teal-"], [class*="border-violet-"], [class*="border-purple-"],
+    [class*="border-orange-"], [class*="border-cyan-"], [class*="border-green-"], [class*="border-yellow-"],
+    [class*="border-blue-"], [class*="border-lime-"], [class*="border-fuchsia-"], [class*="border-pink-"]
+) {
+    border-color: var(--hy-hair) !important;
+}
+
+body[data-layout="hyper"] :is(
+    [class*="ring-amber-"], [class*="ring-brand-"], [class*="ring-sky-"], [class*="ring-indigo-"],
+    [class*="ring-emerald-"], [class*="ring-teal-"], [class*="ring-violet-"], [class*="ring-purple-"],
+    [class*="ring-orange-"], [class*="ring-cyan-"], [class*="ring-green-"], [class*="ring-yellow-"],
+    [class*="ring-blue-"], [class*="ring-lime-"], [class*="ring-fuchsia-"], [class*="ring-pink-"]
+) {
+    --tw-ring-color: var(--hy-ring) !important;
+}
+
+body[data-layout="hyper"] .glass-input:focus {
+    border-color: var(--hy-ring) !important;
+    --tw-ring-color: var(--hy-ring) !important;
+    box-shadow: 0 0 0 3px var(--hy-tint);
+}
+
+/* Fylte (aktive) knapper og merker */
+body[data-layout="hyper"] :is(
+    [class~="bg-brand-500"], [class~="bg-emerald-500"], [class~="bg-blue-500"], [class~="bg-teal-500"],
+    [class~="bg-violet-500"], [class~="bg-sky-500"], [class~="bg-indigo-500"], [class~="bg-amber-500"]
+) {
+    background-color: var(--hy-solid) !important;
+    border-color: var(--hy-solid) !important;
+    color: var(--hy-on-solid) !important;
+    box-shadow: none !important;
+}
+
+body[data-layout="hyper"] :is(
+    [class~="bg-brand-500"], [class~="bg-emerald-500"], [class~="bg-blue-500"], [class~="bg-teal-500"],
+    [class~="bg-violet-500"], [class~="bg-sky-500"], [class~="bg-indigo-500"], [class~="bg-amber-500"]
+) :is(*, i, svg) {
+    color: var(--hy-on-solid) !important;
+}
+
+body[data-layout="hyper"] :is(button, a, label)[class~="bg-brand-500"]:hover,
+body[data-layout="hyper"] :is(button, a, label)[class~="bg-emerald-500"]:hover {
+    opacity: 0.88;
+}
+
+body[data-layout="hyper"] .custom-checkbox,
+body[data-layout="hyper"] input[type="checkbox"],
+body[data-layout="hyper"] input[type="radio"],
+body[data-layout="hyper"] input[type="range"] {
+    accent-color: var(--hy-solid);
+}
+
+body[data-layout="hyper"] :where(button, a, input, select, textarea, [tabindex]):focus-visible {
+    outline: 2px solid var(--hy-ring);
+    outline-offset: 2px;
+}

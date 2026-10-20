@@ -109,6 +109,7 @@
         title.classList.toggle('is-saying', jante);
         const hero = title.closest('.hyper-hero');
         hero.classList.toggle('is-jante', jante);
+        hero.hidden = !jante;
         hero.querySelector('.hyper-hero-kicker').textContent = jante ? '' : 'VERKSTEDSPORTALEN';
         renderTitle(title, jante ? janteSaying() : (tabTitles[id] || id));
     }

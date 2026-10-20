@@ -29,7 +29,7 @@
     <link href="./style.css?v=20261020-live-card-size" rel="stylesheet">
     <link href="./beta.css?v=2" rel="stylesheet">
     <link href="./beta-layouts.css?v=1" rel="stylesheet">
-    <link href="./beta-hyper.css?v=20" rel="stylesheet">
+    <link href="./beta-hyper.css?v=22" rel="stylesheet">
 
     <script>
         if (localStorage.theme === 'dark') {
@@ -791,9 +791,9 @@
                             <div class="mb-5">
                                 <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Skattemetode</label>
                                 <select id="skatt-type" class="glass-input glass-input-brand" onchange="byttSkattType(); beregnAlt(); lagreInnstillinger();">
-                                    <option value="tabell" selected>Tabelltrekk på fastlønn + % på overtid (Standard)</option>
+                                    <option value="tabell">Tabelltrekk på fastlønn + % på overtid</option>
                                     <option value="tabell_alt">Kun Tabelltrekk på alt</option>
-                                    <option value="prosent">Kun Prosenttrekk på alt</option>
+                                    <option value="prosent" selected>Kun Prosenttrekk på alt (Standard)</option>
                                 </select>
                             </div>
 
@@ -2102,12 +2102,12 @@
     </nav>
 
     <!-- MAIN JAVASCRIPT -->
-    <script src="./js/app.js?v=20261020-topclock2"></script>
+    <script src="./js/app.js?v=20261020-pct-default"></script>
     <script src="./js/manual-library.js"></script>
     <script src="./js/production-addons.js?v=20261020-datetime"></script>
     <script src="./js/amount-planner.js?v=20261020-lazy-tab-calculations"></script>
     <script src="./js/datetime-tools.js?v=20261020-lazy-tab-calculations"></script>
-    <script src="./beta-layout.js?v=11"></script>
+    <script src="./beta-layout.js?v=12"></script>
 
 </body>
 </html>
