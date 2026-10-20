@@ -77,6 +77,7 @@
         resultDetails.replaceChildren();
         resultError.textContent = message;
         resultError.classList.remove('hidden');
+        window.oppdaterLiveKalkulatorResultat?.(`datetime-${activeMode}`, '—', message);
     }
 
     function setResult(main, summary, rows = []) {
@@ -96,6 +97,10 @@
             row.append(name, amount);
             resultDetails.append(row);
         });
+        const details = rows
+            .map(([label, value]) => `${label} ${value}`)
+            .join(' · ');
+        window.oppdaterLiveKalkulatorResultat?.(`datetime-${activeMode}`, main, summary, details);
     }
 
     function calculate() {

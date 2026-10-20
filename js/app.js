@@ -200,10 +200,6 @@
             "Tom logg...": "Empty log...",
             "Klikk for å åpne sjekkliste / logg →": "Click to open checklist / log →",
             "Klikk for å skrive Z-nullpunkt / notat →": "Click to write Z-zero / note →",
-            "Hovedmoduler": "Main Modules",
-            "Bytt til store kort": "Switch to large cards",
-            "Bytt til store kort (Klassisk)": "Switch to large cards (Classic)",
-            "Bytt til kompakte knapper": "Switch to compact buttons",
             "Lønn & Timebank": "Salary & Timebank",
             "Skatt, overtid, vakter": "Tax, overtime, shifts",
             "Maskinering (CNC)": "Machining (CNC)",
@@ -342,16 +338,12 @@
             "+ Notat": "+ Note",
             "Lagre utregning i Notater / Sjekkliste": "Save calculation to Notes / Checklist",
             "Tilpass Oversikt & Layout": "Customize Overview & Layout",
-            "Skreddersy kort, kompakthet og visningsmodus": "Tailor widgets, compactness and view mode",
-            "Hovedmoduler nederst på Oversikt": "Main modules at bottom of Overview",
-            "Velg størrelse på de 4 modulboksene": "Choose size of the 4 module cards",
-            "Kompakte knapper (Ryddig)": "Compact buttons (Clean)",
-            "Store kort (Klassisk)": "Large cards (Classic)",
-            "Skjul helt": "Hide completely",
-            "Kompakt HMI-modus": "Compact HMI Mode",
-            "Mindre luft og skjulte hjelpetekster på kort": "Tighter spacing and hidden descriptions on cards",
-            "Klassisk lang-visning (Angre oppdeling)": "Classic Long View (Show all subtabs)",
-            "Vis alle CNC/Tabell-kort på én lang side som før": "Display all CNC/Table cards on one page",
+            "Velg live-kort fra kalkulatorene og tilpass rekkefølge og visning": "Choose calculator live widgets and customize their order and appearance",
+            "Beregn direkte fra Oversikt": "Calculate directly from Overview",
+            "Trykk på plussknappen på et beregningskort for å åpne feltene og regne uten å bytte side.": "Press the plus button on a calculator card to open its fields and calculate without leaving Overview.",
+            "Beregn": "Calculate",
+            "Ingen redigerbare felt i denne kalkulatoren.": "No editable fields in this calculator.",
+            "📑 Vis faner separat": "📑 Show tabs separately",
             "Tilbakestill": "Reset",
             "Ferdig": "Done",
             "Lukk vindu": "Close window",
@@ -778,7 +770,7 @@
 
             // Oversett placeholders
             const phMap = [
-                { id: 'global-search-input', no: 'Søk etter verktøy (f.eks. kilespor, H7, G76, konus, brix, moment, formann)...', en: 'Search tools (e.g. keyway, H7, G76, taper, brix, torque, foreman)...' },
+                { id: 'global-search-input', no: 'Søk etter kalkulator (f.eks. maling, betong, dato, flis, H7, G76)...', en: 'Search calculators (e.g. paint, concrete, date, tile, H7, G76)...' },
                 { id: 'notes-todo-input', no: 'Ny oppgave (f.eks. Bytt skjær T04, Mål Ø40 H7)...', en: 'New task (e.g. Change insert T04, Measure Ø40 H7)...' },
                 { id: 'notes-text-area', no: 'Skriv inn mål, verktøylengder, G54 Z-nullpunkt, ordrenummer eller beskjed til neste skift...', en: 'Enter dimensions, tool lengths, G54 Z-zero, order number or shift handover notes...' },
                 { id: 'gcode-search', no: 'Søk på kode (f.eks. G76, G41, M08, gjenge)...', en: 'Search code (e.g. G76, G41, M08, thread)...' },
@@ -1148,7 +1140,17 @@
             { title: 'Norgespris / Strømstøtte & Effekttariff (Nettleie)', titleEn: 'Power Support & Grid Capacity Tariff', keys: 'norgespris strømstøtte nettleie kapasitetstrinn effekttariff spotpris grid tariff power support', tab: 'ev', sub: 'power', card: 'card-ev-tariff' },
             { title: 'Strømforbruk Apparat / Maskin', titleEn: 'Appliance / Machine Power Cost', keys: 'apparat varmepumpe kompressor watt kwh appliance heat pump compressor power', tab: 'ev', sub: 'power', card: 'card-ev-app' },
             { title: 'Dekkdimensjon & Speedometer-kalkulator', titleEn: 'Tire Size & Speedometer Calculator', keys: 'dekk felg rulleomkrets speedometer vinterhjul sommerhjul 5% tire rim circumference speed', tab: 'ev', sub: 'tires', card: 'card-ev-tires' },
-            { title: 'Elbil vs Bensin/Diesel Besparelse', titleEn: 'EV vs Gasoline/Diesel Savings', keys: 'bensin diesel drivstoff besparelse spart fuel gasoline savings', tab: 'ev', sub: 'tires', card: 'card-ev-save' }
+            { title: 'Elbil vs Bensin/Diesel Besparelse', titleEn: 'EV vs Gasoline/Diesel Savings', keys: 'bensin diesel drivstoff besparelse spart fuel gasoline savings', tab: 'ev', sub: 'tires', card: 'card-ev-save' },
+            { title: 'Maling – mengde og spann', titleEn: 'Paint Quantity and Cans', keys: 'maling liter spann vegg areal strøk dekkevne paint liters cans wall area coats coverage', tab: 'amounts', mode: 'amount', value: 'paint' },
+            { title: 'Gulv og flis – pakker og flisantall', titleEn: 'Flooring and Tile Quantity', keys: 'gulv flis laminat pakker fuge flisstørrelse svinn flooring tile packs grout size waste', tab: 'amounts', mode: 'amount', value: 'floor' },
+            { title: 'Betong – volum og sekker', titleEn: 'Concrete Volume and Bags', keys: 'betong volum m3 liter tykkelse sekk concrete volume thickness bags', tab: 'amounts', mode: 'amount', value: 'concrete' },
+            { title: 'Blandingsforhold – mengdefordeling', titleEn: 'Mix Ratio Calculator', keys: 'blanding blandingsforhold del a del b liter mix ratio parts volume', tab: 'amounts', mode: 'amount', value: 'mix' },
+            { title: 'Oppskrift – skaler porsjoner', titleEn: 'Recipe and Serving Scaler', keys: 'oppskrift porsjoner ingredienser skalere recipe servings ingredients scale', tab: 'amounts', mode: 'amount', value: 'recipe' },
+            { title: 'Arbeidstid mellom klokkeslett', titleEn: 'Time Between Clock Times', keys: 'arbeidstid tidsrom timer minutter over natten klokkeslett duration time overnight', tab: 'datetime', mode: 'datetime', value: 'duration' },
+            { title: 'Datoforskjell og arbeidsdager', titleEn: 'Date Difference and Working Days', keys: 'dato dager uker arbeidsdager hverdager date difference weekdays working days', tab: 'datetime', mode: 'datetime', value: 'difference' },
+            { title: 'Nedtelling til frist eller hendelse', titleEn: 'Countdown to Deadline or Event', keys: 'nedtelling frist hendelse gjenstår overskredet countdown deadline event remaining', tab: 'datetime', mode: 'datetime', value: 'countdown' },
+            { title: 'Legg tid til et klokkeslett', titleEn: 'Add Time to a Clock Time', keys: 'legg til tid klokkeslett timer minutter dagsforskyvning add hours minutes time', tab: 'datetime', mode: 'datetime', value: 'add' },
+            { title: 'Ukenummer og ukedag', titleEn: 'Week Number and Weekday', keys: 'ukenummer iso uke ukedag dato week number weekday iso week', tab: 'datetime', mode: 'datetime', value: 'week' }
         ];
 
         function apneSokModal() {
@@ -1204,7 +1206,9 @@
                 salary: currentLang === 'en' ? 'SALARY' : 'LØNN',
                 cnc: 'CNC',
                 tools: currentLang === 'en' ? 'TABLES' : 'TABELLER',
-                ev: currentLang === 'en' ? 'POWER & EV' : 'STRØM & ELBIL'
+                ev: currentLang === 'en' ? 'POWER & EV' : 'STRØM & ELBIL',
+                amounts: currentLang === 'en' ? 'QUANTITIES' : 'MENGDER',
+                datetime: currentLang === 'en' ? 'DATE & TIME' : 'DATO & TID'
             };
             const subNavnMap = {
                 oversikt: currentLang === 'en' ? 'overview' : 'oversikt',
@@ -1260,6 +1264,8 @@
             if (item.tab === 'cnc' && item.sub) switchCncTab(item.sub);
             if (item.tab === 'tools' && item.sub) switchToolsTab(item.sub);
             if (item.tab === 'ev' && item.sub) switchEvTab(item.sub);
+            if (item.mode === 'amount') document.querySelector(`[data-amount-mode="${item.value}"]`)?.click();
+            if (item.mode === 'datetime') document.querySelector(`[data-datetime-mode="${item.value}"]`)?.click();
             if (item.card) {
                 setTimeout(() => {
                     const cardEl = document.getElementById(item.card);
@@ -1389,69 +1395,27 @@
             leggTilTekstINotatEllerSjekkliste(sammendrag);
         }
 
-        // --- LAYOUT & KLASSISK ANGRE-MODUS ---
-        function oppdaterLayoutPreferanser() {
-            const dashMod = document.getElementById('pref-dash-modules')?.value || 'compact';
-            const compactHmi = document.getElementById('pref-compact-hmi')?.checked || false;
-            const classicSub = document.getElementById('pref-classic-subtabs')?.checked || false;
-
-            localStorage.setItem('pref_dash_modules', dashMod);
-            localStorage.setItem('pref_compact_hmi', compactHmi ? '1' : '0');
-            localStorage.setItem('pref_classic_subtabs', classicSub ? '1' : '0');
-
-            brukLayoutPreferanser();
-        }
-
-        function veksleDashModulerStil() {
-            const naa = localStorage.getItem('pref_dash_modules') || 'compact';
-            const ny = naa === 'compact' ? 'large' : 'compact';
-            localStorage.setItem('pref_dash_modules', ny);
-            const sel = document.getElementById('pref-dash-modules');
-            if (sel) sel.value = ny;
-            brukLayoutPreferanser();
-            visToast(ny === 'large' ? 'Byttet til store klassiske modulkort' : 'Byttet til kompakte modulkort');
-        }
-
+        // --- KLASSISK FANEVISNING ---
         function veksleKlassiskVisning() {
             const naa = localStorage.getItem('pref_classic_subtabs') === '1';
             const ny = !naa;
             localStorage.setItem('pref_classic_subtabs', ny ? '1' : '0');
-            const chk = document.getElementById('pref-classic-subtabs');
-            if (chk) chk.checked = ny;
             brukLayoutPreferanser();
-            visToast(ny ? 'Klassisk visning: Alle kort vises på én side' : 'Rask fanevisning aktivert');
+            visToast(ny
+                ? 'Viser alle CNC-, tabell- og strømfaner'
+                : 'Tilbake til vanlig fanevisning');
         }
 
         function brukLayoutPreferanser() {
-            const dashMod = localStorage.getItem('pref_dash_modules') || 'compact';
-            const compactHmi = localStorage.getItem('pref_compact_hmi') === '1';
             const classicSub = localStorage.getItem('pref_classic_subtabs') === '1';
 
-            document.body.classList.toggle('compact-hmi', compactHmi);
             document.body.classList.toggle('classic-subtabs', classicSub);
 
-            const wrap = document.getElementById('dash-modules-wrapper');
-            const compEl = document.getElementById('dash-modules-compact');
-            const largeEl = document.getElementById('dash-modules-large');
-            const styleBtn = document.getElementById('dash-mod-style-btn');
-
-            if (wrap && compEl && largeEl) {
-                wrap.style.display = dashMod === 'hidden' ? 'none' : 'block';
-                compEl.classList.toggle('hidden', dashMod !== 'compact');
-                largeEl.classList.toggle('hidden', dashMod !== 'large');
-                if (styleBtn) styleBtn.innerText = dashMod === 'compact' ? 'Bytt til store kort (Klassisk)' : 'Bytt til kompakte knapper';
-            }
-
             document.querySelectorAll('.classic-toggle-label').forEach(lbl => {
-                lbl.innerText = classicSub ? '🗂️ Bruk ryddige underfaner' : '📑 Vis alle på én side (Klassisk)';
+                lbl.innerText = classicSub
+                    ? (currentLang === 'en' ? '📑 Show tabs separately' : '📑 Vis faner separat')
+                    : (currentLang === 'en' ? '📚 Show all CNC, table & power tabs' : '📚 Vis alle CNC-, tabell- og strømfaner');
             });
-
-            const selMod = document.getElementById('pref-dash-modules');
-            const chkComp = document.getElementById('pref-compact-hmi');
-            const chkClas = document.getElementById('pref-classic-subtabs');
-            if (selMod) selMod.value = dashMod;
-            if (chkComp) chkComp.checked = compactHmi;
-            if (chkClas) chkClas.checked = classicSub;
         }
 
         // --- HISTORIKK & TILBAKEKNAPP-NAVIGASJON (HISTORY API) ---
@@ -2134,6 +2098,468 @@
             { id: 'coolant', title: 'Kjølevæske (Brix)', desc: 'Faktisk konsentrasjon og liter etterfylling', enabled: false }
         ];
 
+        const liveKalkulatorResultater = new Map();
+        const liveKalkulatorMaal = new Map();
+        const liveWidgetKontrollSelector = 'input:not([type="hidden"]):not([type="file"]):not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="image"]), select, textarea';
+
+        window.oppdaterLiveKalkulatorResultat = function(id, hovedresultat, sammendrag, detaljer = '') {
+            const resultat = { hovedresultat, sammendrag, detaljer };
+            liveKalkulatorResultater.set(id, resultat);
+            const widget = document.getElementById('widget-' + id);
+            if (widget) visLiveKalkulatorResultat(widget, resultat);
+        };
+
+        function visLiveKalkulatorResultat(widget, resultat) {
+            const hoved = widget.querySelector('[data-live-main]');
+            const under = widget.querySelector('[data-live-sub]');
+            const detaljer = widget.querySelector('[data-live-extra]');
+            if (hoved) hoved.textContent = resultat.hovedresultat || 'Ingen beregning ennå';
+            if (under) under.textContent = resultat.sammendrag || 'Resultatet oppdateres når du beregner';
+            if (detaljer) {
+                detaljer.textContent = resultat.detaljer || '';
+                detaljer.classList.toggle('hidden', !resultat.detaljer);
+            }
+        }
+
+        function oppdaterLiveKontrollSynlighet(widget, target) {
+            const controls = target?.controlRoot
+                ? [...target.controlRoot.querySelectorAll(liveWidgetKontrollSelector)]
+                : [...(target?.card?.querySelectorAll(liveWidgetKontrollSelector) || [])];
+            const fields = [...widget.querySelectorAll('[data-live-control-index]')];
+            fields.forEach((field, index) => {
+                const source = controls[index];
+                field.classList.toggle('hidden', !source || Boolean(source.closest('.hidden')) ||
+                    Boolean(source.closest('[style*="display: none"]')));
+            });
+        }
+
+        function visLiveWidgetUtvidetResultat(widget, target) {
+            const result = target.resultId
+                ? liveKalkulatorResultater.get(target.resultId)
+                : null;
+            const resultLines = target.card ? hentLiveWidgetResultat(target.card) : [];
+            const main = result?.hovedresultat || resultLines[0];
+            const summary = result?.sammendrag || resultLines.slice(1, 3).join(' · ');
+            const output = widget.querySelector('[data-live-expanded-result]');
+            if (!output) return;
+            output.classList.toggle('hidden', !main && !summary);
+            output.querySelector('[data-live-expanded-main]').textContent = main || '';
+            output.querySelector('[data-live-expanded-sub]').textContent = summary || '';
+        }
+
+        function hentLiveFeltEtikett(source, root) {
+            const associatedLabel = source.labels?.[0];
+            if (associatedLabel) return associatedLabel.textContent.trim();
+
+            if (source.id && root) {
+                const matchingLabel = [...root.querySelectorAll('label[for]')]
+                    .find(label => label.htmlFor === source.id);
+                if (matchingLabel) return matchingLabel.textContent.trim();
+            }
+
+            let element = source;
+            while (element && element !== root) {
+                const previousLabel = element.previousElementSibling?.matches('label')
+                    ? element.previousElementSibling
+                    : null;
+                if (previousLabel) return previousLabel.textContent.trim();
+
+                const directLabel = [...(element.parentElement?.children || [])]
+                    .find(child => child.matches('label'));
+                if (directLabel) return directLabel.textContent.trim();
+                element = element.parentElement;
+            }
+            return '';
+        }
+
+        function byggLiveWidgetKontroller(widget, target) {
+            const panel = widget.querySelector('[data-live-controls]');
+            if (!panel || panel.dataset.ready === '1') return;
+            const controls = target?.controlRoot
+                ? [...target.controlRoot.querySelectorAll(liveWidgetKontrollSelector)]
+                : [...(target?.card?.querySelectorAll(liveWidgetKontrollSelector) || [])];
+            if (!controls.length) {
+                const item = brukerWidgets.find(entry => entry.id === widget.dataset.widgetId);
+                const message = document.createElement('p');
+                message.className = 'text-xs leading-relaxed text-slate-600 dark:text-slate-300';
+                message.textContent = target && (target.controlRoot || target.card)
+                    ? (currentLang === 'en' ? 'This calculator has no editable fields.' : 'Denne kalkulatoren har ingen redigerbare felt.')
+                    : (currentLang === 'en'
+                        ? `${item?.desc || 'This overview card'} does not have calculator fields. Add a calculator card in Customize overview to calculate here.`
+                        : `${item?.desc || 'Dette oversiktskortet'} har ikke egne beregningsfelt. Legg til et kalkulatorkort via Tilpass oversikt for å regne her.`);
+                panel.append(message);
+                const openButton = document.createElement('button');
+                openButton.type = 'button';
+                openButton.className = 'mt-3 w-full rounded-xl border border-slate-300 dark:border-slate-600 px-3 py-2.5 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800';
+                openButton.textContent = currentLang === 'en' ? 'Open related page' : 'Åpne tilhørende side';
+                openButton.addEventListener('click', event => {
+                    event.stopPropagation();
+                    widget.click();
+                });
+                panel.append(openButton);
+                panel.dataset.ready = '1';
+                return;
+            }
+
+            const grid = document.createElement('div');
+            grid.className = 'grid grid-cols-1 sm:grid-cols-2 gap-2';
+            controls.forEach((source, index) => {
+                const field = document.createElement('label');
+                field.dataset.liveControlIndex = String(index);
+                field.className = 'block text-[11px] font-semibold text-slate-600 dark:text-slate-300';
+                const labelText = hentLiveFeltEtikett(source, target.controlRoot || target.card) ||
+                    source.getAttribute('aria-label') ||
+                    source.getAttribute('placeholder') ||
+                    `Verdi ${index + 1}`;
+                const caption = document.createElement('span');
+                caption.className = 'block mb-1';
+                caption.textContent = labelText.replace(/\s+/g, ' ');
+
+                const input = source.cloneNode(true);
+                input.removeAttribute('id');
+                input.removeAttribute('name');
+                [...input.attributes].forEach(attribute => {
+                    if (attribute.name.startsWith('on')) input.removeAttribute(attribute.name);
+                });
+                input.classList.add(input.type === 'checkbox' ? 'shrink-0' : 'w-full');
+                if (input.type === 'checkbox') input.checked = source.checked;
+                else input.value = source.value;
+                if (input.type === 'checkbox') {
+                    field.className = 'flex items-center gap-2 text-xs font-semibold text-slate-600 dark:text-slate-300';
+                    caption.className = '';
+                    field.append(input, caption);
+                } else {
+                    field.append(caption, input);
+                }
+
+                input.addEventListener('click', event => event.stopPropagation());
+                const updateSource = event => {
+                    if (source.type === 'checkbox') source.checked = input.checked;
+                    else source.value = input.value;
+                    source.dispatchEvent(new Event(event.type, { bubbles: true }));
+                    oppdaterLiveKontrollSynlighet(widget, target);
+                    visLiveWidgetUtvidetResultat(widget, target);
+                };
+                input.addEventListener('input', updateSource);
+                input.addEventListener('change', updateSource);
+                const syncFromSource = () => {
+                    if (input.type === 'checkbox') input.checked = source.checked;
+                    else input.value = source.value;
+                    oppdaterLiveKontrollSynlighet(widget, target);
+                    visLiveWidgetUtvidetResultat(widget, target);
+                };
+                source.addEventListener('input', syncFromSource);
+                source.addEventListener('change', syncFromSource);
+                grid.append(field);
+            });
+            panel.append(grid);
+            const calculateButton = document.createElement('button');
+            calculateButton.type = 'button';
+            calculateButton.className = 'mt-3 w-full rounded-xl bg-violet-500 px-3 py-2.5 text-xs font-extrabold text-white hover:bg-violet-600 focus:outline-none focus:ring-2 focus:ring-violet-500';
+            calculateButton.textContent = currentLang === 'en' ? 'Calculate' : 'Beregn';
+            calculateButton.addEventListener('click', event => {
+                event.stopPropagation();
+                target.modeButton?.click();
+                controls.forEach(source => {
+                    if (source.closest('.hidden')) return;
+                    source.dispatchEvent(new Event('input', { bubbles: true }));
+                    source.dispatchEvent(new Event('change', { bubbles: true }));
+                });
+                visLiveWidgetUtvidetResultat(widget, target);
+            });
+            panel.append(calculateButton);
+            const result = document.createElement('div');
+            result.dataset.liveExpandedResult = '';
+            result.className = 'hidden mt-3 rounded-xl bg-slate-100/80 dark:bg-slate-800/70 p-3';
+            result.innerHTML = '<p data-live-expanded-main class="text-sm font-extrabold text-slate-900 dark:text-white"></p><p data-live-expanded-sub class="text-xs text-slate-600 dark:text-slate-300 mt-1"></p>';
+            panel.append(result);
+            panel.dataset.ready = '1';
+            oppdaterLiveKontrollSynlighet(widget, target);
+            visLiveWidgetUtvidetResultat(widget, target);
+        }
+
+        function sikreWidgetStorrelseKnapp(widget) {
+            const id = widget.dataset.widgetId;
+            const header = widget.firstElementChild;
+            if (!id || !header) return;
+
+            let button = widget.querySelector('[data-live-size-toggle]');
+            let panel = widget.querySelector('[data-live-controls]');
+            if (!button) {
+                const icon = header.lastElementChild;
+                const controls = document.createElement('span');
+                controls.className = 'inline-flex items-center gap-2 shrink-0';
+                if (icon?.tagName === 'I') {
+                    icon.replaceWith(controls);
+                    controls.append(icon);
+                } else {
+                    header.append(controls);
+                }
+                button = document.createElement('button');
+                button.type = 'button';
+                button.dataset.liveSizeToggle = '';
+                button.className = 'inline-flex items-center justify-center gap-1.5 min-h-8 px-2.5 rounded-lg bg-violet-500/10 text-violet-700 dark:text-violet-300 hover:bg-violet-500/20 focus:outline-none focus:ring-2 focus:ring-violet-500 text-[10px] font-bold whitespace-nowrap';
+                controls.append(button);
+            }
+            if (!panel) {
+                panel = document.createElement('div');
+                panel.dataset.liveControls = '';
+                panel.className = 'hidden border-t border-slate-200 dark:border-slate-700 mt-3 pt-3';
+                panel.addEventListener('click', event => event.stopPropagation());
+                widget.append(panel);
+            }
+
+            button.removeAttribute('onclick');
+            if (button.dataset.sizeHandler !== '1') {
+                button.addEventListener('click', event => veksleLiveWidgetStorrelse(id, event));
+                button.dataset.sizeHandler = '1';
+            }
+        }
+
+        function brukLiveWidgetStorrelse(id, widget, target, stor) {
+            const varStor = widget.classList.contains('widget-large');
+            widget.classList.toggle('widget-large', stor);
+            sikreWidgetStorrelseKnapp(widget);
+            const panel = widget.querySelector('[data-live-controls]');
+            const button = widget.querySelector('[data-live-size-toggle]');
+            if (panel) panel.classList.toggle('hidden', !stor);
+            if (button) {
+                button.setAttribute('aria-expanded', String(stor));
+                const label = stor
+                    ? (currentLang === 'en' ? 'Smaller' : 'Mindre')
+                    : (currentLang === 'en' ? 'Enlarge' : 'Større');
+                button.setAttribute('aria-label', label);
+                button.title = button.getAttribute('aria-label');
+                button.textContent = label;
+            }
+            if (stor) {
+                if (!varStor) target?.modeButton?.click();
+                byggLiveWidgetKontroller(widget, target);
+            }
+            const item = brukerWidgets.find(entry => entry.id === id);
+            if (item && (item.size === 'large') !== stor) {
+                item.size = stor ? 'large' : 'normal';
+                lagreWidgetKonfig();
+            }
+        }
+
+        function veksleLiveWidgetStorrelse(id, event) {
+            event?.stopPropagation();
+            const target = liveKalkulatorMaal.get(id);
+            const widget = document.getElementById('widget-' + id);
+            if (!widget) return;
+            brukLiveWidgetStorrelse(id, widget, target, !widget.classList.contains('widget-large'));
+        }
+
+        function finnLiveWidgetMaalForKort(card) {
+            const widgetId = card?.dataset.liveWidgetId;
+            return widgetId ? liveKalkulatorMaal.get(widgetId) : null;
+        }
+
+        function kobleOversiktskortTilKalkulator(widgetId, card, modeButton = null, controlRoot = null, resultId = null) {
+            const target = modeButton
+                ? { pageId: modeButton.closest('section.tab-content')?.id, modeButton, controlRoot, card: modeButton.closest('section.tab-content'), resultId }
+                : finnLiveWidgetMaalForKort(card);
+            kobleOversiktskortTilMaal(widgetId, target);
+        }
+
+        function kobleOversiktskortTilMaal(widgetId, target) {
+            const widget = document.getElementById(`widget-${widgetId}`);
+            if (!target || !widget) return;
+            liveKalkulatorMaal.set(widgetId, target);
+            widget.removeAttribute('onclick');
+            if (widget.dataset.navigationHandler !== '1') {
+                widget.addEventListener('click', () => {
+                    const currentTarget = liveKalkulatorMaal.get(widgetId);
+                    if (currentTarget) navigerTilLiveKalkulator(currentTarget);
+                });
+                widget.dataset.navigationHandler = '1';
+            }
+        }
+
+        function hentLiveWidgetResultat(card) {
+            const resultater = [];
+            card.querySelectorAll('[id*="-res-"], [id^="res-"], #iso-res, #iso-res-minmax, #iso-res-mid').forEach(element => {
+                if (!element.innerText.trim() || element.closest('.hidden')) return;
+                const rad = element.closest('.flex');
+                const etikett = rad?.querySelector('span:first-child');
+                const verdi = element.innerText.trim();
+                const tekst = etikett && etikett !== element
+                    ? `${etikett.innerText.trim().replace(/:$/, '')}: ${verdi}`
+                    : verdi;
+                if (!resultater.includes(tekst)) resultater.push(tekst);
+            });
+            return resultater;
+        }
+
+        function oppdaterLiveWidgetFraKort(id, card) {
+            const widget = document.getElementById('widget-' + id);
+            if (!widget) return;
+            const resultater = hentLiveWidgetResultat(card);
+            visLiveKalkulatorResultat(widget, resultater.length
+                ? {
+                    hovedresultat: resultater[0],
+                    sammendrag: resultater.slice(1, 3).join(' · ') || 'Siste beregning',
+                    detaljer: resultater.slice(3, 7).join(' · ')
+                }
+                : { hovedresultat: 'Ingen beregning ennå', sammendrag: 'Åpne kalkulatoren for å beregne' });
+        }
+
+        function navigerTilLiveKalkulator(target) {
+            if (!target?.pageId || !document.getElementById(target.pageId)) return;
+            switchTab(target.pageId);
+            if (target.modeButton) {
+                target.modeButton.click();
+            } else if (target.subtab) {
+                if (target.subtab.classList.contains('cnc-tab-content')) switchCncTab(target.subtab.id.replace('ctab-', ''));
+                if (target.subtab.classList.contains('tools-tab-content')) switchToolsTab(target.subtab.id.replace('ttab-', ''));
+                if (target.subtab.classList.contains('ev-tab-content')) switchEvTab(target.subtab.id.replace('etab-', ''));
+                if (target.subtab.classList.contains('salary-tab-content')) switchSalaryTab(target.subtab.id.replace('stab-', ''));
+            }
+            requestAnimationFrame(() => (target.card || target.subtab)?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
+        }
+
+        function lagLiveWidget(definisjon, target) {
+            if (standardWidgetListe.some(widget => widget.id === definisjon.id)) return;
+            const widgetDefinisjon = { ...definisjon, enabled: false };
+            standardWidgetListe.push(widgetDefinisjon);
+            target.resultId = definisjon.id;
+            liveKalkulatorMaal.set(definisjon.id, target);
+
+            const widget = document.createElement('div');
+            widget.id = 'widget-' + definisjon.id;
+            widget.dataset.widgetId = definisjon.id;
+            widget.className = 'dash-widget bg-white/90 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200/90 dark:border-slate-800 rounded-2xl p-4 cursor-pointer hover:border-violet-500 transition-all group';
+            widget.innerHTML = `
+                <div class="flex items-center justify-between text-xs font-mono text-slate-400 mb-1">
+                    <span></span>
+                    <span class="flex items-center gap-2">
+                        <i data-lucide="calculator" class="w-4 h-4 text-violet-500 group-hover:scale-110 transition-transform"></i>
+                        <button type="button" data-live-size-toggle aria-expanded="false" aria-label="Større" title="Større" onclick="veksleLiveWidgetStorrelse('${definisjon.id}', event)" class="inline-flex items-center justify-center gap-1.5 min-h-8 px-2.5 rounded-lg bg-violet-500/10 text-violet-700 dark:text-violet-300 hover:bg-violet-500/20 focus:outline-none focus:ring-2 focus:ring-violet-500 text-[10px] font-bold whitespace-nowrap">Større</button>
+                    </span>
+                </div>
+                <p data-live-main class="text-xl sm:text-2xl font-mono font-extrabold text-violet-700 dark:text-violet-300 truncate">Ingen beregning ennå</p>
+                <p data-live-sub class="text-[11px] text-slate-500 dark:text-slate-400 font-medium mt-1 truncate">Resultatet oppdateres når du beregner</p>
+                <p data-live-extra class="hidden text-[11px] leading-relaxed text-slate-600 dark:text-slate-300 mt-2"></p>
+                <div data-live-controls class="hidden border-t border-slate-200 dark:border-slate-700 mt-3 pt-3" onclick="event.stopPropagation()"></div>`;
+            widget.querySelector('span').textContent = definisjon.title;
+            widget.addEventListener('click', () => navigerTilLiveKalkulator(target));
+            document.getElementById('dash-widgets-grid')?.appendChild(widget);
+
+            const lagretResultat = liveKalkulatorResultater.get(definisjon.id);
+            if (lagretResultat) {
+                visLiveKalkulatorResultat(widget, lagretResultat);
+            } else if (target.card) {
+                oppdaterLiveWidgetFraKort(definisjon.id, target.card);
+            }
+            const lagretWidget = brukerWidgets.find(item => item.id === definisjon.id);
+            if (lagretWidget?.size === 'large') {
+                brukLiveWidgetStorrelse(definisjon.id, widget, target, true);
+            }
+        }
+
+        function registrerKalkulatorLivekort() {
+            document.querySelectorAll('.pers-input').forEach((card, index) => {
+                if (card.closest('#dashboard')) return;
+                const heading = card.querySelector('h3');
+                const headingClone = heading?.cloneNode(true);
+                headingClone?.querySelectorAll('button, i, .collapse-chevron').forEach(element => element.remove());
+                const title = headingClone?.textContent.trim().replace(/\s+/g, ' ') || `Kalkulator ${index + 1}`;
+                const page = card.closest('section.tab-content');
+                if (!page) return;
+                if (!card.id) card.id = `calculation-card-${index + 1}`;
+                const subtab = card.closest('.cnc-tab-content, .tools-tab-content, .ev-tab-content, .salary-tab-content');
+                const id = `calc-${card.id}`;
+                const descriptor = { id, title, desc: `Siste resultat fra ${page.querySelector('h2')?.textContent.trim() || 'kalkulatoren'}` };
+                card.dataset.liveWidgetId = id;
+                lagLiveWidget(descriptor, { pageId: page.id, subtab, card });
+                const eksisterendeSoketreff = verktoySokIndeks.some(item =>
+                    (item.card && item.card === card.id) ||
+                    normaliserSoketekst(item.title) === normaliserSoketekst(title)
+                );
+                if (!eksisterendeSoketreff) {
+                    const subtabId = subtab?.id.replace(/^(ctab|ttab|etab|stab)-/, '');
+                    verktoySokIndeks.push({
+                        title,
+                        titleEn: title,
+                        keys: `${title} ${page.querySelector('h2')?.textContent || ''}`,
+                        tab: page.id,
+                        sub: subtabId,
+                        card: card.id || undefined
+                    });
+                }
+                const update = () => oppdaterLiveWidgetFraKort(id, card);
+                new MutationObserver(update).observe(card, { childList: true, characterData: true, subtree: true });
+                card.addEventListener('input', update);
+                card.addEventListener('change', update);
+            });
+
+            document.querySelectorAll('[data-amount-mode]').forEach(button => {
+                const mode = button.dataset.amountMode;
+                lagLiveWidget(
+                    { id: `amount-${mode}`, title: button.textContent.trim(), desc: 'Siste beregning fra Mengder' },
+                    {
+                        pageId: 'amounts',
+                        modeButton: button,
+                        card: document.getElementById('amounts'),
+                        controlRoot: document.querySelector(`[data-amount-fields="${mode}"]`)
+                    }
+                );
+            });
+            document.querySelectorAll('[data-datetime-mode]').forEach(button => {
+                const mode = button.dataset.datetimeMode;
+                lagLiveWidget(
+                    { id: `datetime-${mode}`, title: button.textContent.trim(), desc: 'Siste beregning fra Dato & tid' },
+                    {
+                        pageId: 'datetime',
+                        modeButton: button,
+                        card: document.getElementById('datetime'),
+                        controlRoot: document.querySelector(`[data-datetime-fields="${mode}"]`)
+                    }
+                );
+            });
+            kobleOversiktskortTilMaal('netto', {
+                pageId: 'salary',
+                subtab: document.getElementById('stab-oversikt')
+            });
+            kobleOversiktskortTilMaal('timebank', {
+                pageId: 'salary',
+                subtab: document.getElementById('stab-vakter')
+            });
+            kobleOversiktskortTilKalkulator(
+                'cnc',
+                document.getElementById('card-tools-material-data')
+            );
+            kobleOversiktskortTilMaal('overtime', {
+                pageId: 'salary',
+                subtab: document.getElementById('stab-vakter')
+            });
+            kobleOversiktskortTilKalkulator(
+                'thread',
+                document.querySelector('#ttab-threads .pers-input')
+            );
+            kobleOversiktskortTilKalkulator(
+                'isofit',
+                document.getElementById('card-tools-iso286')
+            );
+            kobleOversiktskortTilKalkulator(
+                'power',
+                document.getElementById('card-ev-charge')
+            );
+            const coolantCard = [...document.querySelectorAll('#ttab-data .pers-input')]
+                .find(card => card.querySelector('h3')?.textContent.includes('Kjølevæske'));
+            kobleOversiktskortTilKalkulator('coolant', coolantCard);
+            const weekModeButton = document.querySelector('[data-datetime-mode="week"]');
+            kobleOversiktskortTilKalkulator(
+                'week',
+                null,
+                weekModeButton,
+                document.querySelector('[data-datetime-fields="week"]'),
+                'datetime-week'
+            );
+            if (window.lucide?.createIcons) window.lucide.createIcons();
+        }
+
         let brukerWidgets = [];
 
         function hentWidgetKonfig() {
@@ -2144,6 +2570,9 @@
                     const eksisterendeIds = new Set(parsed.map(w => w.id));
                     standardWidgetListe.forEach(std => {
                         if (!eksisterendeIds.has(std.id)) parsed.push({ ...std });
+                    });
+                    parsed.forEach(widget => {
+                        if (widget.size !== 'large') widget.size = 'normal';
                     });
                     brukerWidgets = parsed;
                     return;
@@ -2165,6 +2594,13 @@
                 const el = document.getElementById('widget-' + w.id);
                 if (el) {
                     el.style.display = w.enabled ? '' : 'none';
+                    const target = liveKalkulatorMaal.get(w.id);
+                    sikreWidgetStorrelseKnapp(el);
+                    if (target) {
+                        brukLiveWidgetStorrelse(w.id, el, target, w.size === 'large');
+                    } else {
+                        brukLiveWidgetStorrelse(w.id, el, target, w.size === 'large');
+                    }
                     grid.appendChild(el);
                 }
             });
@@ -2195,8 +2631,8 @@
             let html = '';
             brukerWidgets.forEach((w, idx) => {
                 html += `
-                <div class="flex items-center justify-between gap-3 p-3 rounded-2xl border ${w.enabled ? 'bg-slate-50 dark:bg-slate-800/80 border-brand-500/40' : 'bg-slate-100/50 dark:bg-slate-900/40 border-slate-200 dark:border-slate-800 opacity-60'} transition-all">
-                    <label class="flex items-center gap-3 flex-1 cursor-pointer min-w-0">
+                <div class="flex flex-wrap items-center justify-between gap-2 p-3 rounded-2xl border ${w.enabled ? 'bg-slate-50 dark:bg-slate-800/80 border-brand-500/40' : 'bg-slate-100/50 dark:bg-slate-900/40 border-slate-200 dark:border-slate-800 opacity-60'} transition-all">
+                    <label class="flex items-center gap-3 flex-1 cursor-pointer min-w-[70%]">
                         <input type="checkbox" ${w.enabled ? 'checked' : ''} onchange="veksleWidget('${w.id}', this.checked)" class="custom-checkbox text-brand-500 border-slate-400 dark:border-slate-500 shrink-0">
                         <div class="min-w-0">
                             <p class="text-sm font-bold text-slate-900 dark:text-white truncate">${w.title}</p>
@@ -2235,8 +2671,6 @@
 
         function tilbakestillWidgets() {
             brukerWidgets = JSON.parse(JSON.stringify(standardWidgetListe));
-            localStorage.setItem('pref_dash_modules', 'compact');
-            localStorage.setItem('pref_compact_hmi', '0');
             localStorage.setItem('pref_classic_subtabs', '0');
             lagreWidgetKonfig();
             brukWidgetOppsett();
@@ -2273,20 +2707,31 @@
         }
 
         window.sisteCncMaal = { tab: 'tools', subTab: 'data' };
-        function oppdaterSisteCncKpi(hovedVerdi, underTekst, tab = 'cnc', subTab = null) {
+        function oppdaterSisteCncKpi(hovedVerdi, underTekst, tab = 'cnc', subTab = null, cardId = null) {
             const valEl = document.getElementById('dash-kpi-cnc-val');
             const subEl = document.getElementById('dash-kpi-cnc-sub');
             if (valEl) valEl.innerText = hovedVerdi;
             if (subEl) subEl.innerText = underTekst;
-            window.sisteCncMaal = { tab, subTab };
+            window.sisteCncMaal = { tab, subTab, cardId };
+            const card = cardId ? document.getElementById(cardId) : null;
+            const target = finnLiveWidgetMaalForKort(card);
+            if (target) liveKalkulatorMaal.set('cnc', target);
             localStorage.setItem('siste_cnc_val', hovedVerdi);
             localStorage.setItem('siste_cnc_sub', underTekst);
         }
 
         function apneSisteCnc() {
             const maal = window.sisteCncMaal || { tab: 'cnc', subTab: null };
+            const target = maal.cardId
+                ? finnLiveWidgetMaalForKort(document.getElementById(maal.cardId))
+                : liveKalkulatorMaal.get('cnc');
+            if (target) {
+                navigerTilLiveKalkulator(target);
+                return;
+            }
             switchTab(maal.tab);
             if (maal.tab === 'tools' && maal.subTab) switchToolsTab(maal.subTab);
+            if (maal.tab === 'cnc' && maal.subTab) switchCncTab(maal.subTab);
         }
 
         // --- LOCALSTORAGE & AUTO-SAVE (LAGRER ABSOLUTT ALT) ---
@@ -2474,11 +2919,11 @@
             if (mode === 'internal') {
                 const vfSirk = dFres >= dHull ? 0 : ((dHull - dFres) / dHull) * vfLin;
                 document.getElementById('gf-res-mating').innerText = Math.round(vfSirk) + " mm/min";
-                oppdaterSisteCncKpi(`${Math.round(rpm)} RPM | F${Math.round(vfSirk)}`, `Sirkulær innv: Ø${dFres} i Ø${dHull}`, 'cnc');
+                oppdaterSisteCncKpi(`${Math.round(rpm)} RPM | F${Math.round(vfSirk)}`, `Sirkulær innv: Ø${dFres} i Ø${dHull}`, 'cnc', 'milling', 'card-cnc-sirk');
             } else {
                 const vfSirk = ((dHull + dFres) / dHull) * vfLin;
                 document.getElementById('gf-res-mating').innerText = Math.round(vfSirk) + " mm/min";
-                oppdaterSisteCncKpi(`${Math.round(rpm)} RPM | F${Math.round(vfSirk)}`, `Sirkulær utv: Ø${dFres} på Ø${dHull}`, 'cnc');
+                oppdaterSisteCncKpi(`${Math.round(rpm)} RPM | F${Math.round(vfSirk)}`, `Sirkulær utv: Ø${dFres} på Ø${dHull}`, 'cnc', 'milling', 'card-cnc-sirk');
             }
         }
         function beregnGjengerInnvendig() {
@@ -2487,7 +2932,7 @@
             const ju = parseFloat(document.getElementById('gjin-justering').value) || 0;
             const res = ((pi * ju) + st).toFixed(3);
             document.getElementById('gjin-res-lilledia').innerText = res + " mm";
-            oppdaterSisteCncKpi(`Gibbs Ø${res}`, `Innv. gjenge M${st}×${pi}`, 'cnc');
+            oppdaterSisteCncKpi(`Gibbs Ø${res}`, `Innv. gjenge M${st}×${pi}`, 'cnc', 'turning', 'card-cnc-gibbs');
         }
         function beregnGjengerUtvendig() {
             const st = parseFloat(document.getElementById('gjut-storedia').value) || 0;
@@ -2495,21 +2940,21 @@
             const ju = parseFloat(document.getElementById('gjut-justering').value) || 0;
             const res = (st - (pi * ju)).toFixed(3);
             document.getElementById('gjut-res-lilledia').innerText = res + " mm";
-            oppdaterSisteCncKpi(`Gibbs Ø${res}`, `Utv. gjenge M${st}×${pi}`, 'cnc');
+            oppdaterSisteCncKpi(`Gibbs Ø${res}`, `Utv. gjenge M${st}×${pi}`, 'cnc', 'turning', 'card-cnc-gibbs');
         }
         function beregnFinnVc() {
             const d = parseFloat(document.getElementById('fvc-d').value) || 0;
             const rpm = parseFloat(document.getElementById('fvc-rpm').value) || 0;
             const vc = Math.round((Math.PI * d * rpm) / 1000);
             document.getElementById('res-fvc').innerText = vc + " m/min";
-            oppdaterSisteCncKpi(`Vc ${vc} m/min`, `Hurtigkalk: Ø${d} ved ${rpm} RPM`, 'cnc');
+            oppdaterSisteCncKpi(`Vc ${vc} m/min`, `Hurtigkalk: Ø${d} ved ${rpm} RPM`, 'cnc', 'milling', 'card-cnc-hurtig');
         }
         function beregnFinnRpm() {
             const d = parseFloat(document.getElementById('frpm-d').value) || 0;
             const vc = parseFloat(document.getElementById('frpm-vc').value) || 0;
             const rpm = Math.round((vc * 1000) / (Math.PI * d));
             document.getElementById('res-frpm').innerText = rpm + " RPM";
-            oppdaterSisteCncKpi(`${rpm} RPM`, `Hurtigkalk: Ø${d} ved Vc ${vc}`, 'cnc');
+            oppdaterSisteCncKpi(`${rpm} RPM`, `Hurtigkalk: Ø${d} ved Vc ${vc}`, 'cnc', 'milling', 'card-cnc-hurtig');
         }
         function beregnFinnMmMin() {
             const z = parseFloat(document.getElementById('fmm-z').value) || 0;
@@ -2517,7 +2962,7 @@
             const fz = parseFloat(document.getElementById('fmm-fz').value) || 0;
             const vf = Math.round(rpm * fz * z);
             document.getElementById('res-fmm').innerText = vf + " mm/min";
-            oppdaterSisteCncKpi(`${rpm} RPM | F${vf}`, `Bordmating: z=${z}, fz=${fz}`, 'cnc');
+            oppdaterSisteCncKpi(`${rpm} RPM | F${vf}`, `Bordmating: z=${z}, fz=${fz}`, 'cnc', 'milling', 'card-cnc-hurtig');
         }
         function beregnGraderPrMin() {
             const mmmin = parseFloat(document.getElementById('deg-mmmin').value) || 0;
@@ -2528,7 +2973,7 @@
             document.getElementById('deg-res-onegrad').innerText = (omkrets > 0 ? (omkrets / 360) : 0).toFixed(4) + " mm/°";
             document.getElementById('deg-res-gradmin').innerText = gradMin + " °/min";
             document.getElementById('deg-res-revmin').innerText = (omkrets > 0 ? (mmmin / omkrets) : 0).toFixed(2) + " omdr/min";
-            oppdaterSisteCncKpi(`${gradMin} °/min`, `C-Akse: Ø${dia} mm`, 'cnc');
+            oppdaterSisteCncKpi(`${gradMin} °/min`, `C-Akse: Ø${dia} mm`, 'cnc', 'turning', 'card-cnc-caxis');
         }
         window.oppdaterRctInndatamodus = function() {
             const mode = document.getElementById('rct-mode')?.value || 'fz';
@@ -2591,7 +3036,7 @@
             mrrEl.innerText = mrr.toFixed(1);
             factorEl.innerText = rctFactor.toFixed(2);
             statusEl.innerText = '';
-            oppdaterSisteCncKpi(`${Math.round(rpm)} RPM | F${Math.round(vf)}`, `${isEnabled ? (erEng ? 'RCT on' : 'RCT på') : (erEng ? 'RCT off' : 'RCT av')}`, 'cnc', 'milling');
+            oppdaterSisteCncKpi(`${Math.round(rpm)} RPM | F${Math.round(vf)}`, `${isEnabled ? (erEng ? 'RCT on' : 'RCT på') : (erEng ? 'RCT off' : 'RCT av')}`, 'cnc', 'milling', 'card-cnc-rct');
         };
 
         // --- TOOLS LOGIC ---
@@ -2626,7 +3071,7 @@
             if (rVc) rVc.innerText = `${vc} m/min`;
             if (rRpm) rRpm.innerText = `${Math.round(rpm)} RPM`;
             if (rMat) rMat.innerText = `${Math.round(vf)} mm/min`;
-            oppdaterSisteCncKpi(`${Math.round(rpm)} RPM | F${Math.round(vf)}`, `Skjæredata: Ø${dia} mm`, 'tools', 'data');
+            oppdaterSisteCncKpi(`${Math.round(rpm)} RPM | F${Math.round(vf)}`, `Skjæredata: Ø${dia} mm`, 'tools', 'data', 'card-tools-material-data');
         }
         function beregnBoredybde() {
             const diaEl = document.getElementById('drill-dia');
@@ -2848,8 +3293,6 @@
             const dashIsoSub = document.getElementById('dash-kpi-isofit-sub');
             if (dashIso) dashIso.innerText = `Ø${d} ${cls} → ${midMm.toFixed(3)}`;
             if (dashIsoSub) dashIsoSub.innerText = `${minMm.toFixed(3)}–${maxMm.toFixed(3)} mm (${fmtUm(upperUm)}/${fmtUm(lowerUm)} µm)`;
-
-            oppdaterSisteCncKpi(`Ø${d} ${cls} → ${midMm.toFixed(3)}`, `${minMm.toFixed(3)}–${maxMm.toFixed(3)} mm (${fmtUm(upperUm)}/${fmtUm(lowerUm)} µm)`, 'tools', 'fits');
         }
         function byttVektForm() {
             const typeEl = document.getElementById('w-type');
@@ -3416,10 +3859,10 @@
 
         // --- OPPSTART ---
         window.addEventListener('DOMContentLoaded', () => {
+            registrerKalkulatorLivekort();
             hentWidgetKonfig();
             lastInnAltState();
             lastInnNotaterOgSjekkliste();
-            brukWidgetOppsett();
             beregnSirkulaerMating();
             beregnGjengerInnvendig();
             beregnGjengerUtvendig();
@@ -3453,6 +3896,7 @@
             beregnApparat();
             beregnStromTariff();
             beregnDekkDimensjon();
+            brukWidgetOppsett();
             aktiverHurtigKopiering();
             if (currentLang === 'en') brukSprak();
             initIcons();

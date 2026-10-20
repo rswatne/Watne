@@ -23,6 +23,7 @@
         resultDetails.replaceChildren();
         resultError.textContent = message;
         resultError.classList.remove('hidden');
+        window.oppdaterLiveKalkulatorResultat?.(`amount-${activeMode}`, '—', message);
     }
 
     function setResult(main, summary, rows) {
@@ -42,6 +43,10 @@
             row.append(name, amount);
             resultDetails.append(row);
         });
+        const details = rows
+            .map(([label, value]) => `${label} ${value}`)
+            .join(' · ');
+        window.oppdaterLiveKalkulatorResultat?.(`amount-${activeMode}`, main, summary, details);
     }
 
     function requirePositive(values, message) {
