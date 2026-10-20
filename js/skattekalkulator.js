@@ -419,12 +419,13 @@
         } else if (handling === 'hent-fagf') {
             const betalt = parseFloat($('fagforening-kroner-input')?.value) || 0;
             const pctSats = parseFloat($('fagforening-prosent')?.value) || 0;
-            const mnd = betalt > 0 ? betalt : (window.sisteBrutto || 0) * pctSats / 100;
-            if (mnd <= 0) return visToast('Fyll inn fagforeningstrekk i lønnskalkulatoren først', 'rose');
-            $('sk-fagf').value = Math.round(mnd * 12);
+            const aarBrutto = grunnlag().brutto;
+            const aar = betalt > 0 ? betalt * 12 : aarBrutto * pctSats / 100;
+            if (aar <= 0) return visToast('Fyll inn brutto lønn eller fagforeningstrekk først', 'rose');
+            $('sk-fagf').value = Math.round(aar);
             lagre();
             oppdater();
-            visToast('Hentet fagforeningskontingent (' + kr(mnd) + ' per måned × 12)');
+            visToast('Hentet fagforeningskontingent for hele året (' + kr(aar / 12) + ' per måned i snitt)');
         } else if (handling === 'reset-satser') {
             const standard = {
                 'sk-s-alm': SATSER.alminnelig, 'sk-s-person': SATSER.personfradrag, 'sk-s-minste-pct': SATSER.minstePct,
