@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Verkstedsportalen Beta | Verkstedlab</title>
+    <title>Verkstedsportalen | CNC, Verktøy, Lønn & Strøm</title>
 
     <!-- PWA & Mobile App Meta Tags -->
     <meta name="theme-color" content="#0f172a">
@@ -27,66 +27,10 @@
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 
     <link href="./style.css?v=20261020-live-card-size" rel="stylesheet">
-    <link href="./beta.css?v=2" rel="stylesheet">
-    <link href="./beta-layouts.css?v=1" rel="stylesheet">
-    <link href="./beta-hyper.css?v=15" rel="stylesheet">
 
+    <!-- Theme Initialization -->
     <script>
-        const betaStoragePrefix = 'verkstedportal-beta:';
-        const betaStorageTarget = window.localStorage;
-        const betaStorageKeys = () => Object.keys(betaStorageTarget)
-            .filter(key => key.startsWith(betaStoragePrefix))
-            .map(key => key.slice(betaStoragePrefix.length));
-        const localStorage = new Proxy({}, {
-            get(target, property) {
-                if (property === 'getItem') return key => betaStorageTarget.getItem(betaStoragePrefix + key);
-                if (property === 'setItem') return (key, value) => betaStorageTarget.setItem(betaStoragePrefix + key, value);
-                if (property === 'removeItem') return key => betaStorageTarget.removeItem(betaStoragePrefix + key);
-                if (property === 'clear') return () => {
-                    betaStorageKeys().forEach(key => betaStorageTarget.removeItem(betaStoragePrefix + key));
-                };
-                if (property === 'length') return betaStorageKeys().length;
-                if (property === 'key') return index => betaStorageKeys()[index] ?? null;
-                if (property === Symbol.iterator) return undefined;
-                if (typeof property === 'string') return betaStorageTarget.getItem(betaStoragePrefix + property);
-                return Reflect.get(target, property, target);
-            },
-            set(target, property, value) {
-                if (typeof property !== 'string') return false;
-                betaStorageTarget.setItem(betaStoragePrefix + property, String(value));
-                return true;
-            },
-            deleteProperty(target, property) {
-                if (typeof property !== 'string') return false;
-                betaStorageTarget.removeItem(betaStoragePrefix + property);
-                return true;
-            },
-            has(target, property) {
-                return typeof property === 'string' && betaStorageTarget.getItem(betaStoragePrefix + property) !== null;
-            },
-            ownKeys() {
-                return betaStorageKeys();
-            },
-            getOwnPropertyDescriptor(target, property) {
-                if (typeof property === 'string') {
-                    const value = betaStorageTarget.getItem(betaStoragePrefix + property);
-                    if (value !== null) return { configurable: true, enumerable: true, writable: true, value };
-                }
-                return undefined;
-            }
-        });
-        const betaIndexedDbPrefix = 'verkstedportal-beta:';
-        const indexedDB = new Proxy(window.indexedDB, {
-            get(target, property) {
-                if (property === 'open') return (name, ...args) => target.open(betaIndexedDbPrefix + name, ...args);
-                const value = Reflect.get(target, property, target);
-                return typeof value === 'function' ? value.bind(target) : value;
-            }
-        });
-    </script>
-
-    <script>
-        if (localStorage.theme === 'dark') {
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');
         } else {
             document.documentElement.classList.remove('dark');
@@ -98,7 +42,7 @@
      crossorigin="anonymous"></script>
 </head>
 
-<body data-layout="hyper" class="beta-workspace flex h-screen overflow-hidden antialiased selection:bg-brand-500 selection:text-white bg-slate-100 dark:bg-slate-950 text-slate-900 dark:text-slate-100 relative transition-colors duration-300 bg-tech-grid" data-layout="hyper">
+<body class="flex h-screen overflow-hidden antialiased selection:bg-brand-500 selection:text-white bg-slate-100 dark:bg-slate-950 text-slate-900 dark:text-slate-100 relative transition-colors duration-300 bg-tech-grid">
 
     <!-- Toast Notification Container -->
     <div id="toast-container" class="fixed top-20 md:top-6 right-4 z-[100] flex flex-col gap-2 pointer-events-none"></div>
@@ -245,8 +189,9 @@
                 <span class="flex items-center"><i data-lucide="calendar-clock" class="w-5 h-5 mr-3 text-slate-400"></i> Dato & tid</span>
                 <kbd class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-400">7</kbd>
             </button>
-            <a href="./index.html" class="w-full flex items-center justify-between px-4 py-3 text-sm font-medium rounded-xl text-slate-500 dark:text-slate-400 border border-transparent hover:bg-white/50 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-white transition-all">
-                <span class="flex items-center"><i data-lucide="arrow-left" class="w-5 h-5 mr-3 text-brand-500"></i> Hovedsiden</span>
+            <a href="./beta.html" class="w-full flex items-center justify-between px-4 py-3 text-sm font-medium rounded-xl text-slate-500 dark:text-slate-400 border border-transparent hover:bg-white/50 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-white transition-all">
+                <span class="flex items-center"><i data-lucide="flask-conical" class="w-5 h-5 mr-3 text-violet-500"></i> Beta-side</span>
+                <span class="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-violet-100 dark:bg-violet-900/40 text-violet-600 dark:text-violet-300">BETA</span>
             </a>
         </nav>
         
@@ -406,7 +351,7 @@
                 <i data-lucide="wrench" class="w-4 h-4 stroke-[2.5]"></i>
             </div>
             <div>
-                <h1 class="text-xs font-extrabold text-slate-900 dark:text-white leading-tight truncate max-w-[100px]">Verkstedlab</h1>
+                <h1 class="text-xs font-extrabold text-slate-900 dark:text-white leading-tight truncate max-w-[100px]">Verkstedsportalen</h1>
                 <p id="live-clock-mobile" class="font-mono text-[9px] font-bold text-brand-600 dark:text-brand-400">00:00</p>
             </div>
         </button>
@@ -434,25 +379,6 @@
 
     <!-- MAIN CONTENT AREA -->
     <main class="flex-1 overflow-y-auto pt-16 md:pt-0 relative z-10 transition-colors pb-24 md:pb-12">
-        <header class="beta-topbar hidden md:flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <span class="beta-topbar-mark"><i data-lucide="flask-conical" class="w-4 h-4"></i></span>
-                <div>
-                    <p class="beta-eyebrow">VERKSTEDSPORTALEN / LAB</p>
-                    <p class="beta-topbar-title">Verkstedlab <span>— eksperimentell visning</span></p>
-                </div>
-            </div>
-            <div class="flex items-center gap-3">
-                <button type="button" onclick="apneSokModal()" class="beta-tool-btn" title="Hurtigsøk"><i data-lucide="search" class="w-4 h-4"></i></button>
-                <button type="button" onclick="apneNotatSkuff()" class="beta-tool-btn" title="Notater & Sjekkliste"><i data-lucide="clipboard-list" class="w-4 h-4"></i></button>
-                <button type="button" onclick="toggleLanguage()" class="beta-tool-btn" title="Språk / Language"><i data-lucide="languages" class="w-4 h-4"></i></button>
-                <button type="button" onclick="toggleTheme()" class="beta-tool-btn beta-theme-btn" title="Bytt tema">
-                    <i data-lucide="sun" class="w-4 h-4 hidden dark:block"></i>
-                    <i data-lucide="moon" class="w-4 h-4 block dark:hidden"></i>
-                </button>
-                <a href="./index.html" class="beta-main-link"><i data-lucide="arrow-up-right" class="w-4 h-4"></i> Åpne hovedsiden</a>
-            </div>
-        </header>
         
         <!-- ================= DASHBOARD ================= -->
         <section id="dashboard" class="tab-content active p-4 sm:p-6 lg:p-10 max-w-7xl mx-auto">
@@ -2133,7 +2059,7 @@
         <button type="button" role="menuitem" onclick="switchTab('ev')" class="w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="zap" class="w-5 h-5 text-teal-500"></i> Strøm & Elbil</button>
         <button type="button" role="menuitem" onclick="switchTab('amounts')" class="w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="shapes" class="w-5 h-5 text-violet-500"></i> Hvor mye trenger jeg?</button>
         <button type="button" role="menuitem" onclick="switchTab('datetime')" class="w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="calendar-clock" class="w-5 h-5 text-sky-500"></i> Dato & tid</button>
-        <a href="./index.html" role="menuitem" class="w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="arrow-left" class="w-5 h-5 text-brand-500"></i> Hovedsiden</a>
+        <a href="./beta.html" role="menuitem" class="w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="flask-conical" class="w-5 h-5 text-violet-500"></i> Beta-side <span class="ml-auto text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-violet-100 dark:bg-violet-900/40 text-violet-600 dark:text-violet-300">BETA</span></a>
     </div>
 
     <!-- MOBILE BOTTOM NAVIGATION -->
@@ -2166,7 +2092,6 @@
     <script src="./js/production-addons.js?v=20261020-datetime"></script>
     <script src="./js/amount-planner.js?v=20261020-lazy-tab-calculations"></script>
     <script src="./js/datetime-tools.js?v=20261020-lazy-tab-calculations"></script>
-    <script src="./beta-layout.js?v=10"></script>
 
 </body>
 </html>
