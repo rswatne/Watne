@@ -75,7 +75,27 @@
         'Ingen blir klokere av å ha rett, men mange blir upopulære.',
         'Gjør du det bra, så var det nok flaks. Gjør du det dårlig, så var det typisk deg.',
         'Toleransen er ±0,01. Dine ambisjoner bør ligge langt innenfor.',
-        'Du er ikke uerstattelig. Det er derfor vi har en vikar.'
+        'Du er ikke uerstattelig. Det er derfor vi har en vikar.',
+        'Den som alltid har rett, har bare ikke blitt motsagt av noen som orker.',
+        'Ingen har noen gang fått medalje for å følge prosedyren.',
+        'Hvis du lærer noe nytt, er det fordi du ikke kunne det fra før.',
+        'Den som foreslår en forbedring, har tydeligvis for mye tid.',
+        'Ikke vær så stolt av overflaten. Den skal uansett ryke av.',
+        'Det er lov å være god, så lenge ingen legger merke til det.',
+        'Den som spør om lønnsøkning, har sikkert fått nok.',
+        'Alle kan lage deler. Bare noen få tror de kan lage dem bedre.',
+        'Ingen liker en som alltid kommer presis. Det blir bare flaut for de andre.',
+        'Du er bra, men ikke så bra som du ser ut i speilet i garderoben.',
+        'Å lage en feil er menneskelig. Å rette den før andre ser den, er skryt.',
+        'Den som tror han kan, har ikke prøvd mandagens tegninger.',
+        'Hvis alle andre er enige, er det nok du som tar feil.',
+        'En god idé er en idé som ikke trenger et møte. Du har sikkert ingen.',
+        'Ikke tro at du er noe, selv om maskinen går bedre etter at du rørte den.',
+        'Alle har et talent. Ditt er å tro at du har et.',
+        'Den som skryter av egen kvalitet, har aldri sett kollegaens.',
+        'Husk: Det er ikke deg det handler om, og sånn skal det være.',
+        'Den som kommer tidlig, gjør oss andre til latter. Den som kommer sent, til samtaleemne.',
+        'Du kan ikke bli bedre, og om du kunne, ville ingen sagt det.'
     ];
 
     function janteSaying() {
