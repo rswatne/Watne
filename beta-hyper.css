@@ -348,6 +348,26 @@ body[data-layout="hyper"] .tab-content .glass-input {
     border-radius: 0.75rem;
 }
 
+html.dark select {
+    color-scheme: dark;
+}
+
+html.dark select option,
+html.dark select optgroup {
+    color: #f1f5f9;
+    background-color: #0f172a;
+}
+
+html:not(.dark) select {
+    color-scheme: light;
+}
+
+html:not(.dark) select option,
+html:not(.dark) select optgroup {
+    color: #0f172a;
+    background-color: #fff;
+}
+
 body[data-layout="hyper"] .tab-content .glass-input:focus {
     border-color: #f5f5f7;
     box-shadow: 0 0 0 3px rgb(255 255 255 / 15%);
