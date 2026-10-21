@@ -132,13 +132,7 @@
             const y = event.clientY - box.top;
             card.style.setProperty('--mx', x + 'px');
             card.style.setProperty('--my', y + 'px');
-            if (reducedMotion || !card.classList.contains('dash-widget')) return resetTilt();
-            if (tiltedCard && tiltedCard !== card) resetTilt();
-            tiltedCard = card;
-            const strength = layout === 'hyper' ? 18 : 12;
-            const rotateY = (x / box.width - 0.5) * strength;
-            const rotateX = (0.5 - y / box.height) * strength;
-            card.style.transform = `perspective(700px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(${layout === 'hyper' ? 18 : 8}px)`;
+            resetTilt();
         });
     }
 

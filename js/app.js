@@ -2084,7 +2084,8 @@
             document.getElementById('vis-brutto').innerText = totalBrutto.toFixed(2).replace('.', ',') + " kr";
 
             const unionPct = parseFloat(document.getElementById('fagforening-prosent').value) || 1.5;
-            const unionKr = Math.max(0, totalBrutto * (unionPct / 100));
+            const unionBetaltKr = parseFloat(document.getElementById('fagforening-kroner-input')?.value) || 0;
+            const unionKr = unionBetaltKr > 0 ? unionBetaltKr : Math.max(0, totalBrutto * (unionPct / 100));
             window.sisteFagforeningMnd = unionKr;
             document.getElementById('vis-fagforening-mnd').innerText = "− " + unionKr.toFixed(2).replace('.', ',') + " kr";
 

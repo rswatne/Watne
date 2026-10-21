@@ -16,6 +16,7 @@
         trygdePct: 7.6,
         trygdeGrense: 99650,
         fagforeningMaks: 8700,
+        oppjustering: 1,
         trinn: [
             { fra: 226100, pct: 1.7 },
             { fra: 318300, pct: 4.0 },
@@ -116,7 +117,11 @@
                         ${field('sk-fagf', 'Fagforeningskontingent per år (kr)', '0', '100', 'f.eks. 4800')}
                         <button type="button" data-sk-act="hent-fagf" class="mt-1.5 text-xs font-bold underline text-slate-500 dark:text-slate-400">Hent fra lønnskalkulator</button>
                     </div>
-                    ${field('sk-fradrag', 'Andre fradrag per år (kr)', '0', '500', 'f.eks. reise, gjeldsrenter')}
+                    ${field('sk-fradrag', 'Andre fradrag per år (kr)', '0', '500', 'f.eks. reise')}
+                    ${field('sk-rente', 'Rentekostnader per år (kr)', '0', '500', 'f.eks. boliglån')}
+                    ${field('sk-gevinst', 'Realisert gevinst aksjer/fond (kr)', '0', '500')}
+                    ${field('sk-tap', 'Realisert tap aksjer/fond (kr)', '0', '500')}
+                    <p id="sk-invest-info" class="text-xs text-slate-500 dark:text-slate-400 sm:col-span-2 lg:col-span-4"></p>
                     <button type="button" data-sk-act="hent" class="${actBtn}">Hent fra lønnskalkulator</button>
                 </div>
             </div>
@@ -153,6 +158,7 @@
                     ${field('sk-s-trygd', 'Trygdeavgift lønn (%)', SATSER.trygdePct, '0.1')}
                     ${field('sk-s-trygd-grense', 'Trygdeavgift nedre grense (kr)', SATSER.trygdeGrense, '50')}
                     ${field('sk-s-fagf-maks', 'Fagforening maks fradrag (kr)', SATSER.fagforeningMaks, '100')}
+                    ${field('sk-s-opp', 'Oppjusteringsfaktor aksjer/fond (1 = ingen)', SATSER.oppjustering, '0.01')}
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">${trinnFelt}</div>
                 <button type="button" data-sk-act="reset-satser" class="mt-4 px-4 py-2 rounded-xl text-sm font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200">Tilbakestill satser</button>
@@ -167,6 +173,7 @@
         trygd: num('sk-s-trygd') / 100,
         trygdeGrense: num('sk-s-trygd-grense'),
         fagforeningMaks: num('sk-s-fagf-maks'),
+        oppjustering: num('sk-s-opp') || 1,
         trinn: SATSER.trinn.map((_, i) => ({ fra: num('sk-t' + i + '-fra'), pct: num('sk-t' + i + '-pct') / 100 }))
             .sort((a, b) => a.fra - b.fra)
     });
@@ -175,7 +182,7 @@
         brutto = Math.max(0, brutto);
         const minste = Math.min(brutto * s.minstePct, s.minsteMaks);
         const person = s.person;
-        const alm = Math.max(0, brutto - minste - person - Math.max(0, ekstraFradrag));
+        const alm = Math.max(0, brutto - minste - person - ekstraFradrag);
         const skattAlm = alm * s.alm;
         const trinn = s.trinn.map((t, i) => {
             const til = i + 1 < s.trinn.length ? s.trinn[i + 1].fra : Infinity;
@@ -187,7 +194,7 @@
             ? Math.min(brutto * s.trygd, 0.25 * (brutto - s.trygdeGrense))
             : 0;
         const total = skattAlm + trinnSum + trygd;
-        return { brutto, minste, person, ekstraFradrag: Math.max(0, ekstraFradrag), alm, skattAlm, trinn, trinnSum, trygd, total, netto: brutto - total };
+        return { brutto, minste, person, ekstraFradrag, alm, skattAlm, trinn, trinnSum, trygd, total, netto: brutto - total };
     }
 
     const marginal = (brutto, ekstraFradrag, s) =>
@@ -204,7 +211,15 @@
         const s = satser();
         const andre = Math.max(0, num('sk-fradrag'));
         const fagforening = Math.min(Math.max(0, num('sk-fagf')), s.fagforeningMaks);
-        return { brutto, fradrag: andre + fagforening, andre, fagforening, s };
+        const rente = Math.max(0, num('sk-rente'));
+        const investNetto = (Math.max(0, num('sk-gevinst')) - Math.max(0, num('sk-tap'))) * s.oppjustering;
+        const info = $('sk-invest-info');
+        if (info) {
+            info.textContent = investNetto < 0
+                ? `Netto tap på ${kr(-investNetto)} gir ca. ${kr(-investNetto * s.alm)} lavere skatt.`
+                : investNetto > 0 ? `Netto gevinst på ${kr(investNetto)} gir ca. ${kr(investNetto * s.alm)} mer i skatt.` : '';
+        }
+        return { brutto, fradrag: andre + fagforening + rente - investNetto, andre, fagforening, rente, investNetto, s };
     }
 
     function visNetto(g) {
@@ -227,6 +242,8 @@
                     ${row('Personfradrag', '− ' + kr(Math.min(r.person, Math.max(0, r.brutto - r.minste - r.ekstraFradrag))))}
                     ${g.fagforening ? row('Fagforeningskontingent', '− ' + kr(g.fagforening)) : ''}
                     ${g.andre ? row('Andre fradrag', '− ' + kr(g.andre)) : ''}
+                    ${g.rente ? row('Rentekostnader', '− ' + kr(g.rente)) : ''}
+                    ${g.investNetto ? row(g.investNetto < 0 ? 'Tap aksjer/fond (netto)' : 'Gevinst aksjer/fond (netto)', (g.investNetto < 0 ? '− ' : '+ ') + kr(Math.abs(g.investNetto))) : ''}
                     ${row('Alminnelig inntekt', kr(r.alm), 'strong border-t border-slate-200 dark:border-slate-800 mt-1 pt-2')}
                 </div>
                 <div>
@@ -429,7 +446,7 @@
         } else if (handling === 'reset-satser') {
             const standard = {
                 'sk-s-alm': SATSER.alminnelig, 'sk-s-person': SATSER.personfradrag, 'sk-s-minste-pct': SATSER.minstePct,
-                'sk-s-minste-maks': SATSER.minsteMaks, 'sk-s-trygd': SATSER.trygdePct,                 'sk-s-trygd-grense': SATSER.trygdeGrense, 'sk-s-fagf-maks': SATSER.fagforeningMaks            };
+                'sk-s-minste-maks': SATSER.minsteMaks, 'sk-s-trygd': SATSER.trygdePct,                 'sk-s-trygd-grense': SATSER.trygdeGrense, 'sk-s-fagf-maks': SATSER.fagforeningMaks, 'sk-s-opp': SATSER.oppjustering };
             SATSER.trinn.forEach((t, i) => { standard['sk-t' + i + '-fra'] = t.fra; standard['sk-t' + i + '-pct'] = t.pct; });
             Object.keys(standard).forEach(id => { $(id).value = standard[id]; });
             lagre();
