@@ -68,6 +68,8 @@
         'Sats (%)': 'Prosenten som gjelder for dette trinnet.',
         'Minstefradrag': 'Et automatisk fradrag for lønnsinntekt. Du trenger ikke dokumentere det.',
         'Alminnelig inntekt': 'Brutto lønn minus fradrag. Det er dette beløpet skatten på alminnelig inntekt regnes av.',
+        'Skattegrunnlag': 'Kalkulatoren viser to ulike grunnlag: alminnelig inntekt etter fradrag, og brutto personinntekt som brukes til trinnskatt og trygdeavgift.',
+        'År til dato': 'Sammenlign estimert skatt for hele året med skatt som allerede er trukket. Resultatet er veiledende og avhenger av at årsinntekten og fradragene over er riktige.',
         'Skatt på alminnelig': 'Flat prosent av alminnelig inntekt.',
         'Trinnskatt': 'Ekstra skatt som øker jo mer du tjener. Beregnes av brutto lønn, i trinn.',
         'Trygdeavgift': 'Avgift til folketrygden, en prosent av brutto lønn.',
@@ -142,6 +144,14 @@
 
             <div id="sk-p-trekk" data-sk-panel="trekk" class="${card}" hidden>
                 <div id="sk-trekk-out"></div>
+                <div class="mt-6 rounded-2xl border border-slate-200 dark:border-slate-800 p-4">
+                    <p class="font-bold text-slate-900 dark:text-white mb-1">År til dato${tipFor('År til dato')}</p>
+                    <p class="text-xs text-slate-500 mb-4">Skriv inn tall fra lønnsslippene hittil i år. Sammenligningen bruker årsinntekten og fradragene fra kalkulatoren.</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        ${field('sk-a-i-brutto', 'Bruttoinntekt hittil i år (kr)', '0', '1000')}
+                        ${field('sk-a-i-skatt', 'Skatt trukket hittil i år (kr)', '0', '1000')}
+                    </div>
+                </div>
             </div>
 
             <div id="sk-p-hvaom" data-sk-panel="hvaom" class="${card}" hidden>
@@ -240,6 +250,11 @@
                 ${big('Skatt totalt', kr(r.total), `${pct(r.brutto ? r.total / r.brutto * 100 : 0)} av brutto`)}
                 ${big('Marginalskatt', pct(marg), 'av neste krone du tjener')}
             </div>
+            <div class="rounded-2xl border border-brand-200 dark:border-brand-800/60 bg-brand-50/60 dark:bg-brand-900/15 p-4 mb-6">
+                <p class="text-xs font-bold uppercase tracking-widest text-brand-700 dark:text-brand-300 mb-2">Skattegrunnlag${tipFor('Skattegrunnlag')}</p>
+                ${row('Brutto personinntekt (trinnskatt og trygdeavgift)', kr(r.brutto))}
+                ${row('Alminnelig inntekt etter fradrag', kr(r.alm), 'strong')}
+            </div>
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-10">
                 <div>
                     <p class="text-xs font-bold uppercase tracking-widest text-slate-500 mb-2">Alminnelig inntekt</p>
@@ -271,11 +286,18 @@
         const grunnlagTrekk = g.brutto * maaneder / 12;
         const anbefalt = grunnlagTrekk > 0 ? r.total / grunnlagTrekk * 100 : 0;
         const aaretsSnitt = g.brutto > 0 ? r.total / g.brutto * 100 : 0;
+        const bruttoHittil = Math.max(0, num('sk-a-i-brutto'));
+        const skattHittil = Math.max(0, num('sk-a-i-skatt'));
+        const gjenstaaendeSkatt = r.total - skattHittil;
         const naa = parseFloat($('skatt')?.value) || 0;
         const naaType = $('skatt-type')?.value;
-        const diff = naa - anbefalt;
+        const ekstraType = $('ekstra-skatt-type')?.value || 'belop';
+        const ekstraVerdi = Math.max(0, parseFloat($('ekstra-skatt-verdi')?.value) || 0);
+        const ekstraAar = ekstraType === 'prosent' ? g.brutto * ekstraVerdi / 100 : ekstraVerdi * 12;
+        const naaSamlet = grunnlagTrekk > 0 ? naa + ekstraAar / grunnlagTrekk * 100 : naa;
+        const diff = naaSamlet - anbefalt;
         const sammenligning = naaType === 'prosent'
-            ? `<p class="text-sm mt-4 text-slate-700 dark:text-slate-300">Lønnskalkulatoren bruker nå <strong>${pct(naa)}</strong>. ${Math.abs(diff) < 0.3
+            ? `<p class="text-sm mt-4 text-slate-700 dark:text-slate-300">Lønnskalkulatoren bruker nå omtrent <strong>${pct(naaSamlet)} samlet</strong>${ekstraAar > 0 ? `, inkludert ekstra skattetrekk (${kr(ekstraAar)} estimert per år)` : ''}. ${Math.abs(diff) < 0.3
                 ? 'Det samsvarer godt med anbefalingen.'
                 : diff < 0
                     ? `Det er ${pct(-diff)} <strong>for lavt</strong>, og du kan få restskatt.`
@@ -295,6 +317,15 @@
                 ${big('Snitt over hele året', pct(aaretsSnitt))}
                 ${big('Trekk per måned', kr(r.total / maaneder))}
                 ${big('Trekk på overtid', pct(marg), 'marginalskatt')}
+            </div>
+            <div class="mt-6 rounded-2xl border border-slate-200 dark:border-slate-800 p-4">
+                <p class="font-bold text-slate-900 dark:text-white mb-1">Årsestimat mot hittil trukket</p>
+                <p class="text-xs text-slate-500 mb-4">Basert på årsinntekten og skattetrekket du har lagt inn over.</p>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    ${big('Estimert skatt for året', kr(r.total))}
+                    ${big('Skatt trukket hittil', kr(skattHittil), `av ${kr(bruttoHittil)} i bruttoinntekt`)}
+                    ${big('Estimert gjenstående skatt', kr(gjenstaaendeSkatt), gjenstaaendeSkatt < 0 ? 'negativt beløp kan bety skatt til gode' : 'basert på årsestimatet')}
+                </div>
             </div>
             ${sammenligning}
             <div class="flex flex-wrap gap-3 mt-5">

@@ -629,8 +629,12 @@
                                     <div class="line-row strong pt-2"><span class="text-slate-900 dark:text-white text-base">Total Brutto</span><span id="vis-brutto" class="font-mono text-slate-900 dark:text-white text-lg">0,00 kr</span></div>
                                     
                                     <div class="line-row text-slate-600 dark:text-slate-400"><span id="fagforening-label-mnd">Fagforeningtrekk</span><span id="vis-fagforening-mnd" class="font-mono">− 0,00 kr</span></div>
+                                    <div id="rad-ekstra-skattetrekk" class="line-row text-slate-600 dark:text-slate-400" style="display: none;">
+                                        <span>Ekstra skattetrekk</span>
+                                        <span id="vis-ekstra-skattetrekk" class="font-mono">− 0,00 kr</span>
+                                    </div>
                                     <div class="line-row text-loss-600 dark:text-loss-400 border-b border-slate-200 dark:border-slate-800/50 pb-3">
-                                        <span id="skatt-tittel" class="font-bold">Skattetrekk</span>
+                                        <span id="skatt-tittel" class="font-bold">Totalt skattetrekk</span>
                                         <span id="vis-skattetrekk" class="font-mono font-bold">− 0,00 kr</span>
                                     </div>
                                     
@@ -844,6 +848,18 @@
                             <div id="skatteprosent-boks" class="mb-5" style="display: none;">
                                 <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Fast skatteprosent på alt (%)</label>
                                 <input id="skatt" type="number" step="0.5" value="30" class="glass-input glass-input-brand" oninput="beregnAlt(); lagreInnstillinger();">
+                            </div>
+
+                            <div class="mb-5">
+                                <label for="ekstra-skatt-type" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Ekstra skattetrekk</label>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <select id="ekstra-skatt-type" class="glass-input glass-input-brand" onchange="oppdaterEkstraSkattLabel(); beregnAlt(); lagreInnstillinger();">
+                                        <option value="belop">Fast beløp per måned</option>
+                                        <option value="prosent">Prosent av brutto</option>
+                                    </select>
+                                    <input id="ekstra-skatt-verdi" type="number" min="0" step="0.5" value="0" class="glass-input glass-input-brand" aria-label="Ekstra skattetrekk" oninput="beregnAlt(); lagreInnstillinger();">
+                                </div>
+                                <p id="ekstra-skatt-hjelp" class="text-xs text-slate-500 dark:text-slate-400 mt-1.5">Legges til det beregnede skattetrekket hver måned.</p>
                             </div>
                         </div>
 

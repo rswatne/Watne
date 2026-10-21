@@ -1841,6 +1841,21 @@
             }
         }
 
+        function oppdaterEkstraSkattLabel() {
+            const typeEl = document.getElementById('ekstra-skatt-type');
+            const verdiEl = document.getElementById('ekstra-skatt-verdi');
+            const hjelpEl = document.getElementById('ekstra-skatt-hjelp');
+            if (!typeEl || !verdiEl || !hjelpEl) return;
+
+            const erProsent = typeEl.value === 'prosent';
+            verdiEl.step = erProsent ? '0.5' : '1';
+            verdiEl.setAttribute('aria-label', erProsent ? 'Ekstra skattetrekk i prosent av brutto' : 'Ekstra skattetrekk i kroner per måned');
+            verdiEl.placeholder = erProsent ? 'f.eks. 2' : 'f.eks. 1000';
+            hjelpEl.textContent = erProsent
+                ? 'Trekkes i tillegg som prosent av månedens brutto lønn.'
+                : 'Trekkes i tillegg som et fast kronebeløp hver måned.';
+        }
+
         function regnUtProsentFraKroner() {
             const betaltKr = parseFloat(document.getElementById('fagforening-kroner-input').value) || 0;
             const brutto = window.sisteBrutto || 0;
@@ -2095,6 +2110,8 @@
             const overtidSkattPct = parseFloat(document.getElementById('skatt-overtid')?.value) || 35;
             const pctTax = parseFloat(document.getElementById('skatt').value) || 30;
             const halvtSkattetrekk = document.getElementById('halvt-skattetrekk')?.checked || false;
+            const ekstraSkattType = document.getElementById('ekstra-skatt-type')?.value || 'belop';
+            const ekstraSkattVerdi = Math.max(0, parseFloat(document.getElementById('ekstra-skatt-verdi')?.value) || 0);
 
             let skattKr = 0;
             if (skattType === 'tabell') {
@@ -2122,8 +2139,20 @@
                 document.getElementById('skatt-tittel').innerText = `Prosenttrekk (${pctTax}%)${halvtSkattetrekk ? ' (halvt på fastlønn)' : ''}`;
             }
 
-            document.getElementById('vis-skattetrekk').innerText = "− " + skattKr.toFixed(2).replace('.', ',') + " kr";
-            const netto = totalBrutto - unionKr - skattKr;
+            const ekstraSkattKr = ekstraSkattType === 'prosent'
+                ? Math.round(totalBrutto * ekstraSkattVerdi / 100)
+                : Math.round(ekstraSkattVerdi);
+            const totaltSkattetrekk = skattKr + ekstraSkattKr;
+            const ekstraSkattRad = document.getElementById('rad-ekstra-skattetrekk');
+            if (ekstraSkattRad) {
+                ekstraSkattRad.style.display = ekstraSkattKr > 0 ? 'flex' : 'none';
+                document.getElementById('vis-ekstra-skattetrekk').innerText = "− " + ekstraSkattKr.toFixed(2).replace('.', ',') + " kr";
+            }
+            if (ekstraSkattKr > 0) {
+                document.getElementById('skatt-tittel').innerText = 'Totalt skattetrekk';
+            }
+            document.getElementById('vis-skattetrekk').innerText = "− " + totaltSkattetrekk.toFixed(2).replace('.', ',') + " kr";
+            const netto = totalBrutto - unionKr - totaltSkattetrekk;
             document.getElementById('vis-netto').innerText = netto.toFixed(2).replace('.', ',') + " kr";
             document.getElementById('vis-netto-hoved').innerText = netto.toFixed(2).replace('.', ',') + " kr";
 
@@ -2919,6 +2948,7 @@
             brukLayoutPreferanser();
             initSammenleggbareKort();
             byttSkattType();
+            oppdaterEkstraSkattLabel();
             oppdaterAarOgMaaned();
             oppdaterVaktTabell();
             beregnAlt();
