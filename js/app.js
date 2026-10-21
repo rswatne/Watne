@@ -1225,6 +1225,7 @@
                 oversikt: currentLang === 'en' ? 'overview' : 'oversikt',
                 vakter: currentLang === 'en' ? 'shifts' : 'vakter',
                 innstillinger: currentLang === 'en' ? 'settings' : 'innstillinger',
+                skatt: currentLang === 'en' ? 'tax' : 'skatt',
                 milling: currentLang === 'en' ? 'milling' : 'fresing',
                 turning: currentLang === 'en' ? 'turning' : 'dreiing',
                 gcodes: currentLang === 'en' ? 'g-codes' : 'g-koder',
