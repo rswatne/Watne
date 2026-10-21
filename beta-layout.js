@@ -5,10 +5,20 @@
     const tabTitles = { dashboard: 'Oversikt', salary: 'Lønn', cnc: 'Maskinering', tools: 'Tabeller', ev: 'Strøm', amounts: 'Mengder', datetime: 'Dato & tid' };
     const cardSelector = '.tab-content :is([class*="rounded-2xl"], [class*="rounded-3xl"])[class*="border"]:not(button):not(a)';
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    // Lav ytelse: auto på svake PC-er, kan overstyres med localStorage 'lav_ytelse' = '1' / '0'
+    const lavYtelseValg = localStorage.getItem('lav_ytelse');
+    const svakPc = (navigator.hardwareConcurrency || 8) <= 4 || (navigator.deviceMemory || 8) <= 4;
+    if (lavYtelseValg === '1' || (lavYtelseValg !== '0' && svakPc)) document.body.classList.add('lav-ytelse');
     let frame = 0;
     let tiltedCard = null;
     let hyperBuilt = false;
     let scrollFrame = 0;
+    let stageEl = null;
+    let heroEl = null;
+    const setStageVar = (name, value) => {
+        stageEl?.style.setProperty(name, value);
+        if (name === '--sy') heroEl?.style.setProperty(name, value);
+    };
 
     function resetTilt() {
         if (tiltedCard) tiltedCard.style.transform = '';
@@ -32,6 +42,7 @@
                 <div class="hy-cube"><i class="hy-face"></i><i class="hy-face"></i><i class="hy-face"></i><i class="hy-face"></i><i class="hy-face"></i><i class="hy-face"></i></div>
             </div></div>`;
         document.body.prepend(stage);
+        stageEl = stage;
 
         const hero = document.createElement('div');
         hero.className = 'hyper-hero';
@@ -39,13 +50,14 @@
         hero.querySelector('.hyper-hero-new').addEventListener('click', () => setHeroTitle('dashboard', true));
         const topbar = document.querySelector('main .beta-topbar');
         (topbar || document.querySelector('main')).insertAdjacentElement(topbar ? 'afterend' : 'afterbegin', hero);
+        heroEl = hero;
 
         const main = document.querySelector('main');
         main.addEventListener('scroll', () => {
             if (scrollFrame || document.body.dataset.layout !== 'hyper') return;
             scrollFrame = requestAnimationFrame(() => {
                 scrollFrame = 0;
-                document.body.style.setProperty('--sy', main.scrollTop);
+                setStageVar('--sy', main.scrollTop);
             });
         }, { passive: true });
 
@@ -55,7 +67,7 @@
         });
 
         if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
-        const toTop = () => { main.scrollTop = 0; window.scrollTo(0, 0); document.body.style.setProperty('--sy', 0); };
+        const toTop = () => { main.scrollTop = 0; window.scrollTo(0, 0); setStageVar('--sy', 0); };
         toTop();
         window.addEventListener('load', () => { toTop(); setTimeout(toTop, 150); setTimeout(toTop, 600); });
         window.addEventListener('pageshow', toTop);
@@ -139,11 +151,13 @@
         if (!tiltLayouts.includes(layout) || frame) return;
         frame = requestAnimationFrame(() => {
             frame = 0;
-            document.body.style.setProperty('--gx', event.clientX + 'px');
-            document.body.style.setProperty('--gy', event.clientY + 'px');
-            if (layout === 'hyper' && !reducedMotion) {
-                document.body.style.setProperty('--hy-ry', (event.clientX / innerWidth - 0.5) * 140);
-                document.body.style.setProperty('--hy-rx', -18 - (event.clientY / innerHeight - 0.5) * 90);
+            if (!document.body.classList.contains('lav-ytelse')) {
+                setStageVar('--gx', event.clientX + 'px');
+                setStageVar('--gy', event.clientY + 'px');
+                if (layout === 'hyper' && !reducedMotion) {
+                    setStageVar('--hy-ry', (event.clientX / innerWidth - 0.5) * 140);
+                    setStageVar('--hy-rx', -18 - (event.clientY / innerHeight - 0.5) * 90);
+                }
             }
             const card = event.target.closest?.(cardSelector);
             if (!card) return resetTilt();

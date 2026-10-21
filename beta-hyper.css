@@ -495,6 +495,24 @@ body[data-layout="hyper"] .tab-content .glass-input:focus {
     }
 }
 
+/* ---------- Ytelse ---------- */
+/* Uskarphet bak elementer er dyrt å tegne; bakgrunnene er allerede nesten dekkende */
+*, *::before, *::after {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+}
+
+
+body.lav-ytelse .hy-blob,
+body.lav-ytelse .hy-cube,
+body.lav-ytelse .hy-ring {
+    animation: none !important;
+}
+
+body.lav-ytelse .dash-widget {
+    transition: none !important;
+}
+
 /* ---------- Lyst tema ---------- */
 html:not(.dark) body.beta-workspace[data-layout="hyper"] {
     --s-bg: rgb(255 255 255 / 75%);

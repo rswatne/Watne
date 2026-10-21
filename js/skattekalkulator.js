@@ -49,6 +49,12 @@
         'Fagforeningskontingent': 'Kontingent du har betalt til fagforening i året. Den delen som ligger under maksgrensen gir fradrag, så du betaler mindre skatt.',
         'Fagforening maks': 'Høyeste beløp du kan trekke fra for fagforeningskontingent per år. Grensen endres fra år til år, så kontroller den mot Skatteetaten.',
         'Andre fradrag': 'Andre fradrag utover minstefradrag og personfradrag, for eksempel reise til jobb over grensen eller gjeldsrenter.',
+        'Rentekostnader': 'Renter du har betalt på lån i løpet av året, for eksempel boliglån og forbrukslån. Du finner beløpet i årsoppgaven fra banken. Det trekkes fra alminnelig inntekt og gir lavere skatt.',
+        'Realisert gevinst': 'Fortjeneste du har tatt ut ved å selge aksjer eller fond i løpet av året (salgssum minus kjøpssum). Gevinsten er skattepliktig og øker skatten.',
+        'Realisert tap': 'Tap du har tatt ved å selge aksjer eller fond for mindre enn du kjøpte for. Tapet er fradragsberettiget og trekkes fra alminnelig inntekt. Urealisert tap, altså uten salg, gir ikke fradrag.',
+        'Oppjusteringsfaktor': 'Gevinst og tap på aksjer og fond ganges med denne faktoren før skatten regnes ut. 1 betyr ingen oppjustering. Satsen endres fra år til år, så kontroller den mot Skatteetaten.',
+        'Tap aksjer/fond': 'Netto tap på aksjer og fond (tap minus gevinst, etter oppjustering). Det reduserer alminnelig inntekt.',
+        'Gevinst aksjer/fond': 'Netto gevinst på aksjer og fond (gevinst minus tap, etter oppjustering). Det øker alminnelig inntekt.',
         'Ekstra fradrag': 'Fradrag utover minstefradrag og personfradrag, for eksempel reise til jobb over grensen, fagforeningskontingent eller gjeldsrenter. Det reduserer alminnelig inntekt.',
         'Ekstra inntekt': 'Penger du tjener i tillegg, for eksempel overtid eller en bonus. Kalkulatoren viser hvor mye du beholder etter skatt.',
         'Lønnsøkning': 'Hvor mye lønna øker per måned før skatt. Du ser hvor mye av økningen som blir igjen etter skatt.',
@@ -406,10 +412,14 @@
     });
     document.addEventListener('scroll', skjulTip, true);
 
+    let utsatt = 0;
+    const oppdaterUtsatt = () => {
+        clearTimeout(utsatt);
+        utsatt = setTimeout(() => { lagre(); oppdater(); }, 150);
+    };
     root.addEventListener('input', event => {
         if (!event.target.matches('[data-sk]')) return;
-        lagre();
-        oppdater();
+        oppdaterUtsatt();
     });
     root.addEventListener('change', event => {
         if (!event.target.matches('[data-sk]')) return;
