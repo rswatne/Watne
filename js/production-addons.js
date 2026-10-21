@@ -13,7 +13,7 @@
         const cncHeaderTitle = document.querySelector('#cnc header h2');
         const cncHeaderSub = document.querySelector('#cnc header p');
         if (cncHeaderTitle) cncHeaderTitle.innerText = 'Produksjon & Maskinering';
-        if (cncHeaderSub) cncHeaderSub.innerText = 'CNC Skjæredata, Dreiing, G-koder, 3D-Print & Sveising';
+        if (cncHeaderSub) cncHeaderSub.innerText = 'CNC Skjæredata, Dreiing, 3D-Print & Sveising';
 
         document.querySelectorAll('[onclick*="switchTab(\'cnc\')"] h3').forEach(el => {
             if (el.innerText.includes('Maskinering')) el.innerText = 'Produksjon (CNC, 3D & Sveis)';
@@ -248,7 +248,7 @@
                 "Produksjon": "Production",
                 "Produksjon & Maskinering": "Production & Machining",
                 "Produksjon (CNC, 3D & Sveis)": "Production (CNC, 3D & Weld)",
-                "CNC Skjæredata, Dreiing, G-koder, 3D-Print & Sveising": "CNC Cutting Data, Turning, G-Codes, 3D Print & Welding",
+                "CNC Skjæredata, Dreiing, 3D-Print & Sveising": "CNC Cutting Data, Turning, 3D Print & Welding",
                 "🖨️ 3D-Print & Prototype": "🖨️ 3D Print & Prototype",
                 "🔥 Sveising & Plate": "🔥 Welding & Sheet Metal",
                 "3D-Print Kostnad & Delekalkulator": "3D Print Cost & Part Calculator",
@@ -349,14 +349,10 @@
             const engelskKortTekst = currentLang !== 'en' && typeof noToEnDict !== 'undefined'
                 ? Object.entries(noToEnDict).reduce((tekst, [norsk, engelsk]) => tekst.split(norsk.toLowerCase()).join(engelsk.toLowerCase()), kortTekst)
                 : kortTekst;
-            const gCodeTekst = card.id === 'card-cnc-gcode' && typeof gCodeDatabase !== 'undefined'
-                ? gCodeDatabase.map(item => `${item.code} ${item.title} ${item.titleEn} ${item.desc} ${item.descEn}`).join(' ').toLowerCase()
-                : '';
-
             dynamiskIndeks.push({
                 title: norskTittel,
                 titleEn: engTittel,
-                keys: `${norskTittel.toLowerCase()} ${engTittel.toLowerCase()} ${kortTekst} ${norskKortTekst} ${engelskKortTekst} ${gCodeTekst}`,
+                keys: `${norskTittel.toLowerCase()} ${engTittel.toLowerCase()} ${kortTekst} ${norskKortTekst} ${engelskKortTekst}`,
                 tab: tab,
                 sub: sub,
                 card: cardId
@@ -516,7 +512,7 @@
             if (mainTab === 'salary' && ['oversikt', 'vakter', 'innstillinger'].includes(subTab)) {
                 switchSalaryTab(subTab, false);
             }
-            if (mainTab === 'cnc' && ['milling', 'turning', 'gcodes', 'print3d', 'welding'].includes(subTab)) {
+            if (mainTab === 'cnc' && ['milling', 'turning', 'print3d', 'welding'].includes(subTab)) {
                 switchCncTab(subTab, false);
             }
             if (mainTab === 'tools' && ['data', 'threads', 'fits', 'weight', 'math', 'conv'].includes(subTab)) {

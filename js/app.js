@@ -207,7 +207,7 @@
             "Lønn & Timebank": "Salary & Timebank",
             "Skatt, overtid, vakter": "Tax, overtime, shifts",
             "Maskinering (CNC)": "Machining (CNC)",
-            "Mating, konus, G-koder": "Feed, taper, G-codes",
+            "Mating, konus, Dreiing": "Feed, taper, turning",
             "Gjenger, ISO, kilespor": "Threads, ISO, keyways",
             "Ladetid, besparelse": "Charging time, savings",
             "Lønn, Skift & Timebank": "Salary, Shifts & Timebank",
@@ -438,13 +438,11 @@
 
             // Maskinering (CNC)
             "Maskineringskalkulator": "Machining Calculator",
-            "Skjæredata, Dreiing, Konus & G-koder": "Cutting Data, Turning, Taper & G-codes",
             "📑 Vis alle på én side": "📑 Show all on one page",
             "📑 Vis alle på én side (Klassisk)": "📑 Show all on one page (Classic)",
             "🗂️ Bruk ryddige underfaner": "🗂️ Use organized subtabs",
             "⚡ Fresing & Skjæredata": "⚡ Milling & Cutting Data",
             "📐 Dreiing, Gjenger & Konus": "📐 Turning, Threads & Taper",
-            "💻 G- & M-koder": "💻 G & M Codes",
             "Sirkulær Mating": "Circular Interpolation Feed",
             "Regn om bordmating til effektiv sentermating.": "Convert linear feed to effective toolpath center feed.",
             "Bearbeidingstype": "Machining Mode",
@@ -521,12 +519,6 @@
             "1 Grad:": "1 Degree:",
             "Grader/MIN:": "Degrees/MIN:",
             "Omdr/min:": "Rev/min:",
-            "G- & M-kode Oppslagsverk": "G & M Code Reference",
-            "Hurtigsøk i standard ISO / Fanuc / Mazak / Heidenhain koder. Klikk på en kode for å kopiere.": "Quick search in standard ISO / Fanuc / Mazak codes. Click any code to copy.",
-            "Alle koder": "All Codes",
-            "Bevegelse & Komp": "Motion & Compensation",
-            "Bore- & Dreiesykluser": "Drilling & Turning Cycles",
-            "M-koder (Maskin)": "M-Codes (Machine)",
 
             // Verktøytabeller
             "Materialdata, Gjenger, Pasninger, Vekt & Geometri": "Materials, Threads, Fits, Weight & Geometry",
@@ -780,7 +772,6 @@
                 { id: 'global-search-input', no: 'Søk etter kalkulator (f.eks. maling, betong, dato, flis, H7, G76)...', en: 'Search calculators (e.g. paint, concrete, date, tile, H7, G76)...' },
                 { id: 'notes-todo-input', no: 'Ny oppgave (f.eks. Bytt skjær T04, Mål Ø40 H7)...', en: 'New task (e.g. Change insert T04, Measure Ø40 H7)...' },
                 { id: 'notes-text-area', no: 'Skriv inn mål, verktøylengder, G54 Z-nullpunkt, ordrenummer eller beskjed til neste skift...', en: 'Enter dimensions, tool lengths, G54 Z-zero, order number or shift handover notes...' },
-                { id: 'gcode-search', no: 'Søk på kode (f.eks. G76, G41, M08, gjenge)...', en: 'Search code (e.g. G76, G41, M08, thread)...' },
                 { id: 'overstyr-dager', no: 'Auto (man-fre)', en: 'Auto (Mon-Fri)' },
                 { id: 'amount-recipe-ingredients', no: '200 g mel\n3 dl melk\n2 stk egg', en: '200 g flour\n3 dl milk\n2 eggs' }
             ];
@@ -804,7 +795,6 @@
             oppdaterNotatTellereOgWidget();
             oppdaterAarOgMaaned();
             oppdaterSokResultater();
-            if (initialiserteBeregninger.has('cnc')) filtrerGKoder();
             if (initialiserteBeregninger.has('tools')) {
                 beregnIso();
                 konverterHardhet('hrc');
@@ -1132,7 +1122,6 @@
             { title: 'Innvendige & Utvendige Gjenger (Gibbs)', titleEn: 'Internal & External Threads (Gibbs)', keys: 'gibbs gjenger dreiing stigning threads turning pitch', tab: 'cnc', sub: 'turning', card: 'card-cnc-gibbs' },
             { title: 'Konus- & Fase-kalkulator', titleEn: 'Taper & Chamfer Calculator', keys: 'konus fase vinkel dreiing 45 grader 1:10 1:20 taper chamfer angle turning', tab: 'cnc', sub: 'turning', card: 'card-cnc-taper' },
             { title: 'C-Akse Gradering (Grader/min)', titleEn: 'C-Axis Rotary Feed (Deg/min)', keys: 'c-akse grader omkrets dreiing c-axis degrees circumference rotary', tab: 'cnc', sub: 'turning', card: 'card-cnc-caxis' },
-            { title: 'G- & M-kode Oppslagsverk', titleEn: 'G & M Code Reference', keys: 'g-koder m-koder g76 g71 g81 g41 fanuc mazak heidenhain g-codes m-codes', tab: 'cnc', sub: 'gcodes', card: 'card-cnc-gcode' },
             { title: 'Materialdatabank (HM Verktøy)', titleEn: 'Material Database (Carbide Tools)', keys: 'materiale s355 rustfritt 316 duplex alu skjærehastighet material stainless aluminum', tab: 'tools', sub: 'data' },
             { title: 'Borespiss-kompensasjon', titleEn: 'Drill Point Compensation', keys: 'bor spissvinkel 140 118 boredybde z-dybde drill point angle depth', tab: 'tools', sub: 'data' },
             { title: 'Kjølevæske & Refraktometer (Brix)', titleEn: 'Coolant & Refractometer (Brix)', keys: 'kjølevæske brix olje emulsjon refraktometer coolant oil concentration', tab: 'tools', sub: 'data' },
@@ -1228,7 +1217,6 @@
                 skatt: currentLang === 'en' ? 'tax' : 'skatt',
                 milling: currentLang === 'en' ? 'milling' : 'fresing',
                 turning: currentLang === 'en' ? 'turning' : 'dreiing',
-                gcodes: currentLang === 'en' ? 'g-codes' : 'g-koder',
                 data: currentLang === 'en' ? 'cutting data' : 'skjæredata',
                 threads: currentLang === 'en' ? 'threads' : 'gjenger',
                 fits: currentLang === 'en' ? 'fits & keyways' : 'pasninger',
@@ -1326,7 +1314,7 @@
 
             // Samle inn viktige input/select-verdier i kortet
             const inputs = [];
-            card.querySelectorAll('input:not([type="hidden"]):not(#gcode-search), select:not(#gcode-cat)').forEach(el => {
+            card.querySelectorAll('input:not([type="hidden"]), select').forEach(el => {
                 const parentBox = el.closest('div');
                 if (parentBox && parentBox.style.display === 'none') return;
                 const parentGrid = el.closest('.grid');
@@ -1517,7 +1505,7 @@
                 if (mainTab === 'salary' && ['oversikt', 'vakter', 'innstillinger'].includes(subTab)) {
                     switchSalaryTab(subTab, false);
                 }
-                if (mainTab === 'cnc' && ['milling', 'turning', 'gcodes'].includes(subTab)) {
+                if (mainTab === 'cnc' && ['milling', 'turning'].includes(subTab)) {
                     switchCncTab(subTab, false);
                 }
                 if (mainTab === 'tools' && ['data', 'threads', 'fits', 'weight', 'math', 'conv'].includes(subTab)) {
@@ -1561,7 +1549,6 @@
                 window.oppdaterRctInndatamodus();
                 window.beregnChipThinning();
                 byttKonusModus();
-                filtrerGKoder();
                 oppdaterMaterialeData();
             } else if (tabId === 'tools') {
                 beregnBoredybde();
@@ -1674,9 +1661,11 @@
         }
 
         function switchCncTab(tabId, pushHist = true) {
-            document.querySelectorAll('.cnc-tab-content').forEach(t => t.classList.remove('active'));
             const target = document.getElementById('ctab-' + tabId);
-            if(target) target.classList.add('active');
+            if (!target) return;
+
+            document.querySelectorAll('.cnc-tab-content').forEach(t => t.classList.remove('active'));
+            target.classList.add('active');
 
             document.querySelectorAll('.cnc-tab-btn').forEach(btn => {
                 btn.classList.remove('bg-blue-500', 'text-white', 'shadow-md', 'shadow-blue-500/20');
@@ -3564,68 +3553,6 @@
             }
         }
 
-        const gCodeDatabase = [
-            { code: 'G00', cat: 'move', title: 'Hurtiggang (Rapid)', titleEn: 'Rapid Traverse', desc: 'Posjonering i maks hastighet uten skjæring', descEn: 'Positioning at max speed without cutting' },
-            { code: 'G01', cat: 'move', title: 'Lineær interpolasjon', titleEn: 'Linear Interpolation', desc: 'Rettlinjet arbeidsmating med programmert F', descEn: 'Straight line cutting feed at programmed F' },
-            { code: 'G02', cat: 'move', title: 'Sirkulær medurs (CW)', titleEn: 'Circular Interpolation CW', desc: 'Buebevegelse med klokken (R eller I/J/K)', descEn: 'Clockwise arc motion (using R or I/J/K)' },
-            { code: 'G03', cat: 'move', title: 'Sirkulær moturs (CCW)', titleEn: 'Circular Interpolation CCW', desc: 'Buebevegelse mot klokken (R eller I/J/K)', descEn: 'Counter-clockwise arc motion (using R or I/J/K)' },
-            { code: 'G04', cat: 'move', title: 'Dveletid (Dwell)', titleEn: 'Dwell Time', desc: 'Pause i bunn av hull/spor (X/U eller P i ms)', descEn: 'Pause at bottom of hole/groove (X/U or P in ms)' },
-            { code: 'G17 / G18 / G19', cat: 'move', title: 'Planvalg XY / XZ / YZ', titleEn: 'Plane Selection XY / XZ / YZ', desc: 'G17=Fresing (XY), G18=Dreiing (XZ)', descEn: 'G17=Milling (XY), G18=Turning (XZ)' },
-            { code: 'G28', cat: 'move', title: 'Referansepunkt', titleEn: 'Return to Home Position', desc: 'Gå til maskinens hjemposisjon (f.eks. G28 U0 W0)', descEn: 'Return to machine reference point (e.g. G28 U0 W0)' },
-            { code: 'G40', cat: 'move', title: 'Avbryt radiekompensasjon', titleEn: 'Cancel Cutter Compensation', desc: 'Skrur av G41 / G42', descEn: 'Cancels G41 / G42 cutter radius compensation' },
-            { code: 'G41 / G42', cat: 'move', title: 'Radiekomp Venstre / Høyre', titleEn: 'Cutter Comp Left / Right', desc: 'G41 = venstre (medfresing), G42 = høyre', descEn: 'G41 = left (climb milling), G42 = right' },
-            { code: 'G43', cat: 'move', title: 'Verktøylengdekompensasjon (+)', titleEn: 'Tool Length Compensation (+)', desc: 'Aktiverer H-lengde på fres (G43 H1 Z100)', descEn: 'Activates H length offset on mill (G43 H1 Z100)' },
-            { code: 'G50 / G92', cat: 'move', title: 'Maks spindelturtall (Dreiing)', titleEn: 'Max Spindle Speed Clamp (Lathe)', desc: 'Låser maks RPM ved konstant skjærehastighet (G50 S2500)', descEn: 'Limits max RPM during constant surface speed (G50 S2500)' },
-            { code: 'G54 – G59', cat: 'move', title: 'Nullpunkt-forskyvning', titleEn: 'Work Coordinate Systems', desc: 'Velger arbeidsstykkets koordinatsystem', descEn: 'Selects workpiece zero offset (G54–G59)' },
-            { code: 'G70 / G71', cat: 'cycle', title: 'Slett- / Grovdreiesyklus', titleEn: 'Finishing / Stock Removal Turning Cycle', desc: 'G71 grovdreier profil, G70 kjører slettkutt', descEn: 'G71 roughs contour, G70 runs finishing pass' },
-            { code: 'G76', cat: 'cycle', title: 'Gjengedreiesyklus', titleEn: 'Multiple Threading Cycle', desc: 'Automatisk fler-kutt gjengedreiing', descEn: 'Automatic multi-pass thread turning cycle' },
-            { code: 'G80', cat: 'cycle', title: 'Avbryt fast syklus', titleEn: 'Cancel Canned Cycle', desc: 'Kansellerer aktiv boresyklus (G81–G85)', descEn: 'Cancels active drilling/tapping cycle (G81–G85)' },
-            { code: 'G81', cat: 'cycle', title: 'Standard boresyklus', titleEn: 'Spot / Standard Drilling Cycle', desc: 'Borer ned til Z og går hurtig opp til R', descEn: 'Feeds to Z-depth and rapids back to R-plane' },
-            { code: 'G83', cat: 'cycle', title: 'Dyphullsbore-syklus (Peck)', titleEn: 'Peck Drilling Cycle', desc: 'Borer med fullt uttrekk og sponbryting (Q-verdi)', descEn: 'Deep hole peck drilling with full retract (Q peck depth)' },
-            { code: 'G84', cat: 'cycle', title: 'Gjengesnitt-syklus (Tapping)', titleEn: 'Tapping Cycle', desc: 'Synkronisert gjenging med revers i bunn', descEn: 'Synchronized tapping with spindle reverse at bottom' },
-            { code: 'G90 / G91', cat: 'move', title: 'Absolutt / Inkrementell', titleEn: 'Absolute / Incremental Mode', desc: 'G90 = faste koordinater, G91 = kjedemål', descEn: 'G90 = absolute coordinates, G91 = incremental' },
-            { code: 'G94 / G95', cat: 'move', title: 'Mating i mm/min eller mm/omdr', titleEn: 'Feed per Minute / Feed per Rev', desc: 'G94 = mm/min (fres), G95 = mm/o (dreiing)', descEn: 'G94 = mm/min (milling), G95 = mm/rev (turning)' },
-            { code: 'G96 / G97', cat: 'move', title: 'Konstant Vc (CSS) / Fast RPM', titleEn: 'Constant Surface Speed / Fixed RPM', desc: 'G96 = m/min, G97 = låst spindelturtall', descEn: 'G96 = constant m/min, G97 = fixed RPM' },
-            { code: 'M00 / M01', cat: 'mcode', title: 'Programstopp / Valgfri stopp', titleEn: 'Program Stop / Optional Stop', desc: 'M00 stopper alltid, M01 stopper ved Optional Stop', descEn: 'M00 always stops, M01 stops if Optional Stop is active' },
-            { code: 'M03 / M04 / M05', cat: 'mcode', title: 'Spindel CW / CCW / Stopp', titleEn: 'Spindle CW / CCW / Stop', desc: 'Starter eller stopper spindelen', descEn: 'Starts spindle clockwise (M03), CCW (M04) or stops (M05)' },
-            { code: 'M06', cat: 'mcode', title: 'Verktøyveksling', titleEn: 'Tool Change', desc: 'Bytter til valgt T-nummer i veksler', descEn: 'Executes tool change to selected T-number' },
-            { code: 'M08 / M09', cat: 'mcode', title: 'Kjølevæske PÅ / AV', titleEn: 'Coolant ON / OFF', desc: 'Flomkjøling på (M08) og av (M09)', descEn: 'Flood coolant ON (M08) and OFF (M09)' },
-            { code: 'M19', cat: 'mcode', title: 'Spindelorientering', titleEn: 'Spindle Orientation', desc: 'Låser spindel i fast vinkelposisjon', descEn: 'Locks spindle at a specific angular position' },
-            { code: 'M30', cat: 'mcode', title: 'Programslutt med retur', titleEn: 'End of Program & Rewind', desc: 'Avslutter og spoler tilbake til start', descEn: 'Ends program and rewinds to start' },
-            { code: 'M88 / M51', cat: 'mcode', title: 'Høytrykkskjøling gjennom spindel', titleEn: 'Through-Spindle Coolant (TSC)', desc: 'TSC (Through Spindle Coolant) på mange maskiner', descEn: 'High-pressure coolant through tool/spindle' }
-        ];
-
-        function filtrerGKoder() {
-            const q = (document.getElementById('gcode-search')?.value || '').toLowerCase().trim();
-            const cat = document.getElementById('gcode-cat')?.value || 'all';
-            const listEl = document.getElementById('gcode-list');
-            if (!listEl) return;
-            const filtrert = gCodeDatabase.filter(item => {
-                const matchCat = cat === 'all' || item.cat === cat;
-                const matchQ = !q || item.code.toLowerCase().includes(q) || item.title.toLowerCase().includes(q) || item.desc.toLowerCase().includes(q) || (item.titleEn && item.titleEn.toLowerCase().includes(q)) || (item.descEn && item.descEn.toLowerCase().includes(q));
-                return matchCat && matchQ;
-            });
-            listEl.innerHTML = filtrert.map(item => {
-                const visTittel = currentLang === 'en' ? (item.titleEn || item.title) : item.title;
-                const visBesk = currentLang === 'en' ? (item.descEn || item.desc) : item.desc;
-                const safeNote = `${item.code} – ${visTittel}: ${visBesk}`.replace(/'/g, "\\'");
-                return `
-                <div onclick="kopierTekst('${item.code}', 'G-code')" class="p-3 rounded-2xl bg-slate-50 hover:bg-amber-500/10 dark:bg-slate-800/60 dark:hover:bg-amber-500/15 border border-slate-200/80 dark:border-slate-700/60 cursor-pointer transition-all flex items-start justify-between gap-3">
-                    <div class="min-w-0">
-                        <div class="flex items-center gap-2">
-                            <span class="font-mono font-extrabold text-sm text-amber-600 dark:text-amber-400">${item.code}</span>
-                            <span class="font-bold text-xs text-slate-900 dark:text-white truncate">${visTittel}</span>
-                        </div>
-                        <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">${visBesk}</p>
-                    </div>
-                    <div class="flex items-center gap-1.5 shrink-0">
-                        <button type="button" onclick="event.stopPropagation(); leggTilTekstINotatEllerSjekkliste('${safeNote}')" class="px-2 py-1 rounded-lg bg-brand-500/15 hover:bg-brand-500 text-brand-600 dark:text-brand-400 hover:text-slate-950 font-mono font-bold text-[10px] transition-all" title="${currentLang === 'en' ? 'Add to Notes' : 'Legg til i Notat'}">+ 📝</button>
-                        <span class="text-[10px] font-mono text-slate-400">📋</span>
-                    </div>
-                </div>
-            `}).join('');
-        }
-
         function beregnIso2768() {
             const dim = parseFloat(document.getElementById('iso2768-dim')?.value) || 85;
             const cls = document.getElementById('iso2768-class')?.value || 'm';
@@ -3833,7 +3760,8 @@
 
         function beregnVinter() {
             const wltp = parseFloat(document.getElementById('winter-wltp')?.value) || 500;
-            const lossPct = parseFloat(document.getElementById('winter-temp')?.value) || 20;
+            const selectedLossPct = parseFloat(document.getElementById('winter-temp')?.value);
+            const lossPct = Number.isFinite(selectedLossPct) ? selectedLossPct : 20;
             const lossKm = Math.round(wltp * (lossPct / 100));
             const estKm = wltp - lossKm;
 

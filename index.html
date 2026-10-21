@@ -29,7 +29,7 @@
     <link href="./style.css?v=20261020-live-card-size" rel="stylesheet">
     <link href="./beta.css?v=2" rel="stylesheet">
     <link href="./beta-layouts.css?v=1" rel="stylesheet">
-    <link href="./beta-hyper.css?v=24" rel="stylesheet">
+    <link href="./beta-hyper.css?v=28" rel="stylesheet">
 
     <script>
         if (localStorage.theme === 'dark') {
@@ -887,7 +887,7 @@
                     </div>
                     <div>
                         <h2 class="text-2xl lg:text-3xl font-extrabold text-slate-900 dark:text-white">Maskineringskalkulator</h2>
-                        <p class="text-xs lg:text-sm text-blue-600 dark:text-blue-400 font-mono mt-1">Skjæredata, Dreiing, Konus & G-koder</p>
+                        <p class="text-xs lg:text-sm text-blue-600 dark:text-blue-400 font-mono mt-1">Skjæredata, Dreiing & Konus</p>
                     </div>
                 </div>
                 <div class="flex items-center gap-2">
@@ -904,7 +904,6 @@
             <div id="cnc-subtab-bar" class="flex space-x-2 overflow-x-auto pb-4 mb-6 border-b border-slate-200 dark:border-slate-800 scrollbar-thin snap-x">
                 <button onclick="switchCncTab('milling')" id="btn-cnc-milling" class="cnc-tab-btn active px-4 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all bg-blue-500 text-white shadow-md shadow-blue-500/20 snap-start">⚡ Fresing & Skjæredata</button>
                 <button onclick="switchCncTab('turning')" id="btn-cnc-turning" class="cnc-tab-btn px-4 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 snap-start">📐 Dreiing, Gjenger & Konus</button>
-                <button onclick="switchCncTab('gcodes')" id="btn-cnc-gcodes" class="cnc-tab-btn px-4 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 snap-start">💻 G- & M-koder</button>
             </div>
 
             <!-- CNC TAB 1: FRESING & SKJÆREDATA -->
@@ -1080,27 +1079,6 @@
                 </div>
             </div>
 
-            <!-- CNC TAB 3: G- & M-KODER -->
-            <div id="ctab-gcodes" class="cnc-tab-content">
-                <div id="card-cnc-gcode" class="pers-input bg-white/80 dark:bg-slate-900/60 backdrop-blur-md border border-slate-200 dark:border-slate-800 rounded-3xl p-6 lg:p-8 shadow-sm relative overflow-hidden transition-colors border-l-4 border-l-amber-500">
-                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2 flex items-center"><i data-lucide="terminal" class="w-6 h-6 mr-3 text-amber-500"></i> G- & M-kode Oppslagsverk</h3>
-                    <p class="text-sm text-slate-500 dark:text-slate-400 mb-5 border-b border-slate-200 dark:border-slate-800 pb-4 font-medium">Hurtigsøk i standard ISO / Fanuc / Mazak / Heidenhain koder. Klikk på en kode for å kopiere.</p>
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
-                        <div class="sm:col-span-2">
-                            <input type="text" id="gcode-search" placeholder="Søk på kode (f.eks. G76, G41, M08, gjenge)..." oninput="filtrerGKoder()" class="glass-input glass-input-amber !py-2">
-                        </div>
-                        <div>
-                            <select id="gcode-cat" onchange="filtrerGKoder()" class="glass-input glass-input-amber !py-2">
-                                <option value="all">Alle koder</option>
-                                <option value="move">Bevegelse & Komp</option>
-                                <option value="cycle">Bore- & Dreiesykluser</option>
-                                <option value="mcode">M-koder (Maskin)</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div id="gcode-list" class="max-h-[480px] overflow-y-auto grid grid-cols-1 md:grid-cols-2 gap-2.5 pr-1"></div>
-                </div>
-            </div>
         </section>
 
         <!-- ================= VERKTØYTABELLER ================= -->
@@ -1768,7 +1746,7 @@
                             </div>
                         </div>
                         <div class="bg-sky-50/80 dark:bg-sky-900/30 p-5 rounded-2xl border-l-4 border-sky-500 space-y-2.5 font-medium shadow-inner">
-                            <div class="flex justify-between items-center"><span class="text-sky-900 dark:text-sky-200 font-bold text-base">Estimerte vinter-km:</span><span class="font-mono text-2xl font-extrabold text-sky-600 dark:text-sky-400" id="res-winter-range">400 km</span></div>
+                            <div class="flex justify-between items-center"><span class="text-sky-900 dark:text-sky-200 font-bold text-base">Estimert rekkevidde:</span><span class="font-mono text-2xl font-extrabold text-sky-600 dark:text-sky-400" id="res-winter-range">400 km</span></div>
                             <div class="flex justify-between items-center"><span class="text-sky-800 dark:text-sky-300 font-bold text-sm">Rekkeviddetap:</span><span class="font-mono text-sm font-bold text-rose-500" id="res-winter-loss">- 100 km (20%)</span></div>
                         </div>
                     </div>
