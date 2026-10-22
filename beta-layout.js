@@ -212,4 +212,9 @@
     labelNavigation();
     document.body.classList.add('hy-rail-open');
     applyLayout('hyper');
+
+    // Vis innholdet først etter at alle DOMContentLoaded-lyttere (app.js) har kjørt
+    const revealContent = () => setTimeout(() => document.documentElement.classList.remove('layout-pending'), 0);
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', revealContent);
+    else revealContent();
 })();
