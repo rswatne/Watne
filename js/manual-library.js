@@ -197,9 +197,25 @@
         pagesPromise = null;
     }
 
+    let pdfLoader = null;
+    function loadPdfJs() {
+        if (window.pdfjsLib) return Promise.resolve();
+        if (!pdfLoader) {
+            pdfLoader = new Promise((resolve, reject) => {
+                const script = document.createElement('script');
+                script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+                script.onload = resolve;
+                script.onerror = () => { pdfLoader = null; reject(new Error('pdf.js failed to load')); };
+                document.head.appendChild(script);
+            });
+        }
+        return pdfLoader;
+    }
+
     async function importFiles(fileList) {
         const files = Array.from(fileList || []);
         if (!files.length) return;
+        await loadPdfJs().catch(() => {});
         if (!window.pdfjsLib) {
             status('PDF-leseren kunne ikke lastes. Kontroller internettilkoblingen og prøv igjen.', 'The PDF reader could not load. Check your internet connection and try again.', true);
             return;

@@ -27,11 +27,13 @@
     <link id="pwa-manifest" rel="manifest" href="">
            
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
     
     <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script defer src="https://unpkg.com/lucide@1.61.0/dist/umd/lucide.min.js"></script>
 
     <link href="./style.css?v=20261020-live-card-size" rel="stylesheet">
     <link href="./beta.css?v=2" rel="stylesheet">
@@ -2122,13 +2124,13 @@
     </nav>
 
     <!-- MAIN JAVASCRIPT -->
-    <script src="./js/app.js?v=20261021-sok"></script>
-    <script src="./js/manual-library.js"></script>
-    <script src="./js/production-addons.js?v=20261021-sok"></script>
-    <script src="./js/amount-planner.js?v=20261020-lazy-tab-calculations"></script>
-    <script src="./js/datetime-tools.js?v=20261020-lazy-tab-calculations"></script>
-    <script src="./js/skattekalkulator.js?v=7"></script>
-    <script src="./beta-layout.js?v=13"></script>
+    <script defer src="./js/app.js?v=20261022-perf"></script>
+    <script defer src="./js/manual-library.js?v=20261022-perf"></script>
+    <script defer src="./js/production-addons.js?v=20261021-sok"></script>
+    <script defer src="./js/amount-planner.js?v=20261020-lazy-tab-calculations"></script>
+    <script defer src="./js/datetime-tools.js?v=20261020-lazy-tab-calculations"></script>
+    <script defer src="./js/skattekalkulator.js?v=7"></script>
+    <script defer src="./beta-layout.js?v=13"></script>
 
 </body>
 </html>
