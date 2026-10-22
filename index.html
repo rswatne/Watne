@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Verkstedsportalen</title>
+    <title>Verkstedsportalen – CNC-kalkulator og verkstedverktøy</title>
+    <link rel="canonical" href="https://www.watne.app/">
 
     <!-- PWA & Mobile App Meta Tags -->
     <meta name="theme-color" content="#000000">
@@ -12,7 +13,13 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Verksted">
     <meta name="application-name" content="Verkstedsportalen">
-    <meta name="description" content="Alt-i-ett CNC, Verktøytabeller, Lønnskalkulator & Strøm">
+    <meta name="description" content="Gratis verktøy for verksted og hverdag: CNC-kalkulator, verktøytabeller, lønnskalkulator, strøm og elbil, mengder og dato/tid.">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="nb_NO">
+    <meta property="og:site_name" content="Verkstedsportalen">
+    <meta property="og:title" content="Verkstedsportalen – CNC-kalkulator og verkstedverktøy">
+    <meta property="og:description" content="Gratis verktøy for verksted og hverdag: CNC, verktøytabeller, lønn, strøm, mengder og dato/tid.">
+    <meta property="og:url" content="https://www.watne.app/">
 
     <!-- App Icons (SVG Data URI for alle plattformer) -->
     <link id="favicon-link" rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='115' fill='%23000'/%3E%3Crect x='20' y='20' width='472' height='472' rx='96' fill='none' stroke='%23fff' stroke-opacity='0.14' stroke-width='4'/%3E%3Cpolygon points='256,106 386,181 386,331 256,406 126,331 126,181' fill='none' stroke='%23f5f5f7' stroke-width='20' stroke-linejoin='round'/%3E%3Ccircle cx='256' cy='256' r='54' fill='none' stroke='%23f5f5f7' stroke-width='20'/%3E%3C/svg%3E">
@@ -130,7 +137,7 @@
                 <i data-lucide="wrench" class="w-5 h-5 stroke-[2.5]"></i>
             </div>
             <div>
-                <h1 class="text-lg font-extrabold tracking-tight text-slate-900 dark:text-white leading-none">Verksteds<span class="text-brand-500">Portal</span></h1>
+                <div class="text-lg font-extrabold tracking-tight text-slate-900 dark:text-white leading-none">Verksteds<span class="text-brand-500">Portal</span></div>
                 <p class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold mt-1">Alt for verksted og hverdag</p>
             </div>
         </button>
@@ -349,7 +356,7 @@
                 <i data-lucide="wrench" class="w-4 h-4 stroke-[2.5]"></i>
             </div>
             <div>
-                <h1 class="text-xs font-extrabold text-slate-900 dark:text-white leading-tight truncate max-w-[100px]">Verkstedlab</h1>
+                <div class="text-xs font-extrabold text-slate-900 dark:text-white leading-tight truncate max-w-[100px]">Verkstedlab</div>
                 <p id="live-clock-mobile" class="font-mono text-[9px] font-bold text-brand-600 dark:text-brand-400">00:00</p>
             </div>
         </button>
@@ -398,6 +405,10 @@
         
         <!-- ================= DASHBOARD ================= -->
         <section id="dashboard" class="tab-content active p-4 sm:p-6 lg:p-10 max-w-7xl mx-auto">
+            <header class="mb-6">
+                <h1 class="text-2xl lg:text-3xl font-extrabold text-slate-900 dark:text-white">Verktøy for verksted og hverdag</h1>
+                <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">Gratis kalkulatorer for CNC-maskinering, verktøytabeller, lønn, strøm, materialmengder og datoer.</p>
+            </header>
             <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
                 <div class="flex items-center gap-2">
                     <span class="w-2 h-2 rounded-full bg-brand-500"></span>
@@ -513,6 +524,18 @@
                     <input id="dash-quick-note" type="hidden">
                 </div>
             </div>
+            <nav aria-label="Verktøy og kalkulatorer" class="mt-6 border-t border-slate-200 dark:border-slate-800 pt-6">
+                <h2 class="text-lg font-extrabold text-slate-900 dark:text-white mb-2">Gratis kalkulatorer og verktøy</h2>
+                <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">Gå til en egen side for informasjon om hvert verktøy og åpne kalkulatoren direkte.</p>
+                <ul class="flex flex-wrap gap-2 text-sm font-semibold">
+                    <li><a class="text-brand-600 dark:text-brand-400" href="/cnc-kalkulator/">CNC-kalkulator</a></li>
+                    <li><a class="text-brand-600 dark:text-brand-400" href="/verktoy-tabeller/">Verktøytabeller</a></li>
+                    <li><a class="text-brand-600 dark:text-brand-400" href="/lonnskalkulator/">Lønnskalkulator</a></li>
+                    <li><a class="text-brand-600 dark:text-brand-400" href="/strom-elbil/">Strøm og elbil</a></li>
+                    <li><a class="text-brand-600 dark:text-brand-400" href="/mengdekalkulator/">Mengdekalkulator</a></li>
+                    <li><a class="text-brand-600 dark:text-brand-400" href="/dato-tid/">Dato- og tidskalkulator</a></li>
+                </ul>
+            </nav>
         </section>
 
         <!-- ================= LØNNSKALKULATOR ================= -->

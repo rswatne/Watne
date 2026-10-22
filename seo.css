@@ -1,0 +1,130 @@
+:root {
+    color-scheme: dark;
+    font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: #0b1220;
+    color: #e2e8f0;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-width: 320px;
+    line-height: 1.7;
+    background: radial-gradient(ellipse at top, #172554 0, #0b1220 42rem);
+}
+
+a {
+    color: #67e8f9;
+}
+
+a:hover {
+    color: #a5f3fc;
+}
+
+.seo-shell {
+    width: min(100% - 2rem, 760px);
+    margin: 0 auto;
+}
+
+.seo-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.25rem 0;
+    border-bottom: 1px solid #334155;
+}
+
+.seo-brand {
+    color: #f8fafc;
+    font-weight: 800;
+    text-decoration: none;
+}
+
+.seo-header a:last-child {
+    font-size: 0.9rem;
+}
+
+main {
+    padding: 3.5rem 0 2.5rem;
+}
+
+.seo-eyebrow {
+    color: #67e8f9;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+h1, h2 {
+    color: #f8fafc;
+    line-height: 1.2;
+}
+
+h1 {
+    max-width: 700px;
+    margin: 0.75rem 0 1rem;
+    font-size: clamp(2.1rem, 7vw, 3.5rem);
+    letter-spacing: -0.04em;
+}
+
+h2 {
+    margin-top: 2rem;
+    font-size: 1.35rem;
+}
+
+.seo-lead {
+    color: #cbd5e1;
+    font-size: 1.15rem;
+}
+
+.seo-cta {
+    display: inline-block;
+    margin: 1rem 0 1.5rem;
+    padding: 0.8rem 1.15rem;
+    border-radius: 0.75rem;
+    background: #67e8f9;
+    color: #082f49;
+    font-weight: 800;
+    text-decoration: none;
+}
+
+.seo-cta:hover {
+    background: #a5f3fc;
+    color: #082f49;
+}
+
+.seo-card {
+    margin: 1rem 0;
+    padding: 1rem 1.25rem;
+    border: 1px solid #334155;
+    border-radius: 1rem;
+    background: #111c2e;
+}
+
+.seo-card h2 {
+    margin-top: 0;
+}
+
+.seo-related {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1.25rem;
+}
+
+.seo-footer {
+    padding: 1.5rem 0 2rem;
+    border-top: 1px solid #334155;
+    color: #94a3b8;
+    font-size: 0.9rem;
+}
+
+@media (max-width: 540px) {
+    main {
+        padding-top: 2.5rem;
+    }
+}
