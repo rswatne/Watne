@@ -1618,3 +1618,21 @@ body[data-layout="hyper"] :where(button, a, input, select, textarea, [tabindex])
     outline: 2px solid var(--hy-ring);
     outline-offset: 2px;
 }
+
+/* Informasjonsfelt og bunnlenker i appen */
+.app-info { margin: 2.5rem 0 1rem; padding: 1.5rem 0 0; border-top: 1px solid rgba(148, 163, 184, .35); max-width: 52rem; line-height: 1.7; color: #475569; font-size: .95rem; }
+.app-info h2 { margin: 0 0 .75rem; font-size: 1.25rem; font-weight: 800; color: #0f172a; }
+.app-info h3 { margin: 1.5rem 0 .5rem; font-size: 1.05rem; font-weight: 800; color: #0f172a; }
+.app-info h4 { margin: 1rem 0 .15rem; font-size: .95rem; font-weight: 700; color: #1e293b; }
+.app-info p { margin: .5rem 0; }
+.app-info ul { margin: .5rem 0; padding-left: 1.25rem; list-style: disc; }
+.app-info a, .app-footer a { color: #0369a1; text-decoration: underline; }
+.app-info .seo-table-wrap { overflow-x: auto; margin: .75rem 0; }
+.app-info table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+.app-info th, .app-info td { padding: .4rem .6rem; border-bottom: 1px solid rgba(148, 163, 184, .35); text-align: left; }
+.app-info th { font-weight: 700; color: #0f172a; }
+html.dark .app-info { color: #cbd5e1; }
+html.dark .app-info h2, html.dark .app-info h3, html.dark .app-info th { color: #f8fafc; }
+html.dark .app-info h4 { color: #e2e8f0; }
+html.dark .app-info a, html.dark .app-footer a { color: #67e8f9; }
+.app-footer { padding: 1.5rem 1rem 1rem; text-align: center; font-size: .85rem; color: #64748b; }

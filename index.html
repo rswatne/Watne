@@ -41,7 +41,7 @@
     <script defer src="https://unpkg.com/lucide@1.61.0/dist/umd/lucide.min.js"></script>
 
     <link href="./style.css?v=20261020-live-card-size" rel="stylesheet">
-    <link href="./beta-all.css?v=1" rel="stylesheet">
+    <link href="./beta-all.css?v=2" rel="stylesheet">
 
     <style>html.layout-pending main { visibility: hidden; }</style>
     <script>
@@ -909,7 +909,39 @@
                     </div>
                 </div>
             </div>
-        </section>
+        <aside class="app-info" aria-label="Om dette verktøyet">
+<h2>Om dette verktøyet</h2>
+<section>
+<h3>Beregn vakttillegg og lønn for en periode</h3>
+<p>Registrer vakter med ulike tillegg og velg om timer skal utbetales eller føres til timebank. Kalkulatoren viser timeoversikt, brutto, estimert netto, feriepenger og en årsprognose basert på opplysningene du legger inn.</p>
+<p>Resultatet avhenger av lønn, skattetrekk og egne innstillinger. Bruk kalkulatoren til planlegging og oversikt, ikke som lønnsslipp eller bindende beregning.</p>
+</section>
+<section>
+<h3>Brutto og netto</h3>
+<p>Brutto er lønnen før skatt og andre trekk. Netto er det du får utbetalt etter skattetrekk. Forskjellen avhenger av skattekortet ditt, trekkprosent og eventuelle andre trekk, som fagforeningskontingent eller pensjon.</p>
+</section>
+<section>
+<h3>Tillegg og overtid</h3>
+<p>Tillegg for kveld, natt, helg og helligdager avtales i tariffavtale eller arbeidsavtale, og satsene varierer mellom bransjer og bedrifter. Derfor legger du inn dine egne satser i kalkulatoren.</p>
+<p>Overtid skal etter arbeidsmiljøloven gi minst 40 prosent tillegg til timelønnen, men mange tariffavtaler gir mer, for eksempel 50 eller 100 prosent. Tillegget kommer i tillegg til vanlig timelønn.</p>
+<p>Eksempel: Med timelønn 300 kr og 50 prosent overtidstillegg blir overtidstimen 450 kr (300 + 150).</p>
+</section>
+<section>
+<h3>Timebank</h3>
+<p>I en timebank føres overtid eller ekstra timer som fri som skal avvikles senere i stedet for å utbetales. Det er vanlig i skiftordninger og bedrifter med fleksibel arbeidstid. Regler for når og hvordan timene kan avvikles, står i arbeidsavtalen eller tariffavtalen.</p>
+</section>
+<section>
+<h3>Feriepenger</h3>
+<p>Feriepenger er en andel av lønnen du opptjener året før du har ferie. Lovens minimum er 10,2 prosent, og mange har 12 prosent gjennom tariffavtale. De utbetales vanligvis i juni, og da trekkes det normalt ikke skatt for én av ukene.</p>
+</section>
+<section>
+<h3>Skatt og lønnsanslag</h3>
+<p>Skatteberegningen er et estimat og kan avvike fra det faktiske skattetrekket. Kontroller beløp mot skattekort, lønnsslipp og arbeidsgiver før du tar økonomiske beslutninger.</p>
+</section>
+<section><h3>Vanlige spørsmål</h3><h4>Er resultatet det samme som lønnsslippen min?</h4><p>Nei. Kalkulatoren gir et estimat basert på det du legger inn. Lønnsslippen fra arbeidsgiver er det som gjelder.</p><h4>Lagres lønnsopplysningene mine?</h4><p>Innstillingene lagres bare lokalt i nettleseren din. De sendes ikke til noen server. Les mer under personvern.</p><h4>Hvor finner jeg trekkprosenten min?</h4><p>Den står på skattekortet ditt, som du finner på skatteetaten.no eller i lønnsslippen.</p></section>
+<p><a href="/lonnskalkulator/">Les mer om lønnskalkulatoren på egen side</a></p>
+</aside>
+</section>
 
         <!-- ================= MASKINERING ================= -->
         <section id="cnc" class="tab-content p-4 lg:p-8 max-w-7xl mx-auto">
@@ -1112,7 +1144,54 @@
                 </div>
             </div>
 
-        </section>
+        <aside class="app-info" aria-label="Om dette verktøyet">
+<h2>Om dette verktøyet</h2>
+<section>
+<h3>Hva kan CNC-kalkulatoren hjelpe med?</h3>
+<p>Finn sammenhengen mellom skjærehastighet (Vc), omdreiningstall (RPM) og mating. Verktøyene omfatter blant annet turtall fra skjærehastighet og diameter, matehastighet i mm/min, gjengeberegninger, konus og sirkulærfresing.</p>
+<p>Velg fresing eller dreiing i kalkulatoren og legg inn målene og verdiene fra jobben. Beregningene gir raske estimater som kan brukes som støtte når du planlegger en operasjon.</p>
+</section>
+<section>
+<h3>Slik henger skjæredata sammen</h3>
+<p>Skjærehastigheten (Vc, i meter per minutt) er hastigheten ved skjæreeggen i forhold til emnet. Den bestemmes av materialet, verktøyets skjær og kjølingen. Når du kjenner Vc og diameteren på verktøyet (fresing) eller emnet (dreiing), finner du turtallet slik:</p>
+<p><strong>n = (Vc × 1000) / (π × D)</strong></p>
+<p>Eksempel: En fres med diameter 20 mm skal kjøres med Vc = 150 m/min. Turtallet blir 150 000 / (π × 20) ≈ 2 387 o/min.</p>
+<p>Ved fresing beregnes matehastigheten (Vf, mm/min) fra turtall, antall skjær (z) og mating per skjær (fz):</p>
+<p><strong>Vf = n × fz × z</strong></p>
+<p>Eksempel: Med fire skjær og fz = 0,05 mm blir Vf = 2 387 × 0,05 × 4 ≈ 477 mm/min.</p>
+</section>
+<section>
+<h3>Veiledende skjærehastigheter for hardmetall</h3>
+<p>Tabellen viser typiske startverdier for beleggede hardmetallverktøy. Verdiene varierer mye med verktøy, kjøling, oppspenning og maskin, så bruk dem bare som utgangspunkt.</p>
+<div class="seo-table-wrap"><table><thead><tr><th>Materiale</th><th>Vc (m/min), veiledende</th></tr></thead><tbody><tr><td>Konstruksjonsstål (mykt)</td><td>120 – 220</td></tr><tr><td>Rustfritt stål</td><td>80 – 160</td></tr><tr><td>Støpejern</td><td>100 – 200</td></tr><tr><td>Messing og bronse</td><td>150 – 300</td></tr><tr><td>Aluminium</td><td>250 – 600</td></tr></tbody></table></div>
+</section>
+<section>
+<h3>Dreiing: konstant skjærehastighet eller konstant turtall</h3>
+<p>Ved dreiing oppgis matingen vanligvis i mm per omdreining. Med konstant skjærehastighet (G96) justerer maskinen turtallet etter diameteren, slik at Vc holdes stabil når du planer mot sentrum. Med konstant turtall (G97) holdes turtallet fast, og skjærehastigheten endrer seg med diameteren. Husk å sette en øvre turtallsgrense når du bruker konstant skjærehastighet.</p>
+</section>
+<section>
+<h3>Gjenger og konus</h3>
+<p>For metrisk grovgjenge kan kjernehullet omtrent beregnes som gjengediameter minus stigning. For M10 med stigning 1,5 mm blir det 8,5 mm. For M8 (stigning 1,25 mm) brukes i praksis 6,8 mm.</p>
+<p>Konusvinkelen finner du fra forskjellen mellom diametrene og lengden: tan(halvvinkel) = (D − d) / (2 × L). Med D = 30 mm, d = 20 mm og L = 50 mm er tan(halvvinkel) = 0,1, som gir en halvvinkel på omtrent 5,7 grader.</p>
+</section>
+<section>
+<h3>Vanlige feil ved skjæredata</h3>
+<ul>
+<li>For høy matehastighet i forhold til verktøyets stabilitet og utkragning.</li>
+<li>Skjærehastighet fra feil materialgruppe, for eksempel stålverdier brukt på rustfritt.</li>
+<li>Glemt å ta hensyn til maskinens maksimale turtall og effekt.</li>
+<li>Diameter og enhet blandet sammen (mm og tommer).</li>
+<li>Dårlig oppspenning, som gir vibrasjoner selv med riktige verdier.</li>
+</ul>
+</section>
+<section>
+<h3>Kontroller skjæredata før maskinering</h3>
+<p>Resultatene er hjelpemidler, ikke en erstatning for verktøyprodusentens anbefalinger eller maskinens begrensninger. Kontroller alltid materialkvalitet, verktøy, oppspenning og maskinens tillatte turtall og mating før du starter.</p>
+</section>
+<section><h3>Vanlige spørsmål</h3><h4>Hva er forskjellen mellom Vc og turtall?</h4><p>Vc er hastigheten ved skjæreeggen i meter per minutt, mens turtallet er antall omdreininger per minutt. Samme turtall gir høyere Vc på stor diameter enn på liten.</p><h4>Hva er fz?</h4><p>fz er mating per skjær, altså hvor langt verktøyet beveger seg for hvert skjær som går gjennom materialet. Verktøyprodusenten oppgir normalt anbefalt fz.</p><h4>Kan jeg bruke tommer?</h4><p>Formlene fungerer i alle enheter hvis du er konsekvent, men kalkulatoren er laget for mm og meter per minutt.</p><h4>Er verdiene trygge å bruke direkte?</h4><p>Nei. Bruk dem som utgangspunkt og juster etter verktøykatalog, maskin og erfaring.</p></section>
+<p><a href="/cnc-kalkulator/">Les mer om CNC-kalkulatoren på egen side</a></p>
+</aside>
+</section>
 
         <!-- ================= VERKTØYTABELLER ================= -->
         <section id="tools" class="tab-content p-4 lg:p-8 max-w-7xl mx-auto">
@@ -1694,7 +1773,42 @@
                     </div>
                 </div>
             </div>
-        </section>
+        <aside class="app-info" aria-label="Om dette verktøyet">
+<h2>Om dette verktøyet</h2>
+<section>
+<h3>Tabeller for gjenger, pasninger og materialer</h3>
+<p>Verktøyfanen samler blant annet materialdata, kjernebor for gjenger, gjenge- og ISO-toleranser, pasninger, kilespor, bolt-moment og geometriske beregninger. Bruk oppslagene som støtte når du planlegger en jobb eller kontrollerer mål.</p>
+<p>Velg riktig kategori i verktøyet og kontroller at dimensjon, standard og enhet stemmer med tegningen og arbeidsoppgaven.</p>
+</section>
+<section>
+<h3>Kjernehull for metrisk grovgjenge</h3>
+<p>Kjernehullet er hullet du borer før du tapper gjengen. Som tommelfingerregel er kjernehullet lik gjengediameter minus stigning. Tabellen viser vanlige verdier.</p>
+<div class="seo-table-wrap"><table><thead><tr><th>Gjenge</th><th>Stigning (mm)</th><th>Kjernebor (mm)</th></tr></thead><tbody><tr><td>M3</td><td>0,5</td><td>2,5</td></tr><tr><td>M4</td><td>0,7</td><td>3,3</td></tr><tr><td>M5</td><td>0,8</td><td>4,2</td></tr><tr><td>M6</td><td>1,0</td><td>5,0</td></tr><tr><td>M8</td><td>1,25</td><td>6,8</td></tr><tr><td>M10</td><td>1,5</td><td>8,5</td></tr><tr><td>M12</td><td>1,75</td><td>10,2</td></tr></tbody></table></div>
+<p>Ved rulletapping (kaldforming) brukes et litt større kjernehull enn ved skjæretapping, og verdiene må hentes fra tapp-produsenten.</p>
+</section>
+<section>
+<h3>Pasninger og ISO-toleranser</h3>
+<p>ISO-toleransesystemet beskriver hvor mye et mål kan avvike. Et toleransemål består av en bokstav (plassering i forhold til nominelt mål) og et tall (toleransekvalitet, IT-grad). Store bokstaver gjelder hull, små bokstaver gjelder aksler.</p>
+<p>Eksempel: H7 på et hull med diameter 20 mm betyr toleransefelt fra 0 til +21 µm. Hvor stor toleransen er, avhenger av både IT-graden og måleområdet.</p>
+<p>Vanlige kombinasjoner med hullbasis H7:</p>
+<ul>
+<li><strong>H7/g6</strong> – glidepasning med liten klaring, for deler som skal gli mot hverandre.</li>
+<li><strong>H7/k6</strong> – overgangspasning, kan gi liten klaring eller liten presspasning.</li>
+<li><strong>H7/p6</strong> – presspasning, for deler som presses sammen.</li>
+</ul>
+</section>
+<section>
+<h3>Bolt-moment og kilespor</h3>
+<p>Tiltrekkingsmomentet for en bolt avhenger av dimensjon, fasthetsklasse, smøring og anleggsflate. Fasthetsklasse står på bolthodet, for eksempel 8.8 eller 10.9. Kilespor og feste har egne standardmål som avhenger av akseldiameteren. Slå opp riktig dimensjon i tabellene og kontroller mot tegning.</p>
+</section>
+<section>
+<h3>Bruk tabellverdier med riktig standard</h3>
+<p>Tabellverdier kan variere med standard, materialtilstand og produsent. Bekreft kritiske mål og toleranser mot gjeldende tegning, standarddokumentasjon og måleutstyr før du produserer eller godkjenner en del.</p>
+</section>
+<section><h3>Vanlige spørsmål</h3><h4>Hva betyr M10 × 1,5?</h4><p>M10 er metrisk gjenge med ytre diameter 10 mm, og 1,5 er stigningen (avstanden mellom gjengetoppene) i mm. Hvis stigning ikke oppgis, er det normalt grovgjenge.</p><h4>Hva er forskjellen på grov- og finngjenge?</h4><p>Finngjenge har mindre stigning enn grovgjenge for samme diameter. Den gir bedre justering og noe høyere forspenning, men tåler mindre ved dårlig materiale.</p><h4>Hva betyr H7 og g6?</h4><p>Bokstaven angir toleransens plassering og tallet toleransekvalitet. H7 brukes ofte for hull og g6 for aksler som skal gli i hullet.</p></section>
+<p><a href="/verktoy-tabeller/">Les mer om verktøytabellene på egen side</a></p>
+</aside>
+</section>
 
         <!-- ================= STRØM & ELBIL ================= -->
         <section id="ev" class="tab-content p-4 lg:p-8 max-w-7xl mx-auto">
@@ -1956,7 +2070,38 @@
                     </div>
                 </div>
             </div>
-        </section>
+        <aside class="app-info" aria-label="Om dette verktøyet">
+<h2>Om dette verktøyet</h2>
+<section>
+<h3>Beregn strømforbruk og kostnad</h3>
+<p>Legg inn effekt, brukstid og strømpris for å anslå energiforbruk og kostnad. Verktøyene omfatter også beregning av ladetid, sammenligning av drivstoffkostnader og estimat for redusert rekkevidde om vinteren.</p>
+<p>Bruk egne verdier for strømpris, ladeeffekt og forbruk for å få et mer relevant anslag. Faktiske kostnader påvirkes blant annet av nettleie, avgifter, ladeforhold og temperatur.</p>
+</section>
+<section>
+<h3>Slik regner du ut strømforbruk</h3>
+<p>Energiforbruk måles i kilowattimer (kWh). Du finner det ved å gange effekten i kilowatt med antall timer:</p>
+<p><strong>kWh = (watt / 1000) × timer</strong></p>
+<p>Eksempel: En panelovn på 2 000 W som går i 5 timer bruker 10 kWh. Med en strømpris på 1,50 kr/kWh (inkludert nettleie og avgifter) koster det 15 kr.</p>
+</section>
+<section>
+<h3>Elbil: ladetid og ladetap</h3>
+<p>Ladetiden kan anslås ved å dele energimengden på ladeeffekten:</p>
+<p><strong>ladetid = kWh som skal lades / ladeeffekt (kW)</strong></p>
+<p>Eksempel: For å lade 55 kWh med en lader på 11 kW trengs omtrent 5 timer. I praksis tar det litt lenger tid, fordi ladeeffekten synker mot slutten og fordi det er tap i lading. Ladetapet er ofte 10–15 prosent, og det betyr at du betaler for mer strøm enn det som havner i batteriet.</p>
+<p>Husk at mange biler ikke kan lade med full effekt fra laderen. Bilens egen maksimale ladeeffekt setter grensen.</p>
+</section>
+<section>
+<h3>Rekkevidde om vinteren</h3>
+<p>Kulde øker energibruken til oppvarming av bil og batteri og reduserer batteriets effektivitet. Rekkevidden kan bli merkbart kortere enn oppgitt, spesielt på korte turer og ved motorveifart. Bruk vinterforbruket ditt fra bilens egen visning for best anslag.</p>
+</section>
+<section>
+<h3>Estimater, ikke strømregning</h3>
+<p>Beregningene er veiledende. Kontroller pris og forbruk mot strømavtalen, bilens dokumentasjon og målinger fra ladeutstyret. Faktisk rekkevidde og ladetid varierer med bil, batteri, temperatur og kjøreforhold.</p>
+</section>
+<section><h3>Vanlige spørsmål</h3><h4>Hva er en kilowattime?</h4><p>En kWh er energien som brukes når en enhet med effekt på 1 kW går i én time.</p><h4>Hvorfor blir strømregningen høyere enn kalkulatoren viser?</h4><p>Nettleie, avgifter og påslag kommer i tillegg til strømprisen. Bruk en samlet pris per kWh for et realistisk anslag.</p><h4>Er elbil billigere enn bensin eller diesel?</h4><p>Det avhenger av strømpris, drivstoffpris, forbruk og om du lader hjemme. Verktøyet lar deg sammenligne med egne tall.</p></section>
+<p><a href="/strom-elbil/">Les mer om strøm- og elbilverktøyene på egen side</a></p>
+</aside>
+</section>
 
         <section id="amounts" class="tab-content p-4 lg:p-8 max-w-7xl mx-auto">
             <header class="mb-6 lg:mb-8 flex items-center gap-4">
@@ -2036,7 +2181,39 @@
                     <p class="text-[11px] leading-relaxed text-slate-500 dark:text-slate-400 mt-5">Beregningen er et estimat. Kontroller dekkevne, blandingsforhold og utbytte på produktets emballasje.</p>
                 </div>
             </div>
-        </section>
+        <aside class="app-info" aria-label="Om dette verktøyet">
+<h2>Om dette verktøyet</h2>
+<section>
+<h3>Planlegg materialmengder</h3>
+<p>Velg hva du skal beregne, og fyll inn mål og relevante produktegenskaper. Verktøyene kan anslå maling ut fra areal, antall strøk og dekkevne; gulv og flis ut fra mål og pakningsstørrelse; samt betong ut fra volum og utbytte. Du kan også fordele en blanding etter oppgitt forhold eller skalere en oppskrift til ønsket antall porsjoner.</p>
+<p>Legg inn svinn eller ekstra mengde der kalkulatoren tilbyr det.</p>
+</section>
+<section>
+<h3>Maling</h3>
+<p>Mengden finner du slik: areal × antall strøk / dekkevne. Dekkevnen står på malingsboksen, for eksempel 10 m² per liter.</p>
+<p>Eksempel: 40 m² vegg med to strøk og dekkevne 10 m²/l gir (40 × 2) / 10 = 8 liter. Rå og porøse flater suger mer, så regn gjerne med litt ekstra.</p>
+</section>
+<section>
+<h3>Gulv og flis</h3>
+<p>Regn ut arealet (lengde × bredde) og legg til svinn. Svinn kommer av kapp og avskjær og avhenger av rommets form og leggemønster. Rette rom trenger gjerne rundt 5–10 prosent, mens diagonallegging eller små rom kan trenge 10–15 prosent.</p>
+<p>Eksempel: 20 m² gulv med 10 prosent svinn gir 22 m². Deretter deler du på pakningsstørrelsen og runder opp til hele pakker.</p>
+</section>
+<section>
+<h3>Betong</h3>
+<p>Volum = lengde × bredde × tykkelse, alt i meter. En plate på 4 × 5 m med tykkelse 0,1 m gir 2 m³. Det er lurt å bestille litt over, siden underlaget sjelden er helt plant og noe går tapt ved utstøping. Ved sekkbetong deler du volumet på utbyttet per sekk, som står på emballasjen.</p>
+</section>
+<section>
+<h3>Blandingsforhold</h3>
+<p>Et blandingsforhold som 1:3 betyr én del av den ene komponenten og tre deler av den andre, altså fire deler totalt. Skal du blande 20 liter, blir det 5 liter og 15 liter. Kalkulatoren fordeler totalmengden for deg.</p>
+</section>
+<section>
+<h3>Kontroller emballasje og mål</h3>
+<p>Resultatet er et estimat. Faktisk forbruk påvirkes av underlag, kapp, fugebredde, produktutbytte og arbeidsmetode. Kontroller dekkevne, blandingsforhold og volum mot produktets emballasje før du handler eller blander.</p>
+</section>
+<section><h3>Vanlige spørsmål</h3><h4>Hvor mye svinn bør jeg regne med?</h4><p>Det avhenger av jobben. Fem til ti prosent er vanlig for enkle flater, og mer for diagonallegging og rom med mange hjørner.</p><h4>Hva er dekkevne?</h4><p>Dekkevne forteller hvor mange kvadratmeter en liter maling dekker i ett strøk på normalt underlag.</p><h4>Kan jeg skalere en oppskrift?</h4><p>Ja. Legg inn opprinnelig og ønsket antall porsjoner, så regnes mengdene om.</p></section>
+<p><a href="/mengdekalkulator/">Les mer om mengdekalkulatoren på egen side</a></p>
+</aside>
+</section>
 
         <section id="datetime" class="tab-content p-4 lg:p-8 max-w-7xl mx-auto">
             <header class="mb-6 lg:mb-8 flex items-center gap-4">
@@ -2096,10 +2273,37 @@
                     <p id="datetime-result-error" class="hidden text-sm font-semibold text-rose-600 dark:text-rose-400 mt-4" role="alert"></p>
                 </div>
             </div>
-        </section>
+        <aside class="app-info" aria-label="Om dette verktøyet">
+<h2>Om dette verktøyet</h2>
+<section>
+<h3>Beregn tid mellom klokkeslett og datoer</h3>
+<p>Regn ut timer og minutter mellom to klokkeslett. Når sluttiden er tidligere enn starttiden, tolkes den som neste dag. Du kan også finne forskjellen mellom datoer, telle arbeidsdager, legge tid til et klokkeslett og se hvor lang tid det er igjen til en frist. Ukenummerverktøyet viser ISO-ukenummer og ukedag for en valgt dato.</p>
+</section>
+<section>
+<h3>Arbeidstid over midnatt</h3>
+<p>Ved nattskift går tiden over midnatt. Fra 22:00 til 06:00 er det 8 timer, siden sluttidspunktet regnes som neste dag. Husk å trekke fra pauser som ikke er betalt, hvis det gjelder for deg.</p>
+</section>
+<section>
+<h3>Hvordan telles arbeidsdager?</h3>
+<p>Arbeidsdager beregnes som mandag til fredag mellom de valgte datoene. Beregningen tar ikke automatisk hensyn til norske helligdager, ferie eller lokale arbeidsplaner, så kontroller resultatet mot din kalender.</p>
+<p>Eksempel: Fra mandag til og med fredag er det 5 arbeidsdager, og en full kalenderuke har 7 dager, hvorav 2 er helg.</p>
+</section>
+<section>
+<h3>ISO-ukenummer</h3>
+<p>Norge bruker ISO 8601 for ukenummer. Uken starter på mandag, og uke 1 er den uken som inneholder årets første torsdag. Derfor kan de første dagene i januar tilhøre uke 52 eller 53 året før, og noen dager i slutten av desember kan tilhøre uke 1 året etter. Et år har enten 52 eller 53 uker.</p>
+</section>
+<section>
+<h3>Frister og tidsregning</h3>
+<p>Når du skal beregne en frist, må du skille mellom kalenderdager og arbeidsdager. Mange frister i kontrakter og regelverk regnes i kalenderdager, mens andre bare regnes i arbeidsdager. Les alltid hvordan fristen er definert.</p>
+</section>
+<section><h3>Vanlige spørsmål</h3><h4>Hva skjer hvis sluttiden er før starttiden?</h4><p>Da regner kalkulatoren med at sluttiden er neste dag, slik at 22:00 til 06:00 blir 8 timer.</p><h4>Inkluderer arbeidsdagene helligdager?</h4><p>Nei. Helligdager, ferie og lokale fridager må du trekke fra selv.</p><h4>Hvilken uke er uke 1?</h4><p>Uke 1 er den uken som inneholder årets første torsdag, i henhold til ISO 8601.</p></section>
+<p><a href="/dato-tid/">Les mer om dato- og tidsverktøyet på egen side</a></p>
+</aside>
+</section>
 
         <div class="h-24 md:h-12"></div>
-    </main>
+    <footer class="app-footer"><a href="/om/">Om Verkstedsportalen</a> · <a href="/personvern/">Personvern</a> · <a href="/kontakt/">Kontakt</a></footer>
+</main>
 
     <div id="mobile-more-menu" class="md:hidden hidden fixed bottom-20 right-3 z-[60] w-60 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl p-2 shadow-2xl" role="menu" aria-label="Flere sider">
         <button type="button" role="menuitem" onclick="switchTab('ev')" class="w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="zap" class="w-5 h-5 text-teal-500"></i> Strøm & Elbil</button>
