@@ -35,12 +35,13 @@
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
                     <div id="card-cnc-p3dcost" class="pers-input bg-white/80 dark:bg-slate-900/60 backdrop-blur-md border border-slate-200 dark:border-slate-800 rounded-3xl p-6 lg:p-8 shadow-sm relative overflow-hidden transition-colors border-l-4 border-l-emerald-500">
                         <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2 flex items-center"><i data-lucide="layers" class="w-6 h-6 mr-3 text-emerald-500"></i> 3D-Print Kostnad & Delekalkulator</h3>
-                        <p class="text-sm text-slate-500 dark:text-slate-400 mb-6 border-b border-slate-200 dark:border-slate-800 pb-4 font-medium">Beregn selvkost ut fra filamentvekt, spolepris og printtid (Bambu Lab P2S).</p>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mb-6 border-b border-slate-200 dark:border-slate-800 pb-4 font-medium">Beregn selvkost ut fra filamentvekt, spolepris, strømpris og printtid.</p>
                         <div class="grid grid-cols-2 gap-4 mb-6">
                             <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Vekt inkl. support (g)</label><input type="number" step="1" id="p3d-weight" value="85" oninput="beregn3DPrint()" class="glass-input glass-input-emerald"></div>
                             <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Spolepris (kr/kg)</label><input type="number" step="10" id="p3d-spool" value="249" oninput="beregn3DPrint()" class="glass-input glass-input-emerald"></div>
                             <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Printtid (Timer)</label><input type="number" step="0.25" id="p3d-hours" value="3.5" oninput="beregn3DPrint()" class="glass-input glass-input-emerald"></div>
                             <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Snitt effekt (Watt)</label><input type="number" step="10" id="p3d-watt" value="140" oninput="beregn3DPrint()" class="glass-input glass-input-emerald"></div>
+                            <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Strømpris (kr/kWh)</label><input type="number" step="0.01" min="0" id="p3d-kwh-price" value="1.30" oninput="beregn3DPrint()" class="glass-input glass-input-emerald"></div>
                         </div>
                         <div class="bg-emerald-50/80 dark:bg-emerald-900/30 p-5 rounded-2xl border-l-4 border-emerald-500 space-y-2.5 font-medium shadow-inner">
                             <div class="flex justify-between items-center"><span class="text-emerald-800 dark:text-emerald-300 font-bold text-sm">Filament / Strøm:</span><span class="font-mono text-base font-bold text-emerald-700 dark:text-emerald-400" id="p3d-res-split">21.17 kr / 0.64 kr</span></div>
@@ -384,7 +385,7 @@
         const spool = parseFloat(document.getElementById('p3d-spool')?.value) || 0;
         const hrs = parseFloat(document.getElementById('p3d-hours')?.value) || 0;
         const watt = parseFloat(document.getElementById('p3d-watt')?.value) || 0;
-        const kwhPrice = parseFloat(document.getElementById('charge-price')?.value) || 1.30;
+        const kwhPrice = parseFloat(document.getElementById('p3d-kwh-price')?.value) || 0;
 
         const matCost = (w / 1000) * spool;
         const pwrCost = (watt / 1000) * hrs * kwhPrice;
