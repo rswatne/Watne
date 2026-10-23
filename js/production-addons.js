@@ -29,7 +29,7 @@
 
         const cncSection = document.getElementById('cnc');
         if (cncSection && !document.getElementById('ctab-print3d')) {
-            cncSection.insertAdjacentHTML('beforeend', `
+            const productionCalculatorMarkup = `
             <!-- CNC TAB 4: 3D-PRINT & PROTOTYPE -->
             <div id="ctab-print3d" class="cnc-tab-content">
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
@@ -122,7 +122,13 @@
                     </div>
                 </div>
             </div>
-            `);
+            `;
+            const appInfo = cncSection.querySelector('.app-info');
+            if (appInfo) {
+                appInfo.insertAdjacentHTML('beforebegin', productionCalculatorMarkup);
+            } else {
+                cncSection.insertAdjacentHTML('beforeend', productionCalculatorMarkup);
+            }
         }
 
         // -------------------------------------------------------------------------
