@@ -29,20 +29,50 @@
             <p class="seo-lead">Beregn vanlige skjæredata og maskineringsverdier direkte i nettleseren. CNC-verktøyene samler nyttige beregninger for dreiebenk og fresemaskin på ett sted.</p>
             <a class="seo-cta" href="/#cnc/milling">Åpne CNC-kalkulatoren</a>
             <section class="seo-card">
-                <h2>Hva kan CNC-kalkulatoren hjelpe med?</h2>
-                <p>Finn sammenhengen mellom skjærehastighet (Vc), omdreiningstall (RPM) og mating. Verktøyene omfatter blant annet turtall fra skjærehastighet og diameter, matehastighet i mm/min, gjengeberegninger, konus og sirkulærfresing.</p>
-                <p>Velg fresing eller dreiing i kalkulatoren og legg inn målene og verdiene fra jobben. Beregningene gir raske estimater som kan brukes som støtte når du planlegger en operasjon.</p>
-            </section>
-            <section>
-                <h2>Kontroller skjæredata før maskinering</h2>
-                <p>Resultatene er hjelpemidler, ikke en erstatning for verktøyprodusentens anbefalinger eller maskinens begrensninger. Kontroller alltid materialkvalitet, verktøy, oppspenning og maskinens tillatte turtall og mating før du starter.</p>
-            </section>
-            <section>
-                <h2>Flere verktøy</h2>
-                <p class="seo-related"><a href="/verktoy-tabeller/">Verktøytabeller</a><a href="/lonnskalkulator/">Lønnskalkulator</a><a href="/strom-elbil/">Strøm og elbil</a></p>
-            </section>
-        </main>
-        <footer class="seo-footer"><a href="/">Verkstedsportalen</a> · CNC-kalkulator og gratis verktøy for verkstedet.</footer>
+<h2>Hva kan CNC-kalkulatoren hjelpe med?</h2>
+<p>Finn sammenhengen mellom skjærehastighet (Vc), omdreiningstall (RPM) og mating. Verktøyene omfatter blant annet turtall fra skjærehastighet og diameter, matehastighet i mm/min, gjengeberegninger, konus og sirkulærfresing.</p>
+<p>Velg fresing eller dreiing i kalkulatoren og legg inn målene og verdiene fra jobben. Beregningene gir raske estimater som kan brukes som støtte når du planlegger en operasjon.</p>
+</section>
+<section>
+<h2>Slik henger skjæredata sammen</h2>
+<p>Skjærehastigheten (Vc, i meter per minutt) er hastigheten ved skjæreeggen i forhold til emnet. Den bestemmes av materialet, verktøyets skjær og kjølingen. Når du kjenner Vc og diameteren på verktøyet (fresing) eller emnet (dreiing), finner du turtallet slik:</p>
+<p><strong>n = (Vc × 1000) / (π × D)</strong></p>
+<p>Eksempel: En fres med diameter 20 mm skal kjøres med Vc = 150 m/min. Turtallet blir 150 000 / (π × 20) ≈ 2 387 o/min.</p>
+<p>Ved fresing beregnes matehastigheten (Vf, mm/min) fra turtall, antall skjær (z) og mating per skjær (fz):</p>
+<p><strong>Vf = n × fz × z</strong></p>
+<p>Eksempel: Med fire skjær og fz = 0,05 mm blir Vf = 2 387 × 0,05 × 4 ≈ 477 mm/min.</p>
+</section>
+<section>
+<h2>Veiledende skjærehastigheter for hardmetall</h2>
+<p>Tabellen viser typiske startverdier for beleggede hardmetallverktøy. Verdiene varierer mye med verktøy, kjøling, oppspenning og maskin, så bruk dem bare som utgangspunkt.</p>
+<div class="seo-table-wrap"><table><thead><tr><th>Materiale</th><th>Vc (m/min), veiledende</th></tr></thead><tbody><tr><td>Konstruksjonsstål (mykt)</td><td>120 – 220</td></tr><tr><td>Rustfritt stål</td><td>80 – 160</td></tr><tr><td>Støpejern</td><td>100 – 200</td></tr><tr><td>Messing og bronse</td><td>150 – 300</td></tr><tr><td>Aluminium</td><td>250 – 600</td></tr></tbody></table></div>
+</section>
+<section>
+<h2>Dreiing: konstant skjærehastighet eller konstant turtall</h2>
+<p>Ved dreiing oppgis matingen vanligvis i mm per omdreining. Med konstant skjærehastighet (G96) justerer maskinen turtallet etter diameteren, slik at Vc holdes stabil når du planer mot sentrum. Med konstant turtall (G97) holdes turtallet fast, og skjærehastigheten endrer seg med diameteren. Husk å sette en øvre turtallsgrense når du bruker konstant skjærehastighet.</p>
+</section>
+<section>
+<h2>Gjenger og konus</h2>
+<p>For metrisk grovgjenge kan kjernehullet omtrent beregnes som gjengediameter minus stigning. For M10 med stigning 1,5 mm blir det 8,5 mm. For M8 (stigning 1,25 mm) brukes i praksis 6,8 mm.</p>
+<p>Konusvinkelen finner du fra forskjellen mellom diametrene og lengden: tan(halvvinkel) = (D − d) / (2 × L). Med D = 30 mm, d = 20 mm og L = 50 mm er tan(halvvinkel) = 0,1, som gir en halvvinkel på omtrent 5,7 grader.</p>
+</section>
+<section>
+<h2>Vanlige feil ved skjæredata</h2>
+<ul>
+<li>For høy matehastighet i forhold til verktøyets stabilitet og utkragning.</li>
+<li>Skjærehastighet fra feil materialgruppe, for eksempel stålverdier brukt på rustfritt.</li>
+<li>Glemt å ta hensyn til maskinens maksimale turtall og effekt.</li>
+<li>Diameter og enhet blandet sammen (mm og tommer).</li>
+<li>Dårlig oppspenning, som gir vibrasjoner selv med riktige verdier.</li>
+</ul>
+</section>
+<section>
+<h2>Kontroller skjæredata før maskinering</h2>
+<p>Resultatene er hjelpemidler, ikke en erstatning for verktøyprodusentens anbefalinger eller maskinens begrensninger. Kontroller alltid materialkvalitet, verktøy, oppspenning og maskinens tillatte turtall og mating før du starter.</p>
+</section>
+<section><h2>Vanlige spørsmål</h2><h3>Hva er forskjellen mellom Vc og turtall?</h3><p>Vc er hastigheten ved skjæreeggen i meter per minutt, mens turtallet er antall omdreininger per minutt. Samme turtall gir høyere Vc på stor diameter enn på liten.</p><h3>Hva er fz?</h3><p>fz er mating per skjær, altså hvor langt verktøyet beveger seg for hvert skjær som går gjennom materialet. Verktøyprodusenten oppgir normalt anbefalt fz.</p><h3>Kan jeg bruke tommer?</h3><p>Formlene fungerer i alle enheter hvis du er konsekvent, men kalkulatoren er laget for mm og meter per minutt.</p><h3>Er verdiene trygge å bruke direkte?</h3><p>Nei. Bruk dem som utgangspunkt og juster etter verktøykatalog, maskin og erfaring.</p></section><section><h2>Flere verktøy</h2><p class="seo-related"><a href="/verktoy-tabeller/">Verktøytabeller</a><a href="/mengdekalkulator/">Mengdekalkulator</a><a href="/dato-tid/">Dato og tid</a></p></section>
+</main>
+        <footer class="seo-footer"><a href="/">Verkstedsportalen</a> · Gratis verktøy for verkstedet og hverdagen. <span class="seo-footer-links"><a href="/om/">Om</a> · <a href="/personvern/">Personvern</a> · <a href="/kontakt/">Kontakt</a></span></footer>
     </div>
 </body>
 </html>
