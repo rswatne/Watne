@@ -52,7 +52,7 @@
         function oppdaterPwaManifest() {
             const svgIcon = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='115' fill='%23000'/><rect x='20' y='20' width='472' height='472' rx='96' fill='none' stroke='%23fff' stroke-opacity='0.14' stroke-width='4'/><polygon points='256,106 386,181 386,331 256,406 126,331 126,181' fill='none' stroke='%23f5f5f7' stroke-width='20' stroke-linejoin='round'/><circle cx='256' cy='256' r='54' fill='none' stroke='%23f5f5f7' stroke-width='20'/></svg>`;
             const manifestObj = {
-                name: "Verkstedsportal HMI",
+                name: "Verkstedsportalen",
                 short_name: "Verksted",
                 start_url: window.location.href,
                 display: "standalone",
