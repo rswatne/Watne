@@ -124,7 +124,11 @@
         <div class="space-y-6">
             <div class="${card}">
                 <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-1 flex items-center">🧾 Skattekalkulator ${SATSER.aar}</h3>
-                <p class="text-xs text-slate-500 dark:text-slate-400 mb-5">Veiledende beregning for lønnsinntekt i skatteklasse 1. Bruk skattekortet og skattemeldingen som fasit.</p>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mb-3">Veiledende beregning for lønnsinntekt i skatteklasse 1. Bruk skattekortet og skattemeldingen som fasit.</p>
+                <div class="rounded-xl border border-amber-300 dark:border-amber-700 bg-amber-50 dark:bg-amber-900/20 p-3 mb-5 text-xs text-amber-900 dark:text-amber-200">
+                    <strong>Usikkert estimat:</strong> Dette er en forenklet beregning, ikke et vedtak eller en garanti for skattetrekk eller skatteoppgjør. Kontroller opplysninger og skattekort hos
+                    <a href="https://www.skatteetaten.no/person/skatt/skattekort/" target="_blank" rel="noopener noreferrer" class="underline font-bold">Skatteetaten</a>.
+                </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
                     ${field('sk-inntekt', 'Brutto lønn', '600000', '1000')}
                     <div>
@@ -158,6 +162,17 @@
             <div id="sk-p-trekk" data-sk-panel="trekk" class="${card}" hidden>
                 <div id="sk-trekk-out"></div>
                 <div class="mt-6 rounded-2xl border border-slate-200 dark:border-slate-800 p-4">
+                    <p class="font-bold text-slate-900 dark:text-white mb-1">Sammenlign med lønnsslipp</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">Legg inn tall fra én vanlig lønnsslipp. Estimatet annualiserer bruttolønnen du oppgir og fordeler beregnet skatt over valgt trekkfordeling. Overtid, halvt trekk, feriepenger og andre variasjoner kan gi store avvik.</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        ${field('sk-ls-brutto', 'Brutto på lønnsslippen (kr)', '0', '100', '', '0')}
+                        ${field('sk-ls-skatt', 'Skattetrekk på lønnsslippen (kr)', '0', '100', '', '0')}
+                        ${field('sk-ls-andre-trekk', 'Andre trekk (kr)', '0', '100', 'f.eks. pensjon', '0')}
+                        ${field('sk-ls-netto', 'Netto utbetalt ifølge lønnsslippen (kr)', '0', '100', '', '0')}
+                    </div>
+                    <div id="sk-lonnsslipp-out" class="mt-5"></div>
+                </div>
+                <div class="mt-6 rounded-2xl border border-slate-200 dark:border-slate-800 p-4">
                     <p class="font-bold text-slate-900 dark:text-white mb-1">År til dato${tipFor('År til dato')}</p>
                     <p class="text-xs text-slate-500 mb-4">Fyll inn faktiske tall fra lønnsslippene. Prognosen bruker årsinntekten og fradragene over, og kan justeres med lønninger og ekstra inntekt som gjenstår.</p>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -171,6 +186,7 @@
             </div>
 
             <div id="sk-p-hvaom" data-sk-panel="hvaom" class="${card}" hidden>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">Sammenlign hvert scenario med grunnlaget over. Scenarioene er separate; de legges ikke oppå hverandre.</p>
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-5">
                     ${field('sk-wi-inntekt', 'Ekstra inntekt per år (kr)', '10000', '1000', 'f.eks. overtid')}
                     ${field('sk-wi-fradrag', 'Ekstra fradrag per år (kr)', '10000', '1000')}
@@ -181,7 +197,7 @@
 
             <details class="${card}">
                 <summary class="cursor-pointer font-bold text-slate-900 dark:text-white">⚙️ Satser ${SATSER.aar} (kan overstyres)</summary>
-                <p class="text-xs text-slate-500 dark:text-slate-400 mt-2 mb-4">Satsene endres hvert år. Personfradraget bør du kontrollere mot Skatteetaten.</p>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-2 mb-4">Satsene nedenfor er lagt inn for inntektsåret ${SATSER.aar}, og kan overstyres. Kontroller alltid årets satser og regler mot <a href="https://www.skatteetaten.no/satser/" target="_blank" rel="noopener noreferrer" class="underline font-bold">Skatteetatens satser</a>.</p>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
                     ${field('sk-s-alm', 'Skatt på alminnelig inntekt (%)', SATSER.alminnelig, '0.1')}
                     ${field('sk-s-person', 'Personfradrag (kr)', SATSER.personfradrag, '10')}
@@ -292,7 +308,7 @@
                     ${row('Total skatt', kr(r.total), 'strong border-t border-slate-200 dark:border-slate-800 mt-1 pt-2')}
                 </div>
             </div>
-            <p class="text-xs text-slate-500 mt-4">Skattetrekket tas normalt i 10,5 måneder (ikke juni halvt og desember). Det gir ca. ${kr(r.total / 10.5)} i trekk per vanlig måned.</p>`;
+            <p class="text-xs text-slate-500 mt-4">Skattetrekket tas normalt i 10,5 måneder (ikke juni halvt og desember). Det gir ca. ${kr(r.total / 10.5)} i trekk per vanlig måned. Satsår: ${SATSER.aar}. <a href="https://www.skatteetaten.no/satser/" target="_blank" rel="noopener noreferrer" class="underline">Kontroller satsene hos Skatteetaten</a>.</p>`;
     }
 
     function visTrekk(g) {
@@ -409,6 +425,34 @@
             </div>`;
     }
 
+    function visLonnsslipp(g) {
+        const brutto = Math.max(0, num('sk-ls-brutto'));
+        const skatt = Math.max(0, num('sk-ls-skatt'));
+        const andreTrekk = Math.max(0, num('sk-ls-andre-trekk'));
+        const netto = Math.max(0, num('sk-ls-netto'));
+        if (brutto <= 0 && skatt <= 0 && netto <= 0) {
+            $('sk-lonnsslipp-out').innerHTML = '<p class="text-sm text-slate-500">Fyll inn tall fra en lønnsslipp for å se sammenligningen.</p>';
+            return;
+        }
+
+        const maaneder = parseFloat($('sk-fordeling')?.value) || 10.5;
+        const skatteestimat = beregn(brutto * 12, g.fradrag, g.s).total;
+        const forventetTrekk = skatteestimat / maaneder;
+        const beregnetNetto = brutto - forventetTrekk - andreTrekk;
+        const faktiskNetto = netto > 0 ? netto : brutto - skatt - andreTrekk;
+
+        $('sk-lonnsslipp-out').innerHTML = `
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                ${big('Skattetrekk på lønnsslippen', kr(skatt), `faktisk skattetrekk: ${kr(skatt)}`)}
+                ${big('Beregnet skattetrekk', kr(forventetTrekk), `basert på ${maanederTekst(maaneder)} og annualisert brutto`)}
+                ${big('Avvik i skattetrekk', kr(skatt - forventetTrekk), 'pluss betyr høyere faktisk trekk enn estimatet')}
+                ${big('Faktisk netto', kr(faktiskNetto), netto > 0 ? 'fra lønnsslippen' : 'beregnet fra brutto minus oppgitte trekk')}
+                ${big('Beregnet netto', kr(beregnetNetto), 'etter estimert skatt og oppgitte andre trekk')}
+                ${big('Avvik i netto', kr(faktiskNetto - beregnetNetto), 'pluss betyr høyere faktisk utbetaling enn estimatet')}
+            </div>
+            <p class="text-xs text-slate-500 mt-3">Sammenligningen er veiledende. Den bruker fradragene som er lagt inn i årsberegningen og forutsetter at oppgitt bruttolønn er representativ for en vanlig måned. Faktiske trekk styres av skattekort, lønnsart og arbeidsgiver.</p>`;
+    }
+
     function maanederTekst(maaneder) {
         return maaneder === 12 ? '12 måneder' : '10,5 måneder';
     }
@@ -420,33 +464,43 @@
         const okning = num('sk-wi-okning') * 12;
 
         const medInntekt = beregn(g.brutto + ekstra, g.fradrag, g.s);
-        const skattInntekt = medInntekt.total - basis.total;
         const medFradrag = beregn(g.brutto, g.fradrag + fradrag, g.s);
         const besparelse = basis.total - medFradrag.total;
         const medOkning = beregn(g.brutto + okning, g.fradrag, g.s);
         const nettoOkning = medOkning.netto - basis.netto;
+        const scenarioer = [
+            { navn: 'Grunnlag', beregning: basis, utgift: 0 },
+            { navn: `Ekstra inntekt (${kr(ekstra)})`, beregning: medInntekt, utgift: 0 },
+            { navn: `Lønnsøkning (${kr(okning / 12)} / mnd)`, beregning: medOkning, utgift: 0 },
+            { navn: `Ekstra fradrag (${kr(fradrag)})`, beregning: medFradrag, utgift: fradrag }
+        ];
+        const scenarioRader = [
+            { navn: 'Brutto per år', verdi: s => s.beregning.brutto },
+            { navn: 'Beregnet skatt', verdi: s => s.beregning.total },
+            { navn: 'Netto per år', verdi: s => s.beregning.netto - s.utgift, sterk: true },
+            { navn: 'Netto per måned (snitt)', verdi: s => (s.beregning.netto - s.utgift) / 12 },
+            { navn: 'Endring i skatt fra grunnlag', verdi: s => s.beregning.total - basis.total }
+        ];
 
         $('sk-hvaom-out').innerHTML = `
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                <div class="rounded-2xl border border-slate-200 dark:border-slate-800 p-4">
-                    <p class="font-bold text-slate-900 dark:text-white mb-2">Ekstra inntekt ${kr(ekstra)}</p>
-                    ${row('Ekstra skatt', kr(skattInntekt))}
-                    ${row('Du beholder', kr(ekstra - skattInntekt), 'strong')}
-                    ${row('Skatt av tillegget', pct(ekstra ? skattInntekt / ekstra * 100 : 0))}
-                </div>
-                <div class="rounded-2xl border border-slate-200 dark:border-slate-800 p-4">
-                    <p class="font-bold text-slate-900 dark:text-white mb-2">Ekstra fradrag ${kr(fradrag)}</p>
-                    ${row('Lavere skatt', kr(besparelse), 'strong')}
-                    ${row('Verdi av fradraget', pct(fradrag ? besparelse / fradrag * 100 : 0))}
-                    ${row('Nytt netto per år', kr(medFradrag.netto))}
-                </div>
-                <div class="rounded-2xl border border-slate-200 dark:border-slate-800 p-4">
-                    <p class="font-bold text-slate-900 dark:text-white mb-2">Lønnsøkning ${kr(okning / 12)} / mnd</p>
-                    ${row('Netto økning per måned', kr(nettoOkning / 12), 'strong')}
-                    ${row('Netto økning per år', kr(nettoOkning))}
-                    ${row('Beholder av økningen', pct(okning ? nettoOkning / okning * 100 : 0))}
-                </div>
-            </div>`;
+            <div class="overflow-x-auto rounded-2xl border border-slate-200 dark:border-slate-800">
+                <table class="w-full min-w-[760px] text-sm">
+                    <thead><tr class="bg-slate-50 dark:bg-slate-800/60">
+                        <th class="p-3 text-left font-bold text-slate-600 dark:text-slate-300">Årlig estimat</th>
+                        ${scenarioer.map(s => `<th class="p-3 text-right font-bold text-slate-900 dark:text-white">${s.navn}</th>`).join('')}
+                    </tr></thead>
+                    <tbody>${scenarioRader.map(r => `<tr class="border-t border-slate-200 dark:border-slate-800">
+                        <th class="p-3 text-left font-medium text-slate-600 dark:text-slate-400">${r.navn}</th>
+                        ${scenarioer.map(s => `<td class="p-3 text-right font-mono ${r.sterk ? 'font-bold text-slate-900 dark:text-white' : 'text-slate-700 dark:text-slate-300'}">${kr(r.verdi(s))}</td>`).join('')}
+                    </tr>`).join('')}</tbody>
+                </table>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-4">
+                ${big('Skatt på ekstra inntekt', kr(medInntekt.total - basis.total), 'på scenarioet med ekstra inntekt')}
+                ${big('Skattebesparelse ved ekstra fradrag', kr(besparelse), `tilsvarer ${pct(fradrag ? besparelse / fradrag * 100 : 0)} av fradraget`)}
+                ${big('Netto økning ved lønnsøkning', kr(nettoOkning / 12), 'per måned i snitt etter skatt')}
+            </div>
+            <p class="text-xs text-slate-500 mt-3">Ekstra fradrag reduserer beregnet skatt, men utgiften er også trukket fra netto i dette scenarioet.</p>`;
     }
 
     function oppdater() {
@@ -454,6 +508,7 @@
         visNetto(g);
         visTrekk(g);
         visAarTilDato(g);
+        visLonnsslipp(g);
         visHvaOm(g);
     }
 
