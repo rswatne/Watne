@@ -69,7 +69,9 @@
         'Minstefradrag': 'Et automatisk fradrag for lønnsinntekt. Du trenger ikke dokumentere det.',
         'Alminnelig inntekt': 'Brutto lønn minus fradrag. Det er dette beløpet skatten på alminnelig inntekt regnes av.',
         'Skattegrunnlag': 'Kalkulatoren viser to ulike grunnlag: alminnelig inntekt etter fradrag, og brutto personinntekt som brukes til trinnskatt og trygdeavgift.',
-        'År til dato': 'Sammenlign estimert skatt for hele året med skatt som allerede er trukket. Resultatet er veiledende og avhenger av at årsinntekten og fradragene over er riktige.',
+        'År til dato': 'Bruk tall fra lønnsslippene og forventet inntekt resten av året for å lage en veiledende årsprognose. Status for skattetrekk sammenlignes med datoen i dag og valgt trekkfordeling.',
+        'Lønninger igjen i år': 'Antall lønninger du forventer å få resten av året. Standardverdien teller måneder etter inneværende måned; juster den hvis lønnsslippen for denne måneden ikke er med i tallene hittil.',
+        'Ekstra inntekt resten av året': 'Forventet skattepliktig engangsinntekt resten av året, for eksempel bonus eller overtid. Ikke ta med inntekt som allerede er inkludert i bruttoinntekt hittil.',
         'Skatt på alminnelig': 'Flat prosent av alminnelig inntekt.',
         'Trinnskatt': 'Ekstra skatt som øker jo mer du tjener. Beregnes av brutto lønn, i trinn.',
         'Trygdeavgift': 'Avgift til folketrygden, en prosent av brutto lønn.',
@@ -98,8 +100,8 @@
         return key ? `<span class="sk-tip" tabindex="0" role="button" aria-label="Forklaring" data-tip="${TIPS[key]}">?</span>` : '';
     };
 
-    const field = (id, text, value, step = 'any', placeholder = '') =>
-        `<div><label for="${id}" class="${label}">${text}${tipFor(text)}</label><input id="${id}" data-sk type="number" step="${step}" value="${value}" placeholder="${placeholder}" class="${input}"></div>`;
+    const field = (id, text, value, step = 'any', placeholder = '', min = '', max = '') =>
+        `<div><label for="${id}" class="${label}">${text}${tipFor(text)}</label><input id="${id}" data-sk type="number" step="${step}" value="${value}" placeholder="${placeholder}"${min !== '' ? ` min="${min}"` : ''}${max !== '' ? ` max="${max}"` : ''} class="${input}"></div>`;
 
     const trinnFelt = SATSER.trinn.map((t, i) => `
         <div class="grid grid-cols-2 gap-3">
@@ -146,11 +148,14 @@
                 <div id="sk-trekk-out"></div>
                 <div class="mt-6 rounded-2xl border border-slate-200 dark:border-slate-800 p-4">
                     <p class="font-bold text-slate-900 dark:text-white mb-1">År til dato${tipFor('År til dato')}</p>
-                    <p class="text-xs text-slate-500 mb-4">Skriv inn tall fra lønnsslippene hittil i år. Sammenligningen bruker årsinntekten og fradragene fra kalkulatoren.</p>
+                    <p class="text-xs text-slate-500 mb-4">Fyll inn faktiske tall fra lønnsslippene. Prognosen bruker årsinntekten og fradragene over, og kan justeres med lønninger og ekstra inntekt som gjenstår.</p>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        ${field('sk-a-i-brutto', 'Bruttoinntekt hittil i år (kr)', '0', '1000')}
-                        ${field('sk-a-i-skatt', 'Skatt trukket hittil i år (kr)', '0', '1000')}
+                        ${field('sk-a-i-brutto', 'Faktisk bruttoinntekt hittil i år (kr)', '0', '1000', '', '0')}
+                        ${field('sk-a-i-skatt', 'Faktisk skatt trukket hittil i år (kr)', '0', '1000', '', '0')}
+                        ${field('sk-a-i-utbetalinger', 'Lønninger igjen i år', Math.max(0, 11 - new Date().getMonth()), '1', '', '0', '12')}
+                        ${field('sk-a-i-ekstra', 'Ekstra inntekt resten av året (kr)', '0', '1000', 'f.eks. bonus', '0')}
                     </div>
+                    <div id="sk-ar-til-dato-out" class="mt-5"></div>
                 </div>
             </div>
 
@@ -286,9 +291,6 @@
         const grunnlagTrekk = g.brutto * maaneder / 12;
         const anbefalt = grunnlagTrekk > 0 ? r.total / grunnlagTrekk * 100 : 0;
         const aaretsSnitt = g.brutto > 0 ? r.total / g.brutto * 100 : 0;
-        const bruttoHittil = Math.max(0, num('sk-a-i-brutto'));
-        const skattHittil = Math.max(0, num('sk-a-i-skatt'));
-        const gjenstaaendeSkatt = r.total - skattHittil;
         const naa = parseFloat($('skatt')?.value) || 0;
         const naaType = $('skatt-type')?.value;
         const ekstraType = $('ekstra-skatt-type')?.value || 'belop';
@@ -318,15 +320,6 @@
                 ${big('Trekk per måned', kr(r.total / maaneder))}
                 ${big('Trekk på overtid', pct(marg), 'marginalskatt')}
             </div>
-            <div class="mt-6 rounded-2xl border border-slate-200 dark:border-slate-800 p-4">
-                <p class="font-bold text-slate-900 dark:text-white mb-1">Årsestimat mot hittil trukket</p>
-                <p class="text-xs text-slate-500 mb-4">Basert på årsinntekten og skattetrekket du har lagt inn over.</p>
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    ${big('Estimert skatt for året', kr(r.total))}
-                    ${big('Skatt trukket hittil', kr(skattHittil), `av ${kr(bruttoHittil)} i bruttoinntekt`)}
-                    ${big('Estimert gjenstående skatt', kr(gjenstaaendeSkatt), gjenstaaendeSkatt < 0 ? 'negativt beløp kan bety skatt til gode' : 'basert på årsestimatet')}
-                </div>
-            </div>
             ${sammenligning}
             <div class="flex flex-wrap gap-3 mt-5">
                 <button type="button" data-sk-act="bruk-pct" data-val="${anbefalt.toFixed(1)}" class="${actBtn}">Bruk ${pct(anbefalt)} som prosenttrekk</button>
@@ -334,6 +327,79 @@
             </div>
             <p class="text-xs text-slate-500 mt-4">«Bruk» setter verdien i lønnskalkulatoren. Overtidstrekket brukes når skattemetoden er tabelltrekk på fastlønn + prosent på overtid.</p>`;
         $('sk-fordeling').value = forrige;
+    }
+
+    function trekkandelTilDato(maaneder) {
+        const vekter = Math.abs(maaneder - 10.5) < 0.01
+            ? [1, 1, 1, 1, 1, 0.5, 1, 1, 1, 1, 1, 0]
+            : Array(12).fill(1);
+        const now = new Date();
+        const maaned = now.getMonth();
+        const dagerIMaaned = new Date(now.getFullYear(), maaned + 1, 0).getDate();
+        const passert = vekter.slice(0, maaned).reduce((sum, vekt) => sum + vekt, 0)
+            + vekter[maaned] * now.getDate() / dagerIMaaned;
+        const totalt = vekter.reduce((sum, vekt) => sum + vekt, 0);
+        return totalt > 0 ? Math.min(1, passert / totalt) : 0;
+    }
+
+    function visAarTilDato(g) {
+        const bruttoHittil = Math.max(0, num('sk-a-i-brutto'));
+        const skattHittil = Math.max(0, num('sk-a-i-skatt'));
+        const utbetalingerIgjen = Math.min(12, Math.floor(Math.max(0, num('sk-a-i-utbetalinger'))));
+        const ekstraInntekt = Math.max(0, num('sk-a-i-ekstra'));
+        const harBruttoHittil = bruttoHittil > 0;
+        const forventetBrutto = harBruttoHittil
+            ? bruttoHittil + g.brutto / 12 * utbetalingerIgjen + ekstraInntekt
+            : g.brutto + ekstraInntekt;
+        const prognose = beregn(forventetBrutto, g.fradrag, g.s);
+        const skattGjenstaar = prognose.total - skattHittil;
+        const skattPerUtbetaling = utbetalingerIgjen > 0 ? Math.max(0, skattGjenstaar) / utbetalingerIgjen : 0;
+        const forventetTrukket = prognose.total * trekkandelTilDato(parseFloat($('sk-fordeling')?.value) || 10.5);
+        const avvik = skattHittil - forventetTrukket;
+        const avvikPct = forventetTrukket > 0 ? avvik / forventetTrukket : 0;
+        const harHittilTall = bruttoHittil > 0 || skattHittil > 0;
+        let status;
+        if (!harHittilTall) {
+            status = '<p class="text-sm text-slate-500">Legg inn faktiske tall fra lønnsslippene for å se om skattetrekket er i rute.</p>';
+        } else if (forventetTrukket <= 0) {
+            status = '<p class="text-sm text-slate-500">Prognosen tilsier ikke skattetrekk hittil i år, så trekkstatus kan ikke vurderes.</p>';
+        } else if (avvikPct < -0.05) {
+            status = `<p class="text-sm text-amber-700 dark:text-amber-300"><strong>Lavere enn forventet trekktempo.</strong> Det er trukket ${kr(-avvik)} mindre enn den grove prognosen til dagens dato.</p>`;
+        } else if (avvikPct > 0.05) {
+            status = `<p class="text-sm text-sky-700 dark:text-sky-300"><strong>Høyere enn forventet trekktempo.</strong> Det er trukket ${kr(avvik)} mer enn den grove prognosen til dagens dato.</p>`;
+        } else {
+            status = '<p class="text-sm text-emerald-700 dark:text-emerald-300"><strong>Omtrent i rute.</strong> Skattetrekket hittil er innenfor ca. 5 % av prognosen for dagens dato.</p>';
+        }
+        const anbefaling = skattGjenstaar <= 0
+            ? 'Det er ikke beregnet mer skatt å dekke ut fra prognosen.'
+            : utbetalingerIgjen > 0
+                ? `Fordelt på ${utbetalingerIgjen} gjenstående lønninger.`
+                : 'Ingen gjenstående lønninger er oppgitt. Vurder å oppdatere skattekortet eller annet skattetrekk.';
+
+        $('sk-ar-til-dato-out').innerHTML = `
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
+                ${big('Faktisk brutto hittil', kr(bruttoHittil))}
+                ${big('Faktisk skatt trukket hittil', kr(skattHittil))}
+                ${big('Prognose brutto for året', kr(forventetBrutto), harBruttoHittil ? 'hittil + forventet lønn + ekstra inntekt' : 'årsinntekten over + ekstra inntekt')}
+                ${big('Prognose skatt for året', kr(prognose.total))}
+            </div>
+            <div class="rounded-2xl border border-slate-200 dark:border-slate-800 p-4 mb-4">
+                <p class="font-bold text-slate-900 dark:text-white mb-2">Sammenligning</p>
+                ${row('Opprinnelig årsestimat', kr(beregn(g.brutto, g.fradrag, g.s).total))}
+                ${row('Prognose med hittil-tall og ekstra inntekt', kr(prognose.total), 'strong')}
+                ${row('Estimert skatt som gjenstår etter faktisk trekk', kr(skattGjenstaar), 'strong')}
+                ${row('Anbefalt trekk per gjenstående lønning', utbetalingerIgjen > 0 ? kr(skattPerUtbetaling) : '—', 'strong')}
+                <p class="text-xs text-slate-500 mt-2">${anbefaling}</p>
+            </div>
+            <div class="rounded-2xl border border-slate-200 dark:border-slate-800 p-4">
+                <p class="font-bold text-slate-900 dark:text-white mb-2">Trekkstatus per i dag</p>
+                ${status}
+                <p class="text-xs text-slate-500 mt-2">Grov tempokontroll basert på valgt fordeling (${maanederTekst(parseFloat($('sk-fordeling')?.value) || 10.5)}). Faktisk trekk kan variere mellom lønninger. Et positivt eller negativt avvik garanterer ikke restskatt eller penger tilbake.</p>
+            </div>`;
+    }
+
+    function maanederTekst(maaneder) {
+        return maaneder === 12 ? '12 måneder' : '10,5 måneder';
     }
 
     function visHvaOm(g) {
@@ -376,6 +442,7 @@
         const g = grunnlag();
         visNetto(g);
         visTrekk(g);
+        visAarTilDato(g);
         visHvaOm(g);
     }
 
