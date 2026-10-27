@@ -60,7 +60,7 @@
      crossorigin="anonymous"></script>
 </head>
 
-<body data-layout="hyper" class="beta-workspace flex h-screen overflow-hidden antialiased selection:bg-brand-500 selection:text-white bg-slate-100 dark:bg-slate-950 text-slate-900 dark:text-slate-100 relative transition-colors duration-300 bg-tech-grid" data-layout="hyper">
+<body data-layout="hyper" class="beta-workspace flex h-screen overflow-hidden antialiased selection:bg-brand-500 selection:text-white bg-slate-100 dark:bg-slate-950 text-slate-900 dark:text-slate-100 relative transition-colors duration-300 bg-tech-grid">
 
     <!-- Toast Notification Container -->
     <div id="toast-container" class="fixed top-20 md:top-6 right-4 z-[100] flex flex-col gap-2 pointer-events-none"></div>
@@ -530,7 +530,7 @@
                     <p id="dash-kpi-coolant-sub" class="text-[11px] text-slate-500 dark:text-slate-400 font-medium mt-1 truncate">Etterfyll: + 7.75 Liter</p>
                 </div>
 
-                <div id="widget-note" data-widget-id="note" onclick="apneNotatSkuff()" class="dash-widget bg-white/90 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200/90 dark:border-slate-800 rounded-2xl p-4 cursor-pointer hover:border-brand-500 transition-all group">
+                <div id="widget-note" data-widget-id="note" role="button" tabindex="0" onclick="apneNotatSkuff()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();apneNotatSkuff();}" class="dash-widget bg-white/90 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200/90 dark:border-slate-800 rounded-2xl p-4 cursor-pointer hover:border-brand-500 transition-all group">
                     <div class="flex items-center justify-between text-xs font-mono text-slate-400 mb-1">
                         <span id="dash-note-widget-title">SJEKKLISTE & NOTAT</span>
                         <i data-lucide="clipboard-list" class="w-4 h-4 text-brand-500 group-hover:scale-110 transition-transform"></i>
@@ -1606,7 +1606,7 @@
                             </div>
                             <div class="flex justify-between items-center md:flex-col md:items-start md:pl-4">
                                 <span class="text-emerald-900 dark:text-emerald-200 font-bold text-sm md:mb-1">🎯 Midtmål (CNC siktemål):</span>
-                                <span class="font-mono text-xl font-extrabold text-emerald-600 dark:text-emerald-400 copy-val" id="iso-res-mid" onclick="kopierTekst(this.innerText.trim(), 'Midtmål')">40.0125 mm</span>
+                                <span class="font-mono text-xl font-extrabold text-emerald-600 dark:text-emerald-400 copy-val" id="iso-res-mid" role="button" tabindex="0" onclick="kopierTekst(this.innerText.trim(), 'Midtmål')">40.0125 mm</span>
                             </div>
                         </div>
                     </div>
@@ -1993,7 +1993,7 @@
                             </div>
                             <div class="flex justify-between items-center">
                                 <span class="text-teal-900 dark:text-teal-200 font-bold text-base">Faktisk totalpris (inkl. nettleie):</span>
-                                <span class="font-mono text-xl font-extrabold text-teal-600 dark:text-teal-400 copy-val" id="res-pwr-total" onclick="kopierTekst(this.innerText.trim(), 'Total strømpris')">1.44 kr/kWh</span>
+                                <span class="font-mono text-xl font-extrabold text-teal-600 dark:text-teal-400 copy-val" id="res-pwr-total" role="button" tabindex="0" onclick="kopierTekst(this.innerText.trim(), 'Total strømpris')">1.44 kr/kWh</span>
                             </div>
                             <div class="flex justify-between items-center border-t border-teal-200 dark:border-teal-800/50 pt-2.5">
                                 <span class="text-teal-800 dark:text-teal-300 font-bold text-xs">⚡ Anbefalt maks lading (under trinn):</span>
@@ -2399,9 +2399,9 @@
     </nav>
 
     <!-- MAIN JAVASCRIPT -->
-    <script defer src="./js/app.js?v=20261027-finance-widgets-search"></script>
+    <script defer src="./js/app.js?v=20261027-a11y-clock"></script>
     <script defer src="./js/manual-library.js?v=20261022-perf"></script>
-    <script defer src="./js/production-addons.js?v=20261021-sok"></script>
+    <script defer src="./js/production-addons.js?v=20261027-a11y"></script>
     <script defer src="./js/amount-planner.js?v=20261020-lazy-tab-calculations"></script>
     <script defer src="./js/datetime-tools.js?v=20261020-lazy-tab-calculations"></script>
     <script defer src="./js/skattekalkulator.js?v=10"></script>

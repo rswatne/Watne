@@ -45,7 +45,7 @@
                         </div>
                         <div class="bg-emerald-50/80 dark:bg-emerald-900/30 p-5 rounded-2xl border-l-4 border-emerald-500 space-y-2.5 font-medium shadow-inner">
                             <div class="flex justify-between items-center"><span class="text-emerald-800 dark:text-emerald-300 font-bold text-sm">Filament / Strøm:</span><span class="font-mono text-base font-bold text-emerald-700 dark:text-emerald-400" id="p3d-res-split">21.17 kr / 0.64 kr</span></div>
-                            <div class="flex justify-between items-center border-t border-emerald-200 dark:border-emerald-800/50 pt-2.5"><span class="text-emerald-900 dark:text-emerald-200 font-bold text-base">Total Selvkost:</span><span class="font-mono text-xl font-extrabold text-emerald-600 dark:text-emerald-400 copy-val" id="p3d-res-total" onclick="kopierTekst(this.innerText.trim(), '3D-Print Kostnad')">21.80 kr</span></div>
+                            <div class="flex justify-between items-center border-t border-emerald-200 dark:border-emerald-800/50 pt-2.5"><span class="text-emerald-900 dark:text-emerald-200 font-bold text-base">Total Selvkost:</span><span class="font-mono text-xl font-extrabold text-emerald-600 dark:text-emerald-400 copy-val" id="p3d-res-total" role="button" tabindex="0" onclick="kopierTekst(this.innerText.trim(), '3D-Print Kostnad')">21.80 kr</span></div>
                         </div>
                     </div>
 
@@ -75,7 +75,7 @@
                         </div>
                         <div class="bg-amber-50/80 dark:bg-amber-900/30 p-5 rounded-2xl border-l-4 border-amber-500 space-y-2.5 font-medium shadow-inner">
                             <div class="flex justify-between items-center"><span class="text-amber-800 dark:text-amber-300 font-bold text-sm">Laghøyde (Min–Maks):</span><span class="font-mono text-base font-bold text-amber-700 dark:text-amber-400" id="p3d-res-layer">0.08 – 0.28 mm (Std: 0.20)</span></div>
-                            <div class="flex justify-between items-center border-t border-amber-200 dark:border-amber-800/50 pt-2.5"><span class="text-amber-900 dark:text-amber-200 font-bold text-sm">Tørking (Kammer / AMS):</span><span class="font-mono text-lg font-extrabold text-amber-600 dark:text-amber-400 copy-val" id="p3d-res-dry" onclick="kopierTekst(this.innerText.trim(), 'Tørking')">55 °C i 8 timer</span></div>
+                            <div class="flex justify-between items-center border-t border-amber-200 dark:border-amber-800/50 pt-2.5"><span class="text-amber-900 dark:text-amber-200 font-bold text-sm">Tørking (Kammer / AMS):</span><span class="font-mono text-lg font-extrabold text-amber-600 dark:text-amber-400 copy-val" id="p3d-res-dry" role="button" tabindex="0" onclick="kopierTekst(this.innerText.trim(), 'Tørking')">55 °C i 8 timer</span></div>
                         </div>
                     </div>
                 </div>
@@ -103,7 +103,7 @@
                             </div>
                         </div>
                         <div class="bg-rose-50/80 dark:bg-rose-900/30 p-5 rounded-2xl border-l-4 border-rose-500 space-y-2.5 font-medium shadow-inner">
-                            <div class="flex justify-between items-center"><span class="text-rose-800 dark:text-rose-300 font-bold text-sm">Strøm / Spenning:</span><span class="font-mono text-xl font-extrabold text-rose-600 dark:text-rose-400 copy-val" id="weld-res-amp" onclick="kopierTekst(this.innerText.trim(), 'Sveiseparameter')">210 A / 24.4 V</span></div>
+                            <div class="flex justify-between items-center"><span class="text-rose-800 dark:text-rose-300 font-bold text-sm">Strøm / Spenning:</span><span class="font-mono text-xl font-extrabold text-rose-600 dark:text-rose-400 copy-val" id="weld-res-amp" role="button" tabindex="0" onclick="kopierTekst(this.innerText.trim(), 'Sveiseparameter')">210 A / 24.4 V</span></div>
                             <div class="flex justify-between items-center border-t border-rose-200 dark:border-rose-800/50 pt-2.5"><span class="text-rose-900 dark:text-rose-200 font-bold text-sm">Trådmating & Dekkgass:</span><span class="font-mono text-base font-bold text-rose-700 dark:text-rose-300" id="weld-res-gas">~7.8 m/min · 15–18 L/min</span></div>
                         </div>
                     </div>
@@ -118,7 +118,7 @@
                         </div>
                         <div class="bg-indigo-50/80 dark:bg-indigo-900/30 p-5 rounded-2xl border-l-4 border-indigo-500 space-y-2.5 font-medium shadow-inner">
                             <div class="flex justify-between items-center"><span class="text-indigo-800 dark:text-indigo-300 font-bold text-sm">Anbefalt V-dyse (8×t):</span><span class="font-mono text-base font-bold text-indigo-700 dark:text-indigo-300" id="bend-res-vdie">V32 mm (Knekk-fradrag: −6.8 mm)</span></div>
-                            <div class="flex justify-between items-center border-t border-indigo-200 dark:border-indigo-800/50 pt-2.5"><span class="text-indigo-900 dark:text-indigo-200 font-bold text-base">Utbredt Kappelengde:</span><span class="font-mono text-xl font-extrabold text-indigo-600 dark:text-indigo-400 copy-val" id="bend-res-flat" onclick="kopierTekst(this.innerText.trim(), 'Kappelengde')">193.2 mm</span></div>
+                            <div class="flex justify-between items-center border-t border-indigo-200 dark:border-indigo-800/50 pt-2.5"><span class="text-indigo-900 dark:text-indigo-200 font-bold text-base">Utbredt Kappelengde:</span><span class="font-mono text-xl font-extrabold text-indigo-600 dark:text-indigo-400 copy-val" id="bend-res-flat" role="button" tabindex="0" onclick="kopierTekst(this.innerText.trim(), 'Kappelengde')">193.2 mm</span></div>
                         </div>
                     </div>
                 </div>

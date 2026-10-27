@@ -37,8 +37,16 @@
             if (elDeskWeek) elDeskWeek.innerText = `Uke ${ukeNr}`;
             if (elMob) elMob.innerText = `${tidStr.slice(0, 5)} · Uke ${ukeNr}`;
         }
-        setInterval(oppdaterLiveKlokke, 1000);
-        oppdaterLiveKlokke();
+        let klokkeTimer = null;
+        function styrLiveKlokke() {
+            clearInterval(klokkeTimer);
+            klokkeTimer = null;
+            if (document.hidden) return;
+            oppdaterLiveKlokke();
+            klokkeTimer = setInterval(oppdaterLiveKlokke, 1000);
+        }
+        document.addEventListener('visibilitychange', styrLiveKlokke);
+        styrLiveKlokke();
 
         // PWA INSTALLER LOGIC
         function oppdaterPwaManifest() {
@@ -149,7 +157,19 @@
                     el.addEventListener('click', () => kopierTekst(el.innerText.trim(), 'Resultat'));
                 }
             });
+            document.querySelectorAll('.copy-val').forEach(el => {
+                el.setAttribute('role', 'button');
+                el.tabIndex = 0;
+            });
         }
+
+        // Tastaturstøtte (Enter/mellomrom) for klikkbare resultatverdier
+        document.addEventListener('keydown', (e) => {
+            if ((e.key === 'Enter' || e.key === ' ') && e.target.classList?.contains('copy-val')) {
+                e.preventDefault();
+                e.target.click();
+            }
+        });
 
         function toggleTheme() {
             document.documentElement.classList.toggle('dark');

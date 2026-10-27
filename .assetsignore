@@ -5,3 +5,5 @@ package.json
 package-lock.json
 wrangler.jsonc
 .assetsignore
+dist/
+build-dist.js

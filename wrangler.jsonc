@@ -1,7 +1,6 @@
 {
   "name": "watne",
   "compatibility_date": "2025-01-01",
-  "assets": {
-    "directory": "."
-  }
+  "build": { "command": "npm run build:dist" },
+  "assets": { "directory": "./dist" }
 }
