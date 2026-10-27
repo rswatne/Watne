@@ -379,9 +379,9 @@
         $('sk-ar-til-dato-out').innerHTML = `
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
                 ${big('Faktisk brutto hittil', kr(bruttoHittil))}
-                ${big('Faktisk skatt trukket hittil', kr(skattHittil))}
+                ${big('Faktisk skatt trukket hittil', kr(skattHittil), bruttoHittil > 0 ? `${pct(skattHittil / bruttoHittil * 100)} av brutto hittil` : '')}
                 ${big('Prognose brutto for året', kr(forventetBrutto), harBruttoHittil ? 'hittil + forventet lønn + ekstra inntekt' : 'årsinntekten over + ekstra inntekt')}
-                ${big('Prognose skatt for året', kr(prognose.total))}
+                ${big('Prognose skatt for året', kr(prognose.total), prognose.total > 0 ? `${pct(skattHittil / prognose.total * 100)} er trukket hittil` : '')}
             </div>
             <div class="rounded-2xl border border-slate-200 dark:border-slate-800 p-4 mb-4">
                 <p class="font-bold text-slate-900 dark:text-white mb-2">Sammenligning</p>
