@@ -1985,17 +1985,17 @@
             else if (tabellNr >= 7200 && tabellNr < 7300) aarligTabellFradrag = -((tabellNr - 7200) * 4000);
 
             let trygdeavgift = aarsLonn > 99650 ? Math.min(aarsLonn * 0.076, (aarsLonn - 99650) * 0.25) : 0;
-            const minsteFradrag = Math.min(aarsLonn * 0.46, 92000);
-            const personFradrag = 108550;
+            const minsteFradrag = Math.min(aarsLonn * 0.46, 95700);
+            const personFradrag = 114540;
             const alminneligInntekt = Math.max(0, aarsLonn - minsteFradrag - personFradrag - aarligTabellFradrag);
             const fellesskatt = alminneligInntekt * 0.22;
 
             let trinnskatt = 0;
-            if (aarsLonn > 217400)  trinnskatt += (Math.min(aarsLonn, 306050) - 217400) * 0.017;
-            if (aarsLonn > 306050)  trinnskatt += (Math.min(aarsLonn, 697150) - 306050) * 0.040;
-            if (aarsLonn > 697150)  trinnskatt += (Math.min(aarsLonn, 942400) - 697150) * 0.137;
-            if (aarsLonn > 942400)  trinnskatt += (Math.min(aarsLonn, 1410750) - 942400) * 0.167;
-            if (aarsLonn > 1410750) trinnskatt += (aarsLonn - 1410750) * 0.177;
+            if (aarsLonn > 226100)  trinnskatt += (Math.min(aarsLonn, 318300) - 226100) * 0.017;
+            if (aarsLonn > 318300)  trinnskatt += (Math.min(aarsLonn, 725050) - 318300) * 0.040;
+            if (aarsLonn > 725050)  trinnskatt += (Math.min(aarsLonn, 980100) - 725050) * 0.137;
+            if (aarsLonn > 980100)  trinnskatt += (Math.min(aarsLonn, 1467200) - 980100) * 0.168;
+            if (aarsLonn > 1467200) trinnskatt += (aarsLonn - 1467200) * 0.178;
 
             const aarsSkatt = trygdeavgift + fellesskatt + trinnskatt;
             return Math.max(0, Math.round(aarsSkatt / 10.5));
@@ -2102,25 +2102,26 @@
             const ekstraSkattType = document.getElementById('ekstra-skatt-type')?.value || 'belop';
             const ekstraSkattVerdi = Math.max(0, parseFloat(document.getElementById('ekstra-skatt-verdi')?.value) || 0);
 
+            const fagforeningFradragMnd = Math.min(unionKr, 725); // 8 700 kr per år (2026)
             let skattKr = 0;
             if (skattType === 'tabell') {
-                const fastSkattegrunnlag = Math.max(0, fastBruttoEtterFerie - Math.min(unionKr, 667));
+                const fastSkattegrunnlag = Math.max(0, fastBruttoEtterFerie - fagforeningFradragMnd);
                 const skattFast = beregnUniversellTabellskatt(fastSkattegrunnlag, tabellValg);
                 const skattOvertid = sumVaktBrutto * (overtidSkattPct / 100);
                 skattKr = Math.round((halvtSkattetrekk ? skattFast / 2 : skattFast) + skattOvertid);
                 document.getElementById('skatt-tittel').innerText = `Skatt (Tabell${halvtSkattetrekk ? ' 50%' : ''} + ${overtidSkattPct}% OT)`;
             } else if (skattType === 'tabell_alt') {
-                const samletSkattegrunnlag = Math.max(0, totalBrutto - Math.min(unionKr, 667));
+                const samletSkattegrunnlag = Math.max(0, totalBrutto - fagforeningFradragMnd);
                 const samletTabelltrekk = beregnUniversellTabellskatt(samletSkattegrunnlag, tabellValg);
-                const fastSkattegrunnlag = Math.max(0, fastBruttoEtterFerie - Math.min(unionKr, 667));
+                const fastSkattegrunnlag = Math.max(0, fastBruttoEtterFerie - fagforeningFradragMnd);
                 const fastTabelltrekk = beregnUniversellTabellskatt(fastSkattegrunnlag, tabellValg);
                 skattKr = halvtSkattetrekk
                     ? Math.round(Math.max(0, samletTabelltrekk - fastTabelltrekk / 2))
                     : samletTabelltrekk;
                 document.getElementById('skatt-tittel').innerText = `Tabelltrekk på alt${halvtSkattetrekk ? ' (halvt på fastlønn)' : ''}`;
             } else {
-                const samletSkattegrunnlag = Math.max(0, totalBrutto - Math.min(unionKr, 667));
-                const fastSkattegrunnlag = Math.max(0, fastBruttoEtterFerie - Math.min(unionKr, 667));
+                const samletSkattegrunnlag = Math.max(0, totalBrutto - fagforeningFradragMnd);
+                const fastSkattegrunnlag = Math.max(0, fastBruttoEtterFerie - fagforeningFradragMnd);
                 const skatteprosentGrunnlag = halvtSkattetrekk
                     ? Math.max(0, samletSkattegrunnlag - fastSkattegrunnlag / 2)
                     : samletSkattegrunnlag;
@@ -2145,7 +2146,8 @@
             document.getElementById('vis-netto').innerText = netto.toFixed(2).replace('.', ',') + " kr";
             document.getElementById('vis-netto-hoved').innerText = netto.toFixed(2).replace('.', ',') + " kr";
 
-            const vaktNetto = Math.max(0, sumVaktBrutto - (sumVaktBrutto * (unionPct / 100)) - (sumVaktBrutto * (overtidSkattPct / 100)));
+            const overtidTrekkPct = skattType === 'prosent' ? pctTax : overtidSkattPct;
+            const vaktNetto = Math.max(0, sumVaktBrutto - (sumVaktBrutto * (unionPct / 100)) - (sumVaktBrutto * (overtidTrekkPct / 100)));
             document.getElementById('vis-sumvakt-brutto').innerText = sumVaktBrutto.toFixed(2).replace('.', ',') + " kr";
             document.getElementById('vis-sumvakt-netto').innerText = vaktNetto.toFixed(2).replace('.', ',') + " kr";
 
