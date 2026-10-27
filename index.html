@@ -41,7 +41,7 @@
     <script defer src="https://unpkg.com/lucide@1.61.0/dist/umd/lucide.min.js"></script>
 
     <link href="./style.css?v=20261020-live-card-size" rel="stylesheet">
-    <link href="./beta-all.css?v=2" rel="stylesheet">
+    <link href="./beta-all.css?v=3" rel="stylesheet">
 
     <style>html.layout-pending main { visibility: hidden; }</style>
     <script>
@@ -49,6 +49,7 @@
             document.documentElement.classList.add('dark');
         } else {
             document.documentElement.classList.remove('dark');
+            document.querySelector('meta[name="theme-color"]').setAttribute('content', '#f5f5f7');
         }
         // Skjul innholdet til layout og skript er ferdige, ellers hopper siden når de bygges inn etter første visning
         document.documentElement.classList.add('layout-pending');
@@ -2399,7 +2400,7 @@
     </nav>
 
     <!-- MAIN JAVASCRIPT -->
-    <script defer src="./js/app.js?v=20261027-a11y-clock"></script>
+    <script defer src="./js/app.js?v=20261027-mobile-theme"></script>
     <script defer src="./js/manual-library.js?v=20261022-perf"></script>
     <script defer src="./js/production-addons.js?v=20261027-a11y"></script>
     <script defer src="./js/amount-planner.js?v=20261020-lazy-tab-calculations"></script>

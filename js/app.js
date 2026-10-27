@@ -173,7 +173,9 @@
 
         function toggleTheme() {
             document.documentElement.classList.toggle('dark');
-            localStorage.theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+            const erMork = document.documentElement.classList.contains('dark');
+            localStorage.theme = erMork ? 'dark' : 'light';
+            document.querySelector('meta[name="theme-color"]')?.setAttribute('content', erMork ? '#000000' : '#f5f5f7');
         }
 
         // --- KOMPLETT OVERSETTELSESMOTOR (NO <-> EN) ---

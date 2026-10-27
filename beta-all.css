@@ -1364,6 +1364,48 @@ html:not(.dark) body[data-layout="hyper"] > aside:first-of-type > nav > *::after
     background: #1d1d1f;
 }
 
+/* Lyst tema: mobil topp- og bunnlinje følger samme palett som desktop */
+@media (max-width: 767px) {
+    html:not(.dark) body[data-layout="hyper"] #mobile-header,
+    html:not(.dark) body[data-layout="hyper"] #mobile-bottom-nav {
+        background: rgb(255 255 255 / 80%) !important;
+        border-color: rgb(0 0 0 / 10%) !important;
+    }
+
+    html:not(.dark) body[data-layout="hyper"] #mobile-header h1,
+    html:not(.dark) body[data-layout="hyper"] #mobile-header #live-clock-mobile {
+        color: #1d1d1f !important;
+    }
+
+    html:not(.dark) body[data-layout="hyper"] #mobile-header button:not(#pwa-install-btn-mobile) {
+        background: rgb(0 0 0 / 5%) !important;
+        border-color: rgb(0 0 0 / 10%) !important;
+        color: #1d1d1f !important;
+    }
+
+    html:not(.dark) body[data-layout="hyper"] #mobile-header button:not(#pwa-install-btn-mobile) :is(span, i, svg) {
+        color: #1d1d1f !important;
+    }
+
+    html:not(.dark) body[data-layout="hyper"] #mobile-header #pwa-install-btn-mobile,
+    html:not(.dark) body[data-layout="hyper"] #mobile-header #pwa-install-btn-mobile * {
+        background: #1d1d1f !important;
+        color: #fff !important;
+    }
+
+    html:not(.dark) body[data-layout="hyper"] #mobile-header #pwa-install-btn-mobile * {
+        background: transparent !important;
+    }
+
+    html:not(.dark) body.beta-workspace #mobile-bottom-nav .mnav-btn {
+        color: #6e6e73;
+    }
+
+    html:not(.dark) body.beta-workspace #mobile-bottom-nav .mnav-btn.font-bold {
+        color: #1d1d1f !important;
+    }
+}
+
 /* ---------- Utfellbar rail ---------- */
 .hy-rail-toggle { display: none; }
 
