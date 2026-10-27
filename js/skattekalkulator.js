@@ -197,7 +197,7 @@
 
             <details class="${card}">
                 <summary class="cursor-pointer font-bold text-slate-900 dark:text-white">⚙️ Satser ${SATSER.aar} (kan overstyres)</summary>
-                <p class="text-xs text-slate-500 dark:text-slate-400 mt-2 mb-4">Satsene nedenfor er lagt inn for inntektsåret ${SATSER.aar}, og kan overstyres. Kontroller alltid årets satser og regler mot <a href="https://www.skatteetaten.no/satser/" target="_blank" rel="noopener noreferrer" class="underline font-bold">Skatteetatens satser</a>.</p>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-2 mb-4">Standardverdiene nedenfor er ment for inntektsåret ${SATSER.aar}, kan overstyres og er ikke automatisk oppdatert fra Skatteetaten. Kalkulatoren er en forenklet årsberegning for lønnsinntekt i skatteklasse 1. Kildelenke og merknad sist kontrollert 27. oktober 2026. Kontroller gjeldende satser, fradrag og skattekort hos <a href="https://www.skatteetaten.no/satser/" target="_blank" rel="noopener noreferrer" class="underline font-bold">Skatteetaten</a> før du bruker resultatet.</p>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
                     ${field('sk-s-alm', 'Skatt på alminnelig inntekt (%)', SATSER.alminnelig, '0.1')}
                     ${field('sk-s-person', 'Personfradrag (kr)', SATSER.personfradrag, '10')}
