@@ -163,6 +163,9 @@
             // Hovednavigasjon & Header
             "Oversikt": "Overview",
             "Lønnskalkulator": "Salary Calculator",
+            "Privatøkonomi": "Personal Finance",
+            "Budsjett, lån, sparing & buffer": "Budget, loans, savings & emergency fund",
+            "Gratis kalkulatorer for CNC-maskinering, verktøytabeller, lønn, privatøkonomi, strøm, materialmengder og datoer.": "Free calculators for CNC machining, tool tables, salary, personal finance, power, material quantities and dates.",
             "Maskinering": "Machining",
             "Verktøytabeller": "Tool Tables",
             "Strøm & Elbil": "Power & EV",
@@ -809,6 +812,7 @@
             currentLang = currentLang === 'no' ? 'en' : 'no';
             localStorage.setItem('verksted_lang', currentLang);
             brukSprak();
+            window.dispatchEvent(new CustomEvent('verksted:language-change', { detail: { language: currentLang } }));
             visToast(currentLang === 'en' ? 'Language switched to English 🇬🇧' : 'Språk byttet til Norsk 🇳🇴');
         }
 
@@ -1116,6 +1120,12 @@
             { title: 'Lønnskalkulator & Netto oversikt', titleEn: 'Salary Calculator & Net Overview', keys: 'lønn skatt netto brutto feriepenger salary tax net gross holiday pay', tab: 'salary', sub: 'oversikt' },
             { title: 'Registrer Vakt & Timebank', titleEn: 'Register Shift & Timebank', keys: 'overtid vakt timebank avspasering 50% 100% overtime shift time off', tab: 'salary', sub: 'vakter' },
             { title: 'Formannstillegg & Skattetabell', titleEn: 'Foreman Bonus & Tax Table', keys: 'formann 20% timelønn tabelltrekk fagforening lo foreman hourly rate union tax', tab: 'salary', sub: 'innstillinger' },
+            { title: 'Månedsbudsjett', titleEn: 'Monthly Budget', keys: 'privatøkonomi budsjett inntekter utgifter overskudd private finance budget income expenses', tab: 'finance', card: 'finance-budget' },
+            { title: 'Lånekalkulator', titleEn: 'Loan Calculator', keys: 'privatøkonomi lån boliglån terminbeløp renter nedbetaling loan mortgage payment interest', tab: 'finance', card: 'finance-loan' },
+            { title: 'Sparekalkulator', titleEn: 'Savings Calculator', keys: 'privatøkonomi spare sparing renters rente avkastning savings compound interest', tab: 'finance', card: 'finance-savings' },
+            { title: 'Nedbetalingsplan for gjeld', titleEn: 'Debt Repayment Planner', keys: 'privatøkonomi gjeld nedbetaling snøball lavine renter debt payoff snowball avalanche', tab: 'finance', card: 'finance-debt' },
+            { title: 'Abonnementsoversikt', titleEn: 'Subscription Tracker', keys: 'privatøkonomi abonnement månedlig årlig kostnader subscriptions monthly annual cost', tab: 'finance', card: 'finance-subscriptions' },
+            { title: 'Bufferkalkulator', titleEn: 'Emergency Fund Calculator', keys: 'privatøkonomi buffer nødsparing nødvendige utgifter emergency fund savings expenses', tab: 'finance', card: 'finance-buffer' },
             { title: 'Sirkulær Mating (Innvendig / Utvendig)', titleEn: 'Circular Interpolation Feed (Int / Ext)', keys: 'sirkulær fresing hull lomme sentermating circular milling hole pocket center feed', tab: 'cnc', sub: 'milling', card: 'card-cnc-sirk' },
             { title: 'Skjæredata Hurtigkalkulator (Vc / RPM / Vf)', titleEn: 'Cutting Data Quick Calc (Vc / RPM / Vf)', keys: 'vc rpm bordmating spindel fz cutting speed spindle table feed', tab: 'cnc', sub: 'milling', card: 'card-cnc-hurtig' },
             { title: 'Skjæredata (RCT)', titleEn: 'Cutting Data (RCT)', keys: 'skjæredata cutting data rct rpm bordmating table feed sideinngrep chip thinning stepover', tab: 'cnc', sub: 'milling', card: 'card-cnc-rct' },
@@ -1204,6 +1214,7 @@
             }
             const tabNavnMap = {
                 salary: currentLang === 'en' ? 'SALARY' : 'LØNN',
+                finance: currentLang === 'en' ? 'FINANCE' : 'PRIVATØKONOMI',
                 cnc: 'CNC',
                 tools: currentLang === 'en' ? 'TABLES' : 'TABELLER',
                 ev: currentLang === 'en' ? 'POWER & EV' : 'STRØM & ELBIL',
@@ -1608,6 +1619,7 @@
                 if (icon) {
                     icon.classList.remove('text-slate-400');
                     if(tabId === 'dashboard' || tabId === 'salary') icon.classList.add('text-brand-500');
+                    if(tabId === 'finance') icon.classList.add('text-emerald-500');
                     if(tabId === 'cnc') icon.classList.add('text-blue-500');
                     if(tabId === 'tools') icon.classList.add('text-emerald-500');
                     if(tabId === 'ev') icon.classList.add('text-teal-500');
@@ -1626,14 +1638,16 @@
                 activeMnav.classList.remove('text-slate-400', 'dark:text-slate-500', 'font-medium');
                 activeMnav.classList.add('font-bold');
                 if(tabId === 'dashboard' || tabId === 'salary') activeMnav.classList.add('text-brand-500');
+                if(tabId === 'finance') activeMnav.classList.add('text-emerald-500');
                 if(tabId === 'cnc') activeMnav.classList.add('text-blue-500');
                 if(tabId === 'tools') activeMnav.classList.add('text-emerald-500');
                 if(tabId === 'ev') activeMnav.classList.add('text-teal-500');
                 if(tabId === 'amounts') activeMnav.classList.add('text-violet-500');
                 if(tabId === 'datetime') activeMnav.classList.add('text-sky-500');
-            } else if (moreMnav && ['ev', 'amounts', 'datetime'].includes(tabId)) {
+            } else if (moreMnav && ['finance', 'ev', 'amounts', 'datetime'].includes(tabId)) {
                 moreMnav.classList.remove('text-slate-400', 'dark:text-slate-500', 'font-medium');
                 moreMnav.classList.add('font-bold');
+                if(tabId === 'finance') moreMnav.classList.add('text-emerald-500');
                 if(tabId === 'ev') moreMnav.classList.add('text-teal-500');
                 if(tabId === 'amounts') moreMnav.classList.add('text-violet-500');
                 if(tabId === 'datetime') moreMnav.classList.add('text-sky-500');

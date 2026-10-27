@@ -187,6 +187,9 @@
                 <span class="flex items-center"><i data-lucide="calculator" class="w-5 h-5 mr-3 text-slate-400"></i> Lønnskalkulator</span>
                 <kbd class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-400">2</kbd>
             </button>
+            <button onclick="switchTab('finance')" id="nav-finance" class="nav-btn w-full flex items-center justify-between px-4 py-3 text-sm font-medium rounded-xl text-slate-500 dark:text-slate-400 border border-transparent hover:bg-white/50 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-white transition-all">
+                <span class="flex items-center"><i data-lucide="wallet" class="w-5 h-5 mr-3 text-slate-400"></i> Privatøkonomi</span>
+            </button>
             <button onclick="switchTab('cnc')" id="nav-cnc" class="nav-btn w-full flex items-center justify-between px-4 py-3 text-sm font-medium rounded-xl text-slate-500 dark:text-slate-400 border border-transparent hover:bg-white/50 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-white transition-all">
                 <span class="flex items-center"><i data-lucide="cpu" class="w-5 h-5 mr-3 text-slate-400"></i> Maskinering</span>
                 <kbd class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-400">3</kbd>
@@ -416,7 +419,7 @@
         <section id="dashboard" class="tab-content active p-4 sm:p-6 lg:p-10 max-w-7xl mx-auto">
             <header class="mb-6">
                 <h1 class="text-2xl lg:text-3xl font-extrabold text-slate-900 dark:text-white">Verktøy for verksted og hverdag</h1>
-                <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">Gratis kalkulatorer for CNC-maskinering, verktøytabeller, lønn, strøm, materialmengder og datoer.</p>
+                <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">Gratis kalkulatorer for CNC-maskinering, verktøytabeller, lønn, privatøkonomi, strøm, materialmengder og datoer.</p>
             </header>
             <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
                 <div class="flex items-center gap-2">
@@ -540,6 +543,7 @@
                     <li><a class="text-brand-600 dark:text-brand-400" href="/cnc-kalkulator/">CNC-kalkulator</a></li>
                     <li><a class="text-brand-600 dark:text-brand-400" href="/verktoy-tabeller/">Verktøytabeller</a></li>
                     <li><a class="text-brand-600 dark:text-brand-400" href="/lonnskalkulator/">Lønnskalkulator</a></li>
+                    <li><a class="text-brand-600 dark:text-brand-400" href="/privatokonomi/">Privatøkonomi</a></li>
                     <li><a class="text-brand-600 dark:text-brand-400" href="/strom-elbil/">Strøm og elbil</a></li>
                     <li><a class="text-brand-600 dark:text-brand-400" href="/mengdekalkulator/">Mengdekalkulator</a></li>
                     <li><a class="text-brand-600 dark:text-brand-400" href="/dato-tid/">Dato- og tidskalkulator</a></li>
@@ -953,7 +957,21 @@
 </aside>
 </section>
 
-        <!-- ================= MASKINERING ================= -->
+<!-- ================= PRIVATØKONOMI ================= -->
+<section id="finance" class="tab-content p-4 lg:p-8 max-w-7xl mx-auto">
+    <header class="mb-6 lg:mb-8 flex items-center gap-4">
+        <div class="w-12 h-12 lg:w-16 lg:h-16 bg-emerald-100 dark:bg-emerald-900/30 rounded-2xl flex items-center justify-center shrink-0 border border-emerald-200 dark:border-emerald-700/50 shadow-sm">
+            <i data-lucide="wallet" class="w-6 h-6 lg:w-8 lg:h-8 text-emerald-600 dark:text-emerald-400"></i>
+        </div>
+        <div class="min-w-0">
+            <h2 class="text-2xl lg:text-3xl font-extrabold text-slate-900 dark:text-white">Privatøkonomi</h2>
+            <p class="text-xs lg:text-sm text-emerald-600 dark:text-emerald-400 font-mono mt-1">Budsjett, lån, sparing & buffer</p>
+        </div>
+    </header>
+    <div id="finance-tools-root"></div>
+</section>
+
+<!-- ================= MASKINERING ================= -->
         <section id="cnc" class="tab-content p-4 lg:p-8 max-w-7xl mx-auto">
             <header class="mb-6 lg:mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div class="flex items-center">
@@ -2346,6 +2364,7 @@
 </main>
 
     <div id="mobile-more-menu" class="md:hidden hidden fixed bottom-20 right-3 z-[60] w-60 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl p-2 shadow-2xl" role="menu" aria-label="Flere sider">
+        <button type="button" role="menuitem" onclick="switchTab('finance')" class="w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="wallet" class="w-5 h-5 text-emerald-500"></i> Privatøkonomi</button>
         <button type="button" role="menuitem" onclick="switchTab('ev')" class="w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="zap" class="w-5 h-5 text-teal-500"></i> Strøm & Elbil</button>
         <button type="button" role="menuitem" onclick="switchTab('amounts')" class="w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="shapes" class="w-5 h-5 text-violet-500"></i> Hvor mye trenger jeg?</button>
         <button type="button" role="menuitem" onclick="switchTab('datetime')" class="w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="calendar-clock" class="w-5 h-5 text-sky-500"></i> Dato & tid</button>
@@ -2376,13 +2395,14 @@
     </nav>
 
     <!-- MAIN JAVASCRIPT -->
-    <script defer src="./js/app.js?v=20261022-perf"></script>
+    <script defer src="./js/app.js?v=20261027-private-finance"></script>
     <script defer src="./js/manual-library.js?v=20261022-perf"></script>
     <script defer src="./js/production-addons.js?v=20261021-sok"></script>
     <script defer src="./js/amount-planner.js?v=20261020-lazy-tab-calculations"></script>
     <script defer src="./js/datetime-tools.js?v=20261020-lazy-tab-calculations"></script>
     <script defer src="./js/skattekalkulator.js?v=10"></script>
     <script defer src="./js/lonn-faktabokser.js?v=1"></script>
+    <script defer src="./js/personal-finance.js?v=1"></script>
     <script src="./beta-layout.js?v=13"></script>
 
 </body>
