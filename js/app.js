@@ -179,6 +179,7 @@
             "Strøm": "Power",
             "● Klar": "● Ready",
             "Hurtigsøk verktøy...": "Quick search tools...",
+            "Søk i oversiktskort": "Search overview cards",
             "Notater & Sjekkliste": "Notes & Checklist",
             "Installer som App": "Install as App",
             "Mørk": "Dark",
@@ -775,6 +776,7 @@
                 { id: 'global-search-input', no: 'Søk etter kalkulator (f.eks. maling, betong, dato, flis, H7, G76)...', en: 'Search calculators (e.g. paint, concrete, date, tile, H7, G76)...' },
                 { id: 'notes-todo-input', no: 'Ny oppgave (f.eks. Bytt skjær T04, Mål Ø40 H7)...', en: 'New task (e.g. Change insert T04, Measure Ø40 H7)...' },
                 { id: 'notes-text-area', no: 'Skriv inn mål, verktøylengder, G54 Z-nullpunkt, ordrenummer eller beskjed til neste skift...', en: 'Enter dimensions, tool lengths, G54 Z-zero, order number or shift handover notes...' },
+                { id: 'widget-config-search', no: 'Søk etter oversiktskort...', en: 'Search overview cards...' },
                 { id: 'overstyr-dager', no: 'Auto (man-fre)', en: 'Auto (Mon-Fri)' },
                 { id: 'amount-recipe-ingredients', no: '200 g mel\n3 dl melk\n2 stk egg', en: '200 g flour\n3 dl milk\n2 eggs' }
             ];
@@ -1282,6 +1284,7 @@
                     const cardEl = document.getElementById(item.card);
                     if (cardEl) {
                         cardEl.classList.remove('card-collapsed');
+                        if (cardEl.tagName === 'DETAILS') cardEl.open = true;
                         cardEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
                         cardEl.classList.add('card-search-highlight');
                         setTimeout(() => cardEl.classList.remove('card-search-highlight'), 2400);
@@ -2501,6 +2504,17 @@
                     : verdi;
                 if (!resultater.includes(tekst)) resultater.push(tekst);
             });
+            if (card.closest('#finance')) {
+                card.querySelectorAll('[id$="-result"]').forEach(output => {
+                    [...output.children].forEach(summaryCard => {
+                        const paragraphs = summaryCard.querySelectorAll('p');
+                        if (paragraphs.length < 2) return;
+                        const label = paragraphs[0].textContent.trim();
+                        const value = paragraphs[1].textContent.trim();
+                        if (label && value) resultater.push(`${label}: ${value}`);
+                    });
+                });
+            }
             return resultater;
         }
 
@@ -2605,6 +2619,45 @@
                 card.addEventListener('input', update);
                 card.addEventListener('change', update);
             });
+
+            const financeWidgets = [
+                { card: 'finance-budget', title: 'Månedsbudsjett', desc: 'Inntekter, utgifter og beløp til overs', searchText: 'privatøkonomi budsjett månedlig økonomi' },
+                { card: 'finance-loan', title: 'Lånekalkulator', desc: 'Terminbeløp, rente og ekstra innbetaling', searchText: 'privatøkonomi lån boliglån renter nedbetaling' },
+                { card: 'finance-savings', title: 'Sparekalkulator', desc: 'Månedlig sparing og mulig utvikling over tid', searchText: 'privatøkonomi sparing sparekonto avkastning' },
+                { card: 'finance-debt', title: 'Nedbetalingsplan for gjeld', desc: 'Sammenlign strategier for gjeldsnedbetaling', searchText: 'privatøkonomi gjeld renter saldo snøball lavine' },
+                { card: 'finance-subscriptions', title: 'Abonnementsoversikt', desc: 'Månedlige og årlige abonnementskostnader', searchText: 'privatøkonomi abonnement faste kostnader' },
+                { card: 'finance-buffer', title: 'Bufferkalkulator', desc: 'Beregn buffermål og gjenstående beløp', searchText: 'privatøkonomi buffer nødsparing utgifter' }
+            ];
+            const financeRoot = document.getElementById('finance-tools-root');
+            financeWidgets.forEach(definisjon => {
+                const target = { pageId: 'finance' };
+                Object.defineProperty(target, 'card', {
+                    get: () => document.getElementById(definisjon.card)
+                });
+                lagLiveWidget(
+                    {
+                        id: `calc-${definisjon.card}`,
+                        title: definisjon.title,
+                        desc: definisjon.desc,
+                        searchText: definisjon.searchText
+                    },
+                    target
+                );
+            });
+            if (financeRoot && financeRoot.dataset.liveWidgetObservers !== '1') {
+                financeRoot.dataset.liveWidgetObservers = '1';
+                const updateFinanceWidgets = () => financeWidgets.forEach(definisjon => {
+                    const card = document.getElementById(definisjon.card);
+                    if (card) oppdaterLiveWidgetFraKort(`calc-${definisjon.card}`, card);
+                });
+                financeRoot.addEventListener('input', updateFinanceWidgets);
+                financeRoot.addEventListener('change', updateFinanceWidgets);
+                new MutationObserver(updateFinanceWidgets).observe(financeRoot, {
+                    childList: true,
+                    characterData: true,
+                    subtree: true
+                });
+            }
 
             document.querySelectorAll('[data-amount-mode]').forEach(button => {
                 const mode = button.dataset.amountMode;
@@ -2740,8 +2793,20 @@
         function byggWidgetModalListe() {
             const container = document.getElementById('widget-config-list');
             if (!container) return;
+            const query = normaliserSoketekst(document.getElementById('widget-config-search')?.value || '');
+            const sokOrd = query.split(/\s+/).filter(Boolean);
+            const synligeWidgets = brukerWidgets
+                .map((widget, index) => ({ widget, index }))
+                .filter(({ widget }) => {
+                    const tekst = normaliserSoketekst(`${widget.title} ${widget.desc} ${widget.searchText || ''}`);
+                    return sokOrd.every(ord => tekst.includes(ord));
+                });
+            if (synligeWidgets.length === 0) {
+                container.innerHTML = `<p class="text-center text-xs text-slate-400 py-6">${currentLang === 'en' ? 'No overview cards matched your search.' : 'Ingen oversiktskort matchet søket.'}</p>`;
+                return;
+            }
             let html = '';
-            brukerWidgets.forEach((w, idx) => {
+            synligeWidgets.forEach(({ widget: w, index: idx }) => {
                 html += `
                 <div class="flex flex-wrap items-center justify-between gap-2 p-3 rounded-2xl border ${w.enabled ? 'bg-slate-50 dark:bg-slate-800/80 border-brand-500/40' : 'bg-slate-100/50 dark:bg-slate-900/40 border-slate-200 dark:border-slate-800 opacity-60'} transition-all">
                     <label class="flex items-center gap-3 flex-1 cursor-pointer min-w-[70%]">
@@ -3922,6 +3987,7 @@
         window.addEventListener('DOMContentLoaded', () => {
             registrerKalkulatorLivekort();
             hentWidgetKonfig();
+            document.getElementById('widget-config-search')?.addEventListener('input', byggWidgetModalListe);
             const navigation = performance.getEntriesByType('navigation')[0];
             lastInnAltState(navigation?.type !== 'reload');
             lastInnNotaterOgSjekkliste();

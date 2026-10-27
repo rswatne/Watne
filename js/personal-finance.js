@@ -102,10 +102,13 @@
     }
 
     function sectionTitle(icon, title, description) {
-        return `<div class="mb-5">
-            <h3 class="text-lg font-extrabold text-slate-900 dark:text-white flex items-center gap-2"><i data-lucide="${icon}" class="w-5 h-5 text-emerald-500"></i>${title}</h3>
+        return `<summary class="mb-5 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+            <div class="flex items-center justify-between gap-3">
+                <h3 class="text-lg font-extrabold text-slate-900 dark:text-white flex items-center gap-2"><i data-lucide="${icon}" class="w-5 h-5 text-emerald-500"></i>${title}</h3>
+                <span class="shrink-0 rounded-lg bg-emerald-500/10 px-2.5 py-1 text-xs font-mono font-bold text-emerald-700 dark:text-emerald-300" data-finance-chevron aria-hidden="true">−</span>
+            </div>
             <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">${description}</p>
-        </div>`;
+        </summary>`;
     }
 
     function listRows(items, collection, kind) {
@@ -137,6 +140,9 @@
 
     function render() {
         const english = language() === 'en';
+        const collapsedCards = new Set(
+            [...root.querySelectorAll('details[id^="finance-"]:not([open])')].map(card => card.id)
+        );
         root.innerHTML = `
             <div class="${cardClass} mb-6 border-emerald-200 dark:border-emerald-800/60 bg-emerald-50/60 dark:bg-emerald-900/10">
                 <p class="font-bold text-slate-900 dark:text-white">${t('Enkle verktøy for oversikt og planlegging', 'Simple tools for planning and keeping track')}</p>
@@ -144,16 +150,16 @@
                 <p id="finance-storage-status" class="text-xs text-slate-500 mt-2">${state.storageError ? t('Kunne ikke lese tidligere lagrede tall. Nye tall lagres lokalt når mulig.', 'Could not read previously saved figures. New figures will be saved locally if possible.') : t('Tallene lagres bare lokalt i denne nettleseren.', 'Your figures are stored only in this browser.')}</p>
             </div>
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
-                <article id="finance-budget" class="${cardClass}">
+                <details id="finance-budget" class="${cardClass}" open>
                     ${sectionTitle('scale', t('Månedsbudsjett', 'Monthly budget'), t('Legg inn inntekter og faste eller variable utgifter for å se hva som blir igjen.', 'Add income and regular or variable expenses to see what remains.'))}
                     <div class="space-y-4">
                         <div><div class="flex items-center justify-between gap-2 mb-2"><h4 class="text-sm font-bold text-slate-800 dark:text-slate-200">${t('Inntekter per måned', 'Monthly income')}</h4><button type="button" class="${buttonClass}" data-finance-add="income">${t('+ Inntekt', '+ Income')}</button></div><div class="space-y-2">${listRows(state.income, 'income', 'income')}</div></div>
                         <div><div class="flex items-center justify-between gap-2 mb-2"><h4 class="text-sm font-bold text-slate-800 dark:text-slate-200">${t('Utgifter per måned', 'Monthly expenses')}</h4><button type="button" class="${buttonClass}" data-finance-add="expenses">${t('+ Utgift', '+ Expense')}</button></div><div class="space-y-2">${listRows(state.expenses, 'expenses', 'expense')}</div></div>
                     </div>
                     <div id="finance-budget-result" class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-5"></div>
-                </article>
+                </details>
 
-                <article id="finance-loan" class="${cardClass}">
+                <details id="finance-loan" class="${cardClass}" open>
                     ${sectionTitle('landmark', t('Lånekalkulator', 'Loan calculator'), t('Se anslått terminbeløp og hva ekstra innbetaling kan bety.', 'Estimate monthly payments and see the effect of extra repayments.'))}
                     <div class="grid grid-cols-2 gap-3">
                         ${field('loan.principal', t('Lånebeløp (kr)', 'Loan amount (NOK)'), state.loan.principal, '10000')}
@@ -163,9 +169,9 @@
                     </div>
                     <div id="finance-loan-result" class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-5"></div>
                     <p class="text-xs text-slate-500 mt-3">${t('Forenklet annuitetsberegning. Gebyrer, renteendringer og bankens vilkår er ikke med.', 'Simplified annuity estimate. Fees, rate changes and lender terms are not included.')}</p>
-                </article>
+                </details>
 
-                <article id="finance-savings" class="${cardClass}">
+                <details id="finance-savings" class="${cardClass}" open>
                     ${sectionTitle('piggy-bank', t('Sparekalkulator', 'Savings calculator'), t('Beregn hvordan fast månedlig sparing kan vokse over tid.', 'Estimate how regular monthly savings could grow over time.'))}
                     <div class="grid grid-cols-2 gap-3">
                         ${field('savings.initial', t('Startbeløp (kr)', 'Starting amount (NOK)'), state.savings.initial, '1000')}
@@ -175,25 +181,25 @@
                     </div>
                     <div id="finance-savings-result" class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-5"></div>
                     <p class="text-xs text-slate-500 mt-3">${t('Avkastning er usikker og kan være negativ. Beregningen inkluderer ikke skatt, gebyrer eller inflasjon.', 'Returns are uncertain and may be negative. Taxes, fees and inflation are not included.')}</p>
-                </article>
+                </details>
 
-                <article id="finance-debt" class="${cardClass}">
+                <details id="finance-debt" class="${cardClass}" open>
                     ${sectionTitle('list-checks', t('Nedbetalingsplan for gjeld', 'Debt repayment planner'), t('Sammenlign høyeste rente først med laveste saldo først.', 'Compare highest-interest-first with lowest-balance-first.'))}
                     <div class="space-y-2">${listRows(state.debts, 'debts')}</div>
                     <button type="button" class="${buttonClass} mt-3" data-finance-add="debts">${t('+ Legg til gjeld', '+ Add debt')}</button>
                     <div class="mt-4 max-w-sm">${field('debtExtra', t('Ekstra å betale per måned (kr)', 'Extra available per month (NOK)'), state.debtExtra, '100')}</div>
                     <div id="finance-debt-result" class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-5"></div>
                     <p class="text-xs text-slate-500 mt-3">${t('Planen forutsetter uendrede renter og at minstebeløp betales hver måned. Avtalte vilkår hos långiver gjelder.', 'Assumes unchanged rates and minimum payments every month. Your lender’s terms apply.')}</p>
-                </article>
+                </details>
 
-                <article id="finance-subscriptions" class="${cardClass}">
+                <details id="finance-subscriptions" class="${cardClass}" open>
                     ${sectionTitle('receipt', t('Abonnementsoversikt', 'Subscription tracker'), t('Få måneds- og årskostnaden for gjentakende betalinger.', 'See monthly and annual costs for recurring payments.'))}
                     <div class="space-y-2">${listRows(state.subscriptions, 'subscriptions')}</div>
                     <button type="button" class="${buttonClass} mt-3" data-finance-add="subscriptions">${t('+ Legg til abonnement', '+ Add subscription')}</button>
                     <div id="finance-subscriptions-result" class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-5"></div>
-                </article>
+                </details>
 
-                <article id="finance-buffer" class="${cardClass}">
+                <details id="finance-buffer" class="${cardClass}" open>
                     ${sectionTitle('shield-check', t('Bufferkalkulator', 'Emergency fund calculator'), t('Sett et mål basert på nødvendige månedsutgifter og ønsket antall måneder.', 'Set a target based on essential monthly expenses and a chosen number of months.'))}
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                         ${field('buffer.expenses', t('Nødvendige utgifter per måned (kr)', 'Essential monthly expenses (NOK)'), state.buffer.expenses, '1000')}
@@ -201,11 +207,20 @@
                         ${field('buffer.current', t('Buffer du har nå (kr)', 'Current savings (NOK)'), state.buffer.current, '1000')}
                     </div>
                     <div id="finance-buffer-result" class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-5"></div>
-                </article>
+                </details>
             </div>
             <div class="flex justify-end mt-5">
                 <button type="button" class="px-3 py-2 rounded-xl text-xs font-bold text-slate-500 hover:text-rose-600 border border-slate-200 dark:border-slate-800" data-finance-action="reset">${t('Nullstill privatøkonomitall', 'Reset personal finance figures')}</button>
             </div>`;
+        root.querySelectorAll('details[id^="finance-"]').forEach(card => {
+            if (collapsedCards.has(card.id)) card.open = false;
+            const updateChevron = () => {
+                const chevron = card.querySelector('[data-finance-chevron]');
+                if (chevron) chevron.textContent = card.open ? '−' : '+';
+            };
+            card.addEventListener('toggle', updateChevron);
+            updateChevron();
+        });
         updateResults();
         if (typeof lucide !== 'undefined') lucide.createIcons();
     }
