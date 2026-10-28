@@ -579,9 +579,82 @@
                 <button onclick="switchSalaryTab('vakter')" id="btn-sal-vakter" class="salary-tab-btn px-4 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 snap-start">⏱️ Vakter & Timebank</button>
                 <button onclick="switchSalaryTab('innstillinger')" id="btn-sal-innstillinger" class="salary-tab-btn px-4 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 snap-start">⚙️ Innstillinger</button>
                 <button onclick="switchSalaryTab('skatt')" id="btn-sal-skatt" class="salary-tab-btn px-4 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 snap-start">🧮 Skatt</button>
+                <button onclick="switchSalaryTab('sammenlign')" id="btn-sal-sammenlign" class="salary-tab-btn px-4 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 snap-start">🧾 Sammenlign lønnsslipp</button>
             </div>
 
             <div id="stab-skatt" class="salary-tab-content"></div>
+
+            <div id="stab-sammenlign" class="salary-tab-content">
+                <div class="max-w-4xl mx-auto space-y-6">
+                    <div class="bg-white/80 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 lg:p-8 shadow-sm">
+                        <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">Sammenlign med lønnsslippen</h3>
+                        <p class="text-sm text-slate-600 dark:text-slate-400 mb-5">Velg en Visma-PDF for å hente ut lønnstall automatisk, eller fyll dem inn selv. Kontroller alltid de utfylte beløpene før du sammenligner.</p>
+                        <label for="salary-slip-file" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Lønnsslipp som PDF</label>
+                        <input id="salary-slip-file" type="file" accept="application/pdf,.pdf" class="block w-full text-sm text-slate-600 dark:text-slate-300 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:font-bold file:bg-brand-50 file:text-brand-700 hover:file:bg-brand-100 dark:file:bg-brand-900/30 dark:file:text-brand-300">
+                        <p id="salary-slip-status" class="text-sm text-slate-500 dark:text-slate-400 mt-3" aria-live="polite">PDF-en leses i nettleseren din. Den lagres ikke eller sendes til en server. Skannede PDF-er støttes ikke ennå; da kan du fylle inn beløpene manuelt.</p>
+                    </div>
+
+                    <div class="bg-white/80 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 lg:p-8 shadow-sm">
+                        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-5">
+                            <div>
+                                <h3 class="text-lg font-bold text-slate-900 dark:text-white">Kontroller lønnstallene</h3>
+                                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Beløp i kroner. Du kan rette feltene etter import.</p>
+                            </div>
+                            <p id="salary-slip-period" class="text-sm font-semibold text-brand-700 dark:text-brand-400"></p>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label for="slip-gross" class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">Bruttolønn</label>
+                                <input id="slip-gross" type="text" inputmode="decimal" autocomplete="off" placeholder="f.eks. 52 000,00" class="glass-input glass-input-brand">
+                            </div>
+                            <div>
+                                <label for="slip-tax" class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">Forskuddstrekk</label>
+                                <input id="slip-tax" type="text" inputmode="decimal" autocomplete="off" placeholder="f.eks. 15 600,00" class="glass-input glass-input-brand">
+                            </div>
+                            <div>
+                                <label for="slip-overtime" class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">Overtid / tilleggsvakter</label>
+                                <input id="slip-overtime" type="text" inputmode="decimal" autocomplete="off" placeholder="f.eks. 8 500,00" class="glass-input glass-input-brand">
+                            </div>
+                            <div>
+                                <label for="slip-overtime-50-hours" class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">Overtid 50 % (timer)</label>
+                                <input id="slip-overtime-50-hours" type="text" inputmode="decimal" autocomplete="off" placeholder="f.eks. 12,5" class="glass-input glass-input-brand">
+                            </div>
+                            <div>
+                                <label for="slip-overtime-100-hours" class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">Overtid 100 % (timer)</label>
+                                <input id="slip-overtime-100-hours" type="text" inputmode="decimal" autocomplete="off" placeholder="f.eks. 4,0" class="glass-input glass-input-brand">
+                            </div>
+                            <div>
+                                <label for="slip-ytd-gross" class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">Bruttolønn hittil i år</label>
+                                <input id="slip-ytd-gross" type="text" inputmode="decimal" autocomplete="off" placeholder="Akkumulert brutto fra lønnsslippen" class="glass-input glass-input-brand">
+                            </div>
+                            <div>
+                                <label for="slip-ytd-tax" class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">Skatt betalt hittil i år</label>
+                                <input id="slip-ytd-tax" type="text" inputmode="decimal" autocomplete="off" placeholder="Akkumulert forskuddstrekk fra lønnsslippen" class="glass-input glass-input-brand">
+                            </div>
+                            <div>
+                                <label for="slip-net-wage" class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">Nettolønn (etter skatt, før andre trekk)</label>
+                                <input id="slip-net-wage" type="text" inputmode="decimal" autocomplete="off" placeholder="f.eks. 36 400,00" class="glass-input glass-input-brand">
+                            </div>
+                            <div>
+                                <label for="slip-union-fee" class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">Fagforeningskontingent</label>
+                                <input id="slip-union-fee" type="text" inputmode="decimal" autocomplete="off" placeholder="f.eks. 1 063,86" class="glass-input glass-input-brand">
+                            </div>
+                            <div class="sm:col-span-2">
+                                <label for="slip-payout" class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">Netto til utbetaling</label>
+                                <input id="slip-payout" type="text" inputmode="decimal" autocomplete="off" placeholder="f.eks. 35 900,00" class="glass-input glass-input-brand">
+                            </div>
+                        </div>
+                        <div class="flex flex-wrap gap-3 mt-6">
+                            <button id="salary-slip-compare" type="button" class="py-3 px-5 rounded-xl font-bold text-sm bg-brand-500 hover:bg-brand-600 text-white transition-colors">Sammenlign med kalkulatoren</button>
+                            <button id="salary-slip-clear" type="button" class="py-3 px-5 rounded-xl font-bold text-sm border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">Tøm feltene</button>
+                        </div>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-3">Overtid og timer leses fra lønnslinjer som begynner med «Overtid». Brutto hittil i år og skatt betalt hittil i år leses fra lønnsslippens akkumulerte summer og vises som faktiske beløp, uten sammenligning med kalkulatorens årsprognose.</p>
+                        <div id="salary-slip-result" class="mt-6" aria-live="polite"></div>
+                    </div>
+
+                    <p class="text-xs leading-relaxed text-slate-500 dark:text-slate-400 px-1">Sammenligningen er en veiledende kontroll, ikke en kontroll av om lønnsslippen er korrekt. Kalkulatoren og lønnsslippen kan bruke ulike forutsetninger, satser og perioder. PDF-leseren lastes ved behov fra cdnjs, men selve PDF-filen behandles lokalt i nettleseren.</p>
+                </div>
+            </div>
 
             <div id="stab-oversikt" class="salary-tab-content active">
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
@@ -663,10 +736,10 @@
                                         <span id="vis-ferietrekk" class="font-mono text-loss-600 dark:text-loss-400 font-bold">− 0,00 kr</span>
                                     </div>
 
-                                    <div class="line-row text-slate-600 dark:text-slate-400"><span class="pl-2">Hverdag 50%</span><span id="vis-hverdag50" class="font-mono">0,00 kr</span></div>
-                                    <div class="line-row text-slate-600 dark:text-slate-400"><span class="pl-2">Hverdag 100%</span><span id="vis-hverdag100" class="font-mono">0,00 kr</span></div>
-                                    <div class="line-row text-slate-600 dark:text-slate-400"><span class="pl-2">Helg 50%</span><span id="vis-helg50" class="font-mono">0,00 kr</span></div>
-                                    <div class="line-row text-slate-600 dark:text-slate-400 border-b border-slate-200 dark:border-slate-800/50 pb-3"><span class="pl-2">Helg 100%</span><span id="vis-helg100" class="font-mono">0,00 kr</span></div>
+                                    <div class="line-row text-slate-600 dark:text-slate-400"><span class="pl-2">Hverdag 50%</span><span class="text-right"><span id="vis-hverdag50" class="font-mono">0,00 kr</span><small id="vis-timer-hverdag50" class="block text-[10px] text-slate-400">0,0 t</small></span></div>
+                                    <div class="line-row text-slate-600 dark:text-slate-400"><span class="pl-2">Hverdag 100%</span><span class="text-right"><span id="vis-hverdag100" class="font-mono">0,00 kr</span><small id="vis-timer-hverdag100" class="block text-[10px] text-slate-400">0,0 t</small></span></div>
+                                    <div class="line-row text-slate-600 dark:text-slate-400"><span class="pl-2">Helg 50%</span><span class="text-right"><span id="vis-helg50" class="font-mono">0,00 kr</span><small id="vis-timer-helg50" class="block text-[10px] text-slate-400">0,0 t</small></span></div>
+                                    <div class="line-row text-slate-600 dark:text-slate-400 border-b border-slate-200 dark:border-slate-800/50 pb-3"><span class="pl-2">Helg 100%</span><span class="text-right"><span id="vis-helg100" class="font-mono">0,00 kr</span><small id="vis-timer-helg100" class="block text-[10px] text-slate-400">0,0 t</small></span></div>
 
                                     <div class="line-row strong pt-2"><span class="text-slate-900 dark:text-white text-base">Total Brutto</span><span id="vis-brutto" class="font-mono text-slate-900 dark:text-white text-lg">0,00 kr</span></div>
                                     
@@ -691,6 +764,7 @@
                                 <div class="line-row text-slate-600 dark:text-slate-400"><span>Estimerte feriepenger (12 % av brutto)</span><span id="vis-feriepenger" class="font-mono font-bold">0,00 kr</span></div>
                                 <div class="pt-3 pb-1 text-[10px] font-extrabold tracking-widest text-slate-400 uppercase">Årsprognose</div>
                                 <div class="line-row text-slate-500 dark:text-slate-500"><span>Fast årslønn (47 uker + 12 %)</span><span id="vis-aarslonn-fast" class="font-mono">0,00 kr</span></div>
+                                <div class="line-row text-slate-500 dark:text-slate-500"><span>Årsprognose brutto (uten feriepenger)</span><span id="vis-aarslonn-brutto" class="font-mono">0,00 kr</span></div>
                                 <div class="line-row text-slate-700 dark:text-slate-300 font-bold"><span>Årslønn estimert m/tillegg</span><span id="vis-aarslonn-total" class="font-mono">0,00 kr</span></div>
                                 <div class="line-row text-slate-500 dark:text-slate-500"><span>Kontingent LO pr. år</span><span id="vis-aarslonn-aar" class="font-mono">0,00 kr</span></div>
                             </div>
@@ -946,6 +1020,7 @@
 <section>
 <h3>Skatt og lønnsanslag</h3>
 <p>Skatteberegningen er et estimat og kan avvike fra det faktiske skattetrekket. Kontroller beløp mot skattekort, lønnsslipp og arbeidsgiver før du tar økonomiske beslutninger.</p>
+<p>Bruk fanen «Sammenlign lønnsslipp» for å kontrollere brutto, skattetrekk og utbetaling mot kalkulatorens estimat.</p>
 </section>
 <section><h3>Vanlige spørsmål</h3><h4>Er resultatet det samme som lønnsslippen min?</h4><p>Nei. Kalkulatoren gir et estimat basert på det du legger inn. Lønnsslippen fra arbeidsgiver er det som gjelder.</p><h4>Lagres lønnsopplysningene mine?</h4><p>Innstillingene lagres bare lokalt i nettleseren din. De sendes ikke til noen server. Les mer under personvern.</p><h4>Hvor finner jeg trekkprosenten min?</h4><p>Den står på skattekortet ditt, som du finner på skatteetaten.no eller i lønnsslippen.</p></section>
 <details class="mt-4 rounded-2xl border border-slate-200 dark:border-slate-800 p-4 text-sm">
@@ -2400,7 +2475,7 @@
     </nav>
 
     <!-- MAIN JAVASCRIPT -->
-    <script defer src="./js/app.js?v=20261027-name"></script>
+    <script defer src="./js/app.js?v=20261028-salary-projection"></script>
     <script defer src="./js/manual-library.js?v=20261022-perf"></script>
     <script defer src="./js/production-addons.js?v=20261027-a11y"></script>
     <script defer src="./js/amount-planner.js?v=20261020-lazy-tab-calculations"></script>
@@ -2408,6 +2483,7 @@
     <script defer src="./js/skattekalkulator.js?v=10"></script>
     <script defer src="./js/lonn-faktabokser.js?v=1"></script>
     <script defer src="./js/personal-finance.js?v=2"></script>
+    <script defer src="./js/salary-comparison.js?v=5"></script>
     <script src="./beta-layout.js?v=13"></script>
 
 </body>

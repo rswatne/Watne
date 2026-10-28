@@ -2088,7 +2088,9 @@
                 radFerie.style.display = 'flex';
             } else radFerie.style.display = 'none';
 
-            let hverdag50 = 0, hverdag100 = 0, helg50 = 0, helg100 = 0, sumVaktBrutto = 0, sumVaktTimer = 0, sumTimebankTimer = 0;
+            let hverdag50 = 0, hverdag100 = 0, helg50 = 0, helg100 = 0;
+            let hverdag50Timer = 0, hverdag100Timer = 0, helg50Timer = 0, helg100Timer = 0;
+            let sumVaktBrutto = 0, sumVaktTimer = 0, sumTimebankTimer = 0;
             const aktive = hentAktiveVakter();
             aktive.forEach(v => {
                 if (v.kind === 'uttak_tb') {
@@ -2102,16 +2104,32 @@
                 if (v.isTimebank) sumTimebankTimer += v.desimalTimer;
                 else sumVaktTimer += v.desimalTimer;
 
-                if (v.kind === 'hverdag50') hverdag50 += b;
-                if (v.kind === 'hverdag100') hverdag100 += b;
-                if (v.kind === 'helg50') helg50 += b;
-                if (v.kind === 'helg100') helg100 += b;
+                if (v.kind === 'hverdag50') {
+                    hverdag50 += b;
+                    hverdag50Timer += v.desimalTimer;
+                }
+                if (v.kind === 'hverdag100') {
+                    hverdag100 += b;
+                    hverdag100Timer += v.desimalTimer;
+                }
+                if (v.kind === 'helg50') {
+                    helg50 += b;
+                    helg50Timer += v.desimalTimer;
+                }
+                if (v.kind === 'helg100') {
+                    helg100 += b;
+                    helg100Timer += v.desimalTimer;
+                }
             });
 
             document.getElementById('vis-hverdag50').innerText = hverdag50.toFixed(2).replace('.', ',') + " kr";
             document.getElementById('vis-hverdag100').innerText = hverdag100.toFixed(2).replace('.', ',') + " kr";
             document.getElementById('vis-helg50').innerText = helg50.toFixed(2).replace('.', ',') + " kr";
             document.getElementById('vis-helg100').innerText = helg100.toFixed(2).replace('.', ',') + " kr";
+            document.getElementById('vis-timer-hverdag50').innerText = hverdag50Timer.toFixed(1).replace('.', ',') + " t";
+            document.getElementById('vis-timer-hverdag100').innerText = hverdag100Timer.toFixed(1).replace('.', ',') + " t";
+            document.getElementById('vis-timer-helg50').innerText = helg50Timer.toFixed(1).replace('.', ',') + " t";
+            document.getElementById('vis-timer-helg100').innerText = helg100Timer.toFixed(1).replace('.', ',') + " t";
 
             const totalTimer = ordinareTimer + sumVaktTimer + Math.max(0, sumTimebankTimer);
             const fortegnTb = sumTimebankTimer >= 0 ? "+ " : "− ";
@@ -2199,8 +2217,10 @@
 
             const fastTimelonnInklFormann = harFormann ? (timelonn * 1.20) : timelonn;
             const fastAarBrutto = harFastlonn ? ((5 * timerPrDag) * fastTimelonnInklFormann * 47 * (dager / realDays)) : 0;
-            const totalAarMedFeriepenger = (fastAarBrutto + ((sumVaktBrutto / (dager/5)) * 47)) * 1.12;
+            const aarsprognoseBrutto = fastAarBrutto + ((sumVaktBrutto / (dager/5)) * 47);
+            const totalAarMedFeriepenger = aarsprognoseBrutto * 1.12;
             document.getElementById('vis-aarslonn-fast').innerText = (fastAarBrutto * 1.12).toFixed(2).replace('.', ',') + " kr";
+            document.getElementById('vis-aarslonn-brutto').innerText = aarsprognoseBrutto.toFixed(2).replace('.', ',') + " kr";
             document.getElementById('vis-aarslonn-total').innerText = totalAarMedFeriepenger.toFixed(2).replace('.', ',') + " kr";
             document.getElementById('vis-aarslonn-aar').innerText = (totalAarMedFeriepenger * (unionPct / 100)).toFixed(2).replace('.', ',') + " kr";
 
