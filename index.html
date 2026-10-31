@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Verkstedsportalen – CNC-kalkulator og verkstedverktøy</title>
+    <title>Verkstedsportalen – kalkulatorer for verksted og hverdag</title>
     <link rel="canonical" href="https://watne.app/">
 
     <!-- PWA & Mobile App Meta Tags -->
@@ -17,7 +17,7 @@
     <meta property="og:type" content="website">
     <meta property="og:locale" content="nb_NO">
     <meta property="og:site_name" content="Verkstedsportalen">
-    <meta property="og:title" content="Verkstedsportalen – CNC-kalkulator og verkstedverktøy">
+    <meta property="og:title" content="Verkstedsportalen – kalkulatorer for verksted og hverdag">
     <meta property="og:description" content="Gratis verktøy for verksted og hverdag: CNC, verktøytabeller, lønn, strøm, mengder og dato/tid.">
     <meta property="og:url" content="https://watne.app/">
 <meta property="og:image" content="https://watne.app/og-image.png">
@@ -25,7 +25,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://watne.app/og-image.png">
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Verkstedsportalen", "url": "https://watne.app/", "description": "Gratis verktøy for verksted og hverdag: CNC-kalkulator, verktøytabeller, lønnskalkulator, strøm og elbil, mengder og dato/tid.", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Alle", "inLanguage": "nb-NO", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "NOK"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Verkstedsportalen", "url": "https://watne.app/", "description": "Gratis kalkulatorer og verktøy for verksted og hverdag: CNC, verktøytabeller, lønn, privatøkonomi, strøm og elbil, materialmengder og dato/tid.", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Alle", "inLanguage": "nb-NO", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "NOK"}}</script>
 
     <!-- App Icons (SVG Data URI for alle plattformer) -->
     <link id="favicon-link" rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='115' fill='%23000'/%3E%3Crect x='20' y='20' width='472' height='472' rx='96' fill='none' stroke='%23fff' stroke-opacity='0.14' stroke-width='4'/%3E%3Cpolygon points='256,106 386,181 386,331 256,406 126,331 126,181' fill='none' stroke='%23f5f5f7' stroke-width='20' stroke-linejoin='round'/%3E%3Ccircle cx='256' cy='256' r='54' fill='none' stroke='%23f5f5f7' stroke-width='20'/%3E%3C/svg%3E">
@@ -543,15 +543,36 @@
             </div>
             <nav aria-label="Verktøy og kalkulatorer" class="mt-6 border-t border-slate-200 dark:border-slate-800 pt-6">
                 <h2 class="text-lg font-extrabold text-slate-900 dark:text-white mb-2">Gratis kalkulatorer og verktøy</h2>
-                <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">Gå til en egen side for informasjon om hvert verktøy og åpne kalkulatoren direkte.</p>
-                <ul class="flex flex-wrap gap-2 text-sm font-semibold">
-                    <li><a class="text-brand-600 dark:text-brand-400" href="/cnc-kalkulator/">CNC-kalkulator</a></li>
-                    <li><a class="text-brand-600 dark:text-brand-400" href="/verktoy-tabeller/">Verktøytabeller</a></li>
-                    <li><a class="text-brand-600 dark:text-brand-400" href="/lonnskalkulator/">Lønnskalkulator</a></li>
-                    <li><a class="text-brand-600 dark:text-brand-400" href="/privatokonomi/">Privatøkonomi</a></li>
-                    <li><a class="text-brand-600 dark:text-brand-400" href="/strom-elbil/">Strøm og elbil</a></li>
-                    <li><a class="text-brand-600 dark:text-brand-400" href="/mengdekalkulator/">Mengdekalkulator</a></li>
-                    <li><a class="text-brand-600 dark:text-brand-400" href="/dato-tid/">Dato- og tidskalkulator</a></li>
+                <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">Velg verktøy etter oppgaven. På verktøysidene kan du lese hva beregningene bygger på og hvilke forutsetninger og begrensninger som gjelder.</p>
+                <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
+                    <li class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/60 p-4">
+                        <a class="font-bold text-brand-700 dark:text-brand-400" href="/cnc-kalkulator/">CNC-kalkulator</a>
+                        <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">Beregn turtall og mating for fresing og dreiing, og finn verdier for blant annet gjenger og konus. Bruk verktøyprodusentens data og maskinens grenser som fasit.</p>
+                    </li>
+                    <li class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/60 p-4">
+                        <a class="font-bold text-brand-700 dark:text-brand-400" href="/verktoy-tabeller/">Verktøytabeller</a>
+                        <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">Slå opp blant annet kjernehull, gjenger, pasninger og toleranser. Kontroller alltid dimensjon og standard mot tegningen for jobben.</p>
+                    </li>
+                    <li class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/60 p-4">
+                        <a class="font-bold text-brand-700 dark:text-brand-400" href="/lonnskalkulator/">Lønnskalkulator</a>
+                        <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">Hold oversikt over vakter, tillegg, overtid og timebank. Legg inn satsene fra din egen avtale; lønns- og skattebeløp er estimater, ikke en lønnsslipp.</p>
+                    </li>
+                    <li class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/60 p-4">
+                        <a class="font-bold text-brand-700 dark:text-brand-400" href="/privatokonomi/">Privatøkonomi</a>
+                        <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">Få oversikt over budsjett, lån, sparing, gjeld og faste utgifter ved å prøve ut egne tall og forutsetninger.</p>
+                    </li>
+                    <li class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/60 p-4">
+                        <a class="font-bold text-brand-700 dark:text-brand-400" href="/strom-elbil/">Strøm og elbil</a>
+                        <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">Anslå strømforbruk, ladetid og kostnad fra effekt, forbruk og pris du selv oppgir. Resultatet er ikke en strømregning eller garanti for rekkevidde.</p>
+                    </li>
+                    <li class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/60 p-4">
+                        <a class="font-bold text-brand-700 dark:text-brand-400" href="/mengdekalkulator/">Mengdekalkulator</a>
+                        <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">Beregn mengder til maling, gulv, flis, betong, blandingsforhold og oppskrifter. Juster målene og svinnet etter prosjektet ditt.</p>
+                    </li>
+                    <li class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/60 p-4">
+                        <a class="font-bold text-brand-700 dark:text-brand-400" href="/dato-tid/">Dato- og tidskalkulator</a>
+                        <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">Regn på tidsrom, arbeidstid over midnatt, arbeidsdager og ISO-ukenummer. Helligdager og lokale fridager må legges til manuelt.</p>
+                    </li>
                 </ul>
                 <p class="text-xs text-slate-500 dark:text-slate-400 mt-4"><a class="text-brand-600 dark:text-brand-400" href="/om/">Om</a> · <a class="text-brand-600 dark:text-brand-400" href="/personvern/">Personvern</a> · <a class="text-brand-600 dark:text-brand-400" href="/kontakt/">Kontakt</a></p>
             </nav>
