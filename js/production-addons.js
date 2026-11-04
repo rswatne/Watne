@@ -312,8 +312,7 @@
             { title: 'Skattekalkulator: Rentefradrag & renter', titleEn: 'Tax Calculator: Interest Deduction', keys: 'rentefradrag rentekostnader renter boliglån lån gjeldsrenter fradrag interest deduction mortgage loan', tab: 'salary', sub: 'skatt' },
             { title: 'Skattekalkulator: Aksjer & fond (gevinst og tap)', titleEn: 'Tax Calculator: Stocks & Funds (gain and loss)', keys: 'aksjer fond aksjefond gevinst tap realisert fradrag tapt gevinst oppjusteringsfaktor skjermingsfradrag stocks funds gain loss capital', tab: 'salary', sub: 'skatt' },
             { title: 'Skattekalkulator: Trekkprosent', titleEn: 'Tax Calculator: Withholding Rate', keys: 'trekkprosent skattetrekk prosenttrekk skattekort withholding rate tax card', tab: 'salary', sub: 'skatt' },
-            { title: 'Skattekalkulator: Hva om (overtid, ekstra fradrag, lønnsøkning)', titleEn: 'Tax Calculator: What If', keys: 'hva om ekstra inntekt overtid bonus lønnsøkning ekstra fradrag what if raise extra income', tab: 'salary', sub: 'skatt' },
-            { title: 'Eie eller leie bolig?', titleEn: 'Buy or rent a home?', keys: 'eie leie bolig hus leilighet kjøp husleie boliglån egenkapital boligpris boligverdi rent buy home housing mortgage down payment rent price', tab: 'finance', card: 'finance-housing' }
+            { title: 'Skattekalkulator: Hva om (overtid, ekstra fradrag, lønnsøkning)', titleEn: 'Tax Calculator: What If', keys: 'hva om ekstra inntekt overtid bonus lønnsøkning ekstra fradrag what if raise extra income', tab: 'salary', sub: 'skatt' }
         ];
 
         document.querySelectorAll('.pers-input').forEach(card => {
@@ -514,7 +513,7 @@
         const hash = (window.location.hash || '').replace(/^#/, '');
         if (!hash) return false;
         const [mainTab, subTab] = hash.split('/');
-        const gyldigeMain = ['dashboard', 'salary', 'finance', 'cnc', 'tools', 'ev'];
+        const gyldigeMain = ['dashboard', 'salary', 'cnc', 'tools', 'ev'];
         if (gyldigeMain.includes(mainTab)) {
             switchTab(mainTab, false);
             if (mainTab === 'salary' && ['oversikt', 'vakter', 'innstillinger'].includes(subTab)) {

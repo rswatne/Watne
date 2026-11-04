@@ -16,19 +16,6 @@
         subscriptions: [],
         debts: [],
         loan: { principal: '2500000', rate: '5.5', years: '25', extra: '0' },
-        housing: {
-            price: '4000000',
-            downPayment: '600000',
-            rate: '5.5',
-            loanYears: '25',
-            ownerCosts: '6000',
-            rent: '18000',
-            years: '10',
-            homeGrowth: '2',
-            rentGrowth: '2',
-            investmentReturn: '4',
-            transactionCosts: '2'
-        },
         savings: { initial: '0', monthly: '2000', rate: '4', years: '10' },
         buffer: { expenses: '25000', months: '3', current: '0' },
         debtExtra: '0'
@@ -76,7 +63,6 @@
                 ...freshDefaults(),
                 ...stored,
                 loan: { ...defaults.loan, ...(stored.loan || {}) },
-                housing: { ...defaults.housing, ...(stored.housing || {}) },
                 savings: { ...defaults.savings, ...(stored.savings || {}) },
                 buffer: { ...defaults.buffer, ...(stored.buffer || {}) },
                 income: Array.isArray(stored.income) ? stored.income : [],
@@ -101,9 +87,9 @@
         }
     }
 
-    function field(path, label, value, step = '100', min = '0', max = '') {
+    function field(path, label, value, step = '100', min = '0') {
         return `<label class="block text-xs font-semibold text-slate-600 dark:text-slate-400">${label}
-            <input class="${inputClass} mt-1.5" type="number" min="${min}"${max ? ` max="${max}"` : ''} step="${step}" value="${escapeHtml(value)}" data-finance-field="${path}">
+            <input class="${inputClass} mt-1.5" type="number" min="${min}" step="${step}" value="${escapeHtml(value)}" data-finance-field="${path}">
         </label>`;
     }
 
@@ -185,25 +171,6 @@
                     <p class="text-xs text-slate-500 mt-3">${t('Forenklet annuitetsberegning. Gebyrer, renteendringer og bankens vilkår er ikke med.', 'Simplified annuity estimate. Fees, rate changes and lender terms are not included.')}</p>
                 </details>
 
-                <details id="finance-housing" class="${cardClass} lg:col-span-2" open>
-                    ${sectionTitle('house', t('Eie eller leie?', 'Buy or rent?'), t('Sammenlign anslått nettoformue etter samme periode, med like mye tilgjengelig til bolig hver måned.', 'Compare estimated net worth over the same period, using the same monthly housing budget.'))}
-                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-                        ${field('housing.price', t('Kjøpesum (kr)', 'Purchase price (NOK)'), state.housing.price, '50000', '0')}
-                        ${field('housing.downPayment', t('Egenkapital (kr)', 'Down payment (NOK)'), state.housing.downPayment, '10000', '0')}
-                        ${field('housing.rate', t('Lånerente per år (%)', 'Annual mortgage rate (%)'), state.housing.rate, '0.1', '0', '100')}
-                        ${field('housing.loanYears', t('Nedbetalingstid (år)', 'Mortgage term (years)'), state.housing.loanYears, '1', '1', '50')}
-                        ${field('housing.ownerCosts', t('Felleskostnader, vedlikehold m.m. per måned (kr)', 'Owner costs and maintenance per month (NOK)'), state.housing.ownerCosts, '500', '0')}
-                        ${field('housing.rent', t('Månedlig leie (kr)', 'Monthly rent (NOK)'), state.housing.rent, '500', '0')}
-                        ${field('housing.years', t('Sammenligningsperiode (år)', 'Comparison period (years)'), state.housing.years, '1', '1', '50')}
-                        ${field('housing.homeGrowth', t('Antatt boligprisvekst per år (%)', 'Assumed annual home-price growth (%)'), state.housing.homeGrowth, '0.1', '-99.9', '100')}
-                        ${field('housing.rentGrowth', t('Antatt årlig økning i leie (%)', 'Assumed annual rent increase (%)'), state.housing.rentGrowth, '0.1', '-99.9', '100')}
-                        ${field('housing.investmentReturn', t('Antatt årlig avkastning på sparing (%)', 'Assumed annual investment return (%)'), state.housing.investmentReturn, '0.1', '-99.9', '100')}
-                        ${field('housing.transactionCosts', t('Kjøps-/salgskostnader (% av boligverdi)', 'Purchase/sale costs (% of home value)'), state.housing.transactionCosts, '0.1', '0', '100')}
-                    </div>
-                    <div id="finance-housing-result" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mt-5" aria-live="polite"></div>
-                    <p class="text-xs text-slate-500 mt-3">${t('Forenklet anslag, ikke økonomisk rådgivning. Modellen forutsetter at den som har lavest månedlig boutgift investerer differansen, og at leietaker investerer egenkapitalen og kjøpskostnadene. Boligpris og leie følger antatte vekstrater; eierkostnader holdes faste. Skatt, rentefradrag, gebyrer, oppussing og avkastningsrisiko er ikke fullt modellert.', 'Simplified estimate, not financial advice. The lower-cost option invests the monthly difference; the renter invests the down payment and purchase costs. Home prices and rent follow the assumed growth rates; owner costs stay fixed. Taxes, interest deductions, fees, renovations and investment risk are not fully modelled.')}</p>
-                </details>
-
                 <details id="finance-savings" class="${cardClass}" open>
                     ${sectionTitle('piggy-bank', t('Sparekalkulator', 'Savings calculator'), t('Beregn hvordan fast månedlig sparing kan vokse over tid.', 'Estimate how regular monthly savings could grow over time.'))}
                     <div class="grid grid-cols-2 gap-3">
@@ -262,60 +229,6 @@
         const monthlyRate = Math.pow(1 + annualRate / 100, 1 / 12) - 1;
         if (monthlyRate === 0) return principal / months;
         return principal * monthlyRate / (1 - Math.pow(1 + monthlyRate, -months));
-    }
-
-    function compareHousing() {
-        const price = Math.max(0, Math.min(1e9, parseNumber(state.housing.price)));
-        const equity = Math.min(price, Math.max(0, parseNumber(state.housing.downPayment)));
-        const mortgageRate = Math.max(0, Math.min(100, parseNumber(state.housing.rate)));
-        const loanMonths = Math.max(1, Math.min(600, Math.round(parseNumber(state.housing.loanYears) * 12)));
-        const horizonMonths = Math.max(1, Math.min(600, Math.round(parseNumber(state.housing.years) * 12)));
-        const ownerCosts = Math.max(0, parseNumber(state.housing.ownerCosts));
-        const initialRent = Math.max(0, parseNumber(state.housing.rent));
-        const homeGrowth = Math.max(-99.9, Math.min(100, parseNumber(state.housing.homeGrowth)));
-        const rentGrowth = Math.max(-99.9, Math.min(100, parseNumber(state.housing.rentGrowth)));
-        const investmentReturn = Math.max(-99.9, Math.min(100, parseNumber(state.housing.investmentReturn)));
-        const transactionRate = Math.max(0, Math.min(100, parseNumber(state.housing.transactionCosts))) / 100;
-        const purchaseCosts = price * transactionRate;
-        const mortgage = price - equity;
-        const monthlyRate = mortgageRate / 1200;
-        const payment = mortgage === 0 ? 0 : monthlyRate === 0
-            ? mortgage / loanMonths
-            : mortgage * monthlyRate / (1 - Math.pow(1 + monthlyRate, -loanMonths));
-        const growthPerMonth = annualRate => Math.pow(1 + annualRate / 100, 1 / 12) - 1;
-        const investmentMonthlyRate = growthPerMonth(investmentReturn);
-        const homeMonthlyGrowth = growthPerMonth(homeGrowth);
-        const rentMonthlyGrowth = growthPerMonth(rentGrowth);
-        let balance = mortgage;
-        let homeValue = price;
-        let rent = initialRent;
-        let renterPortfolio = equity + purchaseCosts;
-        let buyerPortfolio = 0;
-
-        for (let month = 1; month <= horizonMonths; month += 1) {
-            homeValue *= 1 + homeMonthlyGrowth;
-            rent *= 1 + rentMonthlyGrowth;
-            let mortgagePayment = 0;
-            if (balance > 0.005 && month <= loanMonths) {
-                const interest = balance * monthlyRate;
-                mortgagePayment = Math.min(balance + interest, payment);
-                balance = Math.max(0, balance + interest - mortgagePayment);
-            }
-            const ownershipCost = mortgagePayment + ownerCosts;
-            renterPortfolio = (renterPortfolio + Math.max(0, ownershipCost - rent)) * (1 + investmentMonthlyRate);
-            buyerPortfolio = (buyerPortfolio + Math.max(0, rent - ownershipCost)) * (1 + investmentMonthlyRate);
-        }
-
-        const homeEquity = homeValue * (1 - transactionRate) - balance;
-        return {
-            homeValue,
-            monthlyPayment: payment,
-            ownershipCost: payment + ownerCosts,
-            rent: initialRent,
-            buyerNetWorth: homeEquity + buyerPortfolio,
-            renterNetWorth: renterPortfolio,
-            horizonMonths
-        };
     }
 
     function simulateLoan(principal, annualRate, payment) {
@@ -393,23 +306,6 @@
                     summary(t('Renter uten ekstra innbetaling', 'Interest without extra payments'), base ? amount(base.totalInterest) : '—'),
                     summary(t('Tid med ekstra innbetaling', 'Time with extra payments'), withExtra ? `${withExtra.months} ${t('mnd', 'mo')}` : t('Over 100 år', 'Over 100 years')),
                     summary(t('Renter spart med ekstra', 'Interest saved with extra'), base && withExtra ? amount(Math.max(0, base.totalInterest - withExtra.totalInterest)) : '—')
-                ].join('');
-            }
-        }
-
-        const housingResult = document.getElementById('finance-housing-result');
-        if (housingResult) {
-            const comparison = compareHousing();
-            if (!comparison.homeValue || !comparison.horizonMonths) {
-                housingResult.innerHTML = `<p class="text-sm text-slate-500 sm:col-span-2">${t('Legg inn en kjøpesum og sammenligningsperiode for å se anslaget.', 'Enter a purchase price and comparison period to see the estimate.')}</p>`;
-            } else {
-                const difference = comparison.buyerNetWorth - comparison.renterNetWorth;
-                const advantage = difference >= 0 ? t('Kjøp gir høyest anslått nettoformue', 'Buying gives the higher estimated net worth') : t('Leie gir høyest anslått nettoformue', 'Renting gives the higher estimated net worth');
-                housingResult.innerHTML = [
-                    summary(t('Nettoformue ved kjøp', 'Estimated net worth if buying'), amount(comparison.buyerNetWorth), `${t('Boligverdi etter salgskostnader:', 'Home value after selling costs:')} ${amount(comparison.homeValue)}`),
-                    summary(t('Nettoformue ved leie', 'Estimated net worth if renting'), amount(comparison.renterNetWorth), t('Inkluderer investert egenkapital og kjøpskostnader.', 'Includes invested down payment and purchase costs.')),
-                    summary(t('Anslått forskjell', 'Estimated difference'), amount(Math.abs(difference)), advantage),
-                    summary(t('Månedlig boutgift nå', 'Estimated monthly housing cost now'), `${amount(comparison.ownershipCost)} / ${amount(comparison.rent)}`, t('Kjøp / leie før eventuell leieøkning.', 'Buying / renting before assumed rent increases.'))
                 ].join('');
             }
         }
