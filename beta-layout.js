@@ -2,7 +2,7 @@
     const storageKey = 'beta_layout';
     const layouts = { hyper: null };
     const tiltLayouts = ['aurora', 'hyper'];
-    const tabTitles = { dashboard: 'Oversikt', salary: 'Lønn', cnc: 'Maskinering', tools: 'Tabeller', ev: 'Strøm', amounts: 'Mengder', datetime: 'Dato & tid' };
+    const tabTitles = { dashboard: 'Oversikt', salary: 'Lønn', cnc: 'Maskinering', tools: 'Tabeller', ev: 'Strøm', amounts: 'Mengder', datetime: 'Dato & tid', garden: 'Hage' };
     const cardSelector = '.tab-content :is([class*="rounded-2xl"], [class*="rounded-3xl"])[class*="border"]:not(button):not(a)';
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     // Lav ytelse: auto på svake PC-er, kan overstyres med localStorage 'lav_ytelse' = '1' / '0'

@@ -40,7 +40,7 @@
     <!-- Lucide Icons -->
     <script defer src="https://unpkg.com/lucide@1.61.0/dist/umd/lucide.min.js"></script>
 
-    <link href="./style.css?v=20261020-live-card-size" rel="stylesheet">
+    <link href="./style.css?v=20261104-garden" rel="stylesheet">
     <link href="./beta-all.css?v=3" rel="stylesheet">
 
     <style>html.layout-pending main { visibility: hidden; }</style>
@@ -210,6 +210,10 @@
             <button onclick="switchTab('datetime')" id="nav-datetime" class="nav-btn w-full flex items-center justify-between px-4 py-3 text-sm font-medium rounded-xl text-slate-500 dark:text-slate-400 border border-transparent hover:bg-white/50 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-white transition-all">
                 <span class="flex items-center"><i data-lucide="calendar-clock" class="w-5 h-5 mr-3 text-slate-400"></i> Dato & tid</span>
                 <kbd class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-400">7</kbd>
+            </button>
+            <button onclick="switchTab('garden')" id="nav-garden" class="nav-btn w-full flex items-center justify-between px-4 py-3 text-sm font-medium rounded-xl text-slate-500 dark:text-slate-400 border border-transparent hover:bg-white/50 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-white transition-all">
+                <span class="flex items-center"><i data-lucide="sprout" class="w-5 h-5 mr-3 text-slate-400"></i> Hage & utendørs</span>
+                <kbd class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-400">8</kbd>
             </button>
         </nav>
         
@@ -572,6 +576,10 @@
                     <li class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/60 p-4">
                         <a class="font-bold text-brand-700 dark:text-brand-400" href="/dato-tid/">Dato- og tidskalkulator</a>
                         <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">Regn på tidsrom, arbeidstid over midnatt, arbeidsdager og ISO-ukenummer. Helligdager og lokale fridager må legges til manuelt.</p>
+                    </li>
+                    <li class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/60 p-4">
+                        <a class="font-bold text-brand-700 dark:text-brand-400" href="/hage-utendors/">Hage og utendørs</a>
+                        <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">Anslå gjødsel, jord og grus, vanning, planteavstand og gjerde. Følg alltid doseringen og anvisningen på produktet.</p>
                     </li>
                 </ul>
                 <p class="text-xs text-slate-500 dark:text-slate-400 mt-4"><a class="text-brand-600 dark:text-brand-400" href="/om/">Om</a> · <a class="text-brand-600 dark:text-brand-400" href="/personvern/">Personvern</a> · <a class="text-brand-600 dark:text-brand-400" href="/kontakt/">Kontakt</a></p>
@@ -2509,6 +2517,27 @@
 </aside>
 </section>
 
+        <section id="garden" class="tab-content p-4 lg:p-8 max-w-7xl mx-auto">
+            <header class="mb-6 lg:mb-8 flex items-center gap-4">
+                <div class="w-12 h-12 lg:w-16 lg:h-16 bg-lime-100 dark:bg-lime-900/30 rounded-2xl flex items-center justify-center shrink-0 border border-lime-200 dark:border-lime-700/50 shadow-sm">
+                    <i data-lucide="sprout" class="w-6 h-6 lg:w-8 lg:h-8 text-lime-600 dark:text-lime-400"></i>
+                </div>
+                <div class="min-w-0">
+                    <h2 class="text-2xl lg:text-3xl font-extrabold text-slate-900 dark:text-white">Hage & utendørs</h2>
+                    <p class="text-xs lg:text-sm text-lime-700 dark:text-lime-400 font-mono mt-1">Gjødsel, jord, vanning, planter og gjerde</p>
+                </div>
+            </header>
+            <div id="garden-tools-root"></div>
+            <aside class="app-info" aria-label="Om dette verktøyet">
+<h2>Om dette verktøyet</h2>
+<section>
+<h3>Beregn mengder til hage og uteområde</h3>
+<p>Finn hvor mye gjødsel plenen trenger, hvor mange kubikk jord, bark eller grus du må bestille, hvor mye vann hagen trenger, hvor mange planter som får plass i et bed, og hvor mange stolper og bord et gjerde krever. Resultatene er veiledende anslag. Følg alltid doseringen og anvisningen på produktet.</p>
+<p><a href="/hage-utendors/">Les mer om hage- og utendørsverktøyene på egen side</a></p>
+</section>
+            </aside>
+        </section>
+
         <div class="h-24 md:h-12"></div>
     <footer class="app-footer"><a href="/om/">Om Verkstedsportalen</a> · <a href="/personvern/">Personvern</a> · <a href="/kontakt/">Kontakt</a></footer>
 </main>
@@ -2518,7 +2547,8 @@
         <button type="button" role="menuitem" onclick="switchTab('ev')" class="w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="zap" class="w-5 h-5 text-teal-500"></i> Strøm & Elbil</button>
         <button type="button" role="menuitem" onclick="switchTab('amounts')" class="w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="shapes" class="w-5 h-5 text-violet-500"></i> Hvor mye trenger jeg?</button>
         <button type="button" role="menuitem" onclick="switchTab('datetime')" class="w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="calendar-clock" class="w-5 h-5 text-sky-500"></i> Dato & tid</button>
-    </div>
+               <button type="button" role="menuitem" onclick="switchTab('garden')" class="w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="sprout" class="w-5 h-5 text-lime-500"></i> Hage & utendørs</button>
+           </div>
 
     <!-- MOBILE BOTTOM NAVIGATION -->
     <nav id="mobile-bottom-nav" class="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-t border-slate-200 dark:border-slate-800 grid grid-cols-5 items-center z-50 px-1 pb-[env(safe-area-inset-bottom)] shadow-[0_-4px_20px_rgba(0,0,0,0.06)] dark:shadow-[0_-4px_20px_rgba(0,0,0,0.4)] transition-colors">
@@ -2545,16 +2575,17 @@
     </nav>
 
     <!-- MAIN JAVASCRIPT -->
-    <script defer src="./js/app.js?v=20261028-salary-projection"></script>
+    <script defer src="./js/app.js?v=20261104-garden"></script>
     <script defer src="./js/manual-library.js?v=20261022-perf"></script>
     <script defer src="./js/production-addons.js?v=20261027-a11y"></script>
     <script defer src="./js/amount-planner.js?v=20261020-lazy-tab-calculations"></script>
     <script defer src="./js/datetime-tools.js?v=20261020-lazy-tab-calculations"></script>
+    <script defer src="./js/garden-tools.js?v=1"></script>
     <script defer src="./js/skattekalkulator.js?v=10"></script>
     <script defer src="./js/lonn-faktabokser.js?v=1"></script>
     <script defer src="./js/personal-finance.js?v=2"></script>
     <script defer src="./js/salary-comparison.js?v=5"></script>
-    <script src="./beta-layout.js?v=13"></script>
+    <script src="./beta-layout.js?v=14"></script>
 
 </body>
 </html>

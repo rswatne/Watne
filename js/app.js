@@ -194,6 +194,8 @@
             "Hvor mye trenger jeg?": "How much do I need?",
             "Mengder": "Amounts",
             "Dato & tid": "Date & Time",
+            "Hage & utendørs": "Garden & Outdoors",
+            "Gjødsel, jord, vanning, planter og gjerde": "Fertilizer, soil, watering, plants and fencing",
             "Mer": "More",
             "Flere sider": "More pages",
             "Lønn": "Salary",
@@ -858,7 +860,7 @@
                 return;
             }
             if (['INPUT', 'SELECT', 'TEXTAREA'].includes(document.activeElement?.tagName)) return;
-            const map = { '1': 'dashboard', '2': 'salary', '3': 'cnc', '4': 'tools', '5': 'ev', '6': 'amounts', '7': 'datetime' };
+            const map = { '1': 'dashboard', '2': 'salary', '3': 'cnc', '4': 'tools', '5': 'ev', '6': 'amounts', '7': 'datetime', '8': 'garden' };
             if (map[e.key]) switchTab(map[e.key]);
         });
 
@@ -1184,7 +1186,12 @@
             { title: 'Datoforskjell og arbeidsdager', titleEn: 'Date Difference and Working Days', keys: 'dato dager uker arbeidsdager hverdager date difference weekdays working days', tab: 'datetime', mode: 'datetime', value: 'difference' },
             { title: 'Nedtelling til frist eller hendelse', titleEn: 'Countdown to Deadline or Event', keys: 'nedtelling frist hendelse gjenstår overskredet countdown deadline event remaining', tab: 'datetime', mode: 'datetime', value: 'countdown' },
             { title: 'Legg tid til et klokkeslett', titleEn: 'Add Time to a Clock Time', keys: 'legg til tid klokkeslett timer minutter dagsforskyvning add hours minutes time', tab: 'datetime', mode: 'datetime', value: 'add' },
-            { title: 'Ukenummer og ukedag', titleEn: 'Week Number and Weekday', keys: 'ukenummer iso uke ukedag dato week number weekday iso week', tab: 'datetime', mode: 'datetime', value: 'week' }
+            { title: 'Ukenummer og ukedag', titleEn: 'Week Number and Weekday', keys: 'ukenummer iso uke ukedag dato week number weekday iso week', tab: 'datetime', mode: 'datetime', value: 'week' },
+            { title: 'Gjødsel til plen', titleEn: 'Lawn Fertilizer', keys: 'gjødsel plen gress sekk dose kg areal fertilizer lawn grass bag dose', tab: 'garden', mode: 'garden', value: 'fertilizer' },
+            { title: 'Jord, bark og grus – volum og sekker', titleEn: 'Soil, Bark and Gravel Volume', keys: 'jord bark grus matjord kubikk sekker bed sti soil gravel mulch volume bags', tab: 'garden', mode: 'garden', value: 'soil' },
+            { title: 'Vanning – liter og tid', titleEn: 'Watering – Litres and Time', keys: 'vanning vann hage plen regn liter spreder mm watering sprinkler rain lawn garden', tab: 'garden', mode: 'garden', value: 'water' },
+            { title: 'Planteavstand – antall planter i bed', titleEn: 'Plant Spacing in a Bed', keys: 'planter planteavstand bed rader såing grønnsaker avstand plants spacing rows vegetables seeds', tab: 'garden', mode: 'garden', value: 'plants' },
+            { title: 'Gjerde – stolper og bord', titleEn: 'Fence – Posts and Boards', keys: 'gjerde stolper bord stolpeavstand plank tre fence posts boards spacing wood', tab: 'garden', mode: 'garden', value: 'fence' }
         ];
 
         function apneSokModal() {
@@ -1243,7 +1250,8 @@
                 tools: currentLang === 'en' ? 'TABLES' : 'TABELLER',
                 ev: currentLang === 'en' ? 'POWER & EV' : 'STRØM & ELBIL',
                 amounts: currentLang === 'en' ? 'QUANTITIES' : 'MENGDER',
-                datetime: currentLang === 'en' ? 'DATE & TIME' : 'DATO & TID'
+                datetime: currentLang === 'en' ? 'DATE & TIME' : 'DATO & TID',
+                garden: currentLang === 'en' ? 'GARDEN' : 'HAGE'
             };
             const subNavnMap = {
                 oversikt: currentLang === 'en' ? 'overview' : 'oversikt',
@@ -1301,6 +1309,7 @@
             if (item.tab === 'ev' && item.sub) switchEvTab(item.sub);
             if (item.mode === 'amount') document.querySelector(`[data-amount-mode="${item.value}"]`)?.click();
             if (item.mode === 'datetime') document.querySelector(`[data-datetime-mode="${item.value}"]`)?.click();
+            if (item.mode === 'garden') document.querySelector(`[data-garden-mode="${item.value}"]`)?.click();
             if (item.card) {
                 setTimeout(() => {
                     const cardEl = document.getElementById(item.card);
@@ -1535,7 +1544,7 @@
             const hash = (window.location.hash || '').replace(/^#/, '');
             if (!hash) return false;
             const [mainTab, subTab] = hash.split('/');
-            const gyldigeMain = ['dashboard', 'salary', 'cnc', 'tools', 'ev', 'amounts', 'datetime'];
+            const gyldigeMain = ['dashboard', 'salary', 'cnc', 'tools', 'ev', 'amounts', 'datetime', 'garden'];
             if (gyldigeMain.includes(mainTab)) {
                 switchTab(mainTab, false);
                 if (mainTab === 'salary' && ['oversikt', 'vakter', 'innstillinger'].includes(subTab)) {
@@ -1631,7 +1640,7 @@
                 btn.classList.add('text-slate-500', 'dark:text-slate-400', 'border-transparent');
                 let icon = btn.querySelector('svg') || btn.querySelector('i');
                 if (icon) {
-                    icon.classList.remove('text-brand-500', 'text-blue-500', 'text-emerald-500', 'text-teal-500', 'text-violet-500', 'text-sky-500');
+                    icon.classList.remove('text-brand-500', 'text-blue-500', 'text-emerald-500', 'text-teal-500', 'text-violet-500', 'text-sky-500', 'text-lime-500');
                     icon.classList.add('text-slate-400');
                 }
             });
@@ -1650,11 +1659,12 @@
                     if(tabId === 'ev') icon.classList.add('text-teal-500');
                     if(tabId === 'amounts') icon.classList.add('text-violet-500');
                     if(tabId === 'datetime') icon.classList.add('text-sky-500');
+                    if(tabId === 'garden') icon.classList.add('text-lime-500');
                 }
             }
 
             document.querySelectorAll('.mnav-btn').forEach(btn => {
-                btn.classList.remove('text-brand-500', 'text-blue-500', 'text-emerald-500', 'text-teal-500', 'text-violet-500', 'text-sky-500', 'font-bold');
+                btn.classList.remove('text-brand-500', 'text-blue-500', 'text-emerald-500', 'text-teal-500', 'text-violet-500', 'text-sky-500', 'text-lime-500', 'font-bold');
                 btn.classList.add('text-slate-400', 'dark:text-slate-500', 'font-medium');
             });
             const activeMnav = document.getElementById('mnav-' + tabId);
@@ -1669,13 +1679,15 @@
                 if(tabId === 'ev') activeMnav.classList.add('text-teal-500');
                 if(tabId === 'amounts') activeMnav.classList.add('text-violet-500');
                 if(tabId === 'datetime') activeMnav.classList.add('text-sky-500');
-            } else if (moreMnav && ['finance', 'ev', 'amounts', 'datetime'].includes(tabId)) {
+                if(tabId === 'garden') activeMnav.classList.add('text-lime-500');
+            } else if (moreMnav && ['finance', 'ev', 'amounts', 'datetime', 'garden'].includes(tabId)) {
                 moreMnav.classList.remove('text-slate-400', 'dark:text-slate-500', 'font-medium');
                 moreMnav.classList.add('font-bold');
                 if(tabId === 'finance') moreMnav.classList.add('text-emerald-500');
                 if(tabId === 'ev') moreMnav.classList.add('text-teal-500');
                 if(tabId === 'amounts') moreMnav.classList.add('text-violet-500');
                 if(tabId === 'datetime') moreMnav.classList.add('text-sky-500');
+                if(tabId === 'garden') moreMnav.classList.add('text-lime-500');
             }
             localStorage.setItem('active_tab', tabId);
             if (pushHist) dyttHistorikkState();
