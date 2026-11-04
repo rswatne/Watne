@@ -40,7 +40,7 @@
     <!-- Lucide Icons -->
     <script defer src="https://unpkg.com/lucide@1.61.0/dist/umd/lucide.min.js"></script>
 
-    <link href="./style.css?v=20261020-live-card-size" rel="stylesheet">
+    <link href="./style.css?v=20261104-energy-upgrade" rel="stylesheet">
     <link href="./beta-all.css?v=3" rel="stylesheet">
 
     <style>html.layout-pending main { visibility: hidden; }</style>
@@ -2174,6 +2174,29 @@
                             <div class="flex justify-between items-center border-t border-amber-200 dark:border-amber-800/50 pt-2.5"><span class="text-amber-900 dark:text-amber-200 font-bold text-base">Pris pr. måned (30 d):</span><span class="font-mono text-xl font-extrabold text-amber-600 dark:text-amber-400" id="res-app-month">624.00 kr</span></div>
                         </div>
                     </div>
+
+                    <div id="card-energy-upgrade" class="pers-input bg-white/80 dark:bg-slate-900/60 backdrop-blur-md border border-slate-200 dark:border-slate-800 rounded-3xl p-6 lg:p-8 shadow-sm border-l-4 border-l-lime-500 lg:col-span-2">
+                        <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2 flex items-center"><i data-lucide="leaf" class="w-6 h-6 mr-3 text-lime-600 dark:text-lime-400"></i> Lønner energioppgraderingen seg?</h3>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mb-5 border-b border-slate-200 dark:border-slate-800 pb-4 font-medium">Anslå tilbakebetalingstid og lønnsomhet for varmepumpe, isolering, vinduer eller solceller. Bruk forventet årlig energisparing fra egen bolig.</p>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 mb-5">
+                            <div><label for="upgrade-investment" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Investeringskostnad (kr)</label><input id="upgrade-investment" type="number" min="0" step="1000" value="150000" class="glass-input glass-input-teal"></div>
+                            <div><label for="upgrade-support" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Støtte / tilskudd (kr)</label><input id="upgrade-support" type="number" min="0" step="1000" value="0" class="glass-input glass-input-teal"></div>
+                            <div><label for="upgrade-savings" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Energisparing (kWh/år)</label><input id="upgrade-savings" type="number" min="0" step="100" value="5000" class="glass-input glass-input-teal"></div>
+                            <div>
+                                <label for="upgrade-price" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Samlet strømpris (kr/kWh)</label>
+                                <div class="flex gap-2">
+                                    <input id="upgrade-price" type="number" min="0" step="0.05" value="1.50" class="glass-input glass-input-teal min-w-0">
+                                    <button type="button" id="upgrade-use-current-price" class="shrink-0 rounded-xl border border-teal-500/30 bg-teal-500/10 px-2.5 text-xs font-bold text-teal-700 dark:text-teal-300 hover:bg-teal-500/20">Bruk beregnet</button>
+                                </div>
+                            </div>
+                            <div><label for="upgrade-maintenance" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Ekstra drift / vedlikehold per år (kr)</label><input id="upgrade-maintenance" type="number" min="0" step="100" value="1000" class="glass-input glass-input-teal"></div>
+                            <div><label for="upgrade-lifetime" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Forventet levetid (år)</label><input id="upgrade-lifetime" type="number" min="1" max="50" step="1" value="15" class="glass-input glass-input-teal"></div>
+                            <div><label for="upgrade-price-growth" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Antatt årlig prisendring på strøm (%)</label><input id="upgrade-price-growth" type="number" min="-99.9" max="100" step="0.1" value="2" class="glass-input glass-input-teal"></div>
+                            <div><label for="upgrade-discount" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Kalkulasjonsrente (%)</label><input id="upgrade-discount" type="number" min="0" max="100" step="0.1" value="4" class="glass-input glass-input-teal"></div>
+                        </div>
+                        <div id="upgrade-result" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3" aria-live="polite"></div>
+                        <p class="text-xs text-slate-500 mt-3">Forenklet anslag. Resultatet avhenger av faktisk energisparing, strømpris, levetid og vedlikehold. Beregningen inkluderer ikke finansiering, skatt, prisendringer på selve tiltaket eller restverdi.</p>
+                    </div>
                 </div>
             </div>
 
@@ -2547,12 +2570,13 @@
     <!-- MAIN JAVASCRIPT -->
     <script defer src="./js/app.js?v=20261028-salary-projection"></script>
     <script defer src="./js/manual-library.js?v=20261022-perf"></script>
-    <script defer src="./js/production-addons.js?v=20261027-a11y"></script>
+    <script defer src="./js/production-addons.js?v=20261104-housing-search"></script>
     <script defer src="./js/amount-planner.js?v=20261020-lazy-tab-calculations"></script>
     <script defer src="./js/datetime-tools.js?v=20261020-lazy-tab-calculations"></script>
     <script defer src="./js/skattekalkulator.js?v=10"></script>
     <script defer src="./js/lonn-faktabokser.js?v=1"></script>
-    <script defer src="./js/personal-finance.js?v=2"></script>
+    <script defer src="./js/personal-finance.js?v=3"></script>
+    <script defer src="./js/energy-upgrade.js?v=1"></script>
     <script defer src="./js/salary-comparison.js?v=5"></script>
     <script src="./beta-layout.js?v=13"></script>
 
