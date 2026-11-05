@@ -2062,11 +2062,13 @@
 
             knapp.setAttribute('aria-pressed', String(aktiv));
             knapp.textContent = aktiv ? 'Slå av halv skatt' : 'Aktiver halv skatt';
+            knapp.classList.toggle('border-amber-100', aktiv);
+            knapp.classList.toggle('border-white', !aktiv);
             knapp.classList.toggle('bg-amber-300', aktiv);
             knapp.classList.toggle('hover:bg-amber-200', aktiv);
             knapp.classList.toggle('text-slate-950', aktiv);
-            knapp.classList.toggle('bg-white/10', !aktiv);
-            knapp.classList.toggle('hover:bg-white/20', !aktiv);
+            knapp.classList.toggle('bg-slate-900', !aktiv);
+            knapp.classList.toggle('hover:bg-slate-800', !aktiv);
             knapp.classList.toggle('text-white', !aktiv);
             status.classList.toggle('hidden', !aktiv);
         }
