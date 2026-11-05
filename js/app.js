@@ -1789,7 +1789,7 @@
                 const naamnd = new Date().getMonth();
                 maanedsNavn.forEach((navn, idx) => {
                     const opt = document.createElement('option');
-                    opt.value = idx; opt.text = navn;
+                    opt.value = idx; opt.text = `${navn} (utbetales i ${maanedsNavn[(idx + 1) % 12].toLowerCase()})`;
                     if (idx === naamnd) opt.selected = true;
                     mndSelect.appendChild(opt);
                 });
