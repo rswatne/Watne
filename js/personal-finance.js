@@ -226,7 +226,7 @@
     }
 
     function monthlyPayment(principal, annualRate, months) {
-        const monthlyRate = Math.pow(1 + annualRate / 100, 1 / 12) - 1;
+        const monthlyRate = annualRate / 1200;
         if (monthlyRate === 0) return principal / months;
         return principal * monthlyRate / (1 - Math.pow(1 + monthlyRate, -months));
     }
@@ -251,6 +251,7 @@
 
     function simulateDebtPlan(debts, extra, snowball) {
         const remaining = debts.map(debt => ({ ...debt, balance: debt.balance }));
+        const monthlyBudget = debts.reduce((total, debt) => total + debt.minimum, extra);
         let totalInterest = 0;
         let months = 0;
         while (remaining.some(debt => debt.balance > 0.005) && months < 1200) {
@@ -261,19 +262,24 @@
                 debt.balance += interest;
                 debt.interestPaid += interest;
                 totalInterest += interest;
-                const payment = Math.min(debt.balance, debt.minimum);
-                debt.balance -= payment;
             });
 
-            let extraLeft = extra;
+            let availablePayment = monthlyBudget;
+            remaining.forEach(debt => {
+                if (debt.balance <= 0.005) return;
+                const payment = Math.min(debt.balance, debt.minimum);
+                debt.balance -= payment;
+                availablePayment -= payment;
+            });
+
             const order = remaining.filter(debt => debt.balance > 0.005).sort((a, b) => snowball
                 ? a.balance - b.balance || b.rate - a.rate
                 : b.rate - a.rate || a.balance - b.balance);
             for (const debt of order) {
-                if (extraLeft <= 0) break;
-                const payment = Math.min(debt.balance, extraLeft);
+                if (availablePayment <= 0) break;
+                const payment = Math.min(debt.balance, availablePayment);
                 debt.balance -= payment;
-                extraLeft -= payment;
+                availablePayment -= payment;
             }
         }
         return remaining.every(debt => debt.balance <= 0.005) ? { months, totalInterest } : null;

@@ -38,8 +38,8 @@
 </section>
 <section>
 <h2>Hvordan telles arbeidsdager?</h2>
-<p>Arbeidsdager beregnes som mandag til fredag mellom de valgte datoene. Beregningen tar ikke automatisk hensyn til norske helligdager, ferie eller lokale arbeidsplaner, så kontroller resultatet mot din kalender.</p>
-<p>Eksempel: Fra mandag til og med fredag er det 5 arbeidsdager, og en full kalenderuke har 7 dager, hvorav 2 er helg.</p>
+<p>Datoforskjellen er antall kalenderdøgn fra startdato til sluttdato. Arbeidsdager telles separat som mandag til fredag, og begge datoene tas med dersom de er hverdager. Helligdager, ferie og lokale arbeidsplaner trekkes ikke fra.</p>
+<p>Eksempel: Fra mandag til fredag er datoforskjellen 4 kalenderdøgn, men det er 5 arbeidsdager når begge datoene telles med. Kontroller resultatet mot kalenderen din hvis helligdager eller egne arbeidsplaner har betydning.</p>
 </section>
 <section>
 <h2>ISO-ukenummer</h2>
@@ -48,6 +48,14 @@
 <section>
 <h2>Frister og tidsregning</h2>
 <p>Når du skal beregne en frist, må du skille mellom kalenderdager og arbeidsdager. Mange frister i kontrakter og regelverk regnes i kalenderdager, mens andre bare regnes i arbeidsdager. Les alltid hvordan fristen er definert.</p>
+</section>
+<section>
+<h2>Klokkeslett og lokal tid</h2>
+<p>Klokkeslett og nedtelling bruker lokal tid i nettleseren. Beregningen av tidsrom mellom to klokkeslett er en enkel klokkeslettforskjell; den vurderer ikke tidssoner eller skiftet mellom sommer- og vintertid. Ved tidsrom som går over et slikt skifte, kontroller faktisk forløpt tid mot kalenderen eller tidsregistreringen din.</p>
+</section>
+<section>
+<h2>Kilde for datoformat</h2>
+<p>Ukenummer følger ISO 8601. Se <a href="https://www.iso.org/iso-8601-date-and-time-format.html" target="_blank" rel="noopener noreferrer">ISO sin forklaring av dato- og tidsformatet</a>. Kalkulatoren beregner ikke norske helligdager eller juridiske fristregler.</p>
 </section>
 <section><h2>Vanlige spørsmål</h2><h3>Hva skjer hvis sluttiden er før starttiden?</h3><p>Da regner kalkulatoren med at sluttiden er neste dag, slik at 22:00 til 06:00 blir 8 timer.</p><h3>Inkluderer arbeidsdagene helligdager?</h3><p>Nei. Helligdager, ferie og lokale fridager må du trekke fra selv.</p><h3>Hvilken uke er uke 1?</h3><p>Uke 1 er den uken som inneholder årets første torsdag, i henhold til ISO 8601.</p></section><section><h2>Flere verktøy</h2><p class="seo-related"><a href="/lonnskalkulator/">Lønnskalkulator</a><a href="/mengdekalkulator/">Mengdekalkulator</a><a href="/cnc-kalkulator/">CNC-kalkulator</a></p></section>
 </main>
