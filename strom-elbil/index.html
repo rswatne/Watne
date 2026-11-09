@@ -28,6 +28,29 @@
             <h1>Strøm- og elbilkalkulator</h1>
             <p class="seo-lead">Beregn omtrentlige strømkostnader for apparater og få oversikt over elbillading, energibruk og mulig drivstoffbesparelse.</p>
             <a class="seo-cta" href="/#ev/charging">Åpne strøm- og elbilverktøyene</a>
+            <section class="seo-card" aria-labelledby="electricity-quick-title">
+                <h2 id="electricity-quick-title">Beregn strømforbruk for et apparat</h2>
+                <p>Bruk apparatets effekt, anslått brukstid og en samlet strømpris. Prisresultatet inkluderer bare verdiene du legger inn.</p>
+                <form class="seo-calculator" data-seo-calculator="electricity">
+                    <label>Effekt (W)<input type="number" min="1" step="any" value="2000" data-value="watts" required></label>
+                    <label>Timer per dag<input type="number" min="0.01" step="any" value="5" data-value="hours" required></label>
+                    <label>Dager per måned<input type="number" min="0.01" max="31" step="any" value="30" data-value="days" required></label>
+                    <label>Strømpris (kr/kWh)<input type="number" min="0" step="any" value="1.5" data-value="price" required></label>
+                    <p class="seo-calculator-result" data-calculator-result aria-live="polite"></p>
+                </form>
+                <p>Formel: (watt / 1000) × timer per dag × dager. En panelovn på 2 000 W brukt fem timer daglig i 30 dager bruker 300 kWh.</p>
+            </section>
+            <section class="seo-card" aria-labelledby="ev-quick-title">
+                <h2 id="ev-quick-title">Anslå ladetid og strøm til elbil</h2>
+                <p>Legg inn energimengden som skal inn på batteriet, laderens effekt og et anslag for ladetap. Bilens maksimale ladeeffekt og ladeforløpet kan gi lengre faktisk ladetid.</p>
+                <form class="seo-calculator" data-seo-calculator="ev">
+                    <label>Energi til batteriet (kWh)<input type="number" min="0.1" step="any" value="55" data-value="capacity" required></label>
+                    <label>Ladeeffekt (kW)<input type="number" min="0.1" step="any" value="11" data-value="power" required></label>
+                    <label>Anslått ladetap (%)<input type="number" min="0" max="99.9" step="any" value="12" data-value="loss" required></label>
+                    <p class="seo-calculator-result" data-calculator-result aria-live="polite"></p>
+                </form>
+                <p>Beregnet strøm fra nettet tar høyde for oppgitt ladetap. Ladetiden er et idealisert anslag basert på jevn effekt og tar ikke med at ladeeffekten ofte reduseres mot fulladet batteri.</p>
+            </section>
             <section class="seo-card">
 <h2>Beregn strømforbruk og kostnad</h2>
 <p>Legg inn effekt, brukstid og strømpris for å anslå energiforbruk og kostnad. Verktøyene omfatter også beregning av ladetid, sammenligning av drivstoffkostnader og estimat for redusert rekkevidde om vinteren.</p>
@@ -58,5 +81,6 @@
 </main>
         <footer class="seo-footer"><a href="/">Verkstedsportalen</a> · Gratis verktøy for verkstedet og hverdagen. <span class="seo-footer-links"><a href="/om/">Om</a> · <a href="/personvern/">Personvern</a> · <a href="/kontakt/">Kontakt</a></span></footer>
     </div>
+    <script defer src="/js/seo-calculators.js"></script>
 </body>
 </html>

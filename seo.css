@@ -106,6 +106,52 @@ h2 {
     background: #111c2e;
 }
 
+.seo-calculator {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+    gap: 1rem;
+    margin-top: 1.25rem;
+}
+
+.seo-calculator label {
+    display: grid;
+    gap: 0.35rem;
+    color: #cbd5e1;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.seo-calculator input {
+    width: 100%;
+    min-height: 2.75rem;
+    padding: 0.6rem 0.75rem;
+    border: 1px solid #475569;
+    border-radius: 0.65rem;
+    background: #0b1220;
+    color: #f8fafc;
+    font: inherit;
+}
+
+.seo-calculator input:focus-visible {
+    outline: 2px solid #67e8f9;
+    outline-offset: 2px;
+}
+
+.seo-calculator-result {
+    min-height: 3.25rem;
+    margin-top: 1rem;
+    padding: 0.75rem 1rem;
+    border-radius: 0.75rem;
+    background: #083344;
+    color: #cffafe;
+    font-weight: 700;
+}
+
+.seo-calculator-error {
+    background: #4c0519;
+    color: #ffe4e6;
+}
+
 .seo-card h2 {
     margin-top: 0;
 }

@@ -28,6 +28,30 @@
             <h1>Mengdekalkulator for maling, gulv, flis og betong</h1>
             <p class="seo-lead">Beregn omtrent hvor mye materiale du trenger til et prosjekt. Kalkulatoren har også verktøy for blandingsforhold og skalering av oppskrifter.</p>
             <a class="seo-cta" href="/#amounts">Åpne mengdekalkulatoren</a>
+            <section class="seo-card" aria-labelledby="paint-quick-title">
+                <h2 id="paint-quick-title">Beregn maling til vegg eller tak</h2>
+                <p>Bruk samlet overflateareal og dekkevnen som står på produktet. Ekstramengden er et anslag; underlag og påføringsmetode påvirker faktisk forbruk.</p>
+                <form class="seo-calculator" data-seo-calculator="paint">
+                    <label>Areal (m²)<input type="number" min="0.1" step="any" value="40" data-value="area" required></label>
+                    <label>Antall strøk<input type="number" min="1" step="1" value="2" data-value="coats" required></label>
+                    <label>Dekkevne (m² per liter)<input type="number" min="0.1" step="any" value="10" data-value="coverage" required></label>
+                    <label>Ekstra mengde (%)<input type="number" min="0" max="100" step="1" value="10" data-value="waste" required></label>
+                    <p class="seo-calculator-result" data-calculator-result aria-live="polite"></p>
+                </form>
+                <p>Formel: areal × strøk / dekkevne × (1 + ekstra mengde / 100). Eksempelet med 40 m², to strøk, 10 m²/l og 10 % ekstra gir 8,8 liter.</p>
+            </section>
+            <section class="seo-card" aria-labelledby="concrete-quick-title">
+                <h2 id="concrete-quick-title">Beregn volum til en betongplate</h2>
+                <p>Mål lengde og bredde i meter og tykkelse i meter. Kontroller volum og eventuell bestillingsmengde med leverandøren.</p>
+                <form class="seo-calculator" data-seo-calculator="concrete">
+                    <label>Lengde (m)<input type="number" min="0.01" step="any" value="4" data-value="length" required></label>
+                    <label>Bredde (m)<input type="number" min="0.01" step="any" value="5" data-value="width" required></label>
+                    <label>Tykkelse (m)<input type="number" min="0.001" step="any" value="0.1" required data-value="thickness"></label>
+                    <label>Ekstra mengde (%)<input type="number" min="0" max="100" step="1" value="5" data-value="waste" required></label>
+                    <p class="seo-calculator-result" data-calculator-result aria-live="polite"></p>
+                </form>
+                <p>Formel: lengde × bredde × tykkelse. Kalkulatoren legger til valgt prosent som et planleggingspåslag, ikke som en garanti for faktisk behov.</p>
+            </section>
             <section class="seo-card">
 <h2>Planlegg materialmengder</h2>
 <p>Velg hva du skal beregne, og fyll inn mål og relevante produktegenskaper. Verktøyene kan anslå maling ut fra areal, antall strøk og dekkevne; gulv og flis ut fra mål og pakningsstørrelse; samt betong ut fra volum og utbytte. Du kan også fordele en blanding etter oppgitt forhold eller skalere en oppskrift til ønsket antall porsjoner.</p>
@@ -59,5 +83,6 @@
 </main>
         <footer class="seo-footer"><a href="/">Verkstedsportalen</a> · Gratis verktøy for verkstedet og hverdagen. <span class="seo-footer-links"><a href="/om/">Om</a> · <a href="/personvern/">Personvern</a> · <a href="/kontakt/">Kontakt</a></span></footer>
     </div>
+    <script defer src="/js/seo-calculators.js"></script>
 </body>
 </html>
