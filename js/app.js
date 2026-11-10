@@ -571,6 +571,10 @@
             "Fresing – Slett (Finishing)": "Milling – Finishing",
             "Dreiing – Grov": "Turning – Roughing",
             "Dreiing – Slett": "Turning – Finishing",
+            "Verktøydiameter (mm)": "Tool diameter (mm)",
+            "Emnediameter (mm)": "Workpiece diameter (mm)",
+            "Fresing: bruk fresens diameter.": "Milling: use the cutter diameter.",
+            "Dreiing: bruk emnediameteren ved skjærestedet, ikke verktøyets diameter.": "Turning: use the workpiece diameter at the cutting point, not the tool diameter.",
             "Verktøy Dia (mm)": "Tool Ø (mm)",
             "Antall skjær (z)": "Number of flutes (z)",
             "Anbefalt Vc:": "Recommended Vc:",
@@ -827,6 +831,7 @@
             if (initialiserteBeregninger.has('tools')) {
                 beregnIso();
                 konverterHardhet('hrc');
+                oppdaterMaterialeData();
             }
             if (initialiserteBeregninger.has('ev')) {
                 beregnStromTariff();
@@ -3327,6 +3332,14 @@
 
             const data = materialData[matSel.value] || materialData.s355;
             const op = opSel.value;
+            const isTurning = op.startsWith('turn');
+            const diaLabel = document.getElementById('mat-dia-label');
+            const diaHelp = document.getElementById('mat-dia-help');
+            if (diaLabel) diaLabel.innerText = tr(isTurning ? 'Emnediameter (mm)' : 'Verktøydiameter (mm)', isTurning ? 'Workpiece diameter (mm)' : 'Tool diameter (mm)');
+            if (diaHelp) diaHelp.innerText = tr(
+                isTurning ? 'Dreiing: bruk emnediameteren ved skjærestedet, ikke verktøyets diameter.' : 'Fresing: bruk fresens diameter.',
+                isTurning ? 'Turning: use the workpiece diameter at the cutting point, not the tool diameter.' : 'Milling: use the cutter diameter.'
+            );
             const dia = parseFloat(diaEl.value) || 10;
             const z = parseFloat(zEl.value) || 4;
             const vc = op.includes('finish') ? data.vcFinish : data.vcRough;

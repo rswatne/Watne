@@ -1399,8 +1399,9 @@
                                     <option value="turn_finish">Dreiing – Slett</option>
                                 </select>
                             </div>
-                            <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Verktøy Dia (mm)</label><input type="number" id="mat-dia" value="12" oninput="oppdaterMaterialeData()" class="glass-input glass-input-emerald"></div>
+                            <div><label id="mat-dia-label" for="mat-dia" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Verktøydiameter (mm)</label><input type="number" id="mat-dia" value="12" oninput="oppdaterMaterialeData()" aria-describedby="mat-dia-help" class="glass-input glass-input-emerald"></div>
                             <div><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Antall skjær (z)</label><input type="number" id="mat-z" value="4" oninput="oppdaterMaterialeData()" class="glass-input glass-input-emerald"></div>
+                            <p id="mat-dia-help" class="col-span-2 text-xs text-slate-500 dark:text-slate-400">Fresing: bruk fresens diameter.</p>
                         </div>
                         <div class="bg-emerald-50/80 dark:bg-emerald-900/30 p-5 rounded-2xl border-l-4 border-emerald-500 space-y-2.5 font-medium shadow-inner">
                             <div class="flex justify-between items-center"><span class="text-emerald-800 dark:text-emerald-300 font-bold text-sm">Anbefalt Vc:</span><span class="font-mono text-lg font-bold text-emerald-700 dark:text-emerald-400" id="mat-res-vc">180 m/min</span></div>
