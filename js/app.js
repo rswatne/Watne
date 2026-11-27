@@ -191,6 +191,120 @@
             "Maskinering": "Machining",
             "Verktøytabeller": "Tool Tables",
             "Strøm & Elbil": "Power & EV",
+            "Forside": "Home",
+            "Skift & lønn": "Shifts & Pay",
+            "Energi": "Energy",
+            "Utendørs": "Outdoors",
+            "Økonomi": "Finance",
+            "Skift og lønn": "Shifts and Pay",
+            "CNC-kalkulator": "CNC Calculator",
+            "Gjenger & toleranser": "Threads & Tolerances",
+            "PRAKTISKE VERKTØY": "PRACTICAL TOOLS",
+            "DIN ARBEIDSBENK": "YOUR WORKBENCH",
+            "Fortsett der du slapp": "Pick up where you left off",
+            "Søk etter verktøy, dimensjon eller beregning": "Search tools, dimensions or calculations",
+            "Verkstedsportalen – gå til hovedsiden": "Workshop Portal – go to home",
+            "Verkstedsportalen, forsiden": "Workshop Portal, home",
+            "Hovedmeny": "Main menu",
+            "Søk i verktøy": "Search tools",
+            "Åpne notater": "Open notes",
+            "Bytt språk": "Change language",
+            "Installer Verkstedsportalen": "Install Workshop Portal",
+            "Bytt fargetema": "Change color theme",
+            "Populære verktøy": "Popular tools",
+            "Tilpass arbeidsbenken": "Customize workbench",
+            "Verktøy og kalkulatorer": "Tools and calculators",
+            "Vis eller skjul alle CNC-, tabell- og strømfaner": "Show or hide all CNC, table and power tabs",
+            "Om dette verktøyet": "About this tool",
+            "Søk": "Search",
+            "Få appen på hjemskjermen": "Add the app to your home screen",
+            "Installer på PC / Mac nå": "Install on PC / Mac now",
+            "Last ned Android App (.APK)": "Download Android app (.APK)",
+            "💻 På PC / Mac (Chrome / Edge / Opera):": "💻 On PC / Mac (Chrome / Edge / Opera):",
+            "Trykk på knappen over eller klikk på installasjons-ikonet": "Press the button above or click the install icon",
+            "eller tre prikker": "or the three-dot menu",
+            "øverst til høyre i nettleseren og velg": "in the top-right corner of your browser and choose",
+            "«Installer app»": "“Install app”",
+            "🍎 På iPhone / iPad (Safari):": "🍎 On iPhone / iPad (Safari):",
+            "Trykk på": "Tap",
+            "Del-ikonet": "Share icon",
+            "nederst i Safari.": "at the bottom of Safari.",
+            "Bla litt ned og velg": "Scroll down and choose",
+            "«Legg til på Hjem-skjerm»": "“Add to Home Screen”",
+            "«Legg til»": "“Add”",
+            "øverst til høyre.": "in the top-right corner.",
+            "🤖 På Android (Chrome):": "🤖 On Android (Chrome):",
+            "Åpne menyen øverst til høyre": "Open the menu in the top-right corner",
+            "eller": "or",
+            "«Legg til på startsiden»": "“Add to home screen”",
+            "Maskinmanualer / Machine manuals": "Machine manuals",
+            "Søk i manualene eller legg til PDF-er. Filene lagres bare i denne nettleseren.": "Search manuals or add PDFs. Files are stored only in this browser.",
+            "Legg til PDF": "Add PDF",
+            "Sammenlign lønnsslipp": "Compare payslip",
+            "🧮 Skatt": "🧮 Tax",
+            "🧾 Sammenlign lønnsslipp": "🧾 Compare payslip",
+            "Sammenlign med lønnsslippen": "Compare with your payslip",
+            "Velg en Visma-PDF for å hente ut lønnstall automatisk, eller fyll dem inn selv. Kontroller alltid de utfylte beløpene før du sammenligner.": "Choose a Visma PDF to extract pay details automatically, or enter them yourself. Always check the extracted amounts before comparing.",
+            "Lønnsslipp som PDF": "Payslip PDF",
+            "PDF-en leses i nettleseren din. Den lagres ikke eller sendes til en server. Skannede PDF-er støttes ikke ennå; da kan du fylle inn beløpene manuelt.": "The PDF is read in your browser and is not stored or sent to a server. Scanned PDFs are not supported yet; enter those amounts manually.",
+            "Kontroller lønnstallene": "Review pay details",
+            "Beløp i kroner. Du kan rette feltene etter import.": "Amounts in NOK. You can edit the fields after import.",
+            "Bruttolønn": "Gross pay",
+            "Forskuddstrekk": "Tax withheld",
+            "Overtid / tilleggsvakter": "Overtime / extra shifts",
+            "Overtid 50 % (timer)": "50% overtime (hours)",
+            "Overtid 100 % (timer)": "100% overtime (hours)",
+            "Bruttolønn hittil i år": "Year-to-date gross pay",
+            "Skatt betalt hittil i år": "Year-to-date tax paid",
+            "Nettolønn (etter skatt, før andre trekk)": "Net pay (after tax, before other deductions)",
+            "Fagforeningskontingent": "Union dues",
+            "Netto til utbetaling": "Net pay",
+            "Sammenlign med kalkulatoren": "Compare with calculator",
+            "Tøm feltene": "Clear fields",
+            "Aktiver halv skatt": "Enable half tax withholding",
+            "📂 Gjenopprett Backup": "📂 Restore backup",
+            "Brutto og netto": "Gross and net pay",
+            "Tillegg og overtid": "Bonuses and overtime",
+            "Timebank": "Time bank",
+            "Feriepenger": "Holiday pay",
+            "Skatt og lønnsanslag": "Tax and pay estimates",
+            "Vanlige spørsmål": "Frequently asked questions",
+            "Er resultatet det samme som lønnsslippen min?": "Will the result match my payslip?",
+            "Lagres lønnsopplysningene mine?": "Is my pay information saved?",
+            "Hvor finner jeg trekkprosenten min?": "Where can I find my tax rate?",
+            "Kilder, forutsetninger og kontroll": "Sources, assumptions and checks",
+            "Les mer om lønnskalkulatoren på egen side": "Learn more about the salary calculator",
+            "Hva kan CNC-kalkulatoren hjelpe med?": "What can the CNC calculator help with?",
+            "Slik henger skjæredata sammen": "How cutting data is related",
+            "Veiledende skjærehastigheter for hardmetall": "Recommended cutting speeds for carbide",
+            "Dreiing: konstant skjærehastighet eller konstant turtall": "Turning: constant cutting speed or constant RPM",
+            "Gjenger og konus": "Threads and tapers",
+            "Vanlige feil ved skjæredata": "Common cutting data mistakes",
+            "Kontroller skjæredata før maskinering": "Check cutting data before machining",
+            "Hva er forskjellen mellom Vc og turtall?": "What is the difference between Vc and RPM?",
+            "Hva er fz?": "What is fz?",
+            "Kan jeg bruke tommer?": "Can I use inches?",
+            "Er verdiene trygge å bruke direkte?": "Are these values safe to use as-is?",
+            "Les mer om CNC-kalkulatoren på egen side": "Learn more about the CNC calculator",
+            "Ekstra skattetrekk": "Additional tax withholding",
+            "Flere sider og innstillinger": "More pages and settings",
+            "Søk etter oversiktskort...": "Search dashboard widgets...",
+            "Søk etter verktøy (f.eks. kilespor, H7, G76, konus, brix, moment, formann)...": "Search tools (e.g. keyways, H7, G76, taper, Brix, torque, foreman)...",
+            "Ny oppgave (f.eks. Bytt skjær T04, Mål Ø40 H7)...": "New task (e.g. Change insert T04, Measure Ø40 H7)...",
+            "Skriv inn mål, verktøylengder, G54 Z-nullpunkt, ordrenummer eller beskjed til neste skift...": "Enter dimensions, tool lengths, G54 Z-zero, order number or shift handover notes...",
+            "Auto (man-fre)": "Auto (Mon–Fri)",
+            "200 g mel\n3 dl melk\n2 stk egg": "200 g flour\n3 dl milk\n2 eggs",
+            "f.eks. 36 400,00": "e.g. 36,400.00",
+            "f.eks. 1 063,86": "e.g. 1,063.86",
+            "f.eks. 35 900,00": "e.g. 35,900.00",
+            "f.eks. 52 000,00": "e.g. 52,000.00",
+            "f.eks. 15 600,00": "e.g. 15,600.00",
+            "f.eks. 8 500,00": "e.g. 8,500.00",
+            "f.eks. 12,5": "e.g. 12.5",
+            "f.eks. 4,0": "e.g. 4.0",
+            "f.eks. 850": "e.g. 850",
+            "Akkumulert brutto fra lønnsslippen": "Year-to-date gross pay from payslip",
+            "Akkumulert forskuddstrekk fra lønnsslippen": "Year-to-date tax withheld from payslip",
             "Hvor mye trenger jeg?": "How much do I need?",
             "Mengder": "Amounts",
             "Dato & tid": "Date & Time",
@@ -198,6 +312,10 @@
             "Gjødsel, jord, vanning, planter og gjerde": "Fertilizer, soil, watering, plants and fencing",
             "Mer": "More",
             "Flere sider": "More pages",
+            "Notater": "Notes",
+            "Språk / Language": "Language",
+            "Installer app": "Install app",
+            "Bytt tema": "Switch theme",
             "Lønn": "Salary",
             "Tabeller": "Tables",
             "Strøm": "Power",
@@ -210,6 +328,85 @@
             "Lys": "Light",
             "Bytt til Mørk HMI": "Switch to Dark HMI",
             "Bytt til Lys HMI": "Switch to Light HMI",
+            "Nye tabeller (8000-serien)": "New tables (8000 series)",
+            "Klassiske tabeller (7100-serien)": "Classic tables (7100 series)",
+            "Tabell 8000 (Standard uten ekstra fradrag)": "Table 8000 (Standard, no additional deduction)",
+            "Tabell 8010 (10 000 kr fradrag)": "Table 8010 (NOK 10,000 deduction)",
+            "Tabell 8020 (20 000 kr fradrag)": "Table 8020 (NOK 20,000 deduction)",
+            "Tabell 8030 (30 000 kr fradrag)": "Table 8030 (NOK 30,000 deduction)",
+            "Tabell 8040 (40 000 kr fradrag)": "Table 8040 (NOK 40,000 deduction)",
+            "Tabell 8050 (50 000 kr fradrag)": "Table 8050 (NOK 50,000 deduction)",
+            "Tabell 8060 (60 000 kr fradrag)": "Table 8060 (NOK 60,000 deduction)",
+            "Tabell 8080 (80 000 kr fradrag)": "Table 8080 (NOK 80,000 deduction)",
+            "Tabell 8100 (100 000 kr fradrag)": "Table 8100 (NOK 100,000 deduction)",
+            "Tabell 7100": "Table 7100",
+            "Tabell 7101": "Table 7101",
+            "Tabell 7102": "Table 7102",
+            "Tabell 7103": "Table 7103",
+            "Tabell 7104": "Table 7104",
+            "Tabell 7105": "Table 7105",
+            "Tabell 7106": "Table 7106",
+            "Tabell 7108": "Table 7108",
+            "Tabell 7110": "Table 7110",
+            "Fast beløp per måned": "Fixed amount per month",
+            "Prosent av brutto": "Percentage of gross pay",
+            "118° (HSS)": "118° (HSS)",
+            "140° (HM)": "140° (Carbide)",
+            "90° (NC)": "90° (NC spot drill)",
+            "Metrisk Grovgjenge (M)": "Metric Coarse Thread (M)",
+            "Metrisk Fingjenge (MF)": "Metric Fine Thread (MF)",
+            "Rørgjenger (BSP / G)": "Pipe Threads (BSP / G)",
+            "Hull – H-rekke (Standard enhetshull)": "Hole – H series (standard unit hole)",
+            "Hull – Klaring og symmetrisk overgang": "Hole – Clearance and symmetrical transition",
+            "Hull – Overgang & Press": "Hole – Transition and interference",
+            "Aksling – Klaring (c–e)": "Shaft – Clearance (c–e)",
+            "Aksling – Klaring (f–h)": "Shaft – Clearance (f–h)",
+            "Aksling – Overgang & Press (js–s)": "Shaft – Transition and interference (js–s)",
+            "H5 (Presisjonshull)": "H5 (Precision hole)",
+            "H6 (Presisjonslager / styring)": "H6 (Precision bearing / guide)",
+            "H7 (Standard pasningshull)": "H7 (Standard fit hole)",
+            "H8 (Romslig pasningshull)": "H8 (Loose fit hole)",
+            "H9 (Glidelager / hylse)": "H9 (Sliding bearing / bushing)",
+            "H10 (Grov styring)": "H10 (Coarse guide)",
+            "H11 (Slakk klaring)": "H11 (Loose clearance)",
+            "F7 (Løpepasning)": "F7 (Running fit)",
+            "F8 (Romslig løpepasning)": "F8 (Loose running fit)",
+            "G6 (Fin glidepasning)": "G6 (Close sliding fit)",
+            "G7 (Glidepasning)": "G7 (Sliding fit)",
+            "JS7 (Symmetrisk overgangspasning)": "JS7 (Symmetrical transition fit)",
+            "K7 (Overgangspasning – kulelager hus)": "K7 (Transition fit – bearing housing)",
+            "M7 (Lett presspasning)": "M7 (Light interference fit)",
+            "N7 (Fast overgangspasning)": "N7 (Tight transition fit)",
+            "P7 (Presspasning i hull)": "P7 (Interference fit in hole)",
+            "c11 (Stor klaring / varme deler)": "c11 (Large clearance / hot parts)",
+            "d9 (Romslig løpepasning)": "d9 (Loose running fit)",
+            "e8 (Løpepasning – lager)": "e8 (Running fit – bearing)",
+            "f7 (Glide-/løpepasning)": "f7 (Sliding / running fit)",
+            "f8 (Alminnelig løpepasning)": "f8 (General running fit)",
+            "g6 (Presis glidepasning)": "g6 (Precision sliding fit)",
+            "h5 (Høypresisjonsaksel)": "h5 (High-precision shaft)",
+            "h6 (Standard slipt aksel)": "h6 (Standard ground shaft)",
+            "h7 (Maskinert aksel)": "h7 (Machined shaft)",
+            "h8 (Kaldtrukket / grov aksel)": "h8 (Cold-drawn / rough shaft)",
+            "h9 (Kilespor / glidende del)": "h9 (Keyway / sliding part)",
+            "h11 (Fri aksel)": "h11 (Free shaft)",
+            "k6 (Overgangspasning – kulelager aksel)": "k6 (Transition fit – bearing shaft)",
+            "m6 (Lett presspasning)": "m6 (Light interference fit)",
+            "n6 (Hard overgangspasning)": "n6 (Tight transition fit)",
+            "p6 (Standard presspasning)": "p6 (Standard interference fit)",
+            "r6 (Kraftig presspasning)": "r6 (Heavy interference fit)",
+            "s6 (Krympepasning)": "s6 (Shrink fit)",
+            "2.3 kW (Nødlader 10A)": "2.3 kW (Emergency charger, 10 A)",
+            "3.6 kW (Hjemmelader 16A 1-fas)": "3.6 kW (Home charger, 16 A single-phase)",
+            "7.4 kW (Hjemmelader 32A 1-fas)": "7.4 kW (Home charger, 32 A single-phase)",
+            "11 kW (Hjemmelader 16A 3-fas)": "11 kW (Home charger, 16 A three-phase)",
+            "22 kW (32A 3-fas)": "22 kW (32 A three-phase)",
+            "50 kW (Hurtiglader)": "50 kW (Rapid charger)",
+            "150 kW (Lynlader)": "150 kW (Ultra-rapid charger)",
+            "Trinn 2: Opptil 5 kW (~275 kr/mnd)": "Step 2: Up to 5 kW (~NOK 275/month)",
+            "Trinn 3: 5 – 10 kW (~440 kr/mnd)": "Step 3: 5–10 kW (~NOK 440/month)",
+            "Trinn 4: 10 – 15 kW (~660 kr/mnd)": "Step 4: 10–15 kW (~NOK 660/month)",
+            "Trinn 5: 15 – 20 kW (~880 kr/mnd)": "Step 5: 15–20 kW (~NOK 880/month)",
 
             // Dashboard & Widgets
             "Sanntidskort (Widgets)": "Live Widgets",
@@ -286,7 +483,6 @@
             "⌛ Nedtelling": "⌛ Countdown",
             "➕ Legg til tid": "➕ Add time",
             "🗓️ Ukenummer": "🗓️ Week number",
-            "Regn ut arbeidstid mellom to klokkeslett. Slutt før start regnes som neste dag.": "Calculate time between two clock times. An end time before the start is treated as the next day.",
             "Fra klokkeslett": "Start time",
             "Til klokkeslett": "End time",
             "Fra dato": "From date",
@@ -798,6 +994,18 @@
                     node.nodeValue = node.nodeValue.replace(trimmed, dict[trimmed]);
                 }
             }
+
+            document.querySelectorAll('optgroup[label], [title], [aria-label]').forEach(element => {
+                ['label', 'title', 'aria-label'].forEach(attribute => {
+                    const value = element.getAttribute(attribute);
+                    if (value && dict[value]) element.setAttribute(attribute, dict[value]);
+                });
+            });
+            document.querySelectorAll('[placeholder]').forEach(element => {
+                const value = element.getAttribute('placeholder');
+                if (value && dict[value]) element.setAttribute('placeholder', dict[value]);
+            });
+            oppdaterMaanedsvalg();
 
             // Oversett placeholders
             const phMap = [
@@ -1473,7 +1681,7 @@
 
         function hentNaavaerendeNavState() {
             const activeTab = localStorage.getItem('active_tab') || 'dashboard';
-            const activeTools = localStorage.getItem('active_tools_tab') || 'data';
+            const activeTools = localStorage.getItem('active_tools_tab') || 'fits';
             const activeSalary = localStorage.getItem('active_salary_tab') || 'oversikt';
             const activeCnc = localStorage.getItem('active_cnc_tab') || 'milling';
             const activeEv = localStorage.getItem('active_ev_tab') || 'charging';
@@ -1677,10 +1885,12 @@
             document.querySelectorAll('.mnav-btn').forEach(btn => {
                 btn.classList.remove('text-brand-500', 'text-blue-500', 'text-emerald-500', 'text-teal-500', 'text-violet-500', 'text-sky-500', 'text-lime-500', 'font-bold');
                 btn.classList.add('text-slate-400', 'dark:text-slate-500', 'font-medium');
+                btn.removeAttribute('aria-current');
             });
             const activeMnav = document.getElementById('mnav-' + tabId);
             const moreMnav = document.getElementById('mnav-more');
             if (activeMnav) {
+                activeMnav.setAttribute('aria-current', 'page');
                 activeMnav.classList.remove('text-slate-400', 'dark:text-slate-500', 'font-medium');
                 activeMnav.classList.add('font-bold');
                 if(tabId === 'dashboard' || tabId === 'salary') activeMnav.classList.add('text-brand-500');
@@ -1692,6 +1902,7 @@
                 if(tabId === 'datetime') activeMnav.classList.add('text-sky-500');
                 if(tabId === 'garden') activeMnav.classList.add('text-lime-500');
             } else if (moreMnav && ['finance', 'ev', 'amounts', 'datetime', 'garden'].includes(tabId)) {
+                moreMnav.setAttribute('aria-current', 'page');
                 moreMnav.classList.remove('text-slate-400', 'dark:text-slate-500', 'font-medium');
                 moreMnav.classList.add('font-bold');
                 if(tabId === 'finance') moreMnav.classList.add('text-emerald-500');
@@ -1782,7 +1993,28 @@
         let registrerteVakter = [];
         const ukedager = ["Søn", "Man", "Tir", "Ons", "Tor", "Fre", "Lør"];
         const maanedsNavn = ["Januar", "Februar", "Mars", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Desember"];
+        const englishMonthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
         window.sisteBrutto = 0;
+
+        function maanedsnavnForSprak(index) {
+            return currentLang === 'en' ? englishMonthNames[index] : maanedsNavn[index];
+        }
+
+        function oppdaterMaanedsvalg() {
+            const mndSelect = document.getElementById('month');
+            if (!mndSelect || mndSelect.options.length !== 12) return;
+            const valgtMaaned = mndSelect.value;
+            Array.from(mndSelect.options).forEach((option, idx) => {
+                const utbetalingsmaaned = maanedsnavnForSprak((idx + 1) % 12).toLowerCase();
+                const merknad = idx === 10
+                    ? (currentLang === 'en' ? ', half tax withheld' : ', halv skatt')
+                    : '';
+                option.text = currentLang === 'en'
+                    ? `${englishMonthNames[idx]} (paid in ${utbetalingsmaaned}${merknad})`
+                    : `${maanedsNavn[idx]} (utbetales i ${utbetalingsmaaned}${merknad})`;
+            });
+            mndSelect.value = valgtMaaned;
+        }
 
         function byggAarsOgMaanedsLister() {
             const aarSelect = document.getElementById('year');
@@ -1800,13 +2032,11 @@
                 const naamnd = new Date().getMonth();
                 maanedsNavn.forEach((navn, idx) => {
                     const opt = document.createElement('option');
-                    const utbetalingsinfo = idx === 10
-                        ? 'utbetales i desember, halv skatt'
-                        : `utbetales i ${maanedsNavn[(idx + 1) % 12].toLowerCase()}`;
-                    opt.value = idx; opt.text = `${navn} (${utbetalingsinfo})`;
+                    opt.value = idx; opt.text = navn;
                     if (idx === naamnd) opt.selected = true;
                     mndSelect.appendChild(opt);
                 });
+                oppdaterMaanedsvalg();
             }
         }
 
@@ -1981,13 +2211,15 @@
             const aktive = hentAktiveVakter();
             const mndSelect = document.getElementById('month');
             if(!mndSelect) return;
-            const monthName = maanedsNavn[parseInt(mndSelect.value)];
+            const monthName = maanedsnavnForSprak(parseInt(mndSelect.value));
             
-            document.getElementById('tittel-vaktliste').innerHTML = `<i data-lucide="list" class="w-6 h-6 mr-2 text-brand-500 inline-block align-text-bottom"></i> Vakter i ${monthName.toLowerCase()}`;
+            const vakterTittel = currentLang === 'en' ? 'Shifts in' : 'Vakter i';
+            document.getElementById('tittel-vaktliste').innerHTML = `<i data-lucide="list" class="w-6 h-6 mr-2 text-brand-500 inline-block align-text-bottom"></i> ${vakterTittel} ${monthName.toLowerCase()}`;
             if (typeof lucide !== 'undefined') lucide.createIcons();
 
             if (aktive.length === 0) {
-                container.innerHTML = `<p class="border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-2xl p-10 text-center text-sm font-medium text-slate-500 dark:text-slate-400">Ingen vakter registrert i denne måneden.</p>`;
+                const tomMelding = currentLang === 'en' ? 'No shifts registered this month.' : 'Ingen vakter registrert i denne måneden.';
+                container.innerHTML = `<p class="border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-2xl p-10 text-center text-sm font-medium text-slate-500 dark:text-slate-400">${tomMelding}</p>`;
                 return;
             }
 
@@ -2259,7 +2491,7 @@
             document.getElementById('vis-sumvakt-brutto').innerText = sumVaktBrutto.toFixed(2).replace('.', ',') + " kr";
             document.getElementById('vis-sumvakt-netto').innerText = vaktNetto.toFixed(2).replace('.', ',') + " kr";
 
-            document.getElementById('vis-periode-tittel').innerText = `${maanedsNavn[month]} ${year}`;
+            document.getElementById('vis-periode-tittel').innerText = `${maanedsnavnForSprak(month)} ${year}`;
             const overtidAndel = totalBrutto > 0 ? (sumVaktBrutto / totalBrutto) * 100 : 0;
             document.getElementById('vis-tillegg-prosent').innerText = `Tillegg utgjør ${overtidAndel.toFixed(1)}% av brutto`;
 
@@ -2973,7 +3205,9 @@
             const weekEl = document.getElementById('dash-kpi-week');
             const workdaysEl = document.getElementById('dash-kpi-workdays');
             if (weekEl) weekEl.innerText = `Uke ${uke}`;
-            if (workdaysEl) workdaysEl.innerText = `${dagerIgjen} arb.dager igjen i ${maanedsNavn[mnd].toLowerCase()}`;
+            if (workdaysEl) workdaysEl.innerText = currentLang === 'en'
+                ? `${dagerIgjen} workdays remaining in ${englishMonthNames[mnd].toLowerCase()}`
+                : `${dagerIgjen} arb.dager igjen i ${maanedsNavn[mnd].toLowerCase()}`;
         }
 
         window.sisteCncMaal = { tab: 'tools', subTab: 'data' };
@@ -3052,6 +3286,12 @@
 
         function lastInnAltState(openDashboard = false) {
             try {
+                if (localStorage.getItem('tools_default_fits_migrated') !== '1') {
+                    if (localStorage.getItem('active_tools_tab') === 'data') {
+                        localStorage.setItem('active_tools_tab', 'fits');
+                    }
+                    localStorage.setItem('tools_default_fits_migrated', '1');
+                }
                 byggAarsOgMaanedsLister();
                 if (localStorage.getItem('lonn_year')) document.getElementById('year').value = localStorage.getItem('lonn_year');
                 if (localStorage.getItem('lonn_month')) document.getElementById('month').value = localStorage.getItem('lonn_month');

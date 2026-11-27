@@ -389,7 +389,7 @@
             <button onclick="apneSokModal()" class="p-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300" title="Søk">
                 <i data-lucide="search" class="w-4 h-4 text-brand-500"></i>
             </button>
-            <button onclick="toggleLanguage()" id="lang-btn-mobile" class="px-2 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 font-mono font-extrabold text-xs" title="Switch language">
+            <button onclick="toggleLanguage()" id="lang-btn-mobile" class="px-2 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 font-mono font-extrabold text-xs" title="Bytt språk">
                 <span id="lang-label-mobile">EN</span>
             </button>
             <button id="pwa-install-btn-mobile" onclick="apnePwaModal()" class="flex items-center gap-1 px-2 py-1.5 rounded-xl bg-brand-500 text-slate-950 font-extrabold text-xs shadow-sm">
@@ -413,7 +413,7 @@
             <nav class="portal-nav" aria-label="Hovedmeny">
                 <button type="button" class="site-tab-link is-active" data-tab-id="dashboard" aria-current="page" onclick="switchTab('dashboard')">Forside</button>
                 <button type="button" class="site-tab-link" data-tab-id="cnc" onclick="switchTab('cnc')">Maskinering</button>
-                <button type="button" class="site-tab-link" data-tab-id="tools" onclick="switchTab('tools')">Verktøydata</button>
+                <button type="button" class="site-tab-link" data-tab-id="tools" onclick="switchTab('tools')">Tabeller</button>
                 <button type="button" class="site-tab-link" data-tab-id="salary" onclick="switchTab('salary')">Skift & lønn</button>
                 <button type="button" class="site-tab-link" data-tab-id="ev" onclick="switchTab('ev')">Energi</button>
                 <button type="button" class="site-tab-link" data-tab-id="amounts" onclick="switchTab('amounts')">Mengder</button>
@@ -433,10 +433,10 @@
         <!-- ================= DASHBOARD ================= -->
         <section id="dashboard" class="tab-content active p-4 sm:p-6 lg:p-10 max-w-7xl mx-auto">
             <section class="portal-hero" aria-labelledby="portal-title">
-                <img class="portal-hero-image" src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=2200&q=88" alt="Fagarbeider ved industrielt produksjonsutstyr" fetchpriority="high">
+                <img class="portal-hero-image" src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=2200&q=88" srcset="https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=900&q=75 900w, https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=1600&q=82 1600w, https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=2200&q=88 2200w" sizes="100vw" alt="Fagarbeider ved industrielt produksjonsutstyr" fetchpriority="high">
                 <div class="portal-hero-shade"></div>
                 <div class="portal-hero-content">
-                    <p class="portal-eyebrow">PRAKTISKE VERKTØY · NORSK FAGKUNNSKAP</p>
+                    <p class="portal-eyebrow">PRAKTISKE VERKTØY</p>
                     <h1 id="portal-title">Verkstedsportalen</h1>
                     <p class="portal-hero-copy">Fra måltall til maskin. Finn svaret, sjekk forutsetningene og kom videre med jobben.</p>
                     <button type="button" class="portal-search-launch" onclick="apneSokModal()">
@@ -449,20 +449,6 @@
                         <a href="/verktoy-tabeller/">Gjenger & toleranser <i data-lucide="arrow-up-right"></i></a>
                         <a href="/lonnskalkulator/">Skift og lønn <i data-lucide="arrow-up-right"></i></a>
                     </div>
-                </div>
-                <div class="portal-hero-index" aria-hidden="true"><span>WP</span><span>01 / 08</span></div>
-            </section>
-
-            <section class="portal-paths" aria-labelledby="portal-paths-title">
-                <div class="portal-section-head">
-                    <div><p class="portal-section-kicker">START HER</p><h2 id="portal-paths-title">Hva skal du gjøre?</h2></div>
-                    <a href="#tool-directory">Se alle verktøy <i data-lucide="arrow-down-right"></i></a>
-                </div>
-                <div class="portal-path-grid">
-                    <a class="portal-path" href="/cnc-kalkulator/"><span class="portal-path-number">01</span><i data-lucide="cog"></i><span class="portal-path-title">Klargjøre en jobb</span><span class="portal-path-note">Turtall, mating, gjenger og skjæredata</span><i class="portal-path-arrow" data-lucide="arrow-up-right"></i></a>
-                    <a class="portal-path" href="/verktoy-tabeller/"><span class="portal-path-number">02</span><i data-lucide="ruler"></i><span class="portal-path-title">Finne et mål</span><span class="portal-path-note">Kjernehull, toleranser, pasninger og moment</span><i class="portal-path-arrow" data-lucide="arrow-up-right"></i></a>
-                    <a class="portal-path" href="/lonnskalkulator/"><span class="portal-path-number">03</span><i data-lucide="badge-dollar-sign"></i><span class="portal-path-title">Regne på skiftet</span><span class="portal-path-note">Vakter, overtid, skatt og timebank</span><i class="portal-path-arrow" data-lucide="arrow-up-right"></i></a>
-                    <a class="portal-path" href="/mengdekalkulator/"><span class="portal-path-number">04</span><i data-lucide="boxes"></i><span class="portal-path-title">Planlegge materialer</span><span class="portal-path-note">Volum, areal, forbruk og svinn</span><i class="portal-path-arrow" data-lucide="arrow-up-right"></i></a>
                 </div>
             </section>
 
@@ -1383,16 +1369,16 @@
                 <i data-lucide="move-horizontal" class="w-3.5 h-3.5 mr-1.5"></i> Sveip for flere faner
             </div>
             <div id="tools-subtab-bar" class="flex space-x-2 overflow-x-auto pb-4 mb-6 border-b border-slate-200 dark:border-slate-800 scrollbar-thin snap-x">
-                <button onclick="switchToolsTab('data')" id="btn-t-data" class="tools-tab-btn active px-4 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all bg-emerald-500 text-white shadow-md shadow-emerald-500/20 snap-start">⚡ Skjæredata & Kjøling</button>
+                <button onclick="switchToolsTab('fits')" id="btn-t-fits" class="tools-tab-btn active px-4 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all bg-emerald-500 text-white shadow-md shadow-emerald-500/20 snap-start">🎯 Pasninger & Kilespor</button>
                 <button onclick="switchToolsTab('threads')" id="btn-t-threads" class="tools-tab-btn px-4 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 snap-start">🔩 Gjenger & Bolter</button>
-                <button onclick="switchToolsTab('fits')" id="btn-t-fits" class="tools-tab-btn px-4 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 snap-start">🎯 Pasninger & Kilespor</button>
+                <button onclick="switchToolsTab('data')" id="btn-t-data" class="tools-tab-btn px-4 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 snap-start">⚡ Skjæredata & Kjøling</button>
                 <button onclick="switchToolsTab('weight')" id="btn-t-weight" class="tools-tab-btn px-4 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 snap-start">⚖️ Vektkalkulator</button>
                 <button onclick="switchToolsTab('math')" id="btn-t-math" class="tools-tab-btn px-4 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 snap-start">📐 PCD & Trigonometri</button>
                 <button onclick="switchToolsTab('conv')" id="btn-t-conv" class="tools-tab-btn px-4 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 snap-start">🔄 Konverterer & Hardhet</button>
             </div>
 
             <!-- TAB 1: SKJÆREDATA & KJØLING -->
-            <div id="ttab-data" class="tools-tab-content active">
+            <div id="ttab-data" class="tools-tab-content">
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
                     <div id="card-tools-material-data" class="pers-input bg-white/80 dark:bg-slate-900/60 backdrop-blur-md border border-slate-200 dark:border-slate-800 rounded-3xl p-6 lg:p-8 shadow-sm border-l-4 border-l-emerald-500">
                         <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2 flex items-center"><i data-lucide="database" class="w-6 h-6 mr-3 text-emerald-500"></i> Materialdatabank (HM Verktøy)</h3>
@@ -1640,7 +1626,7 @@
             </div>
 
             <!-- TAB 2B: PASNINGER & KILESPOR (Ny dedikert underfane) -->
-            <div id="ttab-fits" class="tools-tab-content">
+            <div id="ttab-fits" class="tools-tab-content active">
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
                     <!-- ISO 286 Pasningskalkulator (Eget bredt kort) -->
                     <div id="card-tools-iso286" class="pers-input bg-white/80 dark:bg-slate-900/60 backdrop-blur-md border border-slate-200 dark:border-slate-800 rounded-3xl p-6 lg:p-8 shadow-sm relative overflow-hidden transition-colors border-l-4 border-l-emerald-500 lg:col-span-2">
@@ -2567,17 +2553,22 @@
     <footer class="app-footer"><a href="/om/">Om Verkstedsportalen</a> · <a href="/personvern/">Personvern</a> · <a href="/kontakt/">Kontakt</a></footer>
 </main>
 
-    <div id="mobile-more-menu" class="md:hidden hidden fixed bottom-20 right-3 z-[60] w-60 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl p-2 shadow-2xl" role="menu" aria-label="Flere sider">
+    <div id="mobile-more-menu" class="md:hidden hidden fixed bottom-20 right-3 z-[60] w-60 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl p-2 shadow-2xl" role="menu" aria-label="Flere sider og innstillinger">
         <button type="button" role="menuitem" onclick="switchTab('finance')" class="w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="wallet" class="w-5 h-5 text-emerald-500"></i> Privatøkonomi</button>
         <button type="button" role="menuitem" onclick="switchTab('ev')" class="w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="zap" class="w-5 h-5 text-teal-500"></i> Strøm & Elbil</button>
         <button type="button" role="menuitem" onclick="switchTab('amounts')" class="w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="shapes" class="w-5 h-5 text-violet-500"></i> Hvor mye trenger jeg?</button>
         <button type="button" role="menuitem" onclick="switchTab('datetime')" class="w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="calendar-clock" class="w-5 h-5 text-sky-500"></i> Dato & tid</button>
-               <button type="button" role="menuitem" onclick="switchTab('garden')" class="w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="sprout" class="w-5 h-5 text-lime-500"></i> Hage & utendørs</button>
+        <button type="button" role="menuitem" onclick="switchTab('garden')" class="w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="sprout" class="w-5 h-5 text-lime-500"></i> Hage & utendørs</button>
+        <div class="mobile-more-divider" role="separator"></div>
+        <button type="button" role="menuitem" onclick="hideMobileMoreMenu(); apneNotatSkuff()" class="w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="notebook-pen" class="w-5 h-5"></i> Notater</button>
+        <button type="button" role="menuitem" onclick="hideMobileMoreMenu(); toggleLanguage()" class="w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="languages" class="w-5 h-5"></i> Språk / Language</button>
+        <button type="button" role="menuitem" onclick="hideMobileMoreMenu(); apnePwaModal()" class="w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="download" class="w-5 h-5"></i> Installer app</button>
+        <button type="button" role="menuitem" onclick="hideMobileMoreMenu(); toggleTheme()" class="w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="sun-moon" class="w-5 h-5"></i> Bytt tema</button>
            </div>
 
     <!-- MOBILE BOTTOM NAVIGATION -->
     <nav id="mobile-bottom-nav" class="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-t border-slate-200 dark:border-slate-800 grid grid-cols-5 items-center z-50 px-1 pb-[env(safe-area-inset-bottom)] shadow-[0_-4px_20px_rgba(0,0,0,0.06)] dark:shadow-[0_-4px_20px_rgba(0,0,0,0.4)] transition-colors">
-        <button type="button" onclick="switchTab('dashboard')" id="mnav-dashboard" class="mnav-btn flex flex-col items-center justify-center py-1.5 text-brand-500 font-bold transition-colors">
+        <button type="button" onclick="switchTab('dashboard')" id="mnav-dashboard" aria-current="page" class="mnav-btn flex flex-col items-center justify-center py-1.5 text-brand-500 font-bold transition-colors">
             <i data-lucide="layout-dashboard" class="w-5 h-5 mb-0.5"></i>
             <span class="text-[10px] tracking-tight">Oversikt</span>
         </button>
@@ -2600,7 +2591,7 @@
     </nav>
 
     <!-- MAIN JAVASCRIPT -->
-    <script defer src="./js/app.js?v=20261127-relaunch"></script>
+    <script defer src="./js/app.js?v=20261127-localization"></script>
     <script defer src="./js/manual-library.js?v=20261022-perf"></script>
     <script defer src="./js/production-addons.js?v=20261027-a11y"></script>
     <script defer src="./js/amount-planner.js?v=20261020-lazy-tab-calculations"></script>
