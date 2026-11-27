@@ -35,13 +35,13 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <!-- Lucide Icons -->
     <script defer src="https://unpkg.com/lucide@1.61.0/dist/umd/lucide.min.js"></script>
 
     <link href="./style.css?v=20261104-garden" rel="stylesheet">
-    <link href="./beta-all.css?v=3" rel="stylesheet">
+    <link href="./beta-all.css?v=6" rel="stylesheet">
 
     <style>html.layout-pending main { visibility: hidden; }</style>
     <script>
@@ -225,7 +225,7 @@
             <div class="grid grid-cols-2 gap-2">
                 <button onclick="toggleLanguage()" id="lang-btn-desktop" class="flex items-center justify-center px-3 py-2.5 text-xs font-extrabold rounded-xl text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all border border-slate-200 dark:border-slate-700 shadow-sm">
                     <i data-lucide="languages" class="w-4 h-4 mr-1.5 text-brand-500"></i>
-                    <span id="lang-label-desktop">EN / English</span>
+                    <span>EN / English</span>
                 </button>
                 <button onclick="toggleTheme()" class="flex items-center justify-center px-3 py-2.5 text-xs font-semibold rounded-xl text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all border border-slate-200 dark:border-slate-700 shadow-sm">
                     <i data-lucide="sun" class="w-4 h-4 mr-1.5 hidden dark:block text-brand-400"></i>
@@ -404,51 +404,71 @@
     </div>
 
     <!-- MAIN CONTENT AREA -->
-    <main class="flex-1 overflow-y-auto pt-16 md:pt-0 relative z-10 transition-colors pb-24 md:pb-12">
-        <header class="beta-topbar hidden md:flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <span class="beta-topbar-mark"><i data-lucide="hexagon" class="w-4 h-4"></i></span>
-                <div class="hy-topclock">
-                    <span id="live-clock-top" class="hy-topclock-time">00:00:00</span>
-                    <span id="live-week-top" class="hy-topclock-week">Uke --</span>
-                </div>
-            </div>
-            <div class="flex items-center gap-3">
-                <button type="button" onclick="apneSokModal()" class="beta-tool-btn" title="Hurtigsøk"><i data-lucide="search" class="w-4 h-4"></i></button>
-                <button type="button" onclick="apneNotatSkuff()" class="beta-tool-btn" title="Notater & Sjekkliste"><i data-lucide="clipboard-list" class="w-4 h-4"></i></button>
-                <button type="button" onclick="toggleLanguage()" class="beta-tool-btn" title="Språk / Language"><i data-lucide="languages" class="w-4 h-4"></i></button>
-                <button type="button" onclick="toggleTheme()" class="beta-tool-btn beta-theme-btn" title="Bytt tema">
-                    <i data-lucide="sun" class="w-4 h-4 hidden dark:block"></i>
-                    <i data-lucide="moon" class="w-4 h-4 block dark:hidden"></i>
-                </button>
+    <main class="flex-1 overflow-y-auto pt-0 relative z-10 transition-colors">
+        <header class="portal-topbar">
+            <button type="button" class="portal-brand" onclick="switchTab('dashboard')" aria-label="Verkstedsportalen, forsiden">
+                <img src="./logo.svg" alt="" width="34" height="34">
+                <span>VERKSTEDS<span>PORTALEN</span></span>
+            </button>
+            <nav class="portal-nav" aria-label="Hovedmeny">
+                <button type="button" class="site-tab-link is-active" data-tab-id="dashboard" aria-current="page" onclick="switchTab('dashboard')">Forside</button>
+                <button type="button" class="site-tab-link" data-tab-id="cnc" onclick="switchTab('cnc')">Maskinering</button>
+                <button type="button" class="site-tab-link" data-tab-id="tools" onclick="switchTab('tools')">Verktøydata</button>
+                <button type="button" class="site-tab-link" data-tab-id="salary" onclick="switchTab('salary')">Skift & lønn</button>
+                <button type="button" class="site-tab-link" data-tab-id="ev" onclick="switchTab('ev')">Energi</button>
+                <button type="button" class="site-tab-link" data-tab-id="amounts" onclick="switchTab('amounts')">Mengder</button>
+                <button type="button" class="site-tab-link" data-tab-id="datetime" onclick="switchTab('datetime')">Dato & tid</button>
+                <button type="button" class="site-tab-link" data-tab-id="garden" onclick="switchTab('garden')">Utendørs</button>
+                <button type="button" class="site-tab-link" data-tab-id="finance" onclick="switchTab('finance')">Økonomi</button>
+            </nav>
+            <div class="portal-actions">
+                <button type="button" class="portal-icon-button portal-search-button" onclick="apneSokModal()" aria-label="Søk i verktøy" title="Søk i verktøy"><i data-lucide="search"></i></button>
+                <button type="button" class="portal-icon-button" onclick="apneNotatSkuff()" aria-label="Åpne notater" title="Notater"><i data-lucide="notebook-pen"></i></button>
+                <button type="button" class="portal-icon-button" onclick="toggleLanguage()" aria-label="Bytt språk" title="Språk / Language"><i data-lucide="languages"></i><span id="lang-label-desktop" class="sr-only">EN / English</span></button>
+                <button type="button" class="portal-icon-button" onclick="apnePwaModal()" aria-label="Installer Verkstedsportalen" title="Installer app"><i data-lucide="download"></i></button>
+                <button type="button" class="portal-icon-button" onclick="toggleTheme()" aria-label="Bytt fargetema" title="Bytt tema"><i data-lucide="sun-moon"></i></button>
             </div>
         </header>
         
         <!-- ================= DASHBOARD ================= -->
         <section id="dashboard" class="tab-content active p-4 sm:p-6 lg:p-10 max-w-7xl mx-auto">
-            <header class="mb-6">
-                <h1 class="text-2xl lg:text-3xl font-extrabold text-slate-900 dark:text-white">Verktøy for verksted og hverdag</h1>
-                <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">Gratis kalkulatorer for CNC-maskinering, verktøytabeller, lønn, privatøkonomi, strøm, materialmengder og datoer.</p>
-            </header>
-            <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
-                <div class="flex items-center gap-2">
-                    <span class="w-2 h-2 rounded-full bg-brand-500"></span>
-                    <h2 class="text-xs font-mono font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">Sanntidskort (Widgets)</h2>
+            <section class="portal-hero" aria-labelledby="portal-title">
+                <img class="portal-hero-image" src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=2200&q=88" alt="Fagarbeider ved industrielt produksjonsutstyr" fetchpriority="high">
+                <div class="portal-hero-shade"></div>
+                <div class="portal-hero-content">
+                    <p class="portal-eyebrow">PRAKTISKE VERKTØY · NORSK FAGKUNNSKAP</p>
+                    <h1 id="portal-title">Verkstedsportalen</h1>
+                    <p class="portal-hero-copy">Fra måltall til maskin. Finn svaret, sjekk forutsetningene og kom videre med jobben.</p>
+                    <button type="button" class="portal-search-launch" onclick="apneSokModal()">
+                        <i data-lucide="search"></i>
+                        <span>Søk etter verktøy, dimensjon eller beregning</span>
+                        <kbd>Ctrl K</kbd>
+                    </button>
+                    <div class="portal-hero-links" aria-label="Populære verktøy">
+                        <a href="/cnc-kalkulator/">CNC-kalkulator <i data-lucide="arrow-up-right"></i></a>
+                        <a href="/verktoy-tabeller/">Gjenger & toleranser <i data-lucide="arrow-up-right"></i></a>
+                        <a href="/lonnskalkulator/">Skift og lønn <i data-lucide="arrow-up-right"></i></a>
+                    </div>
                 </div>
-                <div class="flex items-center gap-2">
-                    <button onclick="apneNotatSkuff()" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-brand-500/15 border border-brand-500/40 text-brand-700 dark:text-brand-300 hover:bg-brand-500 hover:text-slate-950 transition-all shadow-sm">
-                        <i data-lucide="clipboard-list" class="w-3.5 h-3.5"></i>
-                        <span>Notater & Sjekkliste</span>
-                    </button>
-                    <button onclick="apneSokModal()" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-white/90 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-brand-500 transition-all shadow-sm">
-                        <i data-lucide="search" class="w-3.5 h-3.5 text-brand-500"></i>
-                        <span>Hurtigsøk</span>
-                    </button>
-                    <button onclick="apneWidgetModal()" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-white/90 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-brand-500 dark:hover:border-brand-500 transition-all shadow-sm">
-                        <i data-lucide="sliders-horizontal" class="w-3.5 h-3.5 text-brand-500"></i>
-                        <span>Tilpass oversikt</span>
-                    </button>
+                <div class="portal-hero-index" aria-hidden="true"><span>WP</span><span>01 / 08</span></div>
+            </section>
+
+            <section class="portal-paths" aria-labelledby="portal-paths-title">
+                <div class="portal-section-head">
+                    <div><p class="portal-section-kicker">START HER</p><h2 id="portal-paths-title">Hva skal du gjøre?</h2></div>
+                    <a href="#tool-directory">Se alle verktøy <i data-lucide="arrow-down-right"></i></a>
                 </div>
+                <div class="portal-path-grid">
+                    <a class="portal-path" href="/cnc-kalkulator/"><span class="portal-path-number">01</span><i data-lucide="cog"></i><span class="portal-path-title">Klargjøre en jobb</span><span class="portal-path-note">Turtall, mating, gjenger og skjæredata</span><i class="portal-path-arrow" data-lucide="arrow-up-right"></i></a>
+                    <a class="portal-path" href="/verktoy-tabeller/"><span class="portal-path-number">02</span><i data-lucide="ruler"></i><span class="portal-path-title">Finne et mål</span><span class="portal-path-note">Kjernehull, toleranser, pasninger og moment</span><i class="portal-path-arrow" data-lucide="arrow-up-right"></i></a>
+                    <a class="portal-path" href="/lonnskalkulator/"><span class="portal-path-number">03</span><i data-lucide="badge-dollar-sign"></i><span class="portal-path-title">Regne på skiftet</span><span class="portal-path-note">Vakter, overtid, skatt og timebank</span><i class="portal-path-arrow" data-lucide="arrow-up-right"></i></a>
+                    <a class="portal-path" href="/mengdekalkulator/"><span class="portal-path-number">04</span><i data-lucide="boxes"></i><span class="portal-path-title">Planlegge materialer</span><span class="portal-path-note">Volum, areal, forbruk og svinn</span><i class="portal-path-arrow" data-lucide="arrow-up-right"></i></a>
+                </div>
+            </section>
+
+            <div class="portal-live-heading">
+                <div><p class="portal-section-kicker">DIN ARBEIDSBENK</p><h2>Fortsett der du slapp</h2></div>
+                <button type="button" onclick="apneWidgetModal()" aria-label="Tilpass arbeidsbenken" title="Tilpass arbeidsbenken"><i data-lucide="sliders-horizontal"></i></button>
             </div>
 
             <!-- DYNAMISK SANNTIDSKORT-CONTAINER -->
@@ -545,7 +565,7 @@
                     <input id="dash-quick-note" type="hidden">
                 </div>
             </div>
-            <nav aria-label="Verktøy og kalkulatorer" class="mt-6 border-t border-slate-200 dark:border-slate-800 pt-6">
+            <nav id="tool-directory" aria-label="Verktøy og kalkulatorer" class="mt-6 border-t border-slate-200 dark:border-slate-800 pt-6">
                 <h2 class="text-lg font-extrabold text-slate-900 dark:text-white mb-2">Gratis kalkulatorer og verktøy</h2>
                 <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">Velg verktøy etter oppgaven. På verktøysidene kan du lese hva beregningene bygger på og hvilke forutsetninger og begrensninger som gjelder.</p>
                 <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
@@ -2580,7 +2600,7 @@
     </nav>
 
     <!-- MAIN JAVASCRIPT -->
-    <script defer src="./js/app.js?v=20261104-garden"></script>
+    <script defer src="./js/app.js?v=20261127-relaunch"></script>
     <script defer src="./js/manual-library.js?v=20261022-perf"></script>
     <script defer src="./js/production-addons.js?v=20261027-a11y"></script>
     <script defer src="./js/amount-planner.js?v=20261020-lazy-tab-calculations"></script>

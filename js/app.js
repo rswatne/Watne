@@ -1635,6 +1635,12 @@
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
             const target = document.getElementById(tabId);
             if(target) target.classList.add('active');
+            document.querySelectorAll('.site-tab-link').forEach(button => {
+                const isActive = button.dataset.tabId === tabId;
+                button.classList.toggle('is-active', isActive);
+                if (isActive) button.setAttribute('aria-current', 'page');
+                else button.removeAttribute('aria-current');
+            });
             if (target) {
                 initialiserBeregningerForFane(tabId);
                 document.dispatchEvent(new CustomEvent('verksted:tab-open', { detail: { tabId } }));
