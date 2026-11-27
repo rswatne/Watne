@@ -3176,11 +3176,18 @@ html.dark body[data-layout="hyper"] .tab-content:not(#dashboard) {
     }
 
     html:not(.dark) body.beta-workspace #mobile-bottom-nav .mnav-btn {
-        color: #607074;
+        color: #42515a !important;
     }
 
     html:not(.dark) body.beta-workspace #mobile-bottom-nav .mnav-btn.font-bold {
-        color: #b9432b !important;
+        color: #9f321d !important;
+        background: #f5e9e4;
+        border-radius: 0.5rem;
+    }
+
+    html:not(.dark) body.beta-workspace #mobile-bottom-nav .mnav-btn:focus-visible {
+        outline: 2px solid #9f321d;
+        outline-offset: -2px;
     }
 
     html:not(.dark) body.beta-workspace #mobile-more-menu:not(.hidden) {
